@@ -4,20 +4,21 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotify/spotify.dart';
 
-class SpotifyCredentialsLocalDataService {
+class SpotifyLocalCredentialsService {
 
   final String _spotifyCredentialsJsonPath = '/account_info.json';
 
   Future<SpotifyApiCredentials?> loadSpotifyApiCredentials() async {
 
-    final localDirectoryPath = (await getApplicationDocumentsDirectory()).absolute;
+    final localDirectoryPath = (await getApplicationDocumentsDirectory()).path;
 
     if(await File('$localDirectoryPath$_spotifyCredentialsJsonPath').exists() == false){
       return null;
     }
-
-    final response = await rootBundle.loadString('$localDirectoryPath$_spotifyCredentialsJsonPath');
-    final spotifyCredentials = _spotifyCredentialsFromMap(response as Map<String, dynamic>);
+    final file = File('$localDirectoryPath$_spotifyCredentialsJsonPath'); 
+    final response = await file.readAsString();
+    final decodedResponse = json.decode(response);
+    final spotifyCredentials = _spotifyCredentialsFromMap(decodedResponse as Map<String, dynamic>);
     
     return spotifyCredentials;
   }
@@ -26,7 +27,7 @@ class SpotifyCredentialsLocalDataService {
     final spotifyCredentialsMap = _spotifyCredentialsToMap(spotifyCredentials);
     final spotifyCredentialsJson = json.encode(spotifyCredentialsMap);
 
-    final localDirectoryPath = (await getApplicationDocumentsDirectory()).absolute;
+    final localDirectoryPath = (await getApplicationDocumentsDirectory()).path;
     final file = File('$localDirectoryPath$_spotifyCredentialsJsonPath');
     await file.writeAsString(spotifyCredentialsJson, mode: FileMode.writeOnly);
   }
@@ -38,7 +39,6 @@ class SpotifyCredentialsLocalDataService {
       'clientId': spotifyCredentials.clientId,
       'clientSecret': spotifyCredentials.clientSecret,
       'scopes': spotifyCredentials.scopes, 
-      'expiration' : spotifyCredentials.expiration
     };
   }
 
@@ -48,8 +48,7 @@ class SpotifyCredentialsLocalDataService {
       mappedSpotifyCredentials['clientSecret'] as String,
       accessToken: mappedSpotifyCredentials['accessToken'] as String,
       refreshToken: mappedSpotifyCredentials['refreshToken'] as String,
-      scopes: mappedSpotifyCredentials['scopes'] as List<String>,
-      expiration: mappedSpotifyCredentials['expirations']
+      scopes: (mappedSpotifyCredentials['scopes'] as List<dynamic>).map((e) => e as String).toList(),
       );
   }
 }

@@ -11,8 +11,8 @@ class SpotifyAutorizationService {
     _clientId = clientId, 
     _clientSecret = clientSecret;
 
-  String _clientId;
-  String _clientSecret;
+  final String _clientId;
+  final String _clientSecret;
 
   Future<SpotifyApiCredentials> authorizeAccount () async {
     AccessTokenResponse? accessToken;

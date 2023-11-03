@@ -1,20 +1,20 @@
 import 'package:spotify/spotify.dart';
 import 'package:spotify_downloader/infrastructure/exceptions/account_not_authorized_exception.dart';
-import 'package:spotify_downloader/services/local_data_serivces/spotify_credentials_local_data_service.dart';
+import 'package:spotify_downloader/services/local_data_serivces/spotify_local_credentials_service.dart';
 
 class SpotifyApiDataService {
 
   SpotifyApiDataService({
     required String clientId,
     required String clientSecret,
-    required SpotifyCredentialsLocalDataService spotifyCredentialsLocalDataService,
+    required SpotifyLocalCredentialsService spotifyLocalCredentialsService,
   }) : 
   _clientId = clientId,
   _clientSecret = clientSecret,
-  _spotifyCredentialsLocalDataService = spotifyCredentialsLocalDataService;
+  _spotifyCredentialsLocalDataService = spotifyLocalCredentialsService;
 
 
-  final SpotifyCredentialsLocalDataService _spotifyCredentialsLocalDataService;
+  final SpotifyLocalCredentialsService _spotifyCredentialsLocalDataService;
   final String _clientId;
   final String _clientSecret;
 
@@ -30,6 +30,7 @@ class SpotifyApiDataService {
   Future<Playlist> getPlaylistByUrl(String url) async {
     final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
     final playlist = await spotify.playlists.get(getIdFromUrl(url));
+    final tracks = await spotify.playlists.getTracksByPlaylistId(getIdFromUrl(url));
     return playlist;
   }
 
