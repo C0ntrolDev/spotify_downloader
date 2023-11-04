@@ -62,7 +62,7 @@ class SpotifyApiDataService {
     int firstCallbackLength = 750,
     int callbackLength = 50,
   }) async {
-    
+
     if (spotifyCredentials?.accessToken == null) {
       throw AccountNotAuthorizedException(cause: 'spotify account not authorize');
     }

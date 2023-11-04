@@ -32,6 +32,12 @@ class SpotifyLocalCredentialsService {
     await file.writeAsString(spotifyCredentialsJson, mode: FileMode.writeOnly);
   }
 
+  Future<void> deleteSpotifyApiCredentials() async {
+    final localDirectoryPath = (await getApplicationDocumentsDirectory()).path;
+    final file = File('$localDirectoryPath$_spotifyCredentialsJsonPath');
+    await file.delete();
+  }
+
   Map<String,dynamic> _spotifyCredentialsToMap(SpotifyApiCredentials spotifyCredentials) {
     return {
       'accessToken': spotifyCredentials.accessToken,
@@ -39,6 +45,7 @@ class SpotifyLocalCredentialsService {
       'clientId': spotifyCredentials.clientId,
       'clientSecret': spotifyCredentials.clientSecret,
       'scopes': spotifyCredentials.scopes, 
+      'expiration' : spotifyCredentials.expiration?.millisecondsSinceEpoch
     };
   }
 
@@ -49,6 +56,7 @@ class SpotifyLocalCredentialsService {
       accessToken: mappedSpotifyCredentials['accessToken'] as String,
       refreshToken: mappedSpotifyCredentials['refreshToken'] as String,
       scopes: (mappedSpotifyCredentials['scopes'] as List<dynamic>).map((e) => e as String).toList(),
+      expiration: DateTime.fromMillisecondsSinceEpoch(mappedSpotifyCredentials['expiration'] as int)
       );
   }
 }

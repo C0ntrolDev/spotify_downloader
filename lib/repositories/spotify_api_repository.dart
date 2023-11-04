@@ -16,44 +16,76 @@ class SpotifyApiRepository {
       {required SpotifyAutorizationService spotifyAutorizationService,
       required SpotifyApiDataService spotifyApiDataService,
       required SpotifyLocalCredentialsService spotifyLocalCredentialsService}) async {
-
     final localcredentials = await spotifyLocalCredentialsService.loadSpotifyApiCredentials();
     final spotifyApiRepository = SpotifyApiRepository._create(
         spotifyAutorizationService: spotifyAutorizationService,
         spotifyApiDataService: spotifyApiDataService,
         spotifyLocalCredentialsService: spotifyLocalCredentialsService);
 
-    spotifyApiRepository._spotifyCredentials = localcredentials;
+    spotifyApiDataService.spotifyCredentials = localcredentials;
     return spotifyApiRepository;
   }
-
 
   final SpotifyAutorizationService _spotifyAutorizationService;
   final SpotifyApiDataService _spotifyApiDataService;
   final SpotifyLocalCredentialsService _spotifyLocalCredentialsService;
 
-  SpotifyApiCredentials? _spotifyCredentials;
-
-  bool get isAccountAutorized => _spotifyCredentials != null;
-
+  bool get isAccountAutorized => _spotifyApiDataService.spotifyCredentials != null;
 
   Future<bool> tryAutorizeAccount() async {
-    if (isAccountAutorized) {
-      return true;
-    }
-
     var spotifyCredentials = await _spotifyAutorizationService.authorizeAccount();
 
     if (spotifyCredentials == null) {
       return false;
     }
 
-    _spotifyCredentials = spotifyCredentials;
+    _spotifyApiDataService.spotifyCredentials = spotifyCredentials;
     _spotifyLocalCredentialsService.saveSpotifyApiCredentials(spotifyCredentials);
     return true;
   }
 
+  Future<void> deleteLocalAccountAutorize() async {
+    _spotifyApiDataService.spotifyCredentials = null;
+    await _spotifyLocalCredentialsService.deleteSpotifyApiCredentials();
+  }
+
   Future<Track?> getTrackByUrl(String url) {
     return _spotifyApiDataService.getTrackByUrl(url);
+  }
+
+  Future<Playlist?> getPlaylistByUrl(String url) {
+    return _spotifyApiDataService.getPlaylistByUrl(url);
+  }
+
+  Future<Playlist?> getAlbumByUrl(String url) {
+    return _spotifyApiDataService.getAlbumByUrl(url);
+  }
+
+  Future<void> getTrackCollectionByPlaylist({
+    required Playlist playlist,
+    required List<Track> saveCollection,
+    required Function updateCallback,
+    int firstCallbackLength = 750,
+    int callbackLength = 50,
+  }) {
+    return _spotifyApiDataService.getTrackCollectionByPlaylist(
+        playlist: playlist,
+        saveCollection: saveCollection,
+        updateCallback: updateCallback,
+        firstCallbackLength: firstCallbackLength,
+        callbackLength: callbackLength);
+  }
+
+  Future<void> getLikedTracks({
+    required List<TrackSaved> saveCollection,
+    required Function updateCallback,
+    int firstCallbackLength = 750,
+    int callbackLength = 50,
+  }) {
+    return _spotifyApiDataService.getLikedTracks(
+        saveCollection: saveCollection,
+        updateCallback: updateCallback,
+        firstCallbackLength: firstCallbackLength,
+        callbackLength: callbackLength);
   }
 }
