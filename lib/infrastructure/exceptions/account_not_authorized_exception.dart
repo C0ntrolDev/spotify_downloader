@@ -1,4 +1,5 @@
-class AccountNotAuthorizedException implements Exception{
-  AccountNotAuthorizedException({required this.cause});
-  String cause;
+import 'package:spotify_downloader/infrastructure/exceptions/base/cause_exception.dart';
+
+class AccountNotAuthorizedException extends CauseException{
+  AccountNotAuthorizedException({super.cause});
 }

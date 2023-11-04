@@ -3,6 +3,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotify_downloader/services/local_data_serivces/spotify_local_credentials_service.dart';
 import 'package:spotify_downloader/services/spotify_api_data_service/spotify_api_data_service.dart';
 import 'package:spotify_downloader/services/spotify_autorization_service/spotify_autorization_service.dart';
+import 'package:flutter/src/widgets/image.dart' as image;
 
 void main() {
   runApp(const MyApp());
@@ -35,8 +36,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<Track> tracks = List<Track>.empty(growable: true);
   SpotifyApiCredentials? credentials;
-  String? debugText;
 
   _MyHomePageState() {
     _spotifyApiDataService = SpotifyApiDataService(
@@ -57,32 +58,58 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).primaryColor,
         title: Text('test'),
       ),
-      body: Column(children: [
-        ElevatedButton(
-            onPressed: () async => await _spotifyAutorizationService.authorizeAccount().then((value) {
-                  credentials = value;
-                  _spotifyApiDataService.spotifyCredentials = credentials;
-                }),
-            child: Text('Войти в spotify')),
-        Text(credentials?.accessToken ?? 'нет данных'),
-        ElevatedButton(
-            onPressed: () async => await _spotifyLocalCredentialsService.saveSpotifyApiCredentials(credentials!),
-            child: Text('сохранить данные')),
-        ElevatedButton(
-            onPressed: () async {
-              credentials = await _spotifyLocalCredentialsService.loadSpotifyApiCredentials();
-              _spotifyApiDataService.spotifyCredentials = credentials;
-              setState(() {});
-            },
-            child: Text('загрузить')),
-        ElevatedButton(
-            onPressed: () async {
-              debugText = (await _spotifyApiDataService.getPlaylistByUrl('https://open.spotify.com/playlist/37i9dQZF1E8KSuYNloCGgq?si=a59402ceee3a4c2f')).tracks.;
-              setState(() {});
-            },
-            child: Text('Получить плейлист ???')),
-        Text(debugText ?? '')
-      ]),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.only(top: 100),
+              child: ElevatedButton(
+                style: ButtonStyle(
+                    fixedSize: MaterialStateProperty.all(Size(200, 50))),
+                onPressed: () async {
+                    final playlist = await _spotifyApiDataService.getPlaylistByUrl('https://open.spotify.com/playlist/4uoPRLaoEtvHXuouIM387?si=6f3c6d3786e54c0e');
+                    _spotifyApiDataService.getTrackCollectionByPlaylist(playlist: playlist!, saveCollection: tracks, updateCallback: () {setState(() {});});
+                  },
+                child: Text(
+                  "Загрузить плейлист",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            Container(
+              height: 400,
+              child: ListView.separated(
+                itemCount: tracks.length,
+                itemBuilder: (context, index) => Container(
+                  padding: EdgeInsets.only(left: 3),
+                  child: Row(
+                    children: [
+                      Text((index + 1).toString() ),
+                      Builder(
+                        builder: (context) {
+                          try {
+                            final url = tracks[index].album?.images?[0].url;
+                            return image.Image.network(
+                            url ?? "", 
+                            height: 30,
+                            width: 30,
+                            alignment: Alignment.centerLeft,);
+                          } catch (e) {
+                            return Text('N', style: TextStyle(color: Colors.red),);
+                          }                      
+                        }
+                      ),
+                      Text(tracks[index].name ?? "")
+                    ],
+                  ),
+                ),
+                separatorBuilder: (context, index) => Container(height: 10),
+              ),
+            ),
+          ],
+        ),
+      )
     );
   }
 }

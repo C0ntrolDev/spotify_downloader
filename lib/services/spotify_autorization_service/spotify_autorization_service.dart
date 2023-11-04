@@ -14,7 +14,7 @@ class SpotifyAutorizationService {
   final String _clientId;
   final String _clientSecret;
 
-  Future<SpotifyApiCredentials> authorizeAccount () async {
+  Future<SpotifyApiCredentials?> authorizeAccount () async {
     AccessTokenResponse? accessToken;
     SpotifyOAuth2Client client = SpotifyOAuth2Client(
       customUriScheme: 'cd.syd.app',
@@ -24,12 +24,23 @@ class SpotifyAutorizationService {
         clientId: _clientId,
         customParams: {'show_dialog': 'true'},
         scopes: ["user-library-read"]);
+
     var authCode = authResp.code;
+
+    if (authCode == null) {
+      return null;
+      //TODO addLogs
+    }
 
     accessToken = await client.requestAccessToken(
         code: authCode.toString(),
         clientId: _clientId,
         clientSecret: _clientSecret);
+
+    if (accessToken.accessToken == null) {
+      return null;
+      //TODO addLogs
+    }
 
     return SpotifyApiCredentials(
       _clientId, 
