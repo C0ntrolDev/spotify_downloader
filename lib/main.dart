@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotify_downloader/models/db/local/local_playlist.dart';
+import 'package:spotify_downloader/models/db/local/local_track.dart';
 import 'package:spotify_downloader/repositories/spotify_api_repository.dart';
 import 'package:spotify_downloader/services/local_data_serivces/spotify_local_credentials_service.dart';
+import 'package:spotify_downloader/services/local_data_serivces/spotify_local_data_service.dart';
 import 'package:spotify_downloader/services/spotify_api_data_service/spotify_api_data_service.dart';
 import 'package:spotify_downloader/services/spotify_autorization_service/spotify_autorization_service.dart';
 import 'package:flutter/src/widgets/image.dart' as image;
@@ -22,6 +25,7 @@ void main() {
       spotifyAutorizationService: GetIt.I<SpotifyAutorizationService>(),
       spotifyApiDataService: GetIt.I<SpotifyApiDataService>(),
       spotifyLocalCredentialsService: GetIt.I<SpotifyLocalCredentialsService>()));
+  GetIt.I.registerSingletonAsync<SpotifyLocalDataService>(() => SpotifyLocalDataService.create());
 
   runApp(const MyApp());
 }
@@ -53,16 +57,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String? url;
+  List<LocalPlaylist>? localPlaylists;
+  List<LocalTrack>? localTracks;
   SpotifyApiRepository? spotifyApiRepository;
+  SpotifyLocalDataService? spotifyLocalDataService;
   List<TrackSaved> tracks = List<TrackSaved>.empty(growable: true);
   SpotifyApiCredentials? credentials;
 
   _MyHomePageState() {
     Future(() async {
       spotifyApiRepository = await GetIt.I.getAsync<SpotifyApiRepository>();
+      spotifyLocalDataService = await GetIt.I.getAsync<SpotifyLocalDataService>();
+      localPlaylists = await spotifyLocalDataService?.getPlaylistsHistory();
       setState(() {});
     });
-    
   }
   @override
   Widget build(BuildContext context) {
@@ -75,71 +84,64 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(spotifyApiRepository?.isAccountAutorized.toString() ?? 'NotLoaded'),
-              Container(
-                padding: EdgeInsets.only(top: 100),
-                child: ElevatedButton(
-                  style: ButtonStyle(fixedSize: MaterialStateProperty.all(Size(200, 50))),
-                  onPressed: () async {
-                    await spotifyApiRepository?.tryAutorizeAccount();
-                  },
-                  child: Text(
-                    "Авторизоваться",
-                    textAlign: TextAlign.center,
-                  ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text(spotifyApiRepository?.isAccountAutorized.toString() ?? 'NotLoaded'),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 100),
+                child: TextField( 
+                  onChanged: (value) => url = value,
                 ),
               ),
-              Container(
-                padding: EdgeInsets.only(top: 100),
-                child: ElevatedButton(
-                  style: ButtonStyle(fixedSize: MaterialStateProperty.all(Size(200, 50))),
-                  onPressed: () async {
-                    spotifyApiRepository?.getLikedTracks(
-                        saveCollection: tracks,
-                        updateCallback: () {
-                          setState(() {});
-                        });
-                  },
-                  child: Text(
-                    "Загрузить плейлист",
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+              Padding(
+                padding: const EdgeInsets.only(top: 150),
+                child: ElevatedButton(onPressed: () async {
+                  final playlist = await spotifyApiRepository?.getPlaylistByUrl(url!);
+                  await spotifyLocalDataService?.addPlaylistToHistory(await LocalPlaylist.createUsingUrl(spotifyId: playlist!.id!, name: playlist!.name!,imageUrl: playlist.images?[0].url ?? '', openDate: DateTime.now()));
+                  localPlaylists = await spotifyLocalDataService?.getPlaylistsHistory();
+                  setState(() {});
+                }, child: Text('загрузить плейлист в бд')),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 150),
+                child: ElevatedButton(onPressed: () async {
+                  spotifyLocalDataService?.deleteDb();
+                  setState(() {});
+                }, child: Text('удалить бд')),
               ),
               Container(
-                height: 400,
-                child: ListView.separated(
-                  itemCount: tracks.length,
-                  itemBuilder: (context, index) => Container(
-                    padding: EdgeInsets.only(left: 3),
+                padding: EdgeInsets.only(top: 400),
+                height: 300,
+                child: ListView.builder(
+                  semanticChildCount: localPlaylists?.length,
+                  itemBuilder: (context, index) => InkWell(
+                    splashFactory: InkRipple.splashFactory,
                     child: Row(
                       children: [
-                        Text((index + 1).toString()),
-                        Builder(builder: (context) {
-                          try {
-                            final url = tracks[index].track?.album?.images?[0].url;
-                            return image.Image.network(
-                              url ?? "",
-                              height: 30,
-                              width: 30,
-                              alignment: Alignment.centerLeft,
-                            );
-                          } catch (e) {
-                            return Text(
-                              'N',
-                              style: TextStyle(color: Colors.red),
-                            );
-                          }
-                        }),
-                        Text(tracks[index].track?.name ?? "")
+                        image.Image.memory(localPlaylists![index].image!),
+                        Text(localPlaylists![index].name),
                       ],
                     ),
+                    onTap: () async {
+                      localTracks =
+                          await spotifyLocalDataService?.getTracksByPlaylistId(localPlaylists![index].spotifyId);
+                      setState(() {});
+                    },
                   ),
-                  separatorBuilder: (context, index) => Container(height: 10),
                 ),
               ),
+              Container(
+                height: 100,
+                child: ListView.builder(
+                  semanticChildCount: localTracks?.length,
+                  itemBuilder:(context, index) =>  Row(children: [
+                  Text(localTracks![index].spotifyId),
+                ]
+                ),),
+              )
             ],
           ),
         ));
   }
-}
+  }

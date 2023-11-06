@@ -17,6 +17,7 @@ dependencies:
   spotify: ^0.11.0
   path_provider: ^2.1.1
   get_it: ^7.6.4
+  sqflite: ^2.3.0
 
 dev_dependencies:
   flutter_test:
