@@ -19,6 +19,7 @@ dependencies:
   get_it: ^7.6.4
   sqflite: ^2.3.0
   bloc: ^8.1.2
+  meta: ^1.11.0
 
 dev_dependencies:
   flutter_test:

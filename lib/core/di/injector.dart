@@ -4,7 +4,9 @@ import 'package:spotify_downloader/core/db/local_db_impl.dart';
 
 final injector = GetIt.instance;
 
-void initCore() {
-  injector.registerLazySingleton<LocalDb>(() => LocalDbImpl());
+void initCore() async {
   
+  injector.registerSingleton<LocalDb>(LocalDbImpl());
+  await injector<LocalDb>().initDb();
+
 }

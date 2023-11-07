@@ -1,3 +1,3 @@
-const String dbPath = '/local_data.db'; 
-const String settingsPath = '/settings.json';
-const String accountSettingsPath = '/account_settings.json';
+const dbPath = '/local_data.db'; 
+const settingsPath = '/settings.json';
+const accountSettingsPath = '/account_settings.json';
