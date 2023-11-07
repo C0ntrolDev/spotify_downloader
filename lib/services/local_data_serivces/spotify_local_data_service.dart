@@ -80,7 +80,7 @@ class SpotifyLocalDataService {
     return mapTracks.map((e) => LocalTrack.fromMap(e)).toList();
   }
 
-  Future<void> deleteTrackToPlaylist(LocalTrack localTrack) async {
+  Future<void> deleteTrackFromPlaylist(LocalTrack localTrack) async {
     await _database.delete('localPlaylists', where: 'spotifyId = ?, localPlaylist_spotifyId', whereArgs: [localTrack.spotifyId, localTrack.localPlaylistSpotifyId]);
   }
 

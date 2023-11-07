@@ -1,0 +1,39 @@
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
+import 'package:spotify_downloader/core/db/local_db.dart';
+import 'package:spotify_downloader/core/consts/local_paths.dart';
+import 'package:sqflite/sqflite.dart';
+
+class LocalDbImpl extends LocalDb {
+
+  late Database _dataBase;
+
+  @override
+  Future<void> cleanDb() async {
+    
+  }
+
+  @override
+  Database getDb() => _dataBase;
+
+  @override
+  Future<void> initDb() async {
+    final localDirectoryPath = (await getApplicationDocumentsDirectory()).path;
+    final absoluteDbPath = '$localDirectoryPath$dbPath';
+
+    final dbFile = File(absoluteDbPath);
+    Database database;
+
+    if (await dbFile.exists()) {
+      database = await openDatabase(absoluteDbPath);
+    }
+    else {
+      database = await openDatabase(absoluteDbPath, onCreate: (db, version) {
+        db.execute();
+        db.execute();
+      },);
+    }
+  }
+
+}
