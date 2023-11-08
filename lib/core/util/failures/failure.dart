@@ -1,7 +1,7 @@
 class Failure {
   Failure({
-    this.message
+    required this.message
   });
   
-  String? message;
+  Object message;
 }

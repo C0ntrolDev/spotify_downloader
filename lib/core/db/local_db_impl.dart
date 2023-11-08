@@ -11,7 +11,13 @@ class LocalDbImpl extends LocalDb {
 
   @override
   Future<void> cleanDb() async {
+    final localDirectoryPath = (await getApplicationDocumentsDirectory()).path;
+    final absoluteDbPath = '$localDirectoryPath$dbPath';
+
+    final dbFile = File(absoluteDbPath);
     
+    await dbFile.delete();
+    await initDb();
   }
 
   @override
@@ -29,11 +35,25 @@ class LocalDbImpl extends LocalDb {
       database = await openDatabase(absoluteDbPath);
     }
     else {
-      database = await openDatabase(absoluteDbPath, onCreate: (db, version) {
-        db.execute();
-        db.execute();
+      database = await openDatabase(absoluteDbPath, version: 1, onCreate: (db, version) {
+        db.execute("CREATE TABLE localPlaylists ("
+          "spotifyId TEXT PRIMARY KEY,"
+          "openDate INTEGER NOT NULL,"
+          "name TEXT NOT NULL,"
+          "image BLOB NOT NULL"
+          ")");
+        db.execute("CREATE TABLE localTracks ("
+          "localPlaylist_spotifyId TEXT NOT NULL"
+          "spotifyId TEXT NOT NULL,"
+          "isLoaded INTEGER NOT NULL,"
+          "youtubeUrl TEXT,"
+          "FOREIGN KEY (localPlaylist_spotifyId) REFERENCES localPlaylists (spotifyId) ON DELETE CASCASDE,"
+          "PRIMARY KEY (localPlaylist_spotifyId, spotifyId)"
+          ")");
       },);
     }
+
+    _dataBase = database;
   }
 
 }

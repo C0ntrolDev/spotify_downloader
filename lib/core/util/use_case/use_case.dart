@@ -1,5 +1,5 @@
-import 'package:spotify_downloader/core/util/call_response/call_response.dart';
+import 'package:spotify_downloader/core/util/result/result.dart';
 
 abstract class UseCase<Failure, Type, Params> {
-  Future<CallResponse<Failure, Type>> call(Params params);
+  Future<Result<Failure, Type>> call(Params params);
 }
