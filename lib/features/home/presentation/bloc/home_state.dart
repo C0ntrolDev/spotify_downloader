@@ -1,6 +1,17 @@
 part of 'home_bloc.dart';
 
-@immutable
-sealed class HomeState {}
+sealed class HomeState extends Equatable {}
 
-final class HomeInitial extends HomeState {}
+final class HomeInitial extends HomeState {
+  @override
+  List<Object?> get props => [];
+}
+
+final class HomeLoaded extends HomeState {
+  HomeLoaded({required this.playlistsHistory});
+
+  final List<Playlist>? playlistsHistory;
+
+  @override
+  List<Object?> get props => [playlistsHistory];
+}

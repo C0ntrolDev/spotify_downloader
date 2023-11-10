@@ -40,10 +40,10 @@ class LocalDbImpl extends LocalDb {
           "spotifyId TEXT PRIMARY KEY,"
           "openDate INTEGER NOT NULL,"
           "name TEXT NOT NULL,"
-          "image BLOB NOT NULL"
+          "image BLOB"
           ")");
         db.execute("CREATE TABLE localTracks ("
-          "localPlaylist_spotifyId TEXT NOT NULL"
+          "localPlaylist_spotifyId TEXT NOT NULL,"
           "spotifyId TEXT NOT NULL,"
           "isLoaded INTEGER NOT NULL,"
           "youtubeUrl TEXT,"

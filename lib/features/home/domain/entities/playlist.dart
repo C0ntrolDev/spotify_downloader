@@ -1,10 +1,11 @@
 import 'dart:core';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-class Playlist {
+class Playlist extends Equatable {
 
-  Playlist.withLocalImage({
+  const Playlist.withLocalImage({
     required this.spotifyId,
     required this.name,
     required this.openDate,
@@ -12,7 +13,7 @@ class Playlist {
     this.imageUrl
   });
 
-  Playlist.withImageUrl({
+  const Playlist.withImageUrl({
     required this.spotifyId,
     required this.name,
     required this.openDate,
@@ -20,10 +21,13 @@ class Playlist {
     required this.imageUrl
   });
 
-  String spotifyId;
-  String name;
-  DateTime openDate;
-  Uint8List? image;
-  String? imageUrl;
+  final String spotifyId;
+  final String name;
+  final DateTime openDate;
+  final Uint8List? image;
+  final String? imageUrl;
   
+
+  @override
+  List<Object?> get props => [spotifyId, name, openDate, image, imageUrl];
 }

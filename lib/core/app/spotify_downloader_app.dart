@@ -5,7 +5,6 @@ import 'package:spotify_downloader/features/home/presentation/view/home_screen.d
 class SpotifyDownloaderApp extends StatelessWidget {
   const SpotifyDownloaderApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
