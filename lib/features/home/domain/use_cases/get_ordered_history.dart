@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/core/util/use_case/use_case.dart';
@@ -10,7 +8,7 @@ class GetOrderedHistory implements UseCase<Failure, List<Playlist>?, Null> {
   GetOrderedHistory({required HistoryPlaylistsRepository historyPlaylistsRepository})
       : _historyPlaylistsRepository = historyPlaylistsRepository;
 
-  HistoryPlaylistsRepository _historyPlaylistsRepository;
+  final HistoryPlaylistsRepository _historyPlaylistsRepository;
 
   @override
   Future<Result<Failure, List<Playlist>?>> call(Null params) async {

@@ -8,7 +8,7 @@ class AddPlaylistToHistory implements UseCase<Failure, void, Playlist> {
   AddPlaylistToHistory({required HistoryPlaylistsRepository historyPlaylistsRepository})
       : _historyPlaylistsRepository = historyPlaylistsRepository;
 
-  HistoryPlaylistsRepository _historyPlaylistsRepository;
+  final HistoryPlaylistsRepository _historyPlaylistsRepository;
 
   @override
   Future<Result<Failure, void>> call(Playlist playlist) async {
