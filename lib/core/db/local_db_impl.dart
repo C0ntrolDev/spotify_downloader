@@ -44,12 +44,12 @@ class LocalDbImpl extends LocalDb {
           "image BLOB"
           ")");
         db.execute("CREATE TABLE localTracks ("
-          "localPlaylist_spotifyId TEXT NOT NULL,"
+          "localTracksCollection_spotifyId TEXT NOT NULL,"
           "spotifyId TEXT NOT NULL,"
           "isLoaded INTEGER NOT NULL,"
           "youtubeUrl TEXT,"
-          "FOREIGN KEY (localPlaylist_spotifyId) REFERENCES localPlaylists (spotifyId) ON DELETE CASCASDE,"
-          "PRIMARY KEY (localPlaylist_spotifyId, spotifyId)"
+          "FOREIGN KEY (localTracksCollection_spotifyId) REFERENCES localTracksCollections (spotifyId) ON DELETE CASCADE,"
+          "PRIMARY KEY (localTracksCollection_spotifyId, spotifyId)"
           ")");
       },);
     }
