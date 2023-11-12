@@ -36,8 +36,9 @@ class LocalDbImpl extends LocalDb {
     }
     else {
       database = await openDatabase(absoluteDbPath, version: 1, onCreate: (db, version) {
-        db.execute("CREATE TABLE localPlaylists ("
+        db.execute("CREATE TABLE localTracksCollections ("
           "spotifyId TEXT PRIMARY KEY,"
+          "type INTEGER NOT NULL,"
           "openDate INTEGER NOT NULL,"
           "name TEXT NOT NULL,"
           "image BLOB"

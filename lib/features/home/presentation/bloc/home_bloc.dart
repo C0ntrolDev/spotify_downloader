@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_downloader/features/home/domain/entities/playlist.dart';
-import 'package:spotify_downloader/features/home/domain/use_cases/add_playlist_to_history.dart';
+import 'package:spotify_downloader/features/home/domain/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/home/domain/use_cases/add_tracks_collection_to_history.dart';
 import 'package:spotify_downloader/features/home/domain/use_cases/get_ordered_history.dart';
 
 part 'home_event.dart';
@@ -9,9 +9,9 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetOrderedHistory _getOrderedHistory;
-  final AddPlaylistToHistory _addPlaylistToHistory;
+  final AddTracksCollectionToHistory _addPlaylistToHistory;
 
-  HomeBloc({required GetOrderedHistory getOrderedHistory, required AddPlaylistToHistory addPlaylistToHistory})
+  HomeBloc({required GetOrderedHistory getOrderedHistory, required AddTracksCollectionToHistory addPlaylistToHistory})
       : _getOrderedHistory = getOrderedHistory,
         _addPlaylistToHistory = addPlaylistToHistory,
         super(HomeInitial()) {

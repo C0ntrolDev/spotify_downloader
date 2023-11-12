@@ -18,7 +18,7 @@ class HomeUpdateHistory extends HomeEvent {
 class HomeAddPlaylistToHistory extends HomeEvent {
   HomeAddPlaylistToHistory({required this.playlist});
 
-  final Playlist playlist;
+  final TracksCollection playlist;
 
   @override
   List<Object?> get props => [playlist];

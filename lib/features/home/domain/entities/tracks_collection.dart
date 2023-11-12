@@ -3,18 +3,20 @@ import 'dart:core';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-class Playlist extends Equatable {
+class TracksCollection extends Equatable {
 
-  const Playlist.withLocalImage({
+  const TracksCollection.withLocalImage({
     required this.spotifyId,
+    required this.type,
     required this.name,
     required this.openDate,
     required this.image,
     this.imageUrl
   });
 
-  const Playlist.withImageUrl({
+  const TracksCollection.withImageUrl({
     required this.spotifyId,
+    required this.type,
     required this.name,
     required this.openDate,
     this.image,
@@ -22,6 +24,7 @@ class Playlist extends Equatable {
   });
 
   final String spotifyId;
+  final TracksCollectionType type;
   final String name;
   final DateTime openDate;
   final Uint8List? image;
@@ -30,4 +33,11 @@ class Playlist extends Equatable {
 
   @override
   List<Object?> get props => [spotifyId, name, openDate, image, imageUrl];
+}
+
+enum TracksCollectionType {
+  likedTracks, 
+  playlist,
+  album,
+  track
 }
