@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
-import 'package:spotify_downloader/features/home/presentation/bloc/home_bloc.dart';
+import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
 
-import '../../../shared/presentation/widgets/styled_text_field.dart';
+import '../../shared/widgets/styled_text_field.dart';
 import '../widgets/playlist_tile.dart';
 
 class HomeScreen extends StatefulWidget {

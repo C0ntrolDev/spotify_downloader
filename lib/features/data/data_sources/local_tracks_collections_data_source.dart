@@ -1,5 +1,5 @@
 import 'package:spotify_downloader/core/db/local_db.dart';
-import 'package:spotify_downloader/features/shared/data/models/local_playlist.dart';
+import 'package:spotify_downloader/features/data/models/local_playlist.dart';
 import 'package:sqflite/sqflite.dart';
 
 class LocalTracksCollectionsDataSource {

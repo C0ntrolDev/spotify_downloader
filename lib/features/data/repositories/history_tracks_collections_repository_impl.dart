@@ -2,10 +2,10 @@ import 'dart:ffi';
 import 'dart:typed_data';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
-import 'package:spotify_downloader/features/home/data/data_sources/local_tracks_collections_data_source.dart';
-import 'package:spotify_downloader/features/home/domain/entities/tracks_collection.dart';
-import 'package:spotify_downloader/features/home/domain/repositories/history_tracks_collections_repository.dart';
-import 'package:spotify_downloader/features/shared/data/models/local_playlist.dart';
+import 'package:spotify_downloader/features/data/data_sources/local_tracks_collections_data_source.dart';
+import 'package:spotify_downloader/features/domain/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/repositories/history_tracks_collections_repository.dart';
+import 'package:spotify_downloader/features/data/models/local_playlist.dart';
 import 'package:http/http.dart' as http;
 
 class HistoryTracksCollectionsRepositoryImpl implements HistoryTracksCollectionsRepository {

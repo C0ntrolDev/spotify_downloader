@@ -1,12 +1,12 @@
 import 'package:get_it/get_it.dart';
 import 'package:spotify_downloader/core/db/local_db.dart';
 import 'package:spotify_downloader/core/db/local_db_impl.dart';
-import 'package:spotify_downloader/features/home/data/data_sources/local_tracks_collections_data_source.dart';
-import 'package:spotify_downloader/features/home/data/repositories/history_tracks_collections_repository_impl.dart';
-import 'package:spotify_downloader/features/home/domain/repositories/history_tracks_collections_repository.dart';
-import 'package:spotify_downloader/features/home/domain/use_cases/add_tracks_collection_to_history.dart';
-import 'package:spotify_downloader/features/home/domain/use_cases/get_ordered_history.dart';
-import 'package:spotify_downloader/features/home/presentation/bloc/home_bloc.dart';
+import 'package:spotify_downloader/features/data/data_sources/local_tracks_collections_data_source.dart';
+import 'package:spotify_downloader/features/data/repositories/history_tracks_collections_repository_impl.dart';
+import 'package:spotify_downloader/features/domain/repositories/history_tracks_collections_repository.dart';
+import 'package:spotify_downloader/features/domain/use_cases/add_tracks_collection_to_history.dart';
+import 'package:spotify_downloader/features/domain/use_cases/get_ordered_history.dart';
+import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
 
 final injector = GetIt.instance;
 
