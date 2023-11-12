@@ -5,7 +5,7 @@ const backgroundGradientColor = Color.fromARGB(255, 62, 19, 192);
 const onBackgroundPrimaryColor = Color.fromARGB(255, 255, 255, 255);
 const onBackgroundSecondaryColor = Color.fromARGB(255, 153, 153, 153);
 
-const surfaceColorColor = Color.fromARGB(255, 42, 42, 42);
+const surfaceColor = Color.fromARGB(255, 42, 42, 42);
 const onSurfacePrimaryColor = Color.fromARGB(255, 255, 255, 255);
 const onSurfaceSecondaryColor = Color.fromARGB(255, 153, 153, 153);
 

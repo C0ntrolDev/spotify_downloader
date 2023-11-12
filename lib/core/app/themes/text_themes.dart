@@ -19,4 +19,4 @@ const _bodyMedium =
       fontFamily: 'OpenSans', 
       fontWeight: FontWeight.w600, 
       color: onBackgroundPrimaryColor, 
-      fontSize: 15);
+      fontSize: 14);

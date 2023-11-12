@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
-import 'package:spotify_downloader/features/home/domain/entities/playlist.dart';
 import 'package:spotify_downloader/features/home/presentation/bloc/home_bloc.dart';
+
+import '../../../shared/presentation/widgets/styled_text_field.dart';
+import '../widgets/playlist_tile.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -47,40 +49,70 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(top: 30),
-            child: Container(
-              decoration: BoxDecoration(color: searchFieldColor, borderRadius: BorderRadius.circular(5)),
-              child: Row(
+            padding: const EdgeInsets.only(top: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Скачать по ссылке', style: theme.textTheme.titleMedium),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: StyledTextField(
+                    theme: theme,
+                    height: 45,
+                    iconPadding: EdgeInsets.all(10),
+                    onSubmitted: (value) {},
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 40),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    child: TextField(
-                      style: theme.textTheme.bodyMedium?.copyWith(color: onPrimaryColor),
-                      decoration: InputDecoration(
-                          icon: Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: SvgPicture.asset(
-                              'resources/images/svg/search_icon.svg',
-                              height: 27,
-                              width: 27,
-                            ),
-                          ),
-                          border: InputBorder.none,
-                          hintText: 'Ссылка на трек, плейлист или альбом',
-                          hintMaxLines: 1,
-                          hintStyle: theme.textTheme.bodyMedium?.copyWith(color: onSearchFieldColor)),
+                  Text('Скачать любимые треки', style: theme.textTheme.titleMedium),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: PlaylistTile(
+                      theme: theme,
+                      title: 'Любимые треки',
+                      image: const AssetImage(
+                        'resources/images/another/liked_tracks.jpg',
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          )
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 40),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('История загрузок', style: theme.textTheme.titleMedium),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: PlaylistTile(
+                      theme: theme,
+                      title: 'Любимые треки',
+                      image: const AssetImage(
+                        'resources/images/another/liked_tracks.jpg',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ]),
       ),
     );
   }
-
-  void addPlaylistIHistory() {
-    _homeBloc.add(HomeAddPlaylistToHistory(
-        playlist: Playlist.withLocalImage(spotifyId: '2', name: 'H1is', openDate: DateTime.now(), image: null)));
-  }
+  
 }
