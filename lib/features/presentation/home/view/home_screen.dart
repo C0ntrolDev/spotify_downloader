@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
+import 'package:spotify_downloader/features/domain/entities/tracks_collection.dart';
 import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
 
 import '../../shared/widgets/styled_text_field.dart';
@@ -79,6 +81,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: PlaylistTile(
                       theme: theme,
                       title: 'Любимые треки',
+                      onTapped: () {
+                        _homeBloc.add(HomeAddTracksCollectionToHistory(
+                            tracksCollection: TracksCollection.withImageUrl(
+                                name: 'a track',
+                                spotifyId: '10',
+                                openDate: DateTime.now(),
+                                type: TracksCollectionType.track,
+                                imageUrl: null)));
+                      },
                       image: const AssetImage(
                         'resources/images/another/liked_tracks.jpg',
                       ),
@@ -88,25 +99,34 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 40),
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('История загрузок', style: theme.textTheme.titleMedium),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: PlaylistTile(
-                      theme: theme,
-                      title: 'Любимые треки',
-                      image: const AssetImage(
-                        'resources/images/another/liked_tracks.jpg',
-                      ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 40),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('История загрузок', style: theme.textTheme.titleMedium),
+                    Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: BlocBuilder<HomeBloc, HomeState>(
+                            bloc: _homeBloc,
+                            builder: (context, state) {
+                              if (state is HomeLoaded) {
+                                return ListView.builder(
+                                  itemCount: state.tracksCollectionsHistory?.length ?? 0,
+                                  itemBuilder: (context, index) => Text(state.tracksCollectionsHistory![index].name),
+                                );
+                              }
+
+                              return Container();
+                            },
+                          )),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -114,5 +134,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  
 }

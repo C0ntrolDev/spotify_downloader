@@ -8,10 +8,10 @@ final class HomeInitial extends HomeState {
 }
 
 final class HomeLoaded extends HomeState {
-  HomeLoaded({required this.playlistsHistory});
+  HomeLoaded({required this.tracksCollectionsHistory});
 
-  final List<TracksCollection>? playlistsHistory;
+  final List<TracksCollection>? tracksCollectionsHistory;
 
   @override
-  List<Object?> get props => [playlistsHistory];
+  List<Object?> get props => [tracksCollectionsHistory];
 }

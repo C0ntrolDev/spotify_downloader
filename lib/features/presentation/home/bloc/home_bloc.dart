@@ -9,22 +9,22 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetOrderedHistory _getOrderedHistory;
-  final AddTracksCollectionToHistory _addPlaylistToHistory;
+  final AddTracksCollectionToHistory _addTracksCollectionToHistory;
 
-  HomeBloc({required GetOrderedHistory getOrderedHistory, required AddTracksCollectionToHistory addPlaylistToHistory})
+  HomeBloc({required GetOrderedHistory getOrderedHistory, required AddTracksCollectionToHistory addTracksCollectionToHistory})
       : _getOrderedHistory = getOrderedHistory,
-        _addPlaylistToHistory = addPlaylistToHistory,
+        _addTracksCollectionToHistory = addTracksCollectionToHistory,
         super(HomeInitial()) {
 
     on<HomeLoad>((event, emit) async {
       var result = await _getOrderedHistory.call(null);
       if (result.isSuccessful) {
-        emit(HomeLoaded(playlistsHistory: result.result));
+        emit(HomeLoaded(tracksCollectionsHistory: result.result));
       }
     });
 
-    on<HomeAddPlaylistToHistory>((event, emit) async {
-      await _addPlaylistToHistory.call(event.playlist);
+    on<HomeAddTracksCollectionToHistory>((event, emit) async {
+      await _addTracksCollectionToHistory.call(event.tracksCollection);
       add(HomeLoad());
     });
   }

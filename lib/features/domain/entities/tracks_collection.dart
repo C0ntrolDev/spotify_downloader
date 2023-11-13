@@ -9,7 +9,7 @@ class TracksCollection extends Equatable {
     required this.spotifyId,
     required this.type,
     required this.name,
-    required this.openDate,
+    this.openDate,
     required this.image,
     this.imageUrl
   });
@@ -18,21 +18,21 @@ class TracksCollection extends Equatable {
     required this.spotifyId,
     required this.type,
     required this.name,
-    required this.openDate,
+    this.openDate,
     this.image,
     required this.imageUrl
   });
 
   final String spotifyId;
   final TracksCollectionType type;
+  final DateTime? openDate;
   final String name;
-  final DateTime openDate;
   final Uint8List? image;
   final String? imageUrl;
   
 
   @override
-  List<Object?> get props => [spotifyId, name, openDate, image, imageUrl];
+  List<Object?> get props => [spotifyId, name, type, image, openDate, imageUrl];
 }
 
 enum TracksCollectionType {

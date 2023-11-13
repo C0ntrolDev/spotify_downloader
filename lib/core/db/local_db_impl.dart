@@ -36,20 +36,29 @@ class LocalDbImpl extends LocalDb {
     }
     else {
       database = await openDatabase(absoluteDbPath, version: 1, onCreate: (db, version) {
-        db.execute("CREATE TABLE localTracksCollections ("
+
+        db.execute("CREATE TABLE tracksCollectionsHistory ("
           "spotifyId TEXT PRIMARY KEY,"
           "type INTEGER NOT NULL,"
           "openDate INTEGER NOT NULL,"
           "name TEXT NOT NULL,"
           "image BLOB"
           ")");
-        db.execute("CREATE TABLE localTracks ("
-          "localTracksCollection_spotifyId TEXT NOT NULL,"
+
+        db.execute("CREATE TABLE downloadTracksCollections ("
+          "spotifyId TEXT NOT NULL,"
+          "type INTEGER NOT NULL"
+          ")");
+
+        db.execute("CREATE TABLE downloadTracks ("
+          "downloadTracksCollection_spotifyId TEXT NOT NULL,"
+          "downloadTracksCollection_type INTEGER NOT NULL,"
           "spotifyId TEXT NOT NULL,"
           "isLoaded INTEGER NOT NULL,"
           "youtubeUrl TEXT,"
-          "FOREIGN KEY (localTracksCollection_spotifyId) REFERENCES localTracksCollections (spotifyId) ON DELETE CASCADE,"
-          "PRIMARY KEY (localTracksCollection_spotifyId, spotifyId)"
+          "FOREIGN KEY (downloadTracksCollection_spotifyId) REFERENCES downloadTracksCollections (spotifyId) ON DELETE CASCADE,"
+          "FOREIGN KEY (downloadTracksCollection_type) REFERENCES downloadTracksCollections (type) ON DELETE CASCADE,"
+          "PRIMARY KEY (downloadTracksCollection_spotifyId, downloadTracksCollection_type, spotifyId)"
           ")");
       },);
     }

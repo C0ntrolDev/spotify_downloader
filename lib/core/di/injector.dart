@@ -1,9 +1,9 @@
 import 'package:get_it/get_it.dart';
 import 'package:spotify_downloader/core/db/local_db.dart';
 import 'package:spotify_downloader/core/db/local_db_impl.dart';
-import 'package:spotify_downloader/features/data/data_sources/local_tracks_collections_data_source.dart';
-import 'package:spotify_downloader/features/data/repositories/history_tracks_collections_repository_impl.dart';
-import 'package:spotify_downloader/features/domain/repositories/history_tracks_collections_repository.dart';
+import 'package:spotify_downloader/features/data/tracks_collectons_history/data_source/tracks_collectons_history_data_source.dart';
+import 'package:spotify_downloader/features/data/tracks_collectons_history/repositories/tracks_collections_history_repository_impl.dart';
+import 'package:spotify_downloader/features/domain/repositories/tracks_collections_history_repository.dart';
 import 'package:spotify_downloader/features/domain/use_cases/add_tracks_collection_to_history.dart';
 import 'package:spotify_downloader/features/domain/use_cases/get_ordered_history.dart';
 import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
@@ -24,24 +24,24 @@ Future<void> _initCore() async {
 }
 
 void _provideDataSources() {
-  injector.registerSingleton<LocalTracksCollectionsDataSource>(LocalTracksCollectionsDataSource(localDb: injector.get<LocalDb>()));
+  injector.registerSingleton<TracksCollectonsHistoryDataSource>(TracksCollectonsHistoryDataSource(localDb: injector.get<LocalDb>()));
 }
 
 void _provideRepositories() {
-  injector.registerSingleton<HistoryTracksCollectionsRepository>(
-      HistoryTracksCollectionsRepositoryImpl(localTracksCollectionDataSource: injector.get<LocalTracksCollectionsDataSource>()));
+  injector.registerSingleton<TracksCollectionsHistoryRepository>(
+      TracksCollectionsHistoryRepositoryImpl(dataSource : injector.get<TracksCollectonsHistoryDataSource>()));
 }
 
 void _provideUseCases() {
   injector.registerFactory<AddTracksCollectionToHistory>(
-      () => AddTracksCollectionToHistory(historyPlaylistsRepository: injector.get<HistoryTracksCollectionsRepository>()));
+      () => AddTracksCollectionToHistory(historyPlaylistsRepository: injector.get<TracksCollectionsHistoryRepository>()));
   injector.registerFactory<GetOrderedHistory>(
-      () => GetOrderedHistory(historyPlaylistsRepository: injector.get<HistoryTracksCollectionsRepository>()));
+      () => GetOrderedHistory(historyPlaylistsRepository: injector.get<TracksCollectionsHistoryRepository>()));
 }
 
 void _provideBlocs() {
   injector.registerFactory<HomeBloc>(() => HomeBloc(
       getOrderedHistory: injector.get<GetOrderedHistory>(),
-      addPlaylistToHistory: injector.get<AddTracksCollectionToHistory>()));
+      addTracksCollectionToHistory: injector.get<AddTracksCollectionToHistory>()));
   
 }
