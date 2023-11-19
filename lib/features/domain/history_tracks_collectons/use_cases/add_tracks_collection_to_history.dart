@@ -4,18 +4,14 @@ import 'package:spotify_downloader/core/util/use_case/use_case.dart';
 import 'package:spotify_downloader/features/domain/history_tracks_collectons/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/history_tracks_collectons/repositories/tracks_collections_history_repository.dart';
 
-class GetOrderedHistory implements UseCase<Failure, List<HistoryTracksCollection>?, Null> {
-  GetOrderedHistory({required TracksCollectionsHistoryRepository historyPlaylistsRepository})
+class AddHistoryTracksCollectionToHistory implements UseCase<Failure, void, HistoryTracksCollection> {
+  AddHistoryTracksCollectionToHistory({required TracksCollectionsHistoryRepository historyPlaylistsRepository})
       : _historyPlaylistsRepository = historyPlaylistsRepository;
 
   final TracksCollectionsHistoryRepository _historyPlaylistsRepository;
 
   @override
-  Future<Result<Failure, List<HistoryTracksCollection>?>> call(Null params) async {
-    final historyPlaylistsResult = await _historyPlaylistsRepository.getTracksCollectionsHistory();
-    if (historyPlaylistsResult.isSuccessful) {
-      historyPlaylistsResult.result?.sort((e1, e2) => e2.openDate?.compareTo(e1.openDate ?? DateTime.now()) ?? 1);
-    }
-    return historyPlaylistsResult;
+  Future<Result<Failure, void>> call(HistoryTracksCollection historyTracksCollection) async {
+    return await _historyPlaylistsRepository.addTracksCollectionToHistory(historyTracksCollection);
   }
 }

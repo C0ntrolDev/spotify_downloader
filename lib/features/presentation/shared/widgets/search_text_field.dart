@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 
-class StyledTextField extends StatefulWidget {
-  const StyledTextField(
+class SearchTextField extends StatefulWidget {
+  const SearchTextField(
       {super.key,
       required this.theme,
       required this.onSubmitted,
+      this.controller,
       required this.iconPadding,
       this.height,
       this.width});
@@ -16,13 +17,30 @@ class StyledTextField extends StatefulWidget {
   final double? height;
   final double? width;
   final void Function(String value) onSubmitted;
+  final TextEditingController? controller;
 
   @override
-  State<StyledTextField> createState() => _StyledTextFieldState();
+  State<SearchTextField> createState() => _SearchTextFieldState();
 }
 
-class _StyledTextFieldState extends State<StyledTextField> {
+class _SearchTextFieldState extends State<SearchTextField> {
+  final ScrollController scrollController = ScrollController();
+
   String _textFieldValue = '';
+
+  late final FocusNode textInputFocusNode = FocusNode()
+    ..addListener(() {
+      if (!textInputFocusNode.hasFocus) {
+        scrollController.jumpTo(0);
+      }
+    });
+
+  @override
+  void dispose() {
+    textInputFocusNode.removeListener(() {});
+    scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +60,9 @@ class _StyledTextFieldState extends State<StyledTextField> {
           ),
           Expanded(
             child: TextField(
+              controller: widget.controller,
+              focusNode: textInputFocusNode,
+              scrollController: scrollController,
               onSubmitted: widget.onSubmitted,
               onChanged: (value) => _textFieldValue = value,
               keyboardType: TextInputType.visiblePassword,

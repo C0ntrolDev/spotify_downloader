@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
-class HistoryTracksCollection {
+class HistoryTracksCollectionDTO {
 
-  HistoryTracksCollection({
+  HistoryTracksCollectionDTO({
     required this.spotifyId,
     required this.name,
     required this.type,

@@ -3,10 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
-import 'package:spotify_downloader/features/domain/entities/tracks_collection.dart';
 import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
-
-import '../../shared/widgets/styled_text_field.dart';
+import 'package:spotify_downloader/features/presentation/shared/widgets/search_text_field.dart';
 import '../widgets/playlist_tile.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -58,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text('Скачать по ссылке', style: theme.textTheme.titleMedium),
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
-                  child: StyledTextField(
+                  child: SearchTextField(
                     theme: theme,
                     height: 45,
                     iconPadding: EdgeInsets.all(10),
@@ -82,13 +80,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       theme: theme,
                       title: 'Любимые треки',
                       onTapped: () {
-                        _homeBloc.add(HomeAddTracksCollectionToHistory(
-                            tracksCollection: TracksCollection.withImageUrl(
-                                name: 'a track',
-                                spotifyId: '10',
-                                openDate: DateTime.now(),
-                                type: TracksCollectionType.track,
-                                imageUrl: null)));
                       },
                       image: const AssetImage(
                         'resources/images/another/liked_tracks.jpg',
