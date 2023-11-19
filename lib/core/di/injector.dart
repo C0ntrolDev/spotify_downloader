@@ -6,6 +6,7 @@ import 'package:spotify_downloader/features/data/history_tracks_collectons/repos
 import 'package:spotify_downloader/features/domain/history_tracks_collectons/repositories/tracks_collections_history_repository.dart';
 import 'package:spotify_downloader/features/domain/history_tracks_collectons/use_cases/add_tracks_collection_to_history.dart';
 import 'package:spotify_downloader/features/domain/history_tracks_collectons/use_cases/get_ordered_history.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/bloc/download_tracks_collection_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
 
 final injector = GetIt.instance;
@@ -43,5 +44,6 @@ void _provideBlocs() {
   injector.registerFactory<HomeBloc>(() => HomeBloc(
       getOrderedHistory: injector.get<GetOrderedHistory>(),
       addTracksCollectionToHistory: injector.get<AddHistoryTracksCollectionToHistory>()));
+  injector.registerFactory<DownloadTracksCollectionBloc>(() => DownloadTracksCollectionBloc());
   
 }

@@ -10,21 +10,24 @@ sealed class DownloadTracksCollectionBlocState extends Equatable {
 final class DownloadTracksCollectionInitial extends DownloadTracksCollectionBlocState {}
 
 final class DownloadTracksCollectionPartLoaded extends DownloadTracksCollectionBlocState {
-  const DownloadTracksCollectionPartLoaded({required this.tracksCollection});
+  const DownloadTracksCollectionPartLoaded(this.tracks, {required this.tracksCollection});
 
   final TracksCollection tracksCollection;
+  final List<Track> tracks;
 
   @override
-  List<Object> get props => [tracksCollection];
+  List<Object> get props => [tracksCollection, tracks];
+
 }
 
 final class DownloadTracksCollectionAllLoaded extends DownloadTracksCollectionBlocState {
-  const DownloadTracksCollectionAllLoaded({required this.tracksCollection});
+  const DownloadTracksCollectionAllLoaded(this.tracks, {required this.tracksCollection});
 
   final TracksCollection tracksCollection;
+  final List<Track> tracks;
 
   @override
-  List<Object> get props => [tracksCollection];
+  List<Object> get props => [tracksCollection, tracks];
 }
 
 final class DownloadTracksCollectionNetworkFailure extends DownloadTracksCollectionBlocState {

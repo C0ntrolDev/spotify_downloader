@@ -1,8 +1,10 @@
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
+import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/search_text_field.dart';
@@ -18,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final HomeBloc _homeBloc = injector.get<HomeBloc>();
+  final TextEditingController searchTextFieldController = TextEditingController();
 
   _HomeScreenState() {
     _homeBloc.add(HomeLoad());
@@ -62,7 +65,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     theme: theme,
                     height: 45,
                     iconPadding: const EdgeInsets.all(10),
-                    onSubmitted: (value) {},
+                    controller: searchTextFieldController,
+                    onSubmitted: (value) {
+                      if (isSearchRequestValid(value)) {
+                        AutoRouter.of(context).push(DownloadTracksCollectionRouteWithUrl(url: value));
+                      } else if (value != '') {
+                        searchTextFieldController.clear();
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                            'Неправильная ссылка',
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                          duration: const Duration(seconds: 1),
+                        ));
+                      }
+                    },
                   ),
                 ),
               ],
@@ -81,8 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: PlaylistTile(
                       theme: theme,
                       title: 'Любимые треки',
-                      onTapped: () {
-                      },
+                      onTapped: () {},
                       image: const AssetImage(
                         'resources/images/another/liked_tracks.jpg',
                       ),
@@ -126,5 +143,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ]),
       ),
     );
+  }
+
+  bool isSearchRequestValid(String request) {
+    return request.contains('https://open.spotify.com');
   }
 }

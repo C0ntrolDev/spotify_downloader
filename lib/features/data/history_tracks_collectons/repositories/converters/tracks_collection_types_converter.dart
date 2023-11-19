@@ -2,7 +2,7 @@ import 'package:spotify_downloader/core/util/converter/value_converter.dart';
 import 'package:spotify_downloader/features/data/history_tracks_collectons/models/history_tracks_collection.dart';
 import '../../../../domain/shared/entities/tracks_collection_type.dart';
 
-class TracksCollectionTypesConverter implements ValueConverter<TracksCollectionType, HistoryTracksCollectionType> {
+class TracksCollectionTypesConverter implements ValueConverter<HistoryTracksCollectionType, TracksCollectionType> {
   @override
   HistoryTracksCollectionType convert(TracksCollectionType value) {
     switch (value) {
