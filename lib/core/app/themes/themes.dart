@@ -15,7 +15,7 @@ final mainTheme = ThemeData(
   snackBarTheme: const SnackBarThemeData(
     elevation: 0,
     backgroundColor: dialogColor,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
     behavior: SnackBarBehavior.floating,
     width: 200,
   ),
@@ -25,7 +25,8 @@ final mainTheme = ThemeData(
           backgroundColor: MaterialStatePropertyAll(primaryColor),
           textStyle: MaterialStatePropertyAll(TextStyle()),
           foregroundColor: MaterialStatePropertyAll(onPrimaryColor))),
-  textTheme: const TextTheme(titleLarge: _titleLarge, titleMedium: _titleMedium, bodyMedium: _bodyMedium),
+  textTheme: const TextTheme(
+      titleLarge: _titleLarge, titleMedium: _titleMedium, bodyMedium: _bodyMedium, labelMedium: _labelMedium),
   textSelectionTheme: const TextSelectionThemeData(
     cursorColor: primaryColor,
     selectionHandleColor: primaryColor,

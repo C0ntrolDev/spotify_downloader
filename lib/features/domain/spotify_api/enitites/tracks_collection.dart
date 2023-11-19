@@ -7,15 +7,15 @@ class TracksCollection extends Equatable {
     required this.spotifyId, 
     required this.type, 
     required this.name,
-    this.smallImage, 
+    this.smallImageUrl, 
     this.bigImageUrl});
 
   final String spotifyId;
   final TracksCollectionType type;
   final String name;
-  final String? smallImage;
+  final String? smallImageUrl;
   final String? bigImageUrl;
 
   @override
-  List<Object?> get props => [spotifyId, type, name, smallImage, bigImageUrl];
+  List<Object?> get props => [spotifyId, type, name, smallImageUrl, bigImageUrl];
 }

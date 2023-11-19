@@ -24,9 +24,8 @@ class SearchTextField extends StatefulWidget {
 }
 
 class _SearchTextFieldState extends State<SearchTextField> {
+  late final TextEditingController textEditingController;
   final ScrollController scrollController = ScrollController();
-
-  String _textFieldValue = '';
 
   late final FocusNode textInputFocusNode = FocusNode()
     ..addListener(() {
@@ -43,31 +42,37 @@ class _SearchTextFieldState extends State<SearchTextField> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    textEditingController = widget.controller ?? TextEditingController();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       height: widget.height,
       width: widget.width,
       decoration: BoxDecoration(color: searchFieldColor, borderRadius: BorderRadius.circular(5)),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           IconButton(
             padding: widget.iconPadding,
             constraints: const BoxConstraints(),
-            onPressed: () => widget.onSubmitted(_textFieldValue),
+            onPressed: () => widget.onSubmitted(textEditingController.text),
             icon: SvgPicture.asset(
               'resources/images/svg/search_icon.svg',
             ),
           ),
           Expanded(
             child: TextField(
-              controller: widget.controller,
+              controller: textEditingController,
               focusNode: textInputFocusNode,
               scrollController: scrollController,
               onSubmitted: widget.onSubmitted,
-              onChanged: (value) => _textFieldValue = value,
-              keyboardType: TextInputType.visiblePassword,
               style: widget.theme.textTheme.bodyMedium?.copyWith(color: onPrimaryColor),
-              decoration: InputDecoration.collapsed(
+              decoration: InputDecoration(
+                  border: InputBorder.none,
                   hintText: 'Ссылка на трек, плейлист или альбом',
                   hintStyle: widget.theme.textTheme.bodyMedium?.copyWith(color: onSearchFieldColor)),
             ),

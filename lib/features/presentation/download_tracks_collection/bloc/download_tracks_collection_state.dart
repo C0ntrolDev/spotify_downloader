@@ -36,11 +36,6 @@ final class DownloadTracksCollectionNetworkFailure extends DownloadTracksCollect
   List<Object> get props => [];
 }
 
-final class DownloadTracksCollectionNotFoundFailure extends DownloadTracksCollectionBlocState {
-  @override
-  List<Object> get props => [];
-}
-
 final class DownloadTracksCollectionFailure extends DownloadTracksCollectionBlocState {
   const DownloadTracksCollectionFailure({required this.failure});
 

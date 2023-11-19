@@ -1,11 +1,16 @@
 import 'package:get_it/get_it.dart';
+import 'package:spotify_downloader/core/consts/spotify_client.dart';
 import 'package:spotify_downloader/core/db/local_db.dart';
 import 'package:spotify_downloader/core/db/local_db_impl.dart';
 import 'package:spotify_downloader/features/data/history_tracks_collectons/data_source/tracks_collectons_history_data_source.dart';
 import 'package:spotify_downloader/features/data/history_tracks_collectons/repositories/tracks_collections_history_repository_impl.dart';
+import 'package:spotify_downloader/features/data/spotify_api/data_source/tracks_collections_data_source.dart';
+import 'package:spotify_downloader/features/data/spotify_api/repositories/tracks_collections_repository_impl.dart';
 import 'package:spotify_downloader/features/domain/history_tracks_collectons/repositories/tracks_collections_history_repository.dart';
 import 'package:spotify_downloader/features/domain/history_tracks_collectons/use_cases/add_tracks_collection_to_history.dart';
 import 'package:spotify_downloader/features/domain/history_tracks_collectons/use_cases/get_ordered_history.dart';
+import 'package:spotify_downloader/features/domain/spotify_api/repositories/tracks_collections_repository.dart';
+import 'package:spotify_downloader/features/domain/spotify_api/use_cases/get_tracks_collection_by_url.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/bloc/download_tracks_collection_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
 
@@ -25,25 +30,32 @@ Future<void> _initCore() async {
 }
 
 void _provideDataSources() {
-  injector.registerSingleton<TracksCollectonsHistoryDataSource>(TracksCollectonsHistoryDataSource(localDb: injector.get<LocalDb>()));
+  injector.registerSingleton<TracksCollectonsHistoryDataSource>(
+      TracksCollectonsHistoryDataSource(localDb: injector.get<LocalDb>()));
+  injector.registerSingleton<TracksCollectionsDataSource>(
+      TracksCollectionsDataSource(clientId: clientId, clientSecret: clientSecret));
 }
 
 void _provideRepositories() {
   injector.registerSingleton<TracksCollectionsHistoryRepository>(
-      TracksCollectionsHistoryRepositoryImpl(dataSource : injector.get<TracksCollectonsHistoryDataSource>()));
+      TracksCollectionsHistoryRepositoryImpl(dataSource: injector.get<TracksCollectonsHistoryDataSource>()));
+  injector.registerSingleton<TracksCollectionsRepository>(
+      TracksCollectionsRepositoryImpl(dataSource: injector.get<TracksCollectionsDataSource>()));
 }
 
 void _provideUseCases() {
-  injector.registerFactory<AddHistoryTracksCollectionToHistory>(
-      () => AddHistoryTracksCollectionToHistory(historyPlaylistsRepository: injector.get<TracksCollectionsHistoryRepository>()));
+  injector.registerFactory<AddHistoryTracksCollectionToHistory>(() => AddHistoryTracksCollectionToHistory(
+      historyPlaylistsRepository: injector.get<TracksCollectionsHistoryRepository>()));
   injector.registerFactory<GetOrderedHistory>(
       () => GetOrderedHistory(historyPlaylistsRepository: injector.get<TracksCollectionsHistoryRepository>()));
+  injector.registerFactory<GetTracksCollectionByUrl>(
+      () => GetTracksCollectionByUrl(repository: injector.get<TracksCollectionsRepository>()));
 }
 
 void _provideBlocs() {
   injector.registerFactory<HomeBloc>(() => HomeBloc(
       getOrderedHistory: injector.get<GetOrderedHistory>(),
       addTracksCollectionToHistory: injector.get<AddHistoryTracksCollectionToHistory>()));
-  injector.registerFactory<DownloadTracksCollectionBloc>(() => DownloadTracksCollectionBloc());
-  
+  injector.registerFactory<DownloadTracksCollectionBloc>(
+      () => DownloadTracksCollectionBloc(getTracksCollectionByUrl: injector.get<GetTracksCollectionByUrl>()));
 }

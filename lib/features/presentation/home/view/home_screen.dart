@@ -1,4 +1,3 @@
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,9 +65,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 45,
                     iconPadding: const EdgeInsets.all(10),
                     controller: searchTextFieldController,
-                    onSubmitted: (value) {
+                    onSubmitted: (value) async {
                       if (isSearchRequestValid(value)) {
-                        AutoRouter.of(context).push(DownloadTracksCollectionRouteWithUrl(url: value));
+                        await AutoRouter.of(context).push(DownloadTracksCollectionRouteWithUrl(url: value));
+                        searchTextFieldController.clear();
                       } else if (value != '') {
                         searchTextFieldController.clear();
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             textAlign: TextAlign.center,
                             style: theme.textTheme.bodyMedium,
                           ),
-                          duration: const Duration(seconds: 1),
+                          duration: const Duration(seconds: 2),
                         ));
                       }
                     },
@@ -125,9 +125,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             bloc: _homeBloc,
                             builder: (context, state) {
                               if (state is HomeLoaded) {
-                                return ListView.builder(
-                                  itemCount: state.tracksCollectionsHistory?.length ?? 0,
-                                  itemBuilder: (context, index) => Text(state.tracksCollectionsHistory![index].name),
+                                return NotificationListener<OverscrollIndicatorNotification>(
+                                  onNotification: (OverscrollIndicatorNotification overScroll) {
+                                    overScroll.disallowIndicator();
+                                    return false;
+                                  },
+                                  child: ListView.builder(
+                                    itemCount: state.tracksCollectionsHistory?.length ?? 0,
+                                    itemBuilder: (context, index) => Text(state.tracksCollectionsHistory![index].name),
+                                  ),
                                 );
                               }
 

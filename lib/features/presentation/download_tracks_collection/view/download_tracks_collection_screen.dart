@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
+import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/features/domain/history_tracks_collectons/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/bloc/download_tracks_collection_bloc.dart';
 
@@ -45,24 +47,70 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 10),
-        child: Stack(children: [
-          Container(),
-          IconButton(
-            hoverColor: Colors.red,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-              onPressed: () {
-                AutoRouter.of(context).pop();
+      body: BlocListener<DownloadTracksCollectionBloc, DownloadTracksCollectionBlocState>(
+        bloc: _downloadTrackCollectionBloc,
+        listenWhen: (previous, current) => current is DownloadTracksCollectionFailure,
+        listener: (context, state) {
+          if (state is! DownloadTracksCollectionFailure) return;
+
+          if (state.failure is NotFoundFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+              content: Text(
+                'По данному url не было ничего найдено',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium,
+              ),
+              duration: const Duration(seconds: 3),
+            ));
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+              content: Text(
+                state.failure.message.toString(),
+                textAlign: TextAlign.center,
+                style: theme.textTheme.labelMedium,
+              ),
+              duration: const Duration(seconds: 3),
+            ));
+          }
+          AutoRouter.of(context).pop();
+        },
+        child: Padding(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 10),
+          child: Stack(children: [
+            BlocBuilder<DownloadTracksCollectionBloc, DownloadTracksCollectionBlocState>(
+              bloc: _downloadTrackCollectionBloc,
+              builder: (context, state) {
+                if (state is DownloadTracksCollectionNetworkFailure) {
+                  return const Text('С соединением что-то не так');
+                }
+                if (state is DownloadTracksCollectionAllLoaded) {
+                  return Column(children: [
+                    Text(state.tracksCollection.name),
+                    Text(state.tracksCollection.spotifyId),
+                  ]);
+                }
+                return const CircularProgressIndicator();
               },
-              icon: SvgPicture.asset(
-                'resources/images/svg/back_icon.svg',
-                height: 35,
-                width: 35,
-              ))
-        ]),
+            ),
+            IconButton(
+                hoverColor: Colors.red,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onPressed: () {
+                  AutoRouter.of(context).pop();
+                },
+                icon: SvgPicture.asset(
+                  'resources/images/svg/back_icon.svg',
+                  height: 35,
+                  width: 35,
+                ))
+          ]),
+        ),
       ),
     );
   }
