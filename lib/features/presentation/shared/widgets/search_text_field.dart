@@ -52,7 +52,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
         children: [
           IconButton(
             padding: widget.iconPadding,
-            constraints: BoxConstraints(),
+            constraints: const BoxConstraints(),
             onPressed: () => widget.onSubmitted(_textFieldValue),
             icon: SvgPicture.asset(
               'resources/images/svg/search_icon.svg',

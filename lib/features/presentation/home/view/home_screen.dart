@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,6 +8,7 @@ import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dar
 import 'package:spotify_downloader/features/presentation/shared/widgets/search_text_field.dart';
 import '../widgets/playlist_tile.dart';
 
+@RoutePage()
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -59,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: SearchTextField(
                     theme: theme,
                     height: 45,
-                    iconPadding: EdgeInsets.all(10),
+                    iconPadding: const EdgeInsets.all(10),
                     onSubmitted: (value) {},
                   ),
                 ),

@@ -1,21 +1,27 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/domain/history_tracks_collectons/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/bloc/download_tracks_collection_bloc.dart';
 
-class DownloadTracksCollectionScreen extends StatefulWidget {
-  const DownloadTracksCollectionScreen.withTracksCollectionUrl({required String this.url, super.key})
-      : historyTracksCollection = null;
-  const DownloadTracksCollectionScreen.withHistoryTracksCollection(
-      {required HistoryTracksCollection this.historyTracksCollection, super.key})
-      : url = null;
-
+abstract class DownloadTracksCollectionScreen extends StatefulWidget {
   final String? url;
   final HistoryTracksCollection? historyTracksCollection;
 
+  const DownloadTracksCollectionScreen({super.key, this.url, this.historyTracksCollection});
+
   @override
-  // ignore: no_logic_in_create_state
   State<DownloadTracksCollectionScreen> createState() => _DownloadTracksCollectionScreenState();
+}
+
+@RoutePage()
+class DownloadTracksCollectionScreenWithUrl extends DownloadTracksCollectionScreen {
+  const DownloadTracksCollectionScreenWithUrl({super.key, required String super.url});
+}
+
+@RoutePage()
+class DownloadTracksCollectionScreenWithHistoryTracksCollection extends DownloadTracksCollectionScreen {
+  const DownloadTracksCollectionScreenWithHistoryTracksCollection({super.key, required HistoryTracksCollection super.historyTracksCollection});
 }
 
 class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectionScreen> {

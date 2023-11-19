@@ -18,7 +18,7 @@ class TracksCollectionsHistoryRepositoryImpl implements TracksCollectionsHistory
     try {
       await _dataSource
           .addHistoryTracksCollectionToHistory(tracksCollectionsConverter.convert(tracksCollection));
-      return const Result<Failure, void>.isSuccessful(Void);
+      return const Result<Failure, void>.isSuccessful(Void );
     } catch (e) {
       return Result.notSuccessful(Failure(message: e));
     }
