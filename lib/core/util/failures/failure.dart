@@ -1,7 +1,11 @@
 class Failure {
-  Failure({
-    this.message
-  });
-  
-  String? message;
+  Failure({required this.message});
+
+  Object message;
+
+  @override
+  String toString() {
+    final type = runtimeType;
+    return '$type:  $message';
+  }
 }

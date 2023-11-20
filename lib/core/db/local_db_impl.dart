@@ -11,7 +11,13 @@ class LocalDbImpl extends LocalDb {
 
   @override
   Future<void> cleanDb() async {
+    final localDirectoryPath = (await getApplicationDocumentsDirectory()).path;
+    final absoluteDbPath = '$localDirectoryPath$dbPath';
+
+    final dbFile = File(absoluteDbPath);
     
+    await dbFile.delete();
+    await initDb();
   }
 
   @override
@@ -29,11 +35,35 @@ class LocalDbImpl extends LocalDb {
       database = await openDatabase(absoluteDbPath);
     }
     else {
-      database = await openDatabase(absoluteDbPath, onCreate: (db, version) {
-        db.execute();
-        db.execute();
+      database = await openDatabase(absoluteDbPath, version: 1, onCreate: (db, version) {
+
+        db.execute("CREATE TABLE tracksCollectionsHistory ("
+          "spotifyId TEXT PRIMARY KEY,"
+          "type INTEGER NOT NULL,"
+          "openDate INTEGER NOT NULL,"
+          "name TEXT NOT NULL,"
+          "image BLOB"
+          ")");
+
+        db.execute("CREATE TABLE downloadTracksCollections ("
+          "spotifyId TEXT NOT NULL,"
+          "type INTEGER NOT NULL"
+          ")");
+
+        db.execute("CREATE TABLE downloadTracks ("
+          "downloadTracksCollection_spotifyId TEXT NOT NULL,"
+          "downloadTracksCollection_type INTEGER NOT NULL,"
+          "spotifyId TEXT NOT NULL,"
+          "isLoaded INTEGER NOT NULL,"
+          "youtubeUrl TEXT,"
+          "FOREIGN KEY (downloadTracksCollection_spotifyId) REFERENCES downloadTracksCollections (spotifyId) ON DELETE CASCADE,"
+          "FOREIGN KEY (downloadTracksCollection_type) REFERENCES downloadTracksCollections (type) ON DELETE CASCADE,"
+          "PRIMARY KEY (downloadTracksCollection_spotifyId, downloadTracksCollection_type, spotifyId)"
+          ")");
       },);
     }
+
+    _dataBase = database;
   }
 
 }
