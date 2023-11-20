@@ -1,4 +1,4 @@
-import 'package:spotify_downloader/features/domain/entities/track.dart';
+import 'package:spotify_downloader/features/domain/spotify_api/enitites/track.dart';
 import 'package:spotify_downloader/features/domain/spotify_api/enitites/tracks_collection.dart';
 
 class GetTracksGraduallyArgs {

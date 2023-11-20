@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_void_to_null
+
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/core/util/use_case/use_case.dart';

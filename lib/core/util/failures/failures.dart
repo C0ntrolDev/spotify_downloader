@@ -7,3 +7,7 @@ class NotFoundFailure extends Failure {
 class NetworkFailure extends Failure {
   NetworkFailure({super.message = 'network failure'});
 }
+
+class ConverterFailure extends Failure {
+  ConverterFailure({super.message = 'converter failure'});
+}

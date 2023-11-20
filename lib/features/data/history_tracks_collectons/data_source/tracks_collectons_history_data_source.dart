@@ -1,5 +1,5 @@
 import 'package:spotify_downloader/core/db/local_db.dart';
-import 'package:spotify_downloader/features/data/history_tracks_collectons/models/history_tracks_collection.dart';
+import 'package:spotify_downloader/features/data/history_tracks_collectons/models/history_tracks_collection_dto.dart';
 import 'package:sqflite/sqflite.dart';
 
 class TracksCollectonsHistoryDataSource {

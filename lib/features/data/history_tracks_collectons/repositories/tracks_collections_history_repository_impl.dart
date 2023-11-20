@@ -1,3 +1,5 @@
+// ignore_for_file: void_checks
+
 import 'dart:ffi';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
