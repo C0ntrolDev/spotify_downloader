@@ -90,7 +90,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                 }
                 if (state is DownloadTracksCollectionAllLoaded) {
                   return Column(children: [
-                    Image.network(state.tracksCollection.smallImageUrl ?? '', width: 300, height: 300,),
+                    Image.network(state.tracksCollection.bigImageUrl ?? '', width: 300, height: 300,),
                     Text(state.tracksCollection.smallImageUrl ?? ''),
                     Text(state.tracksCollection.name),
                     Text(state.tracksCollection.spotifyId),

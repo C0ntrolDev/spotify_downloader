@@ -5,23 +5,23 @@ import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection_type.dart';
 import 'package:spotify_downloader/features/domain/spotify_api/enitites/tracks_collection.dart';
 
-class PlaylistDtoToTracksCollectionConverter implements ResultValueConverter<TracksCollection, Playlist> {
+class AlbumDtoToTracksCollectionConverter implements ResultValueConverter<TracksCollection, Album> {
   @override
-  Result<ConverterFailure, TracksCollection> convert(Playlist playlist) {
+  Result<ConverterFailure, TracksCollection> convert(Album album) {
     try {
       return Result.isSuccessful(TracksCollection(
-        spotifyId: playlist.id!,
-        type: TracksCollectionType.playlist,
-        name: playlist.name!,
-        smallImageUrl: playlist.images?.last.url,
-        bigImageUrl: playlist.images?.first.url));
+        spotifyId: album.id!,
+        type: TracksCollectionType.album,
+        name: album.name!,
+        smallImageUrl: album.images?.last.url,
+        bigImageUrl: album.images?.first.url));
     } catch (e) {
       return Result.notSuccessful(ConverterFailure());
     }
   }
 
   @override
-  Result<ConverterFailure, Playlist> convertBack(TracksCollection value) {
+  Result<ConverterFailure, Album> convertBack(TracksCollection value) {
     throw UnimplementedError();
   }
 }

@@ -22,8 +22,12 @@ class TracksCollectionsDataSource {
     });
   }
 
-  Future<Result<Failure, Playlist>> getAlbumBySpotifyId(String spotifyId) {
-    return getPlaylistBySpotifyId(spotifyId);
+  Future<Result<Failure, Album>> getAlbumBySpotifyId(String spotifyId) async {
+    return await _handleExceptions<Album>(() async {
+      final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
+      final album = await spotify.albums.get(spotifyId);
+      return Result.isSuccessful(album);
+    });
   }
 
   Future<Result<Failure, Track>> getTrackBySpotifyId(String spotifyId) async {

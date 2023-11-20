@@ -13,8 +13,8 @@ class TrackDtoToTracksCollectionConverter implements ResultValueConverter<Tracks
         spotifyId: track.id!,
         type: TracksCollectionType.track,
         name: track.name!,
-        smallImageUrl: track.album?.images?.first.url,
-        bigImageUrl: track.album?.images?.last.url));
+        smallImageUrl: track.album?.images?.last.url,
+        bigImageUrl: track.album?.images?.first.url));
     } catch (e) {
       return Result.notSuccessful(ConverterFailure());
     }

@@ -3,6 +3,7 @@ import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/data/spotify_api/data_source/tracks_collections_data_source.dart';
+import 'package:spotify_downloader/features/data/spotify_api/repositories/converters/album_dto_to_tracks_collection_converter.dart';
 import 'package:spotify_downloader/features/data/spotify_api/repositories/converters/playlist_dto_to_tracks_collection_converter.dart';
 import 'package:spotify_downloader/features/data/spotify_api/repositories/converters/track_dto_to_tracks_collection_converter.dart';
 import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection_type.dart';
@@ -18,24 +19,28 @@ class TracksCollectionsRepositoryImpl implements TracksCollectionsRepository {
       PlaylistDtoToTracksCollectionConverter();
   final TrackDtoToTracksCollectionConverter _trackDtoToTracksCollectionConverter =
       TrackDtoToTracksCollectionConverter();
+  final AlbumDtoToTracksCollectionConverter _albumDtoToTracksCollectionConverter =
+      AlbumDtoToTracksCollectionConverter();
 
   @override
   Future<Result<Failure, TracksCollection>> getTracksCollectionByTypeAndSpotifyId(
       TracksCollectionType type, String spotifyId) async {
     switch (type) {
       case TracksCollectionType.playlist:
-        return _getTracksCollectionFromPlaylist(spotifyId);
-      case TracksCollectionType.album:
-        final resultAlbum = await _getTracksCollectionFromPlaylist(spotifyId);
-        if (resultAlbum.isSuccessful) {
-          return Result.isSuccessful(TracksCollection(
-              spotifyId: resultAlbum.result!.spotifyId,
-              type: TracksCollectionType.album,
-              name: resultAlbum.result!.name,
-              smallImageUrl: resultAlbum.result!.smallImageUrl,
-              bigImageUrl: resultAlbum.result!.bigImageUrl));
+        final playlistResult = await _dataSource.getPlaylistBySpotifyId(spotifyId);
+        if (playlistResult.isSuccessful) {
+          final convertedPlaylistResult = _playlistDtoToTracksCollectionConverter.convert(playlistResult.result!);
+          return convertedPlaylistResult;
         } else {
-          return Result.notSuccessful(resultAlbum.failure);
+          return Result.notSuccessful(playlistResult.failure);
+        }
+      case TracksCollectionType.album:
+        final albumResult = await _dataSource.getAlbumBySpotifyId(spotifyId);
+        if (albumResult.isSuccessful) {
+          final convertedAlbumResult = _albumDtoToTracksCollectionConverter.convert(albumResult.result!);
+          return convertedAlbumResult;
+        } else {
+          return Result.notSuccessful(albumResult.failure);
         }
       case TracksCollectionType.track:
         final trackResult = await _dataSource.getTrackBySpotifyId(spotifyId);
@@ -48,16 +53,6 @@ class TracksCollectionsRepositoryImpl implements TracksCollectionsRepository {
       default:
         return Result.notSuccessful(
             NotFoundFailure(message: 'it is impossible to get information about ${type.name}'));
-    }
-  }
-
-  Future<Result<Failure, TracksCollection>> _getTracksCollectionFromPlaylist(String spotifyId) async {
-    final playlistResult = await _dataSource.getPlaylistBySpotifyId(spotifyId);
-    if (playlistResult.isSuccessful) {
-      final convertedPlaylistResult = _playlistDtoToTracksCollectionConverter.convert(playlistResult.result!);
-      return convertedPlaylistResult;
-    } else {
-      return Result.notSuccessful(playlistResult.failure);
     }
   }
 
