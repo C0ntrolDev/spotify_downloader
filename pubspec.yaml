@@ -22,6 +22,7 @@ dependencies:
   equatable: ^2.0.5
   flutter_svg: ^2.0.5
   auto_route: ^7.8.4
+  palette_generator: ^0.3.3+3
 
 dev_dependencies:
   flutter_test:
@@ -64,7 +65,7 @@ flutter:
           weight: 600
         - asset: resources/fonts/OpenSans-Bold.ttf
           weight: 700
-        - asset: resources/fonts/OpenSans-Bold.ttf
+        - asset: resources/fonts/OpenSans-ExtraBold.ttf
           weight: 800
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

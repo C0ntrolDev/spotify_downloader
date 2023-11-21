@@ -15,7 +15,7 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
 
   DownloadTracksCollectionBloc({required GetTracksCollectionByUrl getTracksCollectionByUrl})
       : _getTracksCollectionByUrl = getTracksCollectionByUrl,
-        super(DownloadTracksCollectionInitial()) {
+        super(DownloadTracksCollectionLoading()) {
     on<DownloadTracksCollectionLoadWithTracksCollecitonUrl>((event, emit) async {
       final result = await _getTracksCollectionByUrl.call(event.url);
       if (result.isSuccessful) {

@@ -26,7 +26,11 @@ final mainTheme = ThemeData(
           textStyle: MaterialStatePropertyAll(TextStyle()),
           foregroundColor: MaterialStatePropertyAll(onPrimaryColor))),
   textTheme: const TextTheme(
-      titleLarge: _titleLarge, titleMedium: _titleMedium, bodyMedium: _bodyMedium, labelMedium: _labelMedium),
+      titleLarge: _titleLarge,
+      titleMedium: _titleMedium,
+      titleSmall: _titleSmall,
+      bodyMedium: _bodyMedium,
+      labelMedium: _labelMedium),
   textSelectionTheme: const TextSelectionThemeData(
     cursorColor: primaryColor,
     selectionHandleColor: primaryColor,

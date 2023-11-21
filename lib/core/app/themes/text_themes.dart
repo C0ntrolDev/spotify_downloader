@@ -14,6 +14,13 @@ const _titleMedium =
       color: onBackgroundPrimaryColor, 
       fontSize: 20);
 
+const _titleSmall =
+    TextStyle(
+      fontFamily: 'OpenSans', 
+      fontWeight: FontWeight.w700, 
+      color: onBackgroundPrimaryColor, 
+      fontSize: 16);
+
 const _bodyMedium =
     TextStyle(
       fontFamily: 'OpenSans', 
