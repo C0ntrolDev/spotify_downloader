@@ -11,18 +11,24 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
-  oauth2_client: ^2.4.2
-  http: ^0.13.6
-  spotify: ^0.11.0
+  cupertino_icons: ^1.0.6
+  oauth2_client: ^3.2.2
+  http: ^1.1.0
+  spotify: ^0.12.0
   path_provider: ^2.1.1
   get_it: ^7.6.4
   sqflite: ^2.3.0
   flutter_bloc: ^8.1.3
   equatable: ^2.0.5
-  flutter_svg: ^2.0.5
+  flutter_svg: ^2.0.9
   auto_route: ^7.8.4
   palette_generator: ^0.3.3+3
+  quiver: ^3.2.1
+  ffmpeg_kit_flutter_full: ^6.0.3
+  youtube_explode_dart: ^2.0.2
+  metadata_god: ^0.5.2
+  path: ^1.8.3
+  cached_network_image: ^3.3.0
 
 dev_dependencies:
   flutter_test:
@@ -42,6 +48,7 @@ flutter:
     - resources/images/svg/search_icon.svg
     - resources/images/svg/back_icon.svg
     - resources/images/another/liked_tracks.jpg
+    - resources/images/another/loading_track_collection_image.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

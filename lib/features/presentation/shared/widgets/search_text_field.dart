@@ -3,19 +3,28 @@ import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 
 class SearchTextField extends StatefulWidget {
-  const SearchTextField(
-      {super.key,
-      required this.theme,
-      required this.onSubmitted,
-      this.controller,
-      required this.iconPadding,
-      this.height,
-      this.width});
+  const SearchTextField({
+    super.key,
+    required this.theme,
+    required this.onSubmitted,
+    this.hintText = '',
+    this.controller,
+    this.iconPadding = const EdgeInsets.all(0),
+    this.height,
+    this.width,
+    this.cornerRadius = 5,
+    this.textStyle,
+    this.hintStyle,
+  });
 
   final ThemeData theme;
   final EdgeInsets iconPadding;
   final double? height;
   final double? width;
+  final double cornerRadius;
+  final TextStyle? textStyle;
+  final TextStyle? hintStyle;
+  final String hintText;
   final void Function(String value) onSubmitted;
   final TextEditingController? controller;
 
@@ -52,7 +61,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
     return Container(
       height: widget.height,
       width: widget.width,
-      decoration: BoxDecoration(color: searchFieldColor, borderRadius: BorderRadius.circular(5)),
+      decoration: BoxDecoration(color: searchFieldColor, borderRadius: BorderRadius.circular(widget.cornerRadius)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -70,11 +79,16 @@ class _SearchTextFieldState extends State<SearchTextField> {
               focusNode: textInputFocusNode,
               scrollController: scrollController,
               onSubmitted: widget.onSubmitted,
-              style: widget.theme.textTheme.bodyMedium?.copyWith(color: onPrimaryColor),
+              style: widget.textStyle ?? widget.theme.textTheme.bodyMedium?.copyWith(color: onPrimaryColor),
               decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Ссылка на трек, плейлист или альбом',
-                  hintStyle: widget.theme.textTheme.bodyMedium?.copyWith(color: onSearchFieldColor)),
+                  focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                  disabledBorder:
+                      const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                  enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                  border: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                  hintText: widget.hintText,
+                  hintStyle: widget.hintStyle ?? widget.theme.textTheme.bodyMedium?.copyWith(color: onSearchFieldColor)),
             ),
           ),
         ],

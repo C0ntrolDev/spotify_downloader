@@ -4,6 +4,9 @@ import 'package:spotify_downloader/core/app/colors/colors.dart';
 part 'text_themes.dart';
 
 final mainTheme = ThemeData(
+  cardTheme: const CardTheme(
+    color: surfaceColor
+  ),
   scaffoldBackgroundColor: backgroundColor,
   pageTransitionsTheme: const PageTransitionsTheme(builders: {
     TargetPlatform.android: CupertinoPageTransitionsBuilder(),
@@ -30,6 +33,7 @@ final mainTheme = ThemeData(
       titleMedium: _titleMedium,
       titleSmall: _titleSmall,
       bodyMedium: _bodyMedium,
+      bodySmall: _bodySmall,
       labelMedium: _labelMedium),
   textSelectionTheme: const TextSelectionThemeData(
     cursorColor: primaryColor,

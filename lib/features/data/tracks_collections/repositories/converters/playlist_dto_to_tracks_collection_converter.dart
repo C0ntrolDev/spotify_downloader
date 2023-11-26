@@ -3,7 +3,7 @@ import 'package:spotify_downloader/core/util/converters/result_converters/result
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection_type.dart';
-import 'package:spotify_downloader/features/domain/spotify_api/enitites/tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection.dart';
 
 class PlaylistDtoToTracksCollectionConverter implements ResultValueConverter<TracksCollection, Playlist> {
   @override
@@ -12,6 +12,8 @@ class PlaylistDtoToTracksCollectionConverter implements ResultValueConverter<Tra
       return Result.isSuccessful(TracksCollection(
         spotifyId: playlist.id!,
         type: TracksCollectionType.playlist,
+        artists: List<String>.filled(1, playlist.owner?.displayName ?? ''),
+        tracksCount: playlist.tracks?.total ?? 1,
         name: playlist.name!,
         smallImageUrl: playlist.images?.last.url,
         bigImageUrl: playlist.images?.first.url));

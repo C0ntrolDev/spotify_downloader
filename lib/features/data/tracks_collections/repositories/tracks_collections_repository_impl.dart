@@ -2,13 +2,13 @@ import 'dart:async';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
-import 'package:spotify_downloader/features/data/spotify_api/data_source/tracks_collections_data_source.dart';
-import 'package:spotify_downloader/features/data/spotify_api/repositories/converters/album_dto_to_tracks_collection_converter.dart';
-import 'package:spotify_downloader/features/data/spotify_api/repositories/converters/playlist_dto_to_tracks_collection_converter.dart';
-import 'package:spotify_downloader/features/data/spotify_api/repositories/converters/track_dto_to_tracks_collection_converter.dart';
+import 'package:spotify_downloader/features/data/tracks_collections/data_source/tracks_collections_data_source.dart';
+import 'package:spotify_downloader/features/data/tracks_collections/repositories/converters/album_dto_to_tracks_collection_converter.dart';
+import 'package:spotify_downloader/features/data/tracks_collections/repositories/converters/playlist_dto_to_tracks_collection_converter.dart';
+import 'package:spotify_downloader/features/data/tracks_collections/repositories/converters/track_dto_to_tracks_collection_converter.dart';
 import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection_type.dart';
-import 'package:spotify_downloader/features/domain/spotify_api/enitites/tracks_collection.dart';
-import 'package:spotify_downloader/features/domain/spotify_api/repositories/tracks_collections_repository.dart';
+import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks_collections/repositories/tracks_collections_repository.dart';
 
 class TracksCollectionsRepositoryImpl implements TracksCollectionsRepository {
   TracksCollectionsRepositoryImpl({required TracksCollectionsDataSource dataSource}) : _dataSource = dataSource;

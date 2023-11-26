@@ -26,6 +26,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void dispose() {
+    searchTextFieldController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -64,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     theme: theme,
                     height: 45,
                     iconPadding: const EdgeInsets.all(10),
+                    hintText: 'Ссылка на трек, плейлист или альбом',
                     controller: searchTextFieldController,
                     onSubmitted: (value) async {
                       if (isSearchRequestValid(value)) {

@@ -28,6 +28,13 @@ const _bodyMedium =
       color: onBackgroundPrimaryColor, 
       fontSize: 14);
 
+const _bodySmall =
+    TextStyle(
+      fontFamily: 'OpenSans', 
+      fontWeight: FontWeight.w600, 
+      color: onBackgroundPrimaryColor, 
+      fontSize: 13);
+
 const _labelMedium =
     TextStyle(
       fontFamily: 'OpenSans', 

@@ -3,7 +3,7 @@ import 'package:spotify_downloader/core/util/converters/result_converters/result
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection_type.dart';
-import 'package:spotify_downloader/features/domain/spotify_api/enitites/tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection.dart';
 
 class TrackDtoToTracksCollectionConverter implements ResultValueConverter<TracksCollection, Track> {
   @override
@@ -13,6 +13,8 @@ class TrackDtoToTracksCollectionConverter implements ResultValueConverter<Tracks
         spotifyId: track.id!,
         type: TracksCollectionType.track,
         name: track.name!,
+        tracksCount: 1,
+        artists: track.artists?.map((a) => a.name ?? '').where((an) => an.isNotEmpty).toList(),
         smallImageUrl: track.album?.images?.last.url,
         bigImageUrl: track.album?.images?.first.url));
     } catch (e) {
