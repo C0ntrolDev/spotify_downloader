@@ -1,14 +1,14 @@
 class Video {
   const Video(
       {required this.url,
-      required this.name,
+      required this.title,
       required this.thumbnailUrl,
       required this.likesCount,
-      required this.autor});
+      required this.author});
 
   final String url;
-  final String name;
+  final String title;
   final String thumbnailUrl;
-  final int likesCount;
-  final String autor;
+  final int? likesCount;
+  final String author;
 }
