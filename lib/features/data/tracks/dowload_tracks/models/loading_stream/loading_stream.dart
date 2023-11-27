@@ -3,7 +3,7 @@ import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/core/util/cancellation_token/cancellation_token.dart';
 import 'package:spotify_downloader/core/util/cancellation_token/cancellation_token_source.dart';
-import 'package:spotify_downloader/features/data/dowload_tracks/models/loading_stream/loading_result_status.dart';
+import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/loading_result_status.dart';
 
 class LoadingStream {
   LoadingStream(

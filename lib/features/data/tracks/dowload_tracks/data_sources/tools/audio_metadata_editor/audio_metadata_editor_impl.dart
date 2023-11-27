@@ -1,6 +1,6 @@
 import 'package:metadata_god/metadata_god.dart';
-import 'package:spotify_downloader/features/data/dowload_tracks/data_sources/services/audio_metadata_editor/audio_metadata_editor.dart';
-import 'package:spotify_downloader/features/data/dowload_tracks/models/metadata/audio_metadata.dart';
+import 'package:spotify_downloader/features/data/tracks/dowload_tracks/data_sources/tools/audio_metadata_editor/audio_metadata_editor.dart';
+import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/metadata/audio_metadata.dart';
 
 class AudioMetadataEditorImpl implements AudioMetadataEditor {
   @override

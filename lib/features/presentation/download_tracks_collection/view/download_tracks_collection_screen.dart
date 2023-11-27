@@ -9,8 +9,8 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
-import 'package:spotify_downloader/features/data/dowload_tracks/models/dowload_audio_from_youtube_args.dart';
-import 'package:spotify_downloader/features/data/dowload_tracks/models/metadata/audio_metadata.dart';
+import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/dowload_audio_from_youtube_args.dart';
+import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/metadata/audio_metadata.dart';
 import 'package:spotify_downloader/features/domain/history_tracks_collectons/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/bloc/download_tracks_collection_bloc.dart';
 import 'dart:math' as math;
@@ -224,7 +224,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
               return Container();
             },
           ),
-          Container(
+          SizedBox(
             height: 55 + MediaQuery.of(context).viewPadding.top,
             child: Stack(
               children: [
