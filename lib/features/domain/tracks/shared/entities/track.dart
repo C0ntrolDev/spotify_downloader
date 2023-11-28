@@ -3,9 +3,9 @@ import 'package:spotify_downloader/features/domain/shared/entities/tracks_collec
 class Track {
   Track(this.trackNumber,
       {required this.spotifyId,
-      required this.name,
-      required this.isLoaded,
       required this.parentCollection,
+      this.isLoaded = false,
+      this.name,
       this.youtubeUrl,
       this.artists,
       this.realiseYear,
@@ -17,7 +17,7 @@ class Track {
   String? youtubeUrl;
   bool isLoaded;
 
-  final String name;
+  final String? name;
   final List<String>? artists;
   final int? realiseYear;
   final String? imageUrl;

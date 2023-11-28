@@ -11,13 +11,13 @@ import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/do
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/loading_result_status.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/loading_stream.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/repositories/converters/track_to_audio_metadata_converter.dart';
+import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_info.dart';
+import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 
 import 'package:path/path.dart' as p;
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/repositories/dowload_tracks_repository.dart';
-import '../../../../domain/tracks/download_tracks/entities/loading_track_observer.dart';
-import '../../../../domain/tracks/download_tracks/entities/loading_track_info.dart';
 
 class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
   DowloadTracksRepositoryImpl({required DowloadAudioFromYoutubeDataSource dowloadAudioFromYoutubeDataSource})

@@ -1,4 +1,6 @@
-import 'package:spotify_downloader/core/util/converters/value_converter.dart';
+// ignore_for_file: invalid_use_of_internal_member
+
+import 'package:spotify_downloader/core/util/converters/simple_converters/value_converter.dart';
 import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/entities/video.dart' as entity;
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' as model;
 

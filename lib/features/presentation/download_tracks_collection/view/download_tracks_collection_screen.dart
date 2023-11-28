@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -191,7 +189,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                     youtubeUrl: 'https://youtu.be/LJfI8Z2UqhU?si=9ZzwtqtONC7KhcOt',
                                                     saveDirectoryPath: 'storage/emulated/0/Download',
                                                     audioMetadata: AudioMetadata(name: 'This Feeling 1')));
-                                            stream.onEnded = (result) => print(result?.failure);
+                                            stream.onEnded = (result) => print(result.failure);
                                             stream.onLoadingPercentChanged = (percent) => print(percent);
                                           },
                                           style: ButtonStyle(
