@@ -5,7 +5,7 @@ class CancellationTokenSource {
   bool get isCancelled => _isCancelled;
   CancellationToken get token => CancellationToken(source: this);
 
-  void cancell() {
+  void cancel() {
     _isCancelled = true;
   }
 }

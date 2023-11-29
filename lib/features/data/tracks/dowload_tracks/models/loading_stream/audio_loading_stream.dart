@@ -23,7 +23,7 @@ class AudioLoadingStream {
 
   Function(Result<Failure, AudioLoadingResult> result)? onEnded;
 
-  void cancel() => _cancellationTokenSource.cancell();
+  void cancel() => _cancellationTokenSource.cancel();
 
   void _setLoadingPercent(double newPercent) {
     _loadingPercent = min(loadingPercent, 100);

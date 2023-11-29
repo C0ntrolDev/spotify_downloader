@@ -1,11 +1,11 @@
 import 'dart:io';
-
 import 'package:spotify/spotify.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/data/tracks/network_tracks/models/get_tracks_args.dart';
-import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tracks_dto_loading_ended_status.dart';
+import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tracks_dto_getting_ended_status.dart';
+import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tracks_getting_stream.dart';
 
 class NetworkTracksDataSource {
   NetworkTracksDataSource({required String clientId, required String clientSecret})
@@ -15,7 +15,9 @@ class NetworkTracksDataSource {
   final String _clientId;
   final String _clientSecret;
 
-  void getTracksFromPlaylist(GetTracksArgs args) {
+  TracksGettingStream getTracksFromPlaylist(GetTracksArgs args) {
+    final tracksGettingStream = TracksGettingStream();
+
     Future(() async {
       final tracksPagesResult = await _handleExceptions<Pages<Track>>(() async {
         final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
@@ -29,14 +31,19 @@ class NetworkTracksDataSource {
               final page = await tracksPagesResult.result!.getPage(limit, offset);
               return page.items;
             },
+            tracksGettingStream: tracksGettingStream,
             args: args);
       } else {
-        args.onLoadingEnded?.call(Result.notSuccessful(tracksPagesResult.failure));
+        tracksGettingStream.onEnded?.call(Result.notSuccessful(tracksPagesResult.failure));
       }
     });
+
+    return tracksGettingStream;
   }
 
-  void getTracksFromAlbum(GetTracksArgs args) {
+  TracksGettingStream getTracksFromAlbum(GetTracksArgs args) {
+    final tracksGettingStream = TracksGettingStream();
+
     Future(() async {
       final tracksPagesResult = await _handleExceptions<Pages<TrackSimple>>(() async {
         final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
@@ -45,7 +52,7 @@ class NetworkTracksDataSource {
       });
 
       if (!tracksPagesResult.isSuccessful) {
-        args.onLoadingEnded?.call(Result.notSuccessful(tracksPagesResult.failure));
+        tracksGettingStream.onEnded?.call(Result.notSuccessful(tracksPagesResult.failure));
       }
 
       final albumResult = await _handleExceptions<Album>(() async {
@@ -55,7 +62,7 @@ class NetworkTracksDataSource {
       });
 
       if (!albumResult.isSuccessful) {
-        args.onLoadingEnded?.call(Result.notSuccessful(albumResult.failure));
+        tracksGettingStream.onEnded?.call(Result.notSuccessful(albumResult.failure));
       }
 
       _getTracksFromPages(
@@ -63,8 +70,11 @@ class NetworkTracksDataSource {
             final simplePage = await tracksPagesResult.result!.getPage(limit, offset);
             return simplePage.items?.map((ts) => _trackSimpleToTrack(ts, albumResult.result!));
           },
+          tracksGettingStream: tracksGettingStream,
           args: args);
     });
+
+    return tracksGettingStream;
   }
 
   Track _trackSimpleToTrack(TrackSimple trackSimple, Album album) {
@@ -76,7 +86,9 @@ class NetworkTracksDataSource {
     return track;
   }
 
-  void getTrackBySpotifyId(GetTracksArgs args) {
+  TracksGettingStream getTrackBySpotifyId(GetTracksArgs args) {
+    final tracksGettingStream = TracksGettingStream();
+
     Future(() async {
       final result = await _handleExceptions<Track>(() async {
         final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
@@ -86,15 +98,20 @@ class NetworkTracksDataSource {
 
       if (result.isSuccessful) {
         args.responseList.add(result.result!);
-        return Result.isSuccessful(result);
+        tracksGettingStream.onPartGetted?.call([result.result!]);
+        tracksGettingStream.onEnded?.call(const Result.isSuccessful(TracksDtoGettingEndedStatus.loaded));
       } else {
-        return Result.notSuccessful(result.failure);
+        tracksGettingStream.onEnded?.call(Result.notSuccessful(result.failure));
       }
     });
+
+    return tracksGettingStream;
   }
 
   void _getTracksFromPages(
-      {required Future<Iterable<Track>?> Function(int limit, int offset) getPageTracks, required GetTracksArgs args}) {
+      {required Future<Iterable<Track>?> Function(int limit, int offset) getPageTracks,
+      required GetTracksArgs args,
+      required TracksGettingStream tracksGettingStream}) {
     final callbackTracks = List<Track>.empty(growable: true);
 
     var isFirstCallbackInvoked = false;
@@ -102,7 +119,7 @@ class NetworkTracksDataSource {
     Future(() async {
       for (var i = 0;; i++) {
         if (args.cancellationToken?.isCancelled ?? false) {
-          args.onLoadingEnded?.call(const Result.isSuccessful(TracksDtoLoadingEndedStatus.cancelled));
+          tracksGettingStream.onEnded?.call(const Result.isSuccessful(TracksDtoGettingEndedStatus.cancelled));
           return;
         }
 
@@ -112,14 +129,14 @@ class NetworkTracksDataSource {
         });
 
         if (!newTracksResult.isSuccessful) {
-          args.onLoadingEnded?.call(Result.notSuccessful(newTracksResult.failure));
+          tracksGettingStream.onEnded?.call(Result.notSuccessful(newTracksResult.failure));
         }
 
         final newTracks = newTracksResult.result;
 
         if (newTracks == null || newTracks.isEmpty) {
           args.responseList.addAll(callbackTracks);
-          args.onPartLoaded?.call(callbackTracks);
+          tracksGettingStream.onPartGetted?.call(callbackTracks);
           break;
         }
 
@@ -131,12 +148,12 @@ class NetworkTracksDataSource {
           }
 
           args.responseList.addAll(callbackTracks);
-          args.onPartLoaded?.call(callbackTracks);
+          tracksGettingStream.onPartGetted?.call(callbackTracks);
           callbackTracks.clear();
         }
       }
 
-      args.onLoadingEnded?.call(const Result.isSuccessful(TracksDtoLoadingEndedStatus.loaded));
+      tracksGettingStream.onEnded?.call(const Result.isSuccessful(TracksDtoGettingEndedStatus.loaded));
     });
   }
 

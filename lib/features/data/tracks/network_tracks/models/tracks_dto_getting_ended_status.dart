@@ -1,0 +1,4 @@
+enum TracksDtoGettingEndedStatus {
+  loaded,
+  cancelled
+}

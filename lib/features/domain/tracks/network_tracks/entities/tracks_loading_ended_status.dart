@@ -1,4 +1,0 @@
-enum TracksLoadingEndedStatus {
-  loaded,
-  cancelled
-}
