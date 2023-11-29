@@ -1,3 +1,3 @@
 # spotify_downloader
-## status : developing
+status : developing
 the release is scheduled until 2024
