@@ -5,10 +5,10 @@ import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.
 class LoadingTrackObserver {
   LoadingTrackObserver({required this.track, this.status = LoadingTrackStatus.waitInLoadingQueue});
 
-  Function? onStartLoading;
+  Function()? onStartLoading;
   void Function(double percent)? onLoadingPercentChanged;
-  Function? onLoaded;
-  Function? onLoadingCancelled;
+  Function(String savePath)? onLoaded;
+  Function()? onLoadingCancelled;
   void Function(Failure failure)? onFailure;
 
   LoadingTrackStatus status;

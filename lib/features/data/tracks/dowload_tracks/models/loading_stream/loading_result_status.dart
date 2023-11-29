@@ -1,4 +1,0 @@
-enum LoadingResultStatus {
-  loaded,
-  cancelled
-}

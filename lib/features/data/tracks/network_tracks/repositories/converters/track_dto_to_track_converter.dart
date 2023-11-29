@@ -13,9 +13,9 @@ class TrackDtoToTrackConverter implements ConverterWithParameter<entity.Track?, 
       return null;
     }
 
-    return entity.Track(null,
+    return entity.Track(
         spotifyId: dtoTrack.id!, 
-        name: dtoTrack.name, 
+        name: dtoTrack.name ?? 'no_name', 
         isLoaded: false, 
         parentCollection: parentCollection,
         artists: dtoTrack.artists?.map((a) => a.name!).toList(),

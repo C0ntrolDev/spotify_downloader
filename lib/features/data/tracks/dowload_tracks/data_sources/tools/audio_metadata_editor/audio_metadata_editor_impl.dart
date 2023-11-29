@@ -11,8 +11,6 @@ class AudioMetadataEditorImpl implements AudioMetadataEditor {
         durationMs: audioMetadata.durationMs,
         album: audioMetadata.album?.name,
         albumArtist: audioMetadata.album?.artists?.join(', '),
-        trackTotal: audioMetadata.album?.totalTracksCount,
-        trackNumber: audioMetadata.trackNumber,
         year: audioMetadata.realiseYear
       ));
   }

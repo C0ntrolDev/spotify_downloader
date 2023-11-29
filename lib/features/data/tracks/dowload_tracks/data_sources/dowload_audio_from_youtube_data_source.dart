@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 import 'package:spotify_downloader/core/util/cancellation_token/cancellation_token.dart';
+import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/audio_loading_result.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import 'package:spotify_downloader/core/util/failures/failure.dart';
@@ -13,9 +14,8 @@ import 'package:spotify_downloader/core/util/result/result.dart';
 
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/data_sources/tools/audio_metadata_editor/audio_metadata_editor.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/data_sources/tools/file_to_mp3_converter/file_to_mp3_converter.dart';
-import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/loading_result_status.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/dowload_audio_from_youtube_args.dart';
-import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/loading_stream.dart';
+import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/audio_loading_stream.dart';
 
 class DowloadAudioFromYoutubeDataSource {
   DowloadAudioFromYoutubeDataSource(
@@ -26,8 +26,8 @@ class DowloadAudioFromYoutubeDataSource {
   final AudioMetadataEditor _audioMetadataEditor;
   final FileToMp3Converter _fileToMp3Converter;
 
-  LoadingStream dowloadAudioFromYoutube(DowloadAudioFromYoutubeArgs args) {
-    return LoadingStream((cancellationToken, setLoadingPercent) async {
+  AudioLoadingStream dowloadAudioFromYoutube(DowloadAudioFromYoutubeArgs args) {
+    return AudioLoadingStream((cancellationToken, setLoadingPercent) async {
       try {
         final yt = YoutubeExplode();
 
@@ -39,7 +39,7 @@ class DowloadAudioFromYoutubeDataSource {
           final manifest = await yt.videos.streamsClient.getManifest(video.id);
           downloadStreamInfo = manifest.audioOnly.withHighestBitrate();
         } on SocketException {
-          yt.close();
+          yt.close(); 
           return Result.notSuccessful(NetworkFailure());
         } on ArgumentError {
           yt.close();
@@ -56,7 +56,7 @@ class DowloadAudioFromYoutubeDataSource {
 
           if (cancellationToken.isCancelled) {
             await rawFile.delete();
-            return const Result.isSuccessful(LoadingResultStatus.cancelled);
+            return const Result.isSuccessful(AudioLoadingResult.isCancelled());
           }
 
           _convertFileToMp3(rawPath, audioPath);
@@ -65,7 +65,7 @@ class DowloadAudioFromYoutubeDataSource {
           await rawFile.delete();
 
           if (cancellationToken.isCancelled) {
-            return const Result.isSuccessful(LoadingResultStatus.cancelled);
+            return const Result.isSuccessful(AudioLoadingResult.isCancelled());
           }
 
           await _audioMetadataEditor.changeAudioMetadata(
@@ -75,11 +75,11 @@ class DowloadAudioFromYoutubeDataSource {
           if (cancellationToken.isCancelled) {
             final audioFile = File(audioPath);
             audioFile.delete();
-            return const Result.isSuccessful(LoadingResultStatus.cancelled);
+            return const Result.isSuccessful(AudioLoadingResult.isCancelled());
           }
 
           setLoadingPercent.call(100);
-          return const Result.isSuccessful(LoadingResultStatus.loaded);
+          return Result.isSuccessful(AudioLoadingResult.isLoaded(audioPath));
         } else {
           return Result.notSuccessful(NotFoundFailure());
         }

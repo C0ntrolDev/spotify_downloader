@@ -8,7 +8,6 @@ class TracksCollection extends Equatable {
     required this.type,
     required this.name,
     this.artists,
-    required this.tracksCount,
     this.smallImageUrl,
     this.bigImageUrl
   });
@@ -18,7 +17,6 @@ class TracksCollection extends Equatable {
   final TracksCollectionType type;
   final String name;
   final List<String>? artists;
-  final int tracksCount;
   final String? smallImageUrl;
   final String? bigImageUrl;
 

@@ -8,8 +8,8 @@ import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/data_sources/dowload_audio_from_youtube_data_source.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/dowload_audio_from_youtube_args.dart';
-import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/loading_result_status.dart';
-import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/loading_stream.dart';
+import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/audio_loading_result.dart';
+import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/audio_loading_stream.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/repositories/converters/track_to_audio_metadata_converter.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_info.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
@@ -27,7 +27,7 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
   final TrackToAudioMetadataConverter _trackToAudioMetadataConverter = TrackToAudioMetadataConverter();
 
   final List<(LoadingTrackId, Track, List<LoadingTrackObserver>)> _loadingTracksQueue = List.empty(growable: true);
-  final List<(LoadingTrackId, LoadingStream, List<LoadingTrackObserver>)> _loadingTracks = List.empty(growable: true);
+  final List<(LoadingTrackId, AudioLoadingStream, List<LoadingTrackObserver>)> _loadingTracks = List.empty(growable: true);
 
   final int _sameTimeloadingTracksLimit = 5;
 
@@ -111,14 +111,14 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
   }
 
   void _onLoadingStreamEnded(
-      Result<Failure, LoadingResultStatus> result, List<LoadingTrackObserver> loadingTrackObservers) {
+      Result<Failure, AudioLoadingResult> result, List<LoadingTrackObserver> loadingTrackObservers) {
     _loadingTracks.removeWhere((e) => e.$3 == loadingTrackObservers);
 
     if (result.isSuccessful) {
-      if (result.result! == LoadingResultStatus.loaded) {
+      if (!result.result!.isCancelled) {
         for (var trackObserver in loadingTrackObservers) {
           trackObserver.status = LoadingTrackStatus.loaded;
-          trackObserver.onLoaded?.call();
+          trackObserver.onLoaded?.call(result.result!.savePath!);
         }
       } else {
         for (var trackObserver in loadingTrackObservers) {

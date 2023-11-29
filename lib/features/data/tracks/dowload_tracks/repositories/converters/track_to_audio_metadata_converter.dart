@@ -9,13 +9,10 @@ class TrackToAudioMetadataConverter implements ValueConverter<AudioMetadata, Tra
     return AudioMetadata(
         name: track.name,
         artists: track.artists,
-        realiseYear: track.realiseYear,
         imageUrl: track.imageUrl,
-        trackNumber: track.trackNumber,
         album: AlbumMetadata(
             name: track.parentCollection.name,
-            artists: track.parentCollection.artists,
-            totalTracksCount: track.parentCollection.tracksCount));
+            artists: track.parentCollection.artists));
   }
 
   @override
