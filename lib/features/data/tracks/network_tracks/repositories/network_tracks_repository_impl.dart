@@ -10,8 +10,9 @@ import 'package:spotify_downloader/features/domain/tracks/network_tracks/entitie
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_controller.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_ended_status.dart';
 import 'package:spotify/spotify.dart' as dto;
+import 'package:spotify_downloader/features/domain/tracks/network_tracks/repositories/network_tracks_repository.dart';
 
-class NetworkTracksRepositoryImpl {
+class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
   NetworkTracksRepositoryImpl(
       {required NetworkTracksDataSource networkTracksDataSource,
       required TrackDtoToTrackConverter trackDtoToTrackConverter})
@@ -21,6 +22,7 @@ class NetworkTracksRepositoryImpl {
   final NetworkTracksDataSource _networkTracksDataSource;
   final TrackDtoToTrackConverter _trackDtoToTrackConverter;
 
+  @override
   TracksGettingController getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs args) {
     final responseList = List<dto.Track>.empty(growable: true);
     final cancellationTokenSource = CancellationTokenSource();
@@ -57,7 +59,7 @@ class NetworkTracksRepositoryImpl {
     tracksGettingStream.onPartGetted = (dtoTracksPart) {
       final tracksPart = dtoTracksPart.map((dt) => _trackDtoToTrackConverter.convert((dt, args.tracksCollection)));
       args.responseList.addAll(tracksPart);
-      controller.onPartGetted?.call();
+      controller.onPartGetted?.call(tracksPart);
     };
   }
 
