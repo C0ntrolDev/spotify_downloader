@@ -34,6 +34,7 @@ final mainTheme = ThemeData(
       titleSmall: _titleSmall,
       bodyMedium: _bodyMedium,
       bodySmall: _bodySmall,
+      labelLarge: _labelLarge,
       labelMedium: _labelMedium),
   textSelectionTheme: const TextSelectionThemeData(
     cursorColor: primaryColor,

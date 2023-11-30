@@ -46,6 +46,7 @@ flutter:
   assets:
     - resources/images/svg/settings_icon.svg
     - resources/images/svg/search_icon.svg
+    - resources/images/svg/more_info.svg
     - resources/images/svg/back_icon.svg
     - resources/images/another/liked_tracks.jpg
     - resources/images/another/loading_track_collection_image.png

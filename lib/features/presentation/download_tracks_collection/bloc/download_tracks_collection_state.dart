@@ -12,25 +12,33 @@ final class DownloadTracksCollectionLoading extends DownloadTracksCollectionBloc
   List<Object> get props => [];
 }
 
-abstract class DownloadTracksCollectionLoaded extends DownloadTracksCollectionBlocState {
-  const DownloadTracksCollectionLoaded(this.tracks, {required this.tracksCollection});
+abstract class DownloadTracksCollectionTracksGetted extends DownloadTracksCollectionBlocState {
+  const DownloadTracksCollectionTracksGetted({required this.tracksCollection, required this.tracks});
 
   final TracksCollection tracksCollection;
-  final List<Track> tracks;
+  final List<TrackWithLoadingObserver> tracks;
 
   @override
   List<Object> get props => [tracksCollection, tracks];
 }
 
-final class DownloadTracksCollectionPartLoaded extends DownloadTracksCollectionLoaded {
-  const DownloadTracksCollectionPartLoaded(super.tracks, {required super.tracksCollection});
+final class DownloadTracksCollectionOnTracksPartGetted extends DownloadTracksCollectionTracksGetted {
+  const DownloadTracksCollectionOnTracksPartGetted({required super.tracksCollection, required super.tracks});
 }
 
-final class DownloadTracksCollectionAllLoaded extends DownloadTracksCollectionLoaded {
-  const DownloadTracksCollectionAllLoaded(super.tracks, {required super.tracksCollection});
+final class DownloadTracksCollectionAllTracksGetted extends DownloadTracksCollectionTracksGetted {
+  const DownloadTracksCollectionAllTracksGetted({required super.tracksCollection, required super.tracks});
 }
 
-final class DownloadTracksCollectionNetworkFailure extends DownloadTracksCollectionBlocState {
+final class DownloadTracksCollectionInitialNetworkFailure extends DownloadTracksCollectionBlocState {
+  @override
+  List<Object> get props => [];
+}
+
+final class DownloadTracksCollectionTracksGettingNetworkFailure extends DownloadTracksCollectionBlocState {
+  const DownloadTracksCollectionTracksGettingNetworkFailure({required this.tracksCollection});
+
+  final TracksCollection tracksCollection;
   @override
   List<Object> get props => [];
 }
@@ -42,4 +50,9 @@ final class DownloadTracksCollectionFailure extends DownloadTracksCollectionBloc
 
   @override
   List<Object> get props => [failure];
+}
+
+final class DownloadTracksCollectionTracksGettingCancelled extends DownloadTracksCollectionBlocState {
+  @override
+  List<Object> get props => [];
 }

@@ -3,6 +3,6 @@ import 'package:spotify_downloader/features/domain/tracks/services/entities/trac
 import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_controller.dart';
 
 abstract class TracksService {
-  TracksWithLoadingObserverGettingController getTracksLoadingObserversFromTracksColleciton(TracksCollection tracksCollection, List<TrackWithLoadingObserver> responseList);
-  TracksWithLoadingObserverGettingController getLikedTracksLoadingObservers(List<TrackWithLoadingObserver> responseList); 
+  TracksWithLoadingObserverGettingController getTracksWithLoadingObserversFromTracksColleciton(TracksCollection tracksCollection, List<TrackWithLoadingObserver> responseList);
+  TracksWithLoadingObserverGettingController getLikedTracksWithLoadingObservers(List<TrackWithLoadingObserver> responseList); 
 }

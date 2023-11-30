@@ -13,14 +13,12 @@ import 'package:spotify/spotify.dart' as dto;
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/repositories/network_tracks_repository.dart';
 
 class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
-  NetworkTracksRepositoryImpl(
-      {required NetworkTracksDataSource networkTracksDataSource,
-      required TrackDtoToTrackConverter trackDtoToTrackConverter})
-      : _networkTracksDataSource = networkTracksDataSource,
-        _trackDtoToTrackConverter = trackDtoToTrackConverter;
+  NetworkTracksRepositoryImpl({
+    required NetworkTracksDataSource networkTracksDataSource,
+  }) : _networkTracksDataSource = networkTracksDataSource;
 
   final NetworkTracksDataSource _networkTracksDataSource;
-  final TrackDtoToTrackConverter _trackDtoToTrackConverter;
+  final TrackDtoToTrackConverter _trackDtoToTrackConverter = TrackDtoToTrackConverter();
 
   @override
   TracksGettingController getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs args) {
@@ -31,7 +29,7 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
         responseList: responseList,
         cancellationToken: cancellationTokenSource.token,
         firstCallbackLength: 200,
-        callbackLength: 50);
+        callbackLength: 200);
 
     final TracksGettingStream tracksGettingStream;
 

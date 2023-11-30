@@ -13,9 +13,9 @@ class TracksServiceImpl implements TracksService {
   final NetworkTracksRepository _networkTracksRepository;
 
   @override
-  TracksWithLoadingObserverGettingController getTracksLoadingObserversFromTracksColleciton(
+  TracksWithLoadingObserverGettingController getTracksWithLoadingObserversFromTracksColleciton(
       TracksCollection tracksCollection, List<TrackWithLoadingObserver> responseList) {
-    final rawResponseList = List<Track?>.empty();
+    final rawResponseList = List<Track?>.empty(growable: true);
     final rawController = _networkTracksRepository.getTracksFromTracksCollection(
         GetTracksFromTracksCollectionArgs(tracksCollection: tracksCollection, responseList: rawResponseList));
     final trackGettingController =
@@ -35,7 +35,7 @@ class TracksServiceImpl implements TracksService {
   }
 
   @override
-  TracksWithLoadingObserverGettingController getLikedTracksLoadingObservers(List<TrackWithLoadingObserver> responseList) {
+  TracksWithLoadingObserverGettingController getLikedTracksWithLoadingObservers(List<TrackWithLoadingObserver> responseList) {
     throw UnimplementedError();
   }
 

@@ -35,6 +35,12 @@ const _bodySmall =
       color: onBackgroundPrimaryColor, 
       fontSize: 13);
 
+const _labelLarge =  TextStyle(
+      fontFamily: 'OpenSans', 
+      fontWeight: FontWeight.w400, 
+      color: onBackgroundPrimaryColor, 
+      fontSize: 13);
+
 const _labelMedium =
     TextStyle(
       fontFamily: 'OpenSans', 
