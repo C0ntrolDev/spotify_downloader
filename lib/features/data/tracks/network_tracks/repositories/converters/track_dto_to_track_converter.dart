@@ -19,7 +19,7 @@ class TrackDtoToTrackConverter implements ConverterWithParameter<entity.Track?, 
         isLoaded: false, 
         parentCollection: parentCollection,
         artists: dtoTrack.artists?.map((a) => a.name!).toList(),
-        imageUrl: dtoTrack.album?.images?.lastOrNull?.url);
+        imageUrl: dtoTrack.album?.images?[1].url ?? dtoTrack.album?.images?.first.url );
   }
 
   @override

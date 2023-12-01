@@ -30,15 +30,11 @@ final class DownloadTracksCollectionAllTracksGetted extends DownloadTracksCollec
   const DownloadTracksCollectionAllTracksGetted({required super.tracksCollection, required super.tracks});
 }
 
-final class DownloadTracksCollectionInitialNetworkFailure extends DownloadTracksCollectionBlocState {
-  @override
-  List<Object> get props => [];
+final class DownloadTracksCollectionTracksGettingNetworkFailure extends DownloadTracksCollectionTracksGetted {
+  const DownloadTracksCollectionTracksGettingNetworkFailure({required super.tracksCollection, required super.tracks});
 }
 
-final class DownloadTracksCollectionTracksGettingNetworkFailure extends DownloadTracksCollectionBlocState {
-  const DownloadTracksCollectionTracksGettingNetworkFailure({required this.tracksCollection});
-
-  final TracksCollection tracksCollection;
+final class DownloadTracksCollectionInitialNetworkFailure extends DownloadTracksCollectionBlocState {
   @override
   List<Object> get props => [];
 }

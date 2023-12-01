@@ -68,255 +68,269 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      body: BlocListener<DownloadTracksCollectionBloc, DownloadTracksCollectionBlocState>(
-        bloc: _downloadTrackCollectionBloc,
-        listener: (context, state) {
-          if (state is DownloadTracksCollectionTracksGetted) {
-            if (state.tracksCollection.bigImageUrl != null) {
-              Future(() async {
-                final generator =
-                    await PaletteGenerator.fromImageProvider(NetworkImage(state.tracksCollection.bigImageUrl ?? ''));
+    return WillPopScope(
+      onWillPop: () async {
+        _downloadTrackCollectionBloc.add(DownloadTracksCollectionCancelTracksGetting());
+        return true;
+      },
+      child: Scaffold(
+        body: BlocListener<DownloadTracksCollectionBloc, DownloadTracksCollectionBlocState>(
+          bloc: _downloadTrackCollectionBloc,
+          listener: (context, state) {
+            if (state is DownloadTracksCollectionTracksGetted) {
+              if (state.tracksCollection.bigImageUrl != null) {
+                Future(() async {
+                  final generator =
+                      await PaletteGenerator.fromImageProvider(NetworkImage(state.tracksCollection.bigImageUrl ?? ''));
 
-                final imageColor = generator.mutedColor?.color ?? generator.dominantColor?.color;
-                if (imageColor != null) {
-                  _appBarColor = _getIntermediateColor(imageColor, backgroundColor, 0.2);
-                }
-                setState(() {});
-              });
-            } else {
-              _appBarColor = backgroundColor;
-            }
-          }
-
-          if (state is DownloadTracksCollectionFailure) {
-            if (state.failure is NotFoundFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                content: Text(
-                  'По данному url не было ничего найдено',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyMedium,
-                ),
-                duration: const Duration(seconds: 3),
-              ));
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                content: Text(
-                  state.failure.toString(),
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.labelMedium,
-                ),
-                duration: const Duration(seconds: 3),
-              ));
-            }
-            AutoRouter.of(context).pop();
-          }
-        },
-        child: Stack(children: [
-          BlocBuilder<DownloadTracksCollectionBloc, DownloadTracksCollectionBlocState>(
-            bloc: _downloadTrackCollectionBloc,
-            builder: (context, state) {
-              if (state is DownloadTracksCollectionInitialNetworkFailure) {
-                return const Text('С соединением что-то не так');
+                  final imageColor = generator.mutedColor?.color ?? generator.dominantColor?.color;
+                  if (imageColor != null) {
+                    _appBarColor = _getIntermediateColor(imageColor, backgroundColor, 0.2);
+                  }
+                  setState(() {});
+                });
+              } else {
+                _appBarColor = backgroundColor;
               }
-              if (state is DownloadTracksCollectionTracksGetted) {
-                return Stack(children: [
-                  Container(
-                    alignment: AlignmentDirectional.topCenter,
-                    child: NotificationListener<OverscrollIndicatorNotification>(
-                        onNotification: (OverscrollIndicatorNotification overScroll) {
-                          overScroll.disallowIndicator();
-                          return false;
-                        },
-                        child: Scrollbar(
-                          thumbVisibility: true,
-                          radius: const Radius.circular(10),
-                          child: ListView.builder(
-                              controller: _screenScrollController
-                                ..addListener(() {
-                                  _appBarOpacity =
-                                      math.min(1, _screenScrollController.offset / _tracksCollectionInfoHeight);
-                                  setState(() {});
-                                }),
-                              itemCount: state.tracks.length,
-                              itemBuilder: (context, index) {
-                                if (index == 0) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 30),
-                                    child: AnimatedContainer(
-                                      duration: const Duration(milliseconds: 700),
-                                      decoration: BoxDecoration(
-                                          gradient: LinearGradient(colors: [
-                                        _appBarColor,
-                                        backgroundColor,
-                                      ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-                                      padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 20),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                                        child: Column(children: [
-                                          Center(
-                                              child: CachedNetworkImage(
-                                            width: MediaQuery.of(context).size.width * 0.6,
-                                            height: MediaQuery.of(context).size.width * 0.6,
-                                            fit: BoxFit.fitWidth,
-                                            imageUrl: state.tracksCollection.bigImageUrl ?? '',
+            }
+
+            if (state is DownloadTracksCollectionFailure) {
+              if (state.failure is NotFoundFailure) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                  content: Text(
+                    'По данному url не было ничего найдено',
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  duration: const Duration(seconds: 3),
+                ));
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                  content: Text(
+                    state.failure.toString(),
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.labelMedium,
+                  ),
+                  duration: const Duration(seconds: 3),
+                ));
+              }
+              AutoRouter.of(context).pop();
+            }
+          },
+          child: Stack(children: [
+            BlocBuilder<DownloadTracksCollectionBloc, DownloadTracksCollectionBlocState>(
+              bloc: _downloadTrackCollectionBloc,
+              builder: (context, state) {
+                if (state is DownloadTracksCollectionInitialNetworkFailure) {
+                  return const Text('С соединением что-то не так');
+                }
+                if (state is DownloadTracksCollectionTracksGetted) {
+                  return Stack(children: [
+                    Container(
+                      alignment: AlignmentDirectional.topCenter,
+                      child: NotificationListener<OverscrollIndicatorNotification>(
+                          onNotification: (OverscrollIndicatorNotification overScroll) {
+                            overScroll.disallowIndicator();
+                            return false;
+                          },
+                          child: Scrollbar(
+                            controller: _screenScrollController,
+                            thumbVisibility: true,
+                            radius: const Radius.circular(10),
+                            child: ListView.builder(
+                                controller: _screenScrollController
+                                  ..addListener(() {
+                                    _appBarOpacity =
+                                        math.min(1, _screenScrollController.offset / _tracksCollectionInfoHeight);
+                                    setState(() {});
+                                  }),
+                                itemCount: state.tracks.length,
+                                itemBuilder: (context, index) {
+                                  if (index == 0) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 30),
+                                      child: AnimatedContainer(
+                                        duration: const Duration(milliseconds: 700),
+                                        decoration: BoxDecoration(
+                                            gradient: LinearGradient(colors: [
+                                          _appBarColor,
+                                          backgroundColor,
+                                        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 20),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                                          child: Column(children: [
+                                            Center(
+                                                child: CachedNetworkImage(
+                                              width: MediaQuery.of(context).size.width * 0.6,
+                                              height: MediaQuery.of(context).size.width * 0.6,
+                                              fit: BoxFit.fitWidth,
+                                              imageUrl: state.tracksCollection.bigImageUrl ?? '',
+                                              placeholder: (context, imageUrl) => Image.asset(
+                                                  'resources/images/another/loading_track_collection_image.png'),
+                                            )),
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 15),
+                                              child: Text(
+                                                state.tracksCollection.name,
+                                                style: theme.textTheme.titleLarge,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 30),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: SearchTextField(
+                                                      theme: theme,
+                                                      onSubmitted: (value) {},
+                                                      height: 35,
+                                                      cornerRadius: 10,
+                                                      hintText: 'Поиск по названию',
+                                                      textStyle:
+                                                          theme.textTheme.bodySmall?.copyWith(color: onPrimaryColor),
+                                                      hintStyle: theme.textTheme.bodySmall
+                                                          ?.copyWith(color: onSearchFieldColor),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    height: 35,
+                                                    width: 150,
+                                                    padding: const EdgeInsets.only(left: 10),
+                                                    child: ElevatedButton(
+                                                      onPressed: () {},
+                                                      style: ButtonStyle(
+                                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                              RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.circular(10)))),
+                                                      child: Text('Скачать все',
+                                                          style: theme.textTheme.bodySmall!
+                                                              .copyWith(color: onPrimaryColor)),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ]),
+                                        ),
+                                      ),
+                                    );
+                                  }
+
+                                  return Container(
+                                      padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CachedNetworkImage(
+                                            width: 50,
+                                            height: 50,
+                                            imageUrl: state.tracks[index - 1].track.imageUrl ?? '',
                                             placeholder: (context, imageUrl) => Image.asset(
                                                 'resources/images/another/loading_track_collection_image.png'),
-                                          )),
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 15),
-                                            child: Text(
-                                              state.tracksCollection.name,
-                                              style: theme.textTheme.titleLarge,
-                                            ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 30),
-                                            child: Row(
+                                          Expanded(
+                                              child: Padding(
+                                            padding: const EdgeInsets.only(left: 10),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Expanded(
-                                                  child: SearchTextField(
-                                                    theme: theme,
-                                                    onSubmitted: (value) {},
-                                                    height: 35,
-                                                    cornerRadius: 10,
-                                                    hintText: 'Поиск по названию',
-                                                    textStyle:
-                                                        theme.textTheme.bodySmall?.copyWith(color: onPrimaryColor),
-                                                    hintStyle:
-                                                        theme.textTheme.bodySmall?.copyWith(color: onSearchFieldColor),
-                                                  ),
+                                                Text(
+                                                  state.tracks[index - 1].track.name,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: theme.textTheme.bodyMedium,
                                                 ),
-                                                Container(
-                                                  height: 35,
-                                                  width: 150,
-                                                  padding: const EdgeInsets.only(left: 10),
-                                                  child: ElevatedButton(
-                                                    onPressed: () {},
-                                                    style: ButtonStyle(
-                                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                            RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.circular(10)))),
-                                                    child: Text('Скачать все',
-                                                        style:
-                                                            theme.textTheme.bodySmall!.copyWith(color: onPrimaryColor)),
-                                                  ),
+                                                Text(
+                                                  state.tracks[index - 1].track.artists?.join(', ') ?? '',
+                                                  style: theme.textTheme.labelLarge
+                                                      ?.copyWith(color: onBackgroundSecondaryColor),
                                                 )
                                               ],
                                             ),
-                                          ),
-                                        ]),
-                                      ),
-                                    ),
-                                  );
-                                }
-                          
-                                return Container(
-                                    padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        CachedNetworkImage(
-                                          width: 50,
-                                          height: 50,
-                                          imageUrl: state.tracks[index - 1].track.imageUrl ?? '',
-                                          placeholder: (context, imageUrl) =>
-                                              Image.asset('resources/images/another/loading_track_collection_image.png'),
-                                        ),
-                                        Expanded(
-                                            child: Padding(
-                                          padding: const EdgeInsets.only(left: 10),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                state.tracks[index - 1].track.name,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: theme.textTheme.bodyMedium,
-                                              ),
-                                              Text(
-                                                state.tracks[index - 1].track.artists?.join(', ') ?? '',
-                                                style: theme.textTheme.labelLarge
-                                                    ?.copyWith(color: onBackgroundSecondaryColor),
-                                              )
-                                            ],
-                                          ),
-                                        )),
-                                        SizedBox(
-                                          height: 50,
-                                          child: IconButton(onPressed: () {}, icon: SvgPicture.asset('resources/images/svg/more_info.svg', fit: BoxFit.fitHeight,)))
-                                      ],
-                                    ));
-                              }),
-                        )),
-                  ),
-                ]);
-              }
-
-              if (state is DownloadTracksCollectionLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              return Container();
-            },
-          ),
-          SizedBox(
-            height: 55 + MediaQuery.of(context).viewPadding.top,
-            child: Stack(
-              children: [
-                Opacity(
-                  opacity: _appBarOpacity,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 700),
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [_appBarColor, _getIntermediateColor(_appBarColor, backgroundColor, 0.5)],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter)),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top),
-                  child: Row(
-                    children: [
-                      IconButton(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          onPressed: () {
-                            AutoRouter.of(context).pop();
-                          },
-                          icon: SvgPicture.asset(
-                            'resources/images/svg/back_icon.svg',
-                            height: 35,
-                            width: 35,
+                                          )),
+                                          SizedBox(
+                                              height: 50,
+                                              child: IconButton(
+                                                  onPressed: () {
+                                                    
+                                                  },
+                                                  icon: SvgPicture.asset(
+                                                    'resources/images/svg/more_info.svg',
+                                                    fit: BoxFit.fitHeight,
+                                                  )))
+                                        ],
+                                      ));
+                                }),
                           )),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 30),
-                        child: Opacity(
-                          opacity: _appBarOpacity,
-                          child: BlocBuilder<DownloadTracksCollectionBloc, DownloadTracksCollectionBlocState>(
-                            bloc: _downloadTrackCollectionBloc,
-                            buildWhen: (previous, current) => current is DownloadTracksCollectionTracksGetted,
-                            builder: (context, state) {
-                              if (state is DownloadTracksCollectionTracksGetted) {
-                                return Center(
-                                    child: Text(state.tracksCollection.name, style: theme.textTheme.titleSmall));
-                              }
+                    ),
+                  ]);
+                }
 
-                              return Container();
+                if (state is DownloadTracksCollectionLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                return Container();
+              },
+            ),
+            SizedBox(
+              height: 55 + MediaQuery.of(context).viewPadding.top,
+              child: Stack(
+                children: [
+                  Opacity(
+                    opacity: _appBarOpacity,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 700),
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [_appBarColor, _getIntermediateColor(_appBarColor, backgroundColor, 0.5)],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter)),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top),
+                    child: Row(
+                      children: [
+                        IconButton(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onPressed: () {
+                              AutoRouter.of(context).pop();
                             },
+                            icon: SvgPicture.asset(
+                              'resources/images/svg/back_icon.svg',
+                              height: 35,
+                              width: 35,
+                            )),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 30),
+                          child: Opacity(
+                            opacity: _appBarOpacity,
+                            child: BlocBuilder<DownloadTracksCollectionBloc, DownloadTracksCollectionBlocState>(
+                              bloc: _downloadTrackCollectionBloc,
+                              buildWhen: (previous, current) => current is DownloadTracksCollectionTracksGetted,
+                              builder: (context, state) {
+                                if (state is DownloadTracksCollectionTracksGetted) {
+                                  return Center(
+                                      child: Text(state.tracksCollection.name, style: theme.textTheme.titleSmall));
+                                }
+
+                                return Container();
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          )
-        ]),
+                ],
+              ),
+            )
+          ]),
+        ),
       ),
     );
   }

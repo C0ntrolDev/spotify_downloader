@@ -27,9 +27,10 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
   final TrackToAudioMetadataConverter _trackToAudioMetadataConverter = TrackToAudioMetadataConverter();
 
   final List<(LoadingTrackId, Track, List<LoadingTrackObserver>)> _loadingTracksQueue = List.empty(growable: true);
-  final List<(LoadingTrackId, AudioLoadingStream, List<LoadingTrackObserver>)> _loadingTracks = List.empty(growable: true);
-
+  final List<(LoadingTrackId, AudioLoadingStream, List<LoadingTrackObserver>)> _loadingTracks =
+      List.empty(growable: true);
   final int _sameTimeloadingTracksLimit = 5;
+
 
   @override
   Future<Result<Failure, LoadingTrackObserver>> dowloadTrack(Track track) async {
@@ -38,19 +39,20 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
         parentSpotifyId: track.parentCollection.spotifyId,
         parentType: track.parentCollection.type,
         spotifyId: track.spotifyId);
-    final trackObservers = List<LoadingTrackObserver>.empty()..add(loadingTrackObserver);
+    final trackObservers = List<LoadingTrackObserver>.empty(growable: true)..add(loadingTrackObserver);
 
-    if (_loadingTracks.length < _sameTimeloadingTracksLimit) {
-      if (track.youtubeUrl != null) {
+    if (track.youtubeUrl != null) {
+      if (_loadingTracks.length < _sameTimeloadingTracksLimit) {
         loadingTrackObserver.status = LoadingTrackStatus.loading;
         _startTrackLoading(loadingTrackId, track, trackObservers);
         return Result.isSuccessful(loadingTrackObserver);
       } else {
-        return Result.notSuccessful(NotFoundFailure(message: 'youtube url not specified'));
+        _loadingTracksQueue.add((loadingTrackId, track, trackObservers));
+        return Result.isSuccessful(loadingTrackObserver);
       }
+
     } else {
-      _loadingTracksQueue.add((loadingTrackId, track, trackObservers));
-      return Result.isSuccessful(loadingTrackObserver);
+      return Result.notSuccessful(NotFoundFailure(message: 'youtube url not specified'));
     }
   }
 

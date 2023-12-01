@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 const backgroundColor = Color.fromARGB(255, 18, 18, 18);
-const backgroundGradientColor = Color.fromARGB(255, 62, 19, 192);
 const onBackgroundPrimaryColor = Color.fromARGB(255, 255, 255, 255);
 const onBackgroundSecondaryColor = Color.fromARGB(255, 188, 188, 188);
 

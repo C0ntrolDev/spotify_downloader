@@ -66,7 +66,8 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
         }
       } else {
         if (event.result.failure is NetworkFailure) {
-          emit(DownloadTracksCollectionInitialNetworkFailure());
+          emit(DownloadTracksCollectionTracksGettingNetworkFailure(
+              tracksCollection: _tracksCollection!, tracks: _tracksGettingResponseList));
         } else {
           emit(DownloadTracksCollectionFailure(failure: event.result.failure!));
         }
@@ -76,6 +77,10 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
     on<DownloadTracksCollectionTracksPartGetted>((event, emit) {
       emit(DownloadTracksCollectionOnTracksPartGetted(
           tracksCollection: _tracksCollection!, tracks: _tracksGettingResponseList));
+    });
+
+    on<DownloadTracksCollectionCancelTracksGetting>((event, emit) {
+      _tracksGettingController?.cancelGetting();
     });
   }
 }
