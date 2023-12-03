@@ -46,6 +46,10 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - resources/images/svg/bottom_bar/history_icon_active.svg
+    - resources/images/svg/bottom_bar/history_icon.svg
+    - resources/images/svg/bottom_bar/home_icon_active.svg
+    - resources/images/svg/bottom_bar/home_icon.svg
     - resources/images/svg/settings_icon.svg
     - resources/images/svg/search_icon.svg
     - resources/images/svg/more_info.svg

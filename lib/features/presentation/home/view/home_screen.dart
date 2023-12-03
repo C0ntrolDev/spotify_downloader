@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+   
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('История загрузок', style: theme.textTheme.titleMedium),
+                    Text('Активные загрузки', style: theme.textTheme.titleMedium),
                     Expanded(
                       child: Padding(
                           padding: const EdgeInsets.only(top: 10),

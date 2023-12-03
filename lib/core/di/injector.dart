@@ -76,7 +76,6 @@ void _provideUseCases() {
 
 void _provideBlocs() {
   injector.registerFactory<HomeBloc>(() => HomeBloc(
-      getOrderedHistory: injector.get<GetOrderedHistory>(),
       addTracksCollectionToHistory: injector.get<AddHistoryTracksCollectionToHistory>()));
   injector.registerFactory<DownloadTracksCollectionBloc>(() => DownloadTracksCollectionBloc(
       getFromTracksCollectionWithOffset: injector.get<GetTracksWithLoadingObserverFromTracksCollecitonWithOffset>(),
