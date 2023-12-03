@@ -13,13 +13,23 @@ class TrackDtoToTrackConverter implements ConverterWithParameter<entity.Track?, 
       return null;
     }
 
+    String? imageUrl;
+
+    try {
+      imageUrl = dtoTrack.album?.images?[1].url;
+    } on RangeError {
+      //rangeError
+    }
+
+    imageUrl ??= dtoTrack.album?.images?.firstOrNull?.url ?? '';
+
     return entity.Track(
         spotifyId: dtoTrack.id!, 
         name: dtoTrack.name ?? 'no_name', 
         isLoaded: false, 
         parentCollection: parentCollection,
         artists: dtoTrack.artists?.map((a) => a.name!).toList(),
-        imageUrl: dtoTrack.album?.images?[1].url ?? dtoTrack.album?.images?.first.url );
+        imageUrl: imageUrl);
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:http/http.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
@@ -47,6 +48,8 @@ class TracksCollectionsDataSource {
         return Result.notSuccessful(NotFoundFailure(message: e));
       }
       return Result.notSuccessful(Failure(message: e));
+    } on ClientException catch (e) {
+      return Result.notSuccessful(NetworkFailure(message: e));
     } on SocketException catch (e) {
       return Result.notSuccessful(NetworkFailure(message: e));
     } catch (e) {

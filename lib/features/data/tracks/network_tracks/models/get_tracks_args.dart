@@ -7,7 +7,8 @@ class GetTracksArgs {
       required this.responseList,
       this.cancellationToken,
       this.firstCallbackLength = 50,
-      this.callbackLength = 50});
+      this.callbackLength = 50,
+      this.offset = 0});
 
   final String spotifyId;
   final List<Track> responseList;
@@ -16,4 +17,5 @@ class GetTracksArgs {
 
   final int firstCallbackLength;
   final int callbackLength;
+  final int offset;
 }

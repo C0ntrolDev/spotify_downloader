@@ -6,7 +6,7 @@ class TracksWithLoadingObserverGettingController {
   TracksWithLoadingObserverGettingController({required Function cancelFunction}) : _cancelFunction = cancelFunction;
 
   Function(Result<Failure, TracksGettingEndedStatus>)? onEnded;
-  Function()? onPartGetted;
+  Function()? onPartGot;
 
   final Function _cancelFunction;
 

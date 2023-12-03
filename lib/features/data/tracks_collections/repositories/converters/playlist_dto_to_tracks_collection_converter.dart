@@ -12,6 +12,7 @@ class PlaylistDtoToTracksCollectionConverter implements ResultValueConverter<Tra
       return Result.isSuccessful(TracksCollection(
         spotifyId: playlist.id!,
         type: TracksCollectionType.playlist,
+        tracksCount: playlist.tracks!.total,
         artists: List<String>.filled(1, playlist.owner?.displayName ?? ''),
         name: playlist.name!,
         smallImageUrl: playlist.images?.last.url,

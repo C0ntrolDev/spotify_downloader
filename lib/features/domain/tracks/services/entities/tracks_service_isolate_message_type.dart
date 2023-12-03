@@ -1,6 +1,6 @@
 
 enum TracksServiceIsolateMessageType {
   cancelReceivePort,
-  partGetted,
+  partGot,
   ended,
 }

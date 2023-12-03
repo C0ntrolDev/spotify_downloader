@@ -28,6 +28,7 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
         spotifyId: args.tracksCollection.spotifyId,
         responseList: responseList,
         cancellationToken: cancellationTokenSource.token,
+        offset: args.offset,
         firstCallbackLength: 200,
         callbackLength: 200);
 
@@ -54,10 +55,10 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
     tracksGettingStream.onEnded = (result) => controller.onEnded?.call(result.isSuccessful
         ? Result.isSuccessful(_convertDtoStatusToStatus(result.result!))
         : Result.notSuccessful(result.failure));
-    tracksGettingStream.onPartGetted = (dtoTracksPart) {
+    tracksGettingStream.onPartGot = (dtoTracksPart) {
       final tracksPart = dtoTracksPart.map((dt) => _trackDtoToTrackConverter.convert((dt, args.tracksCollection)));
       args.responseList.addAll(tracksPart);
-      controller.onPartGetted?.call(tracksPart);
+      controller.onPartGot?.call(tracksPart);
     };
   }
 

@@ -15,3 +15,5 @@ const searchFieldColor = Color.fromARGB(255, 255, 255, 255);
 const onSearchFieldColor = Color.fromARGB(255, 99, 99, 99);
 
 const dialogColor = Color.fromARGB(255, 59, 59, 59);
+
+const tilePlaceholderColor = Color.fromARGB(255, 59, 59, 59);

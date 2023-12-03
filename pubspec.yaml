@@ -27,8 +27,10 @@ dependencies:
   ffmpeg_kit_flutter_full: ^6.0.3
   youtube_explode_dart: ^2.0.2
   metadata_god: ^0.5.2
-  path: ^1.8.3
   cached_network_image: ^3.3.0
+  path: ^1.8.3
+  shimmer: ^3.0.0
+  connectivity_plus: ^5.0.2
 
 dev_dependencies:
   flutter_test:

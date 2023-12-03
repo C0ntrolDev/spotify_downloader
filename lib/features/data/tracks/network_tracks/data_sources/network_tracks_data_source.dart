@@ -99,7 +99,7 @@ class NetworkTracksDataSource {
 
       if (result.isSuccessful) {
         args.responseList.add(result.result!);
-        tracksGettingStream.onPartGetted?.call([result.result!]);
+        tracksGettingStream.onPartGot?.call([result.result!]);
         tracksGettingStream.onEnded?.call(const Result.isSuccessful(TracksDtoGettingEndedStatus.loaded));
       } else {
         tracksGettingStream.onEnded?.call(Result.notSuccessful(result.failure));
@@ -125,19 +125,20 @@ class NetworkTracksDataSource {
         }
 
         final newTracksResult = await _handleExceptions<Iterable<Track>?>(() async {
-          final responseTracks = await getPageTracks.call(50, i * 50);
+          final responseTracks = await getPageTracks.call(50, i * 50 + args.offset);
           return Result.isSuccessful(responseTracks);
         });
 
         if (!newTracksResult.isSuccessful) {
           tracksGettingStream.onEnded?.call(Result.notSuccessful(newTracksResult.failure));
+          return;
         }
 
         final newTracks = newTracksResult.result;
 
         if (newTracks == null || newTracks.isEmpty) {
           args.responseList.addAll(callbackTracks);
-          tracksGettingStream.onPartGetted?.call(callbackTracks);
+          tracksGettingStream.onPartGot?.call(callbackTracks);
           break;
         }
 
@@ -149,7 +150,7 @@ class NetworkTracksDataSource {
           }
 
           args.responseList.addAll(callbackTracks);
-          tracksGettingStream.onPartGetted?.call(callbackTracks);
+          tracksGettingStream.onPartGot?.call(callbackTracks);
           callbackTracks.clear();
         }
       }

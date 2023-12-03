@@ -6,16 +6,19 @@ import 'package:spotify_downloader/features/domain/tracks/services/entities/trac
 import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_controller.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/services/tracks_service.dart';
 
-class GetTracksWithLoadingObserverFromTracksColleciton
-    implements UseCase<Failure, TracksWithLoadingObserverGettingController, (TracksCollection, List<TrackWithLoadingObserver>)> {
-  GetTracksWithLoadingObserverFromTracksColleciton({required TracksService tracksService})
+class GetTracksWithLoadingObserverFromTracksCollecitonWithOffset
+    implements
+        UseCase<Failure, TracksWithLoadingObserverGettingController,
+            (TracksCollection, List<TrackWithLoadingObserver>, int)> {
+  GetTracksWithLoadingObserverFromTracksCollecitonWithOffset({required TracksService tracksService})
       : _tracksService = tracksService;
 
   final TracksService _tracksService;
 
   @override
-  Future<Result<Failure, TracksWithLoadingObserverGettingController>> call((TracksCollection, List<TrackWithLoadingObserver>) params) async {
-        return Result.isSuccessful(await _tracksService.getTracksWithLoadingObserversFromTracksColleciton(
-        tracksCollection: params.$1, responseList: params.$2, offset: 0));
+  Future<Result<Failure, TracksWithLoadingObserverGettingController>> call(
+      (TracksCollection, List<TrackWithLoadingObserver>, int) params) async {
+    return Result.isSuccessful(await _tracksService.getTracksWithLoadingObserversFromTracksColleciton(
+        tracksCollection: params.$1, responseList: params.$2, offset: params.$3));
   }
 }

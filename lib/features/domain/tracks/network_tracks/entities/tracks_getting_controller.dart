@@ -11,7 +11,7 @@ class TracksGettingController {
   final CancellationTokenSource _cancellationTokenSource;
 
   Function(Result<Failure, TracksGettingEndedStatus>)? onEnded;
-  Function(Iterable<Track?>)? onPartGetted;
+  Function(Iterable<Track?>)? onPartGot;
 
   void cancelGetting() => _cancellationTokenSource.cancel();
 }

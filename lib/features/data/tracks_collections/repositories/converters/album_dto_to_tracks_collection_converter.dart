@@ -12,6 +12,7 @@ class AlbumDtoToTracksCollectionConverter implements ResultValueConverter<Tracks
       return Result.isSuccessful(TracksCollection(
         spotifyId: album.id!,
         type: TracksCollectionType.album,
+        tracksCount: album.tracks!.length,
         name: album.name!,
         artists: album.artists?.map((a) => a.name ?? '').where((a) => a.isNotEmpty).toList(),
         smallImageUrl: album.images?.last.url,

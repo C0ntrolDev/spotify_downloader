@@ -5,5 +5,5 @@ import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tr
 
 class TracksGettingStream {
   Function(Result<Failure, TracksDtoGettingEndedStatus>)? onEnded;
-  Function(List<Track>)? onPartGetted;
+  Function(List<Track>)? onPartGot;
 }
