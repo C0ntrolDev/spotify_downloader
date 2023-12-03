@@ -5,5 +5,13 @@ class TrackWithLoadingObserver {
   TrackWithLoadingObserver({required this.track});
 
   final Track track;
-  LoadingTrackObserver? trackObserver;
+
+  LoadingTrackObserver? _trackObserver;
+  LoadingTrackObserver? get trackObserver => _trackObserver;
+  set trackObserver(LoadingTrackObserver? value) {
+    _trackObserver = value;
+    onTrackObserverChanged?.call();
+  }
+
+  void Function()? onTrackObserverChanged;
 }

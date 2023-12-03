@@ -1,4 +1,11 @@
+import 'dart:ffi';
+
+import 'package:spotify_downloader/core/util/failures/failure.dart';
+import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
+import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
+import 'package:spotify_downloader/features/domain/tracks/download_tracks/repositories/dowload_tracks_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/get_tracks_from_tracks_collection_args.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/repositories/network_tracks_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
@@ -9,10 +16,14 @@ import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.
 import 'dart:isolate';
 
 class TracksServiceImpl implements TracksService {
-  TracksServiceImpl({required NetworkTracksRepository networkTracksRepository})
-      : _networkTracksRepository = networkTracksRepository;
+  TracksServiceImpl(
+      {required NetworkTracksRepository networkTracksRepository,
+      required DowloadTracksRepository dowloadTracksRepository})
+      : _networkTracksRepository = networkTracksRepository,
+        _dowloadTracksRepository = dowloadTracksRepository;
 
   final NetworkTracksRepository _networkTracksRepository;
+  final DowloadTracksRepository _dowloadTracksRepository;
 
   @override
   Future<TracksWithLoadingObserverGettingController> getTracksWithLoadingObserversFromTracksColleciton(
@@ -80,5 +91,27 @@ class TracksServiceImpl implements TracksService {
 
   TrackWithLoadingObserver _findAllInfoAboutTrack(Track track) {
     return TrackWithLoadingObserver(track: track);
+  }
+
+  Future<Result<Failure, void>> dowloadTracksWithLoadingObserverRange(
+      List<TrackWithLoadingObserver> tracksWithLoadingObservers) async {
+    for (var trackWithLoadingObserver in tracksWithLoadingObservers) {
+      if (trackWithLoadingObserver.trackObserver == null ||
+          trackWithLoadingObserver.trackObserver!.status == LoadingTrackStatus.loaded ||
+          trackWithLoadingObserver.trackObserver!.status == LoadingTrackStatus.loadingCancelled) {
+        final trackObserverResult = await downloadTrack(trackWithLoadingObserver.track);
+        if (trackObserverResult.isSuccessful) {
+          trackWithLoadingObserver.trackObserver = trackObserverResult.result;
+        } else {
+          return Result.notSuccessful(trackObserverResult.failure);
+        }
+      }
+    }
+
+    return const Result.isSuccessful(Void);
+  }
+
+  Future<Result<Failure, LoadingTrackObserver>> downloadTrack(Track track) async {
+    return _dowloadTracksRepository.dowloadTrack(track);
   }
 }
