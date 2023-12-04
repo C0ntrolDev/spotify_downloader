@@ -31,6 +31,7 @@ dependencies:
   path: ^1.8.3
   shimmer: ^3.0.0
   connectivity_plus: ^5.0.2
+  draggable_scrollbar: ^0.1.0
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,3 @@
-// ignore_for_file: void_checks
-
-import 'dart:ffi';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/data/history_tracks_collectons/data_source/tracks_collectons_history_data_source.dart';
@@ -20,7 +17,7 @@ class TracksCollectionsHistoryRepositoryImpl implements TracksCollectionsHistory
     try {
       await _dataSource
           .addHistoryTracksCollectionToHistory(tracksCollectionsConverter.convert(tracksCollection));
-      return const Result<Failure, void>.isSuccessful(Void );
+      return const Result<Failure, void>.isSuccessful(null );
     } catch (e) {
       return Result.notSuccessful(Failure(message: e));
     }
@@ -31,7 +28,7 @@ class TracksCollectionsHistoryRepositoryImpl implements TracksCollectionsHistory
     try {
       await _dataSource
           .deleteHistoryTracksCollectionFromHistory(tracksCollectionsConverter.convert(tracksCollection));
-      return const Result<Failure, void>.isSuccessful(Void);
+      return const Result<Failure, void>.isSuccessful(null);
     } catch (e) {
       return Result.notSuccessful(Failure(message: e));
     }

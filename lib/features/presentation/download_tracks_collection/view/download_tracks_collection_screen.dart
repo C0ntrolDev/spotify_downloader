@@ -136,7 +136,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                         style: theme.textTheme.titleLarge,
                       ),
                       TextButton(
-                        style: TextButton.styleFrom(foregroundColor: primaryColor),
+                          style: TextButton.styleFrom(foregroundColor: primaryColor),
                           onPressed: () {
                             _loadScreen();
                           },
@@ -161,8 +161,6 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                             children: [
                               Scrollbar(
                                   controller: _screenScrollController,
-                                  thumbVisibility: true,
-                                  radius: const Radius.circular(10),
                                   child: CustomScrollView(
                                     controller: _screenScrollController
                                       ..addListener(() {

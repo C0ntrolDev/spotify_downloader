@@ -1,7 +1,3 @@
-// ignore_for_file: void_checks
-
-import 'dart:ffi';
-
 import 'package:path_provider/path_provider.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
@@ -67,7 +63,7 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
     if (foundLoadingTrack != null) {
       foundLoadingTrack.$2.cancel();
       _loadingTracks.remove(foundLoadingTrack);
-      return const Result.isSuccessful(Void);
+      return const Result.isSuccessful(null);
     }
 
     return Result.notSuccessful(NotFoundFailure(message: 'this track isn\'t dowloading'));
@@ -109,7 +105,7 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
       trackObserverContainer.$3.remove(loadingTrackObserver);
     }
 
-    return const Result.isSuccessful(Void);
+    return const Result.isSuccessful(null);
   }
 
   void _onLoadingStreamEnded(

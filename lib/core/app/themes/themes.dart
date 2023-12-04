@@ -4,9 +4,19 @@ import 'package:spotify_downloader/core/app/colors/colors.dart';
 part 'text_themes.dart';
 
 final mainTheme = ThemeData(
-  cardTheme: const CardTheme(
-    color: surfaceColor
-  ),
+  cardTheme: const CardTheme(color: surfaceColor),
+  scrollbarTheme: ScrollbarThemeData(
+      interactive: true,
+      thumbVisibility: const MaterialStatePropertyAll(true),
+      radius: const Radius.circular(10),
+      crossAxisMargin: 5,
+      thumbColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.dragged)) {
+          return primaryColor;
+        } else {
+          return onBackgroundSecondaryColor;
+        }
+      })),
   scaffoldBackgroundColor: backgroundColor,
   pageTransitionsTheme: const PageTransitionsTheme(builders: {
     TargetPlatform.android: CupertinoPageTransitionsBuilder(),
