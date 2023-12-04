@@ -24,7 +24,7 @@ class TracksServiceImpl implements TracksService {
       int offset = 0}) async {
 
     final rawResponseList = List<Track?>.empty(growable: true);
-    final rawController = _networkTracksRepository.getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs(
+    final rawController = await _networkTracksRepository.getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs(
         tracksCollection: tracksCollection, responseList: rawResponseList, offset: offset));
 
     final trackGettingController =

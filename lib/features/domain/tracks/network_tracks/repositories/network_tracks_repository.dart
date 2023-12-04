@@ -2,5 +2,5 @@ import 'package:spotify_downloader/features/domain/tracks/network_tracks/entitie
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_controller.dart';
 
 abstract class NetworkTracksRepository {
-  TracksGettingController getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs args);
+  Future<TracksGettingController> getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs args);
 }

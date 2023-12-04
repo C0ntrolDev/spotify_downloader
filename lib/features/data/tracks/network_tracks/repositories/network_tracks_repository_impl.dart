@@ -21,7 +21,7 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
   final TrackDtoToTrackConverter _trackDtoToTrackConverter = TrackDtoToTrackConverter();
 
   @override
-  TracksGettingController getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs args) {
+  Future<TracksGettingController> getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs args) async {
     final responseList = List<dto.Track>.empty(growable: true);
     final cancellationTokenSource = CancellationTokenSource();
     final getTracksArgs = GetTracksArgs(
@@ -36,9 +36,9 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
 
     switch (args.tracksCollection.type) {
       case TracksCollectionType.playlist:
-        tracksGettingStream = _networkTracksDataSource.getTracksFromPlaylist(getTracksArgs);
+        tracksGettingStream = await _networkTracksDataSource.getTracksFromPlaylist(getTracksArgs);
       case TracksCollectionType.album:
-        tracksGettingStream = _networkTracksDataSource.getTracksFromAlbum(getTracksArgs);
+        tracksGettingStream = await _networkTracksDataSource.getTracksFromAlbum(getTracksArgs);
       case TracksCollectionType.track:
         tracksGettingStream = _networkTracksDataSource.getTrackBySpotifyId(getTracksArgs);
       case TracksCollectionType.likedTracks:
