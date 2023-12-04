@@ -40,13 +40,13 @@ class DowloadAudioFromYoutubeDataSource {
           downloadStreamInfo = manifest.audioOnly.withHighestBitrate();
         } on SocketException {
           yt.close(); 
-          return Result.notSuccessful(NetworkFailure());
+          return const Result.notSuccessful(NetworkFailure());
         } on ArgumentError {
           yt.close();
           return Result.notSuccessful(NotFoundFailure(message: 'video with this url not found: ${args.youtubeUrl}'));
         }
         final rawPath =
-            p.join(args.saveDirectoryPath, '${args.audioMetadata.name}${downloadStreamInfo.container.name}');
+            p.join(args.saveDirectoryPath, '${args.audioMetadata.name}.${downloadStreamInfo.container.name}');
         final audioPath = p.join(args.saveDirectoryPath, '${args.audioMetadata.name}.mp3');
 
         if (downloadStreamInfo != null) {
@@ -59,7 +59,7 @@ class DowloadAudioFromYoutubeDataSource {
             return const Result.isSuccessful(AudioLoadingResult.isCancelled());
           }
 
-          _convertFileToMp3(rawPath, audioPath);
+          await _convertFileToMp3(rawPath, audioPath);
 
           setLoadingPercent.call(95);
           await rawFile.delete();
@@ -81,7 +81,7 @@ class DowloadAudioFromYoutubeDataSource {
           setLoadingPercent.call(100);
           return Result.isSuccessful(AudioLoadingResult.isLoaded(audioPath));
         } else {
-          return Result.notSuccessful(NotFoundFailure());
+          return const Result.notSuccessful(NotFoundFailure());
         }
       } catch (e) {
         return Result.notSuccessful(Failure(message: e));
@@ -104,6 +104,7 @@ class DowloadAudioFromYoutubeDataSource {
       loadedBytesCount += chunk.length;
       setLoadingPercent.call((loadedBytesCount / rawFileSize) * 90);
 
+      print((loadedBytesCount / rawFileSize) * 90);
       if (cancellationToken.isCancelled) {
         downloadStreamListener.cancel();
       }

@@ -11,8 +11,6 @@ import 'package:spotify_downloader/features/domain/tracks/download_tracks/entiti
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
-
-import 'package:path/path.dart' as p;
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/repositories/dowload_tracks_repository.dart';
 
 class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
@@ -48,7 +46,7 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
       }
 
     } else {
-      return Result.notSuccessful(NotFoundFailure(message: 'youtube url not specified'));
+      return const Result.notSuccessful(NotFoundFailure(message: 'youtube url not specified'));
     }
   }
 
@@ -66,7 +64,7 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
       return const Result.isSuccessful(null);
     }
 
-    return Result.notSuccessful(NotFoundFailure(message: 'this track isn\'t dowloading'));
+    return const Result.notSuccessful(NotFoundFailure(message: 'this track isn\'t dowloading'));
   }
 
   @override
@@ -147,8 +145,8 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
 
   Future<void> _startTrackLoading(
       LoadingTrackId loadingTrackId, Track track, List<LoadingTrackObserver> loadingTrackObservers) async {
-    final saveDirectoryPath =
-        p.join((await getApplicationDocumentsDirectory()).path, '/${track.parentCollection.name}');
+    const saveDirectoryPath =
+        'storage/emulated/0/Download/';
 
     final loadingStream = _dowloadAudioFromYoutubeDataSource.dowloadAudioFromYoutube(DowloadAudioFromYoutubeArgs(
         youtubeUrl: track.youtubeUrl!,

@@ -9,9 +9,12 @@ import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/features/domain/history_tracks_collectons/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/bloc/download_tracks_collection_bloc.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/view/track_tile.dart';
 import 'dart:math' as math;
 
 import 'package:spotify_downloader/features/presentation/shared/widgets/search_text_field.dart';
+
+import '../widgets/track_tile_placeholder.dart';
 
 abstract class DownloadTracksCollectionScreen extends StatefulWidget {
   final String? url;
@@ -247,52 +250,8 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                             return Stack(
                                               children: [
                                                 Builder(builder: (buildContext) {
-                                                  if (index < state.tracks.length) {
-                                                    return Container(
-                                                      padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-                                                      child: Row(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          CachedNetworkImage(
-                                                            width: 50,
-                                                            height: 50,
-                                                            imageUrl: state.tracks[index].track.imageUrl ?? '',
-                                                            placeholder: (context, imageUrl) => Image.asset(
-                                                                'resources/images/another/loading_track_collection_image.png'),
-                                                            errorWidget: (context, imageUrl, _) => Image.asset(
-                                                                'resources/images/another/loading_track_collection_image.png'),
-                                                          ),
-                                                          Expanded(
-                                                              child: Padding(
-                                                            padding: const EdgeInsets.only(left: 10),
-                                                            child: Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                Text(
-                                                                  state.tracks[index].track.name,
-                                                                  overflow: TextOverflow.ellipsis,
-                                                                  style: theme.textTheme.bodyMedium,
-                                                                ),
-                                                                Text(
-                                                                  state.tracks[index].track.artists?.join(', ') ?? '',
-                                                                  style: theme.textTheme.labelLarge
-                                                                      ?.copyWith(color: onBackgroundSecondaryColor),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          )),
-                                                          SizedBox(
-                                                              width: 20,
-                                                              height: 50,
-                                                              child: IconButton(
-                                                                  onPressed: () {},
-                                                                  icon: SvgPicture.asset(
-                                                                    'resources/images/svg/more_info.svg',
-                                                                    fit: BoxFit.fitHeight,
-                                                                  )))
-                                                        ],
-                                                      ),
-                                                    );
+                                                  if (index < (state.tracks.length)) {
+                                                    return TrackTile(trackWithLoadingObserver: state.tracks[index]);
                                                   }
 
                                                   return const TrackTilePlaceholder();
@@ -404,60 +363,5 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
         (color1.red - (color1.red - color2.red) * ratio).round(),
         (color1.green - (color1.green - color2.green) * ratio).round(),
         (color1.blue - (color1.blue - backgroundColor.blue) * ratio).round());
-  }
-}
-
-class TrackTilePlaceholder extends StatefulWidget {
-  const TrackTilePlaceholder({
-    super.key,
-  });
-
-  @override
-  State<TrackTilePlaceholder> createState() => _TrackTilePlaceholderState();
-}
-
-class _TrackTilePlaceholderState extends State<TrackTilePlaceholder> {
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-        padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset(
-              'resources/images/another/loading_track_collection_image.png',
-              width: 50,
-              height: 50,
-            ),
-            Expanded(
-                child: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular((theme.textTheme.bodyMedium?.fontSize ?? 0) * 0.3),
-                        color: tilePlaceholderColor),
-                    height: theme.textTheme.bodyMedium?.fontSize,
-                    width: 200,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular((theme.textTheme.labelLarge?.fontSize ?? 0) * 0.3),
-                          color: tilePlaceholderColor),
-                      height: theme.textTheme.labelLarge?.fontSize,
-                      width: 130,
-                    ),
-                  ),
-                ],
-              ),
-            )),
-          ],
-        ));
   }
 }

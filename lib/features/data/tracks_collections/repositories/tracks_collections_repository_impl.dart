@@ -61,7 +61,7 @@ class TracksCollectionsRepositoryImpl implements TracksCollectionsRepository {
     try {
       return getTracksCollectionByTypeAndSpotifyId(_getTracksCollectionTypeFromUrl(url), _getSpotifyIdFromUrl(url));
     } catch (e) {
-      return Result.notSuccessful(NotFoundFailure());
+      return const Result.notSuccessful(NotFoundFailure());
     }
   }
 
@@ -78,7 +78,7 @@ class TracksCollectionsRepositoryImpl implements TracksCollectionsRepository {
       return TracksCollectionType.album;
     }
 
-    throw NotFoundFailure();
+    throw const NotFoundFailure();
   }
 
   String _getSpotifyIdFromUrl(String url) {

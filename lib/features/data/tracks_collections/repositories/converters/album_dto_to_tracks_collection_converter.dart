@@ -18,7 +18,7 @@ class AlbumDtoToTracksCollectionConverter implements ResultValueConverter<Tracks
         smallImageUrl: album.images?.last.url,
         bigImageUrl: album.images?.first.url));
     } catch (e) {
-      return Result.notSuccessful(ConverterFailure());
+      return const Result.notSuccessful(ConverterFailure());
     }
   }
 

@@ -14,7 +14,7 @@ class SearchVideoOnYoutubeDataSource {
       return Result.isSuccessful(videos.firstOrNull);
     } on SocketException {
       yt.close();
-      return Result.notSuccessful(NetworkFailure());
+      return const Result.notSuccessful(NetworkFailure());
     }
   }
 
@@ -26,7 +26,7 @@ class SearchVideoOnYoutubeDataSource {
       return Result.isSuccessful(videos.getRange(0, 10).toList());
     } on SocketException {
       yt.close();
-      return Result.notSuccessful(NetworkFailure());
+      return const Result.notSuccessful(NetworkFailure());
     }
   }
 
@@ -38,7 +38,7 @@ class SearchVideoOnYoutubeDataSource {
       return Result.isSuccessful(video);
     } on SocketException {
       yt.close();
-      return Result.notSuccessful(NetworkFailure());
+      return const Result.notSuccessful(NetworkFailure());
     } on ArgumentError {
       yt.close();
       return Result.notSuccessful(NotFoundFailure(message: 'video with this url not found: $url'));

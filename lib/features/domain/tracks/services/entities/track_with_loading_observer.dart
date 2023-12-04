@@ -7,11 +7,11 @@ class TrackWithLoadingObserver {
   final Track track;
 
   LoadingTrackObserver? _trackObserver;
-  LoadingTrackObserver? get trackObserver => _trackObserver;
-  set trackObserver(LoadingTrackObserver? value) {
+  LoadingTrackObserver? get loadingObserver => _trackObserver;
+  set loadingObserver(LoadingTrackObserver? value) {
     _trackObserver = value;
-    onTrackObserverChanged?.call();
+    onTrackObserverChanged?.call(value);
   }
 
-  void Function()? onTrackObserverChanged;
+  void Function(LoadingTrackObserver?)? onTrackObserverChanged;
 }
