@@ -1,4 +1,3 @@
-import 'package:path_provider/path_provider.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
@@ -25,7 +24,6 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
       List.empty(growable: true);
   final int _sameTimeloadingTracksLimit = 5;
 
-
   @override
   Future<Result<Failure, LoadingTrackObserver>> dowloadTrack(Track track) async {
     final loadingTrackObserver = LoadingTrackObserver(track: track);
@@ -44,7 +42,6 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
         _loadingTracksQueue.add((loadingTrackId, track, trackObservers));
         return Result.isSuccessful(loadingTrackObserver);
       }
-
     } else {
       return const Result.notSuccessful(NotFoundFailure(message: 'youtube url not specified'));
     }
@@ -61,7 +58,19 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
     if (foundLoadingTrack != null) {
       foundLoadingTrack.$2.cancel();
       _loadingTracks.remove(foundLoadingTrack);
+
       return const Result.isSuccessful(null);
+    } else {
+      final foundWaitingTrack = _loadingTracksQueue.where((e) => e.$1 == loadingTrackId).firstOrNull;
+      if (foundWaitingTrack != null) {
+        _loadingTracksQueue.remove(foundWaitingTrack);
+
+        for (var loadingObserver in foundWaitingTrack.$3) {
+          loadingObserver.onLoadingCancelled?.call();
+        }
+
+        return const Result.isSuccessful(null);
+      }
     }
 
     return const Result.notSuccessful(NotFoundFailure(message: 'this track isn\'t dowloading'));
@@ -145,8 +154,7 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
 
   Future<void> _startTrackLoading(
       LoadingTrackId loadingTrackId, Track track, List<LoadingTrackObserver> loadingTrackObservers) async {
-    const saveDirectoryPath =
-        'storage/emulated/0/Download/';
+    const saveDirectoryPath = 'storage/emulated/0/Download/';
 
     final loadingStream = _dowloadAudioFromYoutubeDataSource.dowloadAudioFromYoutube(DowloadAudioFromYoutubeArgs(
         youtubeUrl: track.youtubeUrl!,
@@ -159,7 +167,6 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
         trackObserver.onLoadingPercentChanged?.call(newPercent);
       }
     };
-
     _loadingTracks.add((loadingTrackId, loadingStream, loadingTrackObservers));
   }
 }

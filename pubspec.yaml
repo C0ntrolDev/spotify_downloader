@@ -52,6 +52,7 @@ flutter:
     - resources/images/svg/bottom_bar/home_icon_active.svg
     - resources/images/svg/bottom_bar/home_icon.svg
     - resources/images/svg/download_icon.svg
+    - resources/images/svg/error_icon.svg
     - resources/images/svg/downloaded_icon.svg
     - resources/images/svg/settings_icon.svg
     - resources/images/svg/search_icon.svg

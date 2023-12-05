@@ -249,13 +249,16 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                           itemBuilder: (context, index) {
                                             return Stack(
                                               children: [
-                                                Builder(builder: (buildContext) {
-                                                  if (index < (state.tracks.length)) {
-                                                    return TrackTile(trackWithLoadingObserver: state.tracks[index]);
-                                                  }
-
-                                                  return const TrackTilePlaceholder();
-                                                }),
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+                                                  child: Builder(builder: (buildContext) {
+                                                    if (index < (state.tracks.length)) {
+                                                      return TrackTile(trackWithLoadingObserver: state.tracks[index]);
+                                                    }
+                                                  
+                                                    return const TrackTilePlaceholder();
+                                                  }),
+                                                ),
                                                 Builder(
                                                   builder: (buildContext) {
                                                     if (state

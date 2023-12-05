@@ -24,13 +24,14 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
         _trackWithLoadingObserver = trackWithLoadingObserver,
         _dowloadTrack = dowloadTrack,
         super(TrackTileDeffault(trackWithLoadingObserver.track)) {
-    _trackWithLoadingObserver.onTrackObserverChanged = onLoadingTrackObserverChanged;   
+    _trackWithLoadingObserver.onTrackObserverChanged = onLoadingTrackObserverChanged;
 
     on<TrackTileCancelTrackLoading>((event, emit) {
       _cancelTrackLoading.call(_trackWithLoadingObserver.track);
     });
 
     on<TrackTitleDownloadTrack>((event, emit) async {
+      emit(TrackTileOnTrackLoading(_trackWithLoadingObserver.track));
       final loadingObserverResult = await _dowloadTrack.call(_trackWithLoadingObserver.track);
       if (loadingObserverResult.isSuccessful) {
         _trackWithLoadingObserver.loadingObserver = loadingObserverResult.result;
@@ -44,11 +45,15 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
     });
 
     on<TrackTileLoadingPercentChanged>((event, emit) {
-      emit(TrackTileTrackLoading(_trackWithLoadingObserver.track, percent: event.loadingPercent));
+      emit(TrackTileOnTrackLoading(_trackWithLoadingObserver.track, percent: event.loadingPercent));
     });
 
     on<TrackTileTrackLoaded>((event, emit) {
       emit(TrackTileOnTrackLoaded(_trackWithLoadingObserver.track));
+    });
+
+    on<TrackTileTrackLoadingFailure>((event, emit) {
+      emit(TrackTileTrackOnFailure(_trackWithLoadingObserver.track, failure: event.failure));
     });
 
     onLoadingTrackObserverChanged(_trackWithLoadingObserver.loadingObserver);
@@ -58,12 +63,14 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
     if (loadingTrackObserver != null) {
       selectStateBasedOnLoadingTrackObserver(loadingTrackObserver);
 
-      loadingTrackObserver.onStartLoading = () => add(TrackTileCancelTrackLoading());
-      loadingTrackObserver.onLoadingPercentChanged = (percent) => add(TrackTileLoadingPercentChanged(loadingPercent: percent));
+      loadingTrackObserver.onStartLoading = () {
+        add(const TrackTileLoadingPercentChanged());
+      };
+      loadingTrackObserver.onLoadingPercentChanged =
+          (percent) => add(TrackTileLoadingPercentChanged(loadingPercent: percent));
       loadingTrackObserver.onLoaded = (savePath) => add(TrackTileTrackLoaded(savePath));
       loadingTrackObserver.onFailure = (failure) => add(TrackTileTrackLoadingFailure(failure));
       loadingTrackObserver.onLoadingCancelled = () => add(TrackTileSetToDeffaultState());
-      
     } else {
       add(TrackTileSetToDeffaultState());
     }

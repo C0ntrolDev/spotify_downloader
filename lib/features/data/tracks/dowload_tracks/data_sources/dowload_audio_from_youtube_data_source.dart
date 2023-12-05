@@ -1,8 +1,8 @@
-// ignore_for_file: unnecessary_null_comparison
-
 import 'dart:async';
-import 'dart:io'; 
+import 'dart:ffi';
+import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:path/path.dart' as p;
 import 'package:spotify_downloader/core/util/cancellation_token/cancellation_token.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/audio_loading_result.dart';
@@ -39,7 +39,7 @@ class DowloadAudioFromYoutubeDataSource {
           final manifest = await yt.videos.streamsClient.getManifest(video.id);
           downloadStreamInfo = manifest.audioOnly.withHighestBitrate();
         } on SocketException {
-          yt.close(); 
+          yt.close();
           return const Result.notSuccessful(NetworkFailure());
         } on ArgumentError {
           yt.close();
@@ -49,48 +49,46 @@ class DowloadAudioFromYoutubeDataSource {
             p.join(args.saveDirectoryPath, '${args.audioMetadata.name}.${downloadStreamInfo.container.name}');
         final audioPath = p.join(args.saveDirectoryPath, '${args.audioMetadata.name}.mp3');
 
-        if (downloadStreamInfo != null) {
-          File rawFile =
-              await _downloadVideoFromYoutube(yt, downloadStreamInfo, rawPath, setLoadingPercent, cancellationToken);
-          yt.close();
+        File rawFile =
+            (await _downloadVideoFromYoutube(yt, downloadStreamInfo, rawPath, setLoadingPercent, cancellationToken))
+                .result!;
 
-          if (cancellationToken.isCancelled) {
-            await rawFile.delete();
-            return const Result.isSuccessful(AudioLoadingResult.isCancelled());
-          }
+        yt.close();
 
-          await _convertFileToMp3(rawPath, audioPath);
-
-          setLoadingPercent.call(95);
+        if (cancellationToken.isCancelled) {
           await rawFile.delete();
-
-          if (cancellationToken.isCancelled) {
-            return const Result.isSuccessful(AudioLoadingResult.isCancelled());
-          }
-
-          await _audioMetadataEditor.changeAudioMetadata(
-              audioPath: audioPath,
-              audioMetadata: args.audioMetadata.copyWith(durationMs: video.duration?.inMilliseconds.toDouble()));
-
-          if (cancellationToken.isCancelled) {
-            final audioFile = File(audioPath);
-            audioFile.delete();
-            return const Result.isSuccessful(AudioLoadingResult.isCancelled());
-          }
-
-          setLoadingPercent.call(100);
-          return Result.isSuccessful(AudioLoadingResult.isLoaded(audioPath));
-        } else {
-          return const Result.notSuccessful(NotFoundFailure());
+          return const Result.isSuccessful(AudioLoadingResult.isCancelled());
         }
+
+        await _convertFileToMp3(rawPath, audioPath);
+
+        setLoadingPercent.call(95);
+        await rawFile.delete();
+
+        if (cancellationToken.isCancelled) {
+          return const Result.isSuccessful(AudioLoadingResult.isCancelled());
+        }
+
+        await _audioMetadataEditor.changeAudioMetadata(
+            audioPath: audioPath,
+            audioMetadata: args.audioMetadata.copyWith(durationMs: video.duration?.inMilliseconds.toDouble()));
+
+        if (cancellationToken.isCancelled) {
+          final audioFile = File(audioPath);
+          audioFile.delete();
+          return const Result.isSuccessful(AudioLoadingResult.isCancelled());
+        }
+
+        setLoadingPercent.call(100);
+        return Result.isSuccessful(AudioLoadingResult.isLoaded(audioPath));
       } catch (e) {
         return Result.notSuccessful(Failure(message: e));
       }
     });
   }
 
-  Future<File> _downloadVideoFromYoutube(YoutubeExplode yt, AudioOnlyStreamInfo downloadStreamInfo, String rawPath,
-      Function(double percent) setLoadingPercent, CancellationToken cancellationToken) async {
+  Future<Result<Failure, File>> _downloadVideoFromYoutube(YoutubeExplode yt, AudioOnlyStreamInfo downloadStreamInfo,
+      String rawPath, Function(double percent) setLoadingPercent, CancellationToken cancellationToken) async {
     final downloadStream = yt.videos.streamsClient.get(downloadStreamInfo);
     final rawFileSize = downloadStreamInfo.size.totalBytes;
     final rawFile = File(rawPath);
@@ -98,22 +96,34 @@ class DowloadAudioFromYoutubeDataSource {
 
     late final StreamSubscription<List<int>> downloadStreamListener;
     int loadedBytesCount = 0;
+
+    final cancellationTokenCompleter = Completer<Void?>();
+
     downloadStreamListener = downloadStream.listen((chunk) {
       rawFileStream.add(chunk);
 
       loadedBytesCount += chunk.length;
       setLoadingPercent.call((loadedBytesCount / rawFileSize) * 90);
 
-      print((loadedBytesCount / rawFileSize) * 90);
       if (cancellationToken.isCancelled) {
-        downloadStreamListener.cancel();
+        cancellationTokenCompleter.complete(null);
       }
     });
 
-    await downloadStreamListener.asFuture();
+    final result = await Future.any([
+      downloadStreamListener.asFuture(),
+      cancellationTokenCompleter.future,
+      Connectivity().onConnectivityChanged.firstWhere((result) => result == ConnectivityResult.none),
+    ]);
+
     await rawFileStream.flush();
     await rawFileStream.close();
-    return rawFile;
+
+    if (result is ConnectivityResult) {
+      return const Result.notSuccessful(NetworkFailure());
+    } else {
+      return Result.isSuccessful(rawFile);
+    }
   }
 
   Future<void> _convertFileToMp3(String rawPath, String audioPath) async {

@@ -13,10 +13,10 @@ final class TrackTileDeffault extends TrackTileState {
   const TrackTileDeffault(super.track);
 }
 
-final class TrackTileTrackLoading extends TrackTileState {
+final class TrackTileOnTrackLoading extends TrackTileState {
   final double? percent;
 
-  const TrackTileTrackLoading(super.track, {this.percent});
+  const TrackTileOnTrackLoading(super.track, {this.percent});
 
   @override
   List<Object?> get props => [track, percent];

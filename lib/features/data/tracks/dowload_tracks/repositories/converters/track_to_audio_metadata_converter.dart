@@ -7,7 +7,7 @@ class TrackToAudioMetadataConverter implements ValueConverter<AudioMetadata, Tra
   @override
   AudioMetadata convert(Track track) {
     return AudioMetadata(
-        name: track.name,
+        name: track.name.replaceAll('/', '').replaceAll('\\', ''),
         artists: track.artists,
         imageUrl: track.imageUrl,
         album: AlbumMetadata(
