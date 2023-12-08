@@ -160,6 +160,7 @@ class DownloadAudioFromYoutubeDataSource {
         if (token.isCancelled) {
           cancellationTokenCompleter.complete(null);
         }
+      // ignore: empty_catches
       } catch (e) {}
     });
 
