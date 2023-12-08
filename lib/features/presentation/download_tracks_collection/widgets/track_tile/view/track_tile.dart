@@ -87,6 +87,7 @@ class _TrackTileState extends State<TrackTile> {
                 return GestureDetector(
                   onTap: () => _trackTileBloc.add(TrackTileCancelTrackLoading()),
                   child: Container(
+                    padding: const EdgeInsets.all(0),
                     height: 27,
                     width: 27,
                     child: CircularProgressIndicator(

@@ -1,9 +1,9 @@
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
+import 'package:spotify_downloader/core/util/result/cancellable_result.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/data_sources/dowload_audio_from_youtube_data_source.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/dowload_audio_from_youtube_args.dart';
-import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/audio_loading_result.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/audio_loading_stream.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/repositories/converters/track_to_audio_metadata_converter.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_info.dart';
@@ -13,10 +13,10 @@ import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/repositories/dowload_tracks_repository.dart';
 
 class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
-  DowloadTracksRepositoryImpl({required DowloadAudioFromYoutubeDataSource dowloadAudioFromYoutubeDataSource})
+  DowloadTracksRepositoryImpl({required DownloadAudioFromYoutubeDataSource dowloadAudioFromYoutubeDataSource})
       : _dowloadAudioFromYoutubeDataSource = dowloadAudioFromYoutubeDataSource;
 
-  final DowloadAudioFromYoutubeDataSource _dowloadAudioFromYoutubeDataSource;
+  final DownloadAudioFromYoutubeDataSource _dowloadAudioFromYoutubeDataSource;
   final TrackToAudioMetadataConverter _trackToAudioMetadataConverter = TrackToAudioMetadataConverter();
 
   final List<(LoadingTrackId, Track, List<LoadingTrackObserver>)> _loadingTracksQueue = List.empty(growable: true);
@@ -66,6 +66,7 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
         _loadingTracksQueue.remove(foundWaitingTrack);
 
         for (var loadingObserver in foundWaitingTrack.$3) {
+          loadingObserver.status = LoadingTrackStatus.loadingCancelled;
           loadingObserver.onLoadingCancelled?.call();
         }
 
@@ -116,20 +117,18 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
   }
 
   void _onLoadingStreamEnded(
-      Result<Failure, AudioLoadingResult> result, List<LoadingTrackObserver> loadingTrackObservers) {
+      CancellableResult<Failure, String> result, List<LoadingTrackObserver> loadingTrackObservers) {
     _loadingTracks.removeWhere((e) => e.$3 == loadingTrackObservers);
 
     if (result.isSuccessful) {
-      if (!result.result!.isCancelled) {
-        for (var trackObserver in loadingTrackObservers) {
-          trackObserver.status = LoadingTrackStatus.loaded;
-          trackObserver.onLoaded?.call(result.result!.savePath!);
-        }
-      } else {
-        for (var trackObserver in loadingTrackObservers) {
-          trackObserver.status = LoadingTrackStatus.loadingCancelled;
-          trackObserver.onLoadingCancelled?.call();
-        }
+      for (var trackObserver in loadingTrackObservers) {
+        trackObserver.status = LoadingTrackStatus.loaded;
+        trackObserver.onLoaded?.call(result.result!);
+      }
+    } else if (result.isCancelled) {
+      for (var trackObserver in loadingTrackObservers) {
+        trackObserver.status = LoadingTrackStatus.loadingCancelled;
+        trackObserver.onLoadingCancelled?.call();
       }
     } else {
       for (var trackObserver in loadingTrackObservers) {
@@ -156,10 +155,11 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
       LoadingTrackId loadingTrackId, Track track, List<LoadingTrackObserver> loadingTrackObservers) async {
     const saveDirectoryPath = 'storage/emulated/0/Download/';
 
-    final loadingStream = _dowloadAudioFromYoutubeDataSource.dowloadAudioFromYoutube(DowloadAudioFromYoutubeArgs(
-        youtubeUrl: track.youtubeUrl!,
-        saveDirectoryPath: saveDirectoryPath,
-        audioMetadata: _trackToAudioMetadataConverter.convert(track)));
+    final loadingStream = await _dowloadAudioFromYoutubeDataSource.dowloadAudioFromYoutube(
+        DownloadAudioFromYoutubeArgs(
+            youtubeUrl: track.youtubeUrl!,
+            saveDirectoryPath: saveDirectoryPath,
+            audioMetadata: _trackToAudioMetadataConverter.convert(track)));
 
     loadingStream.onEnded = (result) => _onLoadingStreamEnded(result, loadingTrackObservers);
     loadingStream.onLoadingPercentChanged = (newPercent) {

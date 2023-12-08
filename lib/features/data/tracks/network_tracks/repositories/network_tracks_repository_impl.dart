@@ -45,13 +45,14 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
         throw ArgumentError('can\'t load liked tracks using this method');
     }
 
-    final controller = TracksGettingController(cancellationTokenSource: cancellationTokenSource);
-    _linkStreamToController(tracksGettingStream, controller, args);
+    final controller = _getLinkedToStreamController(tracksGettingStream, args);
     return controller;
   }
 
-  void _linkStreamToController(TracksGettingStream tracksGettingStream, TracksGettingController controller,
-      GetTracksFromTracksCollectionArgs args) {
+  TracksGettingController _getLinkedToStreamController(
+      TracksGettingStream tracksGettingStream, GetTracksFromTracksCollectionArgs args) {
+    final controller = TracksGettingController(cancelGetting: () {});
+
     tracksGettingStream.onEnded = (result) => controller.onEnded?.call(result.isSuccessful
         ? Result.isSuccessful(_convertDtoStatusToStatus(result.result!))
         : Result.notSuccessful(result.failure));
@@ -60,6 +61,8 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
       args.responseList.addAll(tracksPart);
       controller.onPartGot?.call(tracksPart);
     };
+
+    return controller;
   }
 
   TracksGettingEndedStatus _convertDtoStatusToStatus(TracksDtoGettingEndedStatus dtoStatus) {

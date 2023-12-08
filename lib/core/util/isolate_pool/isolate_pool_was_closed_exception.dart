@@ -1,0 +1,1 @@
+class IsolatePoolWasClosedException implements Exception {}

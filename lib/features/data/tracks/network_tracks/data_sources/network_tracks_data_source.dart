@@ -1,10 +1,9 @@
 import 'dart:io';
-import 'dart:isolate';
 import 'package:http/http.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotify_downloader/core/consts/spotify_client.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
+import 'package:spotify_downloader/core/util/isolate_pool/isolate_pool.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/data/tracks/network_tracks/models/get_tracks_args.dart';
 import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tracks_dto_getting_ended_status.dart';
@@ -15,20 +14,22 @@ class NetworkTracksDataSource {
       : _clientId = clientId,
         _clientSecret = clientSecret;
 
+  Future<void> init() async {
+    _isolatePool = await IsolatePool.create();
+  }
+
   final String _clientId;
   final String _clientSecret;
 
-  Future<TracksGettingStream> getTracksFromPlaylist(GetTracksArgs args) {
-    return _runTracksGettingFunctionInIsolate((params) {
-      final clientId = params.$1;
-      final clientSecret = params.$2;
-      final args = params.$3;
+  late final IsolatePool _isolatePool;
 
+  Future<TracksGettingStream> getTracksFromPlaylist(GetTracksArgs args) {
+    return _runTracksGettingFunctionInIsolate(() {
       final tracksGettingStream = TracksGettingStream();
 
       Future(() async {
         final tracksPagesResult = await _handleExceptions<Pages<Track>>(() async {
-          final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(clientId, clientSecret));
+          final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
           final trackPages = spotify.playlists.getTracksByPlaylistId(args.spotifyId);
           return Result.isSuccessful(trackPages);
         });
@@ -47,20 +48,16 @@ class NetworkTracksDataSource {
       });
 
       return tracksGettingStream;
-    }, (_clientId, clientSecret, args));
+    });
   }
 
   Future<TracksGettingStream> getTracksFromAlbum(GetTracksArgs args) {
-    return _runTracksGettingFunctionInIsolate((params) {
-      final clientId = params.$1;
-      final clientSecret = params.$2;
-      final args = params.$3;
-
+    return _runTracksGettingFunctionInIsolate(() {
       final tracksGettingStream = TracksGettingStream();
 
       Future(() async {
         final tracksPagesResult = await _handleExceptions<Pages<TrackSimple>>(() async {
-          final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(clientId, clientSecret));
+          final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
           final trackPages = spotify.albums.tracks(args.spotifyId);
           return Result.isSuccessful(trackPages);
         });
@@ -89,7 +86,7 @@ class NetworkTracksDataSource {
       });
 
       return tracksGettingStream;
-    }, (_clientId, clientSecret, args));
+    });
   }
 
   Track _trackSimpleToTrack(TrackSimple trackSimple, Album album) {
@@ -123,44 +120,28 @@ class NetworkTracksDataSource {
     return tracksGettingStream;
   }
 
-  Future<TracksGettingStream> _runTracksGettingFunctionInIsolate(
-      TracksGettingStream Function((String, String, GetTracksArgs)) function,
-      (String, String, GetTracksArgs) args) async {
+  Future<TracksGettingStream> _runTracksGettingFunctionInIsolate(TracksGettingStream Function() function) async {
     final tracksGettingStream = TracksGettingStream();
 
-    final receivePort = ReceivePort();
-    final isolate = await Isolate.spawn(tracksGettingIsolateFunction, (receivePort.sendPort, function, args));
-    receivePort.listen((message) {
+    final cancellableStream = await _isolatePool.add((sendPort, params, token) async {
+      final isolateTracksGettingStream = function.call();
+      isolateTracksGettingStream.onPartGot = (part) => sendPort.send(part);
+      isolateTracksGettingStream.onEnded = (result) => sendPort.send(result);
+    }, null);
+    cancellableStream.stream.listen((message) {
       if (message is List<Track>) {
         tracksGettingStream.onPartGot?.call(message);
       }
 
       if (message is Result<Failure, TracksDtoGettingEndedStatus>) {
         tracksGettingStream.onEnded?.call(message);
-        receivePort.close();
-        isolate.kill();
       }
     });
 
     return tracksGettingStream;
   }
 
-  void tracksGettingIsolateFunction(
-      (
-        SendPort,
-        TracksGettingStream Function((String, String, GetTracksArgs)),
-        (String, String, GetTracksArgs)
-      ) params) {
-    final sendPort = params.$1;
-    final function = params.$2;
-    final args = params.$3;
-
-    final isolateTracksGettingStream = function.call(args);
-    isolateTracksGettingStream.onPartGot = (part) => sendPort.send(part);
-    isolateTracksGettingStream.onEnded = (result) => sendPort.send(result);
-  }
-
-  static void _getTracksFromPages(
+  void _getTracksFromPages(
       {required Future<Iterable<Track>?> Function(int limit, int offset) getPageTracks,
       required GetTracksArgs args,
       required TracksGettingStream tracksGettingStream}) {
@@ -210,7 +191,7 @@ class NetworkTracksDataSource {
     });
   }
 
-  static Future<Result<Failure, T>> _handleExceptions<T>(Future<Result<Failure, T>> Function() function) async {
+  Future<Result<Failure, T>> _handleExceptions<T>(Future<Result<Failure, T>> Function() function) async {
     try {
       final result = await function();
       return result;

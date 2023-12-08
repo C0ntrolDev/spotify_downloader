@@ -37,7 +37,7 @@ final injector = GetIt.instance;
 
 Future<void> initInjector() async {
   await _initCore();
-  _provideDataSources();
+  await _provideDataSources();
   _provideRepositories();
   _provideUseCases();
   _provideBlocs();
@@ -48,15 +48,17 @@ Future<void> _initCore() async {
   await injector.get<LocalDb>().initDb();
 }
 
-void _provideDataSources() {
+Future<void> _provideDataSources() async {
   injector.registerSingleton<TracksCollectonsHistoryDataSource>(
       TracksCollectonsHistoryDataSource(localDb: injector.get<LocalDb>()));
   injector.registerSingleton<TracksCollectionsDataSource>(
       TracksCollectionsDataSource(clientId: clientId, clientSecret: clientSecret));
-  injector.registerSingleton<DowloadAudioFromYoutubeDataSource>(DowloadAudioFromYoutubeDataSource(
+  injector.registerSingleton<DownloadAudioFromYoutubeDataSource>(DownloadAudioFromYoutubeDataSource(
       audioMetadataEditor: AudioMetadataEditorImpl(), fileToMp3Converter: FFmpegFileToMp3Converter()));
+  await injector.get<DownloadAudioFromYoutubeDataSource>().init();
   injector.registerSingleton<NetworkTracksDataSource>(
       NetworkTracksDataSource(clientId: clientId, clientSecret: clientSecret));
+  await injector.get<NetworkTracksDataSource>().init();
   injector.registerSingleton<SearchVideoOnYoutubeDataSource>(SearchVideoOnYoutubeDataSource());
 }
 
@@ -68,7 +70,7 @@ void _provideRepositories() {
   injector.registerSingleton<NetworkTracksRepository>(
       NetworkTracksRepositoryImpl(networkTracksDataSource: injector.get<NetworkTracksDataSource>()));
   injector.registerSingleton<DowloadTracksRepository>(DowloadTracksRepositoryImpl(
-      dowloadAudioFromYoutubeDataSource: injector.get<DowloadAudioFromYoutubeDataSource>()));
+      dowloadAudioFromYoutubeDataSource: injector.get<DownloadAudioFromYoutubeDataSource>()));
   injector.registerSingleton<SearchVideosByTrackRepository>(SearchVideosByTrackRepositoryImpl(
       searchVideoOnYoutubeDataSource: injector.get<SearchVideoOnYoutubeDataSource>()));
 

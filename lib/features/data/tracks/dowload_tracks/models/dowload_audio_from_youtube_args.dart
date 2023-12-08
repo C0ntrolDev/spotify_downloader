@@ -1,7 +1,7 @@
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/metadata/audio_metadata.dart';
 
-class DowloadAudioFromYoutubeArgs {
-    DowloadAudioFromYoutubeArgs({
+class DownloadAudioFromYoutubeArgs {
+    DownloadAudioFromYoutubeArgs({
     required this.youtubeUrl,
     required this.saveDirectoryPath,
     required this.audioMetadata
