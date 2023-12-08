@@ -25,11 +25,36 @@ final class DownloadTracksCollectionLoadWithTracksCollecitonUrl extends Download
   List<Object> get props => [url];
 }
 
-final class DownloadTracksCollectionUpdateTracks extends DownloadTracksCollectionBlocEvent {
-  const DownloadTracksCollectionUpdateTracks({required this.tracks});
+final class DownloadTracksCollectionTracksPartGot extends DownloadTracksCollectionBlocEvent {
+  @override
+  List<Object> get props => [];
+}
 
-  final List<Track> tracks;
+final class DownloadTracksCollectionTracksGettingEnded extends DownloadTracksCollectionBlocEvent {
+  const DownloadTracksCollectionTracksGettingEnded({required this.result});
+
+  final Result<Failure, TracksGettingEndedStatus> result;
 
   @override
-  List<Object> get props => [tracks];
+  List<Object> get props => [result];
+}
+
+final class DownloadTracksCollectionCancelTracksGetting extends DownloadTracksCollectionBlocEvent {
+  @override
+  List<Object> get props => [];
+}
+
+final class DownloadTracksCollectionContinueTracksGetting extends DownloadTracksCollectionBlocEvent {
+  @override
+  List<Object> get props => [];
+}
+
+final class DownloadTracksCollectionInternetConnectionGoneAfterInitial extends DownloadTracksCollectionBlocEvent {
+  @override
+  List<Object> get props => [];
+}
+
+final class DownloadTracksCollectionInternetConnectionGoneBeforeInitial extends DownloadTracksCollectionBlocEvent {
+  @override
+  List<Object> get props => [];
 }

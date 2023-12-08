@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
@@ -26,17 +25,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void dispose() {
+    searchTextFieldController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+   
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                colors: [backgroundGradientColor, backgroundColor],
-                begin: Alignment(0, -1.0),
-                end: Alignment(0, -0.6))),
+      body: Padding(
         padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 20, left: 15, right: 15),
         child: Column(children: [
           Row(
@@ -64,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     theme: theme,
                     height: 45,
                     iconPadding: const EdgeInsets.all(10),
+                    hintText: 'Ссылка на трек, плейлист или альбом',
                     controller: searchTextFieldController,
                     onSubmitted: (value) async {
                       if (isSearchRequestValid(value)) {
@@ -117,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('История загрузок', style: theme.textTheme.titleMedium),
+                    Text('Активные загрузки', style: theme.textTheme.titleMedium),
                     Expanded(
                       child: Padding(
                           padding: const EdgeInsets.only(top: 10),

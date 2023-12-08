@@ -29,7 +29,6 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-
         <activity android:name="com.linusu.flutter_web_auth.CallbackActivity"
             android:exported="true">
             <intent-filter android:label="flutter_web_auth">
@@ -40,5 +39,8 @@
             </intent-filter>
         </activity>
         
+       
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

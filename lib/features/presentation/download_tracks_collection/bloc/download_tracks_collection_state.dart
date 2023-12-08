@@ -7,31 +7,34 @@ sealed class DownloadTracksCollectionBlocState extends Equatable {
   List<Object> get props => [];
 }
 
-final class DownloadTracksCollectionInitial extends DownloadTracksCollectionBlocState {}
-
-final class DownloadTracksCollectionPartLoaded extends DownloadTracksCollectionBlocState {
-  const DownloadTracksCollectionPartLoaded(this.tracks, {required this.tracksCollection});
-
-  final TracksCollection tracksCollection;
-  final List<Track> tracks;
-
+final class DownloadTracksCollectionInitialLoading extends DownloadTracksCollectionBlocState {
   @override
-  List<Object> get props => [tracksCollection, tracks];
-
+  List<Object> get props => [];
 }
 
-final class DownloadTracksCollectionAllLoaded extends DownloadTracksCollectionBlocState {
-  const DownloadTracksCollectionAllLoaded(this.tracks, {required this.tracksCollection});
+abstract class DownloadTracksCollectionOnTracksGot extends DownloadTracksCollectionBlocState {
+  const DownloadTracksCollectionOnTracksGot({required this.tracksCollection, required this.tracks});
 
   final TracksCollection tracksCollection;
-  final List<Track> tracks;
+  final List<TrackWithLoadingObserver> tracks;
 
   @override
   List<Object> get props => [tracksCollection, tracks];
 }
 
-final class DownloadTracksCollectionNetworkFailure extends DownloadTracksCollectionBlocState {
+final class DownloadTracksCollectionOnTracksPartGot extends DownloadTracksCollectionOnTracksGot {
+  const DownloadTracksCollectionOnTracksPartGot({required super.tracksCollection, required super.tracks});
+}
 
+final class DownloadTracksCollectionOnAllTracksGot extends DownloadTracksCollectionOnTracksGot {
+  const DownloadTracksCollectionOnAllTracksGot({required super.tracksCollection, required super.tracks});
+}
+
+final class DownloadTracksCollectionAfterInititalNoInternetConnection  extends DownloadTracksCollectionOnTracksGot {
+  const DownloadTracksCollectionAfterInititalNoInternetConnection({required super.tracksCollection, required super.tracks});
+}
+
+final class DownloadTracksCollectionBeforeInitialNoInternetConnection extends DownloadTracksCollectionBlocState {
   @override
   List<Object> get props => [];
 }

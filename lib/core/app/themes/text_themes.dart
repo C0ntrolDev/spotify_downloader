@@ -14,12 +14,32 @@ const _titleMedium =
       color: onBackgroundPrimaryColor, 
       fontSize: 20);
 
+const _titleSmall =
+    TextStyle(
+      fontFamily: 'OpenSans', 
+      fontWeight: FontWeight.w700, 
+      color: onBackgroundPrimaryColor, 
+      fontSize: 16);
+
 const _bodyMedium =
     TextStyle(
       fontFamily: 'OpenSans', 
       fontWeight: FontWeight.w600, 
       color: onBackgroundPrimaryColor, 
       fontSize: 14);
+
+const _bodySmall =
+    TextStyle(
+      fontFamily: 'OpenSans', 
+      fontWeight: FontWeight.w600, 
+      color: onBackgroundPrimaryColor, 
+      fontSize: 13);
+
+const _labelLarge =  TextStyle(
+      fontFamily: 'OpenSans', 
+      fontWeight: FontWeight.w400, 
+      color: onBackgroundPrimaryColor, 
+      fontSize: 13);
 
 const _labelMedium =
     TextStyle(
