@@ -68,11 +68,16 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
       };
       loadingTrackObserver.onLoadingPercentChanged =
           (percent) => add(TrackTileLoadingPercentChanged(loadingPercent: percent));
-      loadingTrackObserver.onLoaded = (savePath) => add(TrackTileTrackLoaded(savePath));
+      loadingTrackObserver.onLoaded = (savePath) => add(TrackTileTrackLoaded());
       loadingTrackObserver.onFailure = (failure) => add(TrackTileTrackLoadingFailure(failure));
       loadingTrackObserver.onLoadingCancelled = () => add(TrackTileSetToDeffaultState());
     } else {
-      add(TrackTileSetToDeffaultState());
+      if (_trackWithLoadingObserver.track.isLoaded) {
+        add(TrackTileTrackLoaded());
+      }
+      else {
+        add(TrackTileSetToDeffaultState());
+      }
     }
   }
 
@@ -81,13 +86,13 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
       case LoadingTrackStatus.waitInLoadingQueue:
         add(const TrackTileLoadingPercentChanged());
       case LoadingTrackStatus.loading:
-        add(const TrackTileLoadingPercentChanged());
+        add(TrackTileLoadingPercentChanged(loadingPercent: loadingTrackObserver.loadingPercent));
       case LoadingTrackStatus.loaded:
-        add(TrackTileTrackLoaded(loadingTrackObserver.statusObject as String));
+        add(TrackTileTrackLoaded());
       case LoadingTrackStatus.loadingCancelled:
         add(TrackTileSetToDeffaultState());
       case LoadingTrackStatus.failure:
-        add(TrackTileTrackLoadingFailure(loadingTrackObserver.statusObject as Failure));
+        add(TrackTileTrackLoadingFailure(loadingTrackObserver.failure));
     }
   }
 }

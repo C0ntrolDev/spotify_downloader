@@ -8,7 +8,8 @@ class Track {
       required this.name,
       this.youtubeUrl,
       this.artists,
-      this.imageUrl});
+      this.imageUrl,
+      this.duration});
 
   final String spotifyId;
   final String name;
@@ -19,4 +20,5 @@ class Track {
 
   final List<String>? artists;
   final String? imageUrl;
+  final Duration? duration;
 }

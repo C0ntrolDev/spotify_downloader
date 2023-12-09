@@ -60,6 +60,7 @@ Future<void> _provideDataSources() async {
       NetworkTracksDataSource(clientId: clientId, clientSecret: clientSecret));
   await injector.get<NetworkTracksDataSource>().init();
   injector.registerSingleton<SearchVideoOnYoutubeDataSource>(SearchVideoOnYoutubeDataSource());
+  await injector.get<SearchVideoOnYoutubeDataSource>().init();
 }
 
 void _provideRepositories() {

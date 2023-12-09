@@ -8,6 +8,7 @@ class VideoDtoToVideoConverter implements ValueConverter<entity.Video, model.Vid
   @override
   entity.Video convert(model.Video videoDto) {
     return entity.Video(
+        duration: videoDto.duration,
         url: videoDto.url,
         title: videoDto.title,
         thumbnailUrl: videoDto.thumbnails.highResUrl,

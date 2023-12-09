@@ -6,7 +6,7 @@ import 'package:spotify_downloader/features/data/tracks/dowload_tracks/data_sour
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/dowload_audio_from_youtube_args.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/audio_loading_stream.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/repositories/converters/track_to_audio_metadata_converter.dart';
-import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_info.dart';
+import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_id.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
@@ -26,16 +26,21 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
 
   @override
   Future<Result<Failure, LoadingTrackObserver>> dowloadTrack(Track track) async {
-    final loadingTrackObserver = LoadingTrackObserver(track: track);
     final loadingTrackId = LoadingTrackId(
         parentSpotifyId: track.parentCollection.spotifyId,
         parentType: track.parentCollection.type,
         spotifyId: track.spotifyId);
+
+    final alreadyLoadingTrackObserver = (await getLoadingTrackObserver(track)).result;
+    if (alreadyLoadingTrackObserver != null) {
+      return Result.isSuccessful(alreadyLoadingTrackObserver);
+    }
+
+    final loadingTrackObserver = LoadingTrackObserver(track: track);
     final trackObservers = List<LoadingTrackObserver>.empty(growable: true)..add(loadingTrackObserver);
 
     if (track.youtubeUrl != null) {
       if (_loadingTracks.length < _sameTimeloadingTracksLimit) {
-        loadingTrackObserver.status = LoadingTrackStatus.loading;
         _startTrackLoading(loadingTrackId, track, trackObservers);
         return Result.isSuccessful(loadingTrackObserver);
       } else {
@@ -123,6 +128,7 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
     if (result.isSuccessful) {
       for (var trackObserver in loadingTrackObservers) {
         trackObserver.status = LoadingTrackStatus.loaded;
+        trackObserver.track.isLoaded = true;
         trackObserver.onLoaded?.call(result.result!);
       }
     } else if (result.isCancelled) {
@@ -154,6 +160,10 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
   Future<void> _startTrackLoading(
       LoadingTrackId loadingTrackId, Track track, List<LoadingTrackObserver> loadingTrackObservers) async {
     const saveDirectoryPath = 'storage/emulated/0/Download/';
+
+    for (var trackObserver in loadingTrackObservers) {
+      trackObserver.status = LoadingTrackStatus.loading;
+    }
 
     final loadingStream = await _dowloadAudioFromYoutubeDataSource.dowloadAudioFromYoutube(
         DownloadAudioFromYoutubeArgs(

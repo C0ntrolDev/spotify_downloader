@@ -21,14 +21,7 @@ final class TrackTileLoadingPercentChanged extends TrackTileEvent {
 
 final class TrackTileSetToDeffaultState extends TrackTileEvent {}
 
-final class TrackTileTrackLoaded extends TrackTileEvent {
-  const TrackTileTrackLoaded(this.savePath);
-
-  final String? savePath;
-
-  @override
-  List<Object?> get props => [savePath];
-}
+final class TrackTileTrackLoaded extends TrackTileEvent {}
 
 final class TrackTileTrackLoadingFailure extends TrackTileEvent {
   const TrackTileTrackLoadingFailure(this.failure);
