@@ -7,7 +7,7 @@ import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tr
 import 'package:spotify_downloader/features/data/tracks/network_tracks/repositories/converters/track_dto_to_track_converter.dart';
 import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection_type.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/get_tracks_from_tracks_collection_args.dart';
-import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_controller.dart';
+import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_ended_status.dart';
 import 'package:spotify/spotify.dart' as dto;
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/repositories/network_tracks_repository.dart';
@@ -21,7 +21,7 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
   final TrackDtoToTrackConverter _trackDtoToTrackConverter = TrackDtoToTrackConverter();
 
   @override
-  Future<TracksGettingController> getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs args) async {
+  Future<TracksGettingObserver> getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs args) async {
     final responseList = List<dto.Track>.empty(growable: true);
     final cancellationTokenSource = CancellationTokenSource();
     final getTracksArgs = GetTracksArgs(
@@ -45,24 +45,24 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
         throw ArgumentError('can\'t load liked tracks using this method');
     }
 
-    final controller = _getLinkedToStreamController(tracksGettingStream, args);
-    return controller;
+    final observer = _getLinkedToStreamObserver(tracksGettingStream, args);
+    return observer;
   }
 
-  TracksGettingController _getLinkedToStreamController(
+  TracksGettingObserver _getLinkedToStreamObserver(
       TracksGettingStream tracksGettingStream, GetTracksFromTracksCollectionArgs args) {
-    final controller = TracksGettingController(cancelGetting: () {});
+    final observer = TracksGettingObserver(cancelGetting: () {});
 
-    tracksGettingStream.onEnded = (result) => controller.onEnded?.call(result.isSuccessful
+    tracksGettingStream.onEnded = (result) => observer.onEnded?.call(result.isSuccessful
         ? Result.isSuccessful(_convertDtoStatusToStatus(result.result!))
         : Result.notSuccessful(result.failure));
     tracksGettingStream.onPartGot = (dtoTracksPart) {
       final tracksPart = dtoTracksPart.map((dt) => _trackDtoToTrackConverter.convert((dt, args.tracksCollection)));
       args.responseList.addAll(tracksPart);
-      controller.onPartGot?.call(tracksPart);
+      observer.onPartGot?.call(tracksPart);
     };
 
-    return controller;
+    return observer;
   }
 
   TracksGettingEndedStatus _convertDtoStatusToStatus(TracksDtoGettingEndedStatus dtoStatus) {

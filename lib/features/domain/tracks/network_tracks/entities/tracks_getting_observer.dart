@@ -3,8 +3,8 @@ import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_ended_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 
-class TracksGettingController {
-  TracksGettingController({required Function() cancelGetting}) : _cancelGetting = cancelGetting ;
+class TracksGettingObserver {
+  TracksGettingObserver({required Function() cancelGetting}) : _cancelGetting = cancelGetting ;
 
   final Function() _cancelGetting;
 

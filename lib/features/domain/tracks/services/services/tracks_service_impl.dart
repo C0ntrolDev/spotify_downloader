@@ -28,7 +28,7 @@ class TracksServiceImpl implements TracksService {
   final SearchVideosByTrackRepository _searchVideosByTrackRepository;
 
   @override
-  Future<TracksWithLoadingObserverGettingController> getTracksWithLoadingObserversFromTracksColleciton(
+  Future<TracksWithLoadingObserverGettingObserver> getTracksWithLoadingObserversFromTracksColleciton(
       {required TracksCollection tracksCollection,
       required List<TrackWithLoadingObserver> responseList,
       int offset = 0}) async { 
@@ -37,23 +37,23 @@ class TracksServiceImpl implements TracksService {
         GetTracksFromTracksCollectionArgs(
             tracksCollection: tracksCollection, responseList: rawResponseList, offset: offset));
 
-    final trackGettingController =
-        TracksWithLoadingObserverGettingController(cancelFunction: () => rawController.cancelGetting());
+    final trackGettingObserver =
+        TracksWithLoadingObserverGettingObserver(cancelFunction: () => rawController.cancelGetting());
 
     rawController.onPartGot = (rawPart) {
       final part = rawPart.where((track) => track != null).map((track) {
         return _findAllInfoAboutTrack(track!);
       });
       responseList.addAll(part);
-      trackGettingController.onPartGot?.call();
+      trackGettingObserver.onPartGot?.call();
     };
-    rawController.onEnded = trackGettingController.onEnded;
+    rawController.onEnded = trackGettingObserver.onEnded;
 
-    return trackGettingController;
+    return trackGettingObserver;
   }
 
   @override
-  TracksWithLoadingObserverGettingController getLikedTracksWithLoadingObservers(
+  TracksWithLoadingObserverGettingObserver getLikedTracksWithLoadingObservers(
       List<TrackWithLoadingObserver> responseList) {
     throw UnimplementedError();
   }

@@ -26,7 +26,7 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
   late final StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   final List<TrackWithLoadingObserver> _tracksGettingResponseList = List.empty(growable: true);
-  TracksWithLoadingObserverGettingController? _tracksGettingController;
+  TracksWithLoadingObserverGettingObserver? _tracksGettingObserver;
   TracksCollection? _tracksCollection;
 
   bool _initialLoadingEnded = false;
@@ -62,7 +62,7 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
     });
 
     on<DownloadTracksCollectionCancelTracksGetting>((event, emit) {
-      _tracksGettingController?.cancelGetting();
+      _tracksGettingObserver?.cancelGetting();
     });
 
     on<DownloadTracksCollectionInternetConnectionGoneAfterInitial>((event, emit) {
@@ -97,37 +97,37 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
 
     _tracksCollection = tracksCollectionResult.result;
 
-    final tracksGettingControllerResult =
+    final tracksGettingObserverResult =
         await _getFromTracksColleciton.call((_tracksCollection!, _tracksGettingResponseList));
-    if (!tracksGettingControllerResult.isSuccessful) {
-      if (tracksGettingControllerResult.failure is! NetworkFailure) {
-        emit(DownloadTracksCollectionFailure(failure: tracksGettingControllerResult.failure!));
+    if (!tracksGettingObserverResult.isSuccessful) {
+      if (tracksGettingObserverResult.failure is! NetworkFailure) {
+        emit(DownloadTracksCollectionFailure(failure: tracksGettingObserverResult.failure!));
       }
       return;
     }
 
     _initialLoadingEnded = true;
-    _tracksGettingController = tracksGettingControllerResult.result!;
-    _tracksGettingController!.onPartGot = () => add(DownloadTracksCollectionTracksPartGot());
-    _tracksGettingController!.onEnded = (result) => add(DownloadTracksCollectionTracksGettingEnded(result: result));
+    _tracksGettingObserver = tracksGettingObserverResult.result!;
+    _tracksGettingObserver!.onPartGot = () => add(DownloadTracksCollectionTracksPartGot());
+    _tracksGettingObserver!.onEnded = (result) => add(DownloadTracksCollectionTracksGettingEnded(result: result));
   }
 
   Future<void> _onContinueTracksLoading(
       DownloadTracksCollectionContinueTracksGetting event, Emitter<DownloadTracksCollectionBlocState> emit) async {
     _gettingEndedWithNetworkFailure = false;
 
-    final tracksGettingControllerResult = await _getFromTracksCollectionWithOffset
+    final tracksGettingObserverResult = await _getFromTracksCollectionWithOffset
         .call((_tracksCollection!, _tracksGettingResponseList, _tracksGettingResponseList.length));
-    if (!tracksGettingControllerResult.isSuccessful) {
-      if (tracksGettingControllerResult.failure is! NetworkFailure) {
-        emit(DownloadTracksCollectionFailure(failure: tracksGettingControllerResult.failure!));
+    if (!tracksGettingObserverResult.isSuccessful) {
+      if (tracksGettingObserverResult.failure is! NetworkFailure) {
+        emit(DownloadTracksCollectionFailure(failure: tracksGettingObserverResult.failure!));
       }
       return;
     }
 
-    _tracksGettingController = tracksGettingControllerResult.result!;
-    _tracksGettingController!.onPartGot = () => add(DownloadTracksCollectionTracksPartGot());
-    _tracksGettingController!.onEnded = (result) => add(DownloadTracksCollectionTracksGettingEnded(result: result));
+    _tracksGettingObserver = tracksGettingObserverResult.result!;
+    _tracksGettingObserver!.onPartGot = () => add(DownloadTracksCollectionTracksPartGot());
+    _tracksGettingObserver!.onEnded = (result) => add(DownloadTracksCollectionTracksGettingEnded(result: result));
   }
 
   void _onInternetChanged(ConnectivityResult connectivityResult) {

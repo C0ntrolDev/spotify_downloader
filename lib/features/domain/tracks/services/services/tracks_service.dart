@@ -7,7 +7,7 @@ import 'package:spotify_downloader/features/domain/tracks/services/entities/trac
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 
 abstract class TracksService {
-  Future<TracksWithLoadingObserverGettingController> getTracksWithLoadingObserversFromTracksColleciton({required TracksCollection tracksCollection, required List<TrackWithLoadingObserver> responseList, required int offset});
-  TracksWithLoadingObserverGettingController getLikedTracksWithLoadingObservers(List<TrackWithLoadingObserver> responseList);
+  Future<TracksWithLoadingObserverGettingObserver> getTracksWithLoadingObserversFromTracksColleciton({required TracksCollection tracksCollection, required List<TrackWithLoadingObserver> responseList, required int offset});
+  TracksWithLoadingObserverGettingObserver getLikedTracksWithLoadingObservers(List<TrackWithLoadingObserver> responseList);
   Future<Result<Failure, LoadingTrackObserver>> downloadTrack(Track track); 
 }
