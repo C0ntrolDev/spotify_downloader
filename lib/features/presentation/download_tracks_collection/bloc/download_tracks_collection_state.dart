@@ -13,8 +13,9 @@ final class DownloadTracksCollectionInitialLoading extends DownloadTracksCollect
 }
 
 abstract class DownloadTracksCollectionOnTracksGot extends DownloadTracksCollectionBlocState {
-  const DownloadTracksCollectionOnTracksGot({required this.tracksCollection, required this.tracks});
+  const DownloadTracksCollectionOnTracksGot({required this.tracksCollection, required this.tracks, required this.displayingTracksCount});
 
+  final int displayingTracksCount;
   final TracksCollection tracksCollection;
   final List<TrackWithLoadingObserver> tracks;
 
@@ -23,15 +24,15 @@ abstract class DownloadTracksCollectionOnTracksGot extends DownloadTracksCollect
 }
 
 final class DownloadTracksCollectionOnTracksPartGot extends DownloadTracksCollectionOnTracksGot {
-  const DownloadTracksCollectionOnTracksPartGot({required super.tracksCollection, required super.tracks});
+  const DownloadTracksCollectionOnTracksPartGot({required super.tracksCollection, required super.tracks, required super.displayingTracksCount});
 }
 
 final class DownloadTracksCollectionOnAllTracksGot extends DownloadTracksCollectionOnTracksGot {
-  const DownloadTracksCollectionOnAllTracksGot({required super.tracksCollection, required super.tracks});
+  const DownloadTracksCollectionOnAllTracksGot({required super.tracksCollection, required super.tracks, required super.displayingTracksCount});
 }
 
 final class DownloadTracksCollectionAfterInititalNoInternetConnection  extends DownloadTracksCollectionOnTracksGot {
-  const DownloadTracksCollectionAfterInititalNoInternetConnection({required super.tracksCollection, required super.tracks});
+  const DownloadTracksCollectionAfterInititalNoInternetConnection({required super.tracksCollection, required super.tracks, required super.displayingTracksCount});
 }
 
 final class DownloadTracksCollectionBeforeInitialNoInternetConnection extends DownloadTracksCollectionBlocState {

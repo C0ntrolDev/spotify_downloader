@@ -32,6 +32,19 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
   bool _initialLoadingEnded = false;
   bool _gettingEndedWithNetworkFailure = false;
 
+  String? filterQuery;
+  List<TrackWithLoadingObserver> get _filteredTracks => _tracksGettingResponseList.where((trackWithLoadingObserver) {
+        if (filterQuery == null || filterQuery!.isEmpty) {
+          return true;
+        }
+
+        return trackWithLoadingObserver.track.name.toLowerCase().contains(filterQuery!.toLowerCase()) ||
+            (trackWithLoadingObserver.track.artists
+                    ?.where((artist) => artist.toLowerCase().contains(filterQuery!.toLowerCase()))
+                    .isNotEmpty ??
+                false);
+      }).toList();
+
   DownloadTracksCollectionBloc(
       {required GetTracksCollectionByUrl getTracksCollectionByUrl,
       required GetTracksWithLoadingObserverFromTracksColleciton getTracksFromTracksColleciton,
@@ -54,7 +67,9 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
 
     on<DownloadTracksCollectionTracksPartGot>((event, emit) {
       emit(DownloadTracksCollectionOnTracksPartGot(
-          tracksCollection: _tracksCollection!, tracks: _tracksGettingResponseList));
+          tracksCollection: _tracksCollection!,
+          tracks: _filteredTracks,
+          displayingTracksCount: getDisplayingTracksCount()));
     });
 
     on<DownloadTracksCollectionTracksGettingEnded>((event, emit) async {
@@ -67,11 +82,17 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
 
     on<DownloadTracksCollectionInternetConnectionGoneAfterInitial>((event, emit) {
       emit(DownloadTracksCollectionAfterInititalNoInternetConnection(
-          tracksCollection: _tracksCollection!, tracks: _tracksGettingResponseList));
+          tracksCollection: _tracksCollection!,
+          tracks: _filteredTracks,
+          displayingTracksCount: getDisplayingTracksCount()));
     });
 
     on<DownloadTracksCollectionInternetConnectionGoneBeforeInitial>((event, emit) {
       emit(DownloadTracksCollectionBeforeInitialNoInternetConnection());
+    });
+
+    on<DownloadTracksCollectionFilterQueryChanged>((event, emit) {
+      _onFilterQueryChanged(event, emit);
     });
   }
 
@@ -83,7 +104,6 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
 
   Future<void> _onLoadWithTracksCollecitonUrl(DownloadTracksCollectionLoadWithTracksCollecitonUrl event,
       Emitter<DownloadTracksCollectionBlocState> emit) async {
-        
     emit(DownloadTracksCollectionInitialLoading());
     Future(() async => _onInternetChanged(await Connectivity().checkConnectivity()));
 
@@ -154,7 +174,9 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
     if (event.result.isSuccessful) {
       if (event.result.result == TracksGettingEndedStatus.loaded) {
         emit(DownloadTracksCollectionOnAllTracksGot(
-            tracksCollection: _tracksCollection!, tracks: _tracksGettingResponseList));
+            tracksCollection: _tracksCollection!,
+            tracks: _filteredTracks,
+            displayingTracksCount: getDisplayingTracksCount()));
       }
     } else {
       if (event.result.failure is NetworkFailure) {
@@ -162,6 +184,40 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
       } else {
         emit(DownloadTracksCollectionFailure(failure: event.result.failure!));
       }
+    }
+  }
+
+  void _onFilterQueryChanged(
+      DownloadTracksCollectionFilterQueryChanged event, Emitter<DownloadTracksCollectionBlocState> emit) {
+    filterQuery = event.filterQuery;
+
+    if (state is DownloadTracksCollectionAfterInititalNoInternetConnection) {
+      emit(DownloadTracksCollectionAfterInititalNoInternetConnection(
+          tracksCollection: _tracksCollection!,
+          tracks: _filteredTracks,
+          displayingTracksCount: getDisplayingTracksCount()));
+    }
+
+    if (state is DownloadTracksCollectionOnAllTracksGot) {
+      emit(DownloadTracksCollectionOnAllTracksGot(
+          tracksCollection: _tracksCollection!,
+          tracks: _filteredTracks,
+          displayingTracksCount: getDisplayingTracksCount()));
+    }
+
+    if (state is DownloadTracksCollectionOnTracksPartGot) {
+      emit(DownloadTracksCollectionOnTracksPartGot(
+          tracksCollection: _tracksCollection!,
+          tracks: _filteredTracks,
+          displayingTracksCount: getDisplayingTracksCount()));
+    }
+  }
+
+  int getDisplayingTracksCount() {
+    if (filterQuery == null || filterQuery!.isEmpty) {
+      return _tracksCollection!.tracksCount;
+    } else {
+      return _filteredTracks.length;
     }
   }
 }

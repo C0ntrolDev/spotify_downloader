@@ -4,7 +4,7 @@ sealed class DownloadTracksCollectionBlocEvent extends Equatable {
   const DownloadTracksCollectionBlocEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 final class DownloadTracksCollectionLoadWithHistoryTracksColleciton extends DownloadTracksCollectionBlocEvent {
@@ -57,4 +57,12 @@ final class DownloadTracksCollectionInternetConnectionGoneAfterInitial extends D
 final class DownloadTracksCollectionInternetConnectionGoneBeforeInitial extends DownloadTracksCollectionBlocEvent {
   @override
   List<Object> get props => [];
+}
+
+final class DownloadTracksCollectionFilterQueryChanged extends DownloadTracksCollectionBlocEvent {
+  const DownloadTracksCollectionFilterQueryChanged({required this.filterQuery});
+  final String? filterQuery;
+
+  @override
+  List<Object?> get props => [filterQuery];
 }

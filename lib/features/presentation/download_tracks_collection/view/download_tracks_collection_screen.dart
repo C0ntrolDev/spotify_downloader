@@ -211,7 +211,9 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                       Expanded(
                                                         child: SearchTextField(
                                                           theme: theme,
-                                                          onSubmitted: (value) {},
+                                                          onSubmitted: (value) {
+                                                            _downloadTrackCollectionBloc.add(DownloadTracksCollectionFilterQueryChanged(filterQuery: value));
+                                                          },
                                                           height: 35,
                                                           cornerRadius: 10,
                                                           hintText: 'Поиск по названию',
@@ -245,7 +247,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                         ),
                                       ),
                                       SliverList.builder(
-                                          itemCount: state.tracksCollection.tracksCount,
+                                          itemCount: state.displayingTracksCount,
                                           itemBuilder: (context, index) {
                                             return Stack(
                                               children: [
@@ -253,7 +255,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
                                                   child: Builder(builder: (buildContext) {
                                                     if (index < (state.tracks.length)) {
-                                                      return TrackTile(trackWithLoadingObserver: state.tracks[index]);
+                                                      return TrackTile(trackWithLoadingObserver: state.tracks[index], key: ObjectKey(state.tracks[index]),);
                                                     }
                                                   
                                                     return const TrackTilePlaceholder();
