@@ -211,7 +211,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                       Expanded(
                                                         child: SearchTextField(
                                                           theme: theme,
-                                                          onSubmitted: (value) {
+                                                          onChanged: (value) {
                                                             _downloadTrackCollectionBloc.add(DownloadTracksCollectionFilterQueryChanged(filterQuery: value));
                                                           },
                                                           height: 35,

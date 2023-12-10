@@ -6,7 +6,8 @@ class SearchTextField extends StatefulWidget {
   const SearchTextField({
     super.key,
     required this.theme,
-    required this.onSubmitted,
+    this.onSubmitted,
+    this.onChanged,
     this.hintText = '',
     this.controller,
     this.iconPadding = const EdgeInsets.all(0),
@@ -25,7 +26,8 @@ class SearchTextField extends StatefulWidget {
   final TextStyle? textStyle;
   final TextStyle? hintStyle;
   final String hintText;
-  final void Function(String value) onSubmitted;
+  final void Function(String value)? onSubmitted;
+  final void Function(String value)? onChanged;
   final TextEditingController? controller;
 
   @override
@@ -68,7 +70,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
           IconButton(
             padding: widget.iconPadding,
             constraints: const BoxConstraints(),
-            onPressed: () => widget.onSubmitted(textEditingController.text),
+            onPressed: () => widget.onSubmitted?.call(textEditingController.text),
             icon: SvgPicture.asset(
               'resources/images/svg/search_icon.svg',
             ),
@@ -80,6 +82,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
                 focusNode: textInputFocusNode,
                 scrollController: scrollController,
                 onSubmitted: widget.onSubmitted,
+                onChanged: widget.onChanged,
                 style: widget.textStyle ?? widget.theme.textTheme.bodyMedium?.copyWith(color: onPrimaryColor),
                 decoration: InputDecoration(
                     focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
