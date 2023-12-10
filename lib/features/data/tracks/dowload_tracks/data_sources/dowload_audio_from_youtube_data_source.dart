@@ -118,7 +118,7 @@ class DownloadAudioFromYoutubeDataSource {
 
       final manifest = await yt.videos.streamsClient.getManifest(video.id);
       if (token.isCancelled) return const CancellableResult.isCancelled();
-      
+
       downloadStreamInfo = manifest.audioOnly.withHighestBitrate();
     } on SocketException {
       yt.close();
@@ -138,6 +138,11 @@ class DownloadAudioFromYoutubeDataSource {
     final yt = YoutubeExplode();
     final downloadStream = yt.videos.streamsClient.get(downloadStreamInfo);
     final videoFile = File(savePath);
+
+    if (await videoFile.exists()) {
+      await videoFile.delete();
+    }
+
     final videoFileStream = videoFile.openWrite();
 
     late final StreamSubscription<List<int>> downloadStreamListener;

@@ -53,13 +53,21 @@ class SearchVideosByTrackRepositoryImpl implements SearchVideosByTrackRepository
   Video _selectMostAppropriateVideo(List<Video> videos, Track track) {
     List<(int, Video)> videosWithRating = videos.map((video) => (_calculateVideoRating(video, track), video)).toList();
     videosWithRating.sort((first, second) => first.$1.compareTo(second.$1));
-    return videosWithRating.reversed.first.$2;
+    videosWithRating = videosWithRating.reversed.toList();
+
+    final maxRating = videosWithRating.first.$1;
+    final mostRatedVideos = videosWithRating.where((v) => v.$1 == maxRating).toList();
+    mostRatedVideos.sort((first, second) => first.$2.likesCount?.compareTo(second.$2.likesCount!) ?? 0);
+
+    return mostRatedVideos.reversed.first.$2;
   }
 
   int _calculateVideoRating(Video video, Track track) {
     int videoRating = 0;
 
-    if (video.title.contains(track.name)) {
+    if (video.title
+        .toLowerCase()
+        .contains(track.name.toLowerCase().replaceAll('.', '').replaceAll('?', '').replaceAll('!', ''))) {
       videoRating += 2;
     }
 
@@ -72,7 +80,7 @@ class SearchVideosByTrackRepositoryImpl implements SearchVideosByTrackRepository
     }
 
     if (track.artists?.where((artist) => video.author.contains(artist)).isNotEmpty ?? false) {
-      videoRating + 3;
+      videoRating += 3;
     }
 
     if (track.artists?.where((artist) => video.title.contains(artist)).isNotEmpty ?? false) {
