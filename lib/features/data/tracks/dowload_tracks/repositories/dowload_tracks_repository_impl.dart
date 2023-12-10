@@ -97,6 +97,11 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
     final loadingTrack = _loadingTracks.where((e) => e.$1 == loadingTrackId).firstOrNull;
     if (loadingTrack != null) {
       loadingTrackObserver.status = LoadingTrackStatus.loading;
+
+      if (loadingTrack.$3.isNotEmpty) {
+        loadingTrackObserver.loadingPercent = loadingTrack.$3.first.loadingPercent;
+      }
+      
       loadingTrack.$3.add(loadingTrackObserver);
       return Result.isSuccessful(loadingTrackObserver);
     }

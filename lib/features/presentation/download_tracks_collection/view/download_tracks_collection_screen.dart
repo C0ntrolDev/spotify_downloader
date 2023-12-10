@@ -74,6 +74,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         _downloadTrackCollectionBloc.add(DownloadTracksCollectionCancelTracksGetting());

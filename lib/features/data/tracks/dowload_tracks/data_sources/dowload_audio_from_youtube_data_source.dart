@@ -87,7 +87,11 @@ class DownloadAudioFromYoutubeDataSource {
           return const CancellableResult.isCancelled();
         }
 
-        await _audioMetadataEditor.changeAudioMetadata(audioPath: audioPath, audioMetadata: args.audioMetadata);
+        final changeMetadataResult = await _audioMetadataEditor.changeAudioMetadata(audioPath: audioPath, audioMetadata: args.audioMetadata);
+        if(!changeMetadataResult.isSuccessful) {
+          await File(audioPath).delete();
+          return CancellableResult.notSuccessful(changeMetadataResult.failure);
+        }
 
         if (token.isCancelled) {
           await File(audioPath).delete();
