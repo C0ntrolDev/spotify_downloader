@@ -31,7 +31,7 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
     });
 
     on<TrackTitleDownloadTrack>((event, emit) async {
-      emit(TrackTileOnTrackLoading(_trackWithLoadingObserver.track));
+     //emit(TrackTileOnTrackLoading(_trackWithLoadingObserver.track));
       final loadingObserverResult = await _dowloadTrack.call(_trackWithLoadingObserver.track);
       if (loadingObserverResult.isSuccessful) {
         _trackWithLoadingObserver.loadingObserver = loadingObserverResult.result;

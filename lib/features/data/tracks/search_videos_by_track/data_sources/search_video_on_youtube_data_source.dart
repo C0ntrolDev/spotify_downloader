@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
@@ -41,7 +42,9 @@ class SearchVideoOnYoutubeDataSource {
       try {
         final videos = await yt.search.search(searchQuery);
         yt.close();
-        return Result.isSuccessful(videos.getRange(0, count).toList());
+
+        final maxCount = videos.length;
+        return Result.isSuccessful(videos.getRange(0, min(maxCount, count)).toList());
       } on SocketException {
         yt.close();
         return const Result.notSuccessful(NetworkFailure());

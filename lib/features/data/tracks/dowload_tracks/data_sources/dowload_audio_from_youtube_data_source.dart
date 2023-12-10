@@ -49,24 +49,22 @@ class DownloadAudioFromYoutubeDataSource {
         return CancellableResult.notSuccessful(getDownloadStreamInfoResult.failure);
       }
 
-      CancellationTokenSource cancellationTokenSource = CancellationTokenSource();
-      final token = cancellationTokenSource.token;
-      cancelFunction = cancellationTokenSource.cancel;
-
       final downloadStreamInfo = getDownloadStreamInfoResult.result!;
 
       final videoPath =
           p.join(args.saveDirectoryPath, '${args.audioMetadata.name}.${downloadStreamInfo.container.name}');
       final audioPath = p.join(args.saveDirectoryPath, '${args.audioMetadata.name}.mp3');
 
+      CancellationTokenSource cancellationTokenSource = CancellationTokenSource();
+      final token = cancellationTokenSource.token;
+      cancelFunction = cancellationTokenSource.cancel;
+
       final downloadVideoResult =
           await _downloadVideoFromYoutube(downloadStreamInfo, videoPath, setLoadingPercent, token);
 
       if (downloadVideoResult.isCancelled) {
-        await File(videoPath).delete();
         return const CancellableResult.isCancelled();
       } else if (!downloadVideoResult.isSuccessful) {
-        await File(videoPath).delete();
         return CancellableResult.notSuccessful(downloadVideoResult.failure);
       }
 
@@ -135,14 +133,18 @@ class DownloadAudioFromYoutubeDataSource {
 
     downloadStreamListener = downloadStream.listen((chunk) {
       try {
+
+        if (token.isCancelled) {
+          if (!cancellationTokenCompleter.isCompleted) {
+            cancellationTokenCompleter.complete(null);
+          }
+          return;
+        }
+
         videoFileStream.add(chunk);
 
         loadedBytesCount += chunk.length;
         setLoadingPercent.call((loadedBytesCount / videoFileSize) * 90);
-
-        if (token.isCancelled) {
-          cancellationTokenCompleter.complete(null);
-        }
       } catch (e) {
         if (!failureCompleter.isCompleted) {
           failureCompleter.complete(Failure(message: e));

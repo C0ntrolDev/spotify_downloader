@@ -15,7 +15,8 @@ class SearchVideosByTrackRepositoryImpl implements SearchVideosByTrackRepository
 
   @override
   Future<Result<Failure, List<Video>>> findVideosByTrack(Track track, int count) async {
-    final videosResult = await _searchVideoOnYoutubeDataSource.findVideosOnYoutube(_generateQuery(track), count: count);
+    final videosResult =
+        await _searchVideoOnYoutubeDataSource.findVideosOnYoutube(_generateQuery(track), count: count);
     if (videosResult.isSuccessful) {
       final videos = videosResult.result!.map((v) => _videoDtoToVideoConverter.convert(v)).toList();
       return Result.isSuccessful(videos);
@@ -56,41 +57,40 @@ class SearchVideosByTrackRepositoryImpl implements SearchVideosByTrackRepository
   }
 
   int _calculateVideoRating(Video video, Track track) {
-      int videoRating = 0;
+    int videoRating = 0;
 
-      if (video.title.contains(track.name)) {
-        videoRating += 2;
-      }
-
-      if (!video.title.contains('video')) {
-        videoRating++;
-      }
-
-      if (video.title.contains('audio')) {
-        videoRating++;
-      }
-
-      if (track.artists?.where((artist) => video.author.contains(artist)).isNotEmpty ?? false) {
-        videoRating+3;
-      }
-
-      if (track.artists?.where((artist) => video.title.contains(artist)).isNotEmpty ?? false) {
-        videoRating++;
-      }
-
-      if (track.duration != null && video.duration != null) {
-        const durationTolerance = 10;
-        if (video.duration!.inSeconds - durationTolerance <= track.duration!.inSeconds &&
-            track.duration!.inSeconds <= video.duration!.inSeconds + durationTolerance) {
-          videoRating += 3;
-        }
-      }
-
-      return videoRating;
+    if (video.title.contains(track.name)) {
+      videoRating += 2;
     }
-  }
 
-  String _generateQuery(Track track) {
-    return '${track.name} ${track.artists?.join(', ') ?? ''}';
-  }
+    if (!video.title.contains('video')) {
+      videoRating++;
+    }
 
+    if (video.title.contains('audio')) {
+      videoRating++;
+    }
+
+    if (track.artists?.where((artist) => video.author.contains(artist)).isNotEmpty ?? false) {
+      videoRating + 3;
+    }
+
+    if (track.artists?.where((artist) => video.title.contains(artist)).isNotEmpty ?? false) {
+      videoRating++;
+    }
+
+    if (track.duration != null && video.duration != null) {
+      const durationTolerance = 10;
+      if (video.duration!.inSeconds - durationTolerance <= track.duration!.inSeconds &&
+          track.duration!.inSeconds <= video.duration!.inSeconds + durationTolerance) {
+        videoRating += 3;
+      }
+    }
+
+    return videoRating;
+  }
+}
+
+String _generateQuery(Track track) {
+  return '${track.name} ${track.artists?.join(', ') ?? ''}';
+}

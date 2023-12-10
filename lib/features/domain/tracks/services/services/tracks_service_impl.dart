@@ -4,6 +4,7 @@ import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
+import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/track_with_lazy_youtube_url.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/repositories/dowload_tracks_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/get_tracks_from_tracks_collection_args.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/repositories/network_tracks_repository.dart';
@@ -81,21 +82,24 @@ class TracksServiceImpl implements TracksService {
 
   @override
   Future<Result<Failure, LoadingTrackObserver>> downloadTrack(Track track) async {
-    if (track.youtubeUrl == null) {
-      final videoResult = await _searchVideosByTrackRepository.findVideoByTrack(track);
+    if (track.youtubeUrl == null) {}
 
-      if (!videoResult.isSuccessful) {
-        return Result.notSuccessful(videoResult.failure);
-      }
+    final resultTrackObsever = await _dowloadTracksRepository.dowloadTrack(TrackWithLazyYoutubeUrl(
+        track: track,
+        getYoutubeUrlFunction: () async {
+          final videoResult = await _searchVideosByTrackRepository.findVideoByTrack(track);
 
-      if (videoResult.result == null) {
-        return const Result.notSuccessful(NotFoundFailure(message: 'youtube url not found'));
-      }
+          if (!videoResult.isSuccessful) {
+            return Result.notSuccessful(videoResult.failure);
+          }
 
-      track.youtubeUrl = videoResult.result!.url;
-    }
+          if (videoResult.result == null) {
+            return const Result.notSuccessful(NotFoundFailure(message: 'track not found on youtube'));
+          }
 
-    final resultTrackObsever = await _dowloadTracksRepository.dowloadTrack(track);
+          return Result.isSuccessful(videoResult.result!.url);
+        }));
+
     final anotherTrackObserver = await _dowloadTracksRepository.getLoadingTrackObserver(track);
 
     return resultTrackObsever;

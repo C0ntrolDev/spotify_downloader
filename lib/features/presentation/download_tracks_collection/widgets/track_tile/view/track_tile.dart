@@ -115,6 +115,7 @@ class _TrackTileState extends State<TrackTile> {
               }
 
               if (state is TrackTileTrackOnFailure) {
+                print(state.failure);
                 return GestureDetector(
                   onTap: () => _trackTileBloc.add(TrackTitleDownloadTrack()),
                   child: SvgPicture.asset(
