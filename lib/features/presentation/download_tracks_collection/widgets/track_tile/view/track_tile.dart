@@ -60,6 +60,7 @@ class _TrackTileState extends State<TrackTile> {
                         ),
                         Text(
                           state.track.artists?.join(', ') ?? '',
+                          overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.labelLarge?.copyWith(color: onBackgroundSecondaryColor),
                         )
                       ],
@@ -71,64 +72,105 @@ class _TrackTileState extends State<TrackTile> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 25, right: 13),
-          child: BlocBuilder<TrackTileBloc, TrackTileState>(
-            bloc: _trackTileBloc,
-            builder: (context, state) {
-              if (state is TrackTileDeffault) {
-                return GestureDetector(
-                    onTap: () {
-                      _trackTileBloc.add(TrackTitleDownloadTrack());
-                    },
-                    child: SvgPicture.asset('resources/images/svg/download_icon.svg', height: 30, width: 30));
-              }
-
-              if (state is TrackTileOnTrackLoading) {
-                return GestureDetector(
-                  onTap: () => _trackTileBloc.add(TrackTileCancelTrackLoading()),
-                  child: Container(
-                    padding: const EdgeInsets.all(0),
-                    height: 27,
-                    width: 27,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 4,
-                      color: primaryColor,
-                      value: (() {
-                        if (state.percent != null) {
-                          return state.percent! / 100;
-                        }
-                  
-                        return null;
-                      }).call(),
-                    ),
-                  ),
-                );
-              }
-
-              if (state is TrackTileOnTrackLoaded) {
-                return SvgPicture.asset(
-                  'resources/images/svg/downloaded_icon.svg',
-                  height: 30,
-                  width: 30,
-                  colorFilter: const ColorFilter.mode(primaryColor, BlendMode.srcIn),
-                );
-              }
-
-              if (state is TrackTileTrackOnFailure) {
-                print(state.failure);
-                return GestureDetector(
-                  onTap: () => _trackTileBloc.add(TrackTitleDownloadTrack()),
-                  child: SvgPicture.asset(
-                    'resources/images/svg/error_icon.svg',
-                    height: 30,
-                    width: 30,
-                    colorFilter: const ColorFilter.mode(errorPrimaryColor, BlendMode.srcIn),
-                  ),
-                );
-              }
-
-              return Container();
-            },
+          padding: const EdgeInsets.only(left: 20),
+          child: Row(
+            children: [
+              Container(
+                alignment: Alignment.center,
+                width: 50,
+                padding: const EdgeInsets.only(right: 10),
+                child: BlocBuilder<TrackTileBloc, TrackTileState>(
+                  bloc: _trackTileBloc,
+                  builder: (context, state) {      
+                    if (state is TrackTileOnTrackLoading) {
+                      return GestureDetector(
+                        onTap: () {
+                          _trackTileBloc.add(TrackTileCancelTrackLoading());
+                        },
+                        child:  SvgPicture.asset(
+                          'resources/images/svg/track_tile/cancel_icon.svg',
+                          height: 23,
+                          width: 23,
+                        ),
+                      );
+                    }
+              
+                    if (state is TrackTileTrackOnFailure) {
+                      return GestureDetector(
+                        onTap: () {},
+                        child: SvgPicture.asset(
+                          'resources/images/svg/track_tile/error_icon.svg',
+                          height: 27,
+                          width: 27,
+                          colorFilter: const ColorFilter.mode(errorPrimaryColor, BlendMode.srcIn),
+                        ),
+                      );
+                    }
+              
+                    return Container();
+                  },
+                ),
+              ),
+              Container(
+                alignment: Alignment.center,
+                width: 40,
+                padding: const EdgeInsets.only(right: 10),
+                child: BlocBuilder<TrackTileBloc, TrackTileState>(
+                  bloc: _trackTileBloc,
+                  builder: (context, state) {
+                    if (state is TrackTileDeffault) {
+                      return GestureDetector(
+                          onTap: () {
+                            _trackTileBloc.add(TrackTitleDownloadTrack());
+                          },
+                          child:
+                              SvgPicture.asset('resources/images/svg/track_tile/download_icon.svg', height: 30, width: 30));
+                    }
+              
+                    if (state is TrackTileOnTrackLoading) {
+                      return Container(
+                        padding: const EdgeInsets.all(0),
+                        height: 27,
+                        width: 27,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 4,
+                          color: primaryColor,
+                          value: (() {
+                            if (state.percent != null) {
+                              return state.percent! / 100;
+                            }
+              
+                            return null;
+                          }).call(),
+                        ),
+                      );
+                    }
+              
+                    if (state is TrackTileOnTrackLoaded) {
+                      return SvgPicture.asset(
+                        'resources/images/svg/track_tile/downloaded_icon.svg',
+                        height: 30,
+                        width: 30,
+                        colorFilter: const ColorFilter.mode(primaryColor, BlendMode.srcIn),
+                      );
+                    }
+              
+                    if (state is TrackTileTrackOnFailure) {
+                      return GestureDetector(
+                        onTap: () => _trackTileBloc.add(TrackTitleDownloadTrack()),
+                        child: SvgPicture.asset(
+                          'resources/images/svg/track_tile/reload_icon.svg',
+                          height: 27,
+                          width: 27,
+                        ),
+                      );
+                    }
+              
+                    return Container();
+                  },
+                ),
+              ),
+            ],
           ),
         ),
         Padding(
@@ -139,7 +181,7 @@ class _TrackTileState extends State<TrackTile> {
               child: IconButton(
                   onPressed: () {},
                   icon: SvgPicture.asset(
-                    'resources/images/svg/more_info.svg',
+                    'resources/images/svg/track_tile/more_info.svg',
                     fit: BoxFit.fitHeight,
                   ))),
         )

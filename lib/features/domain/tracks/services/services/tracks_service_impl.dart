@@ -31,7 +31,7 @@ class TracksServiceImpl implements TracksService {
   Future<TracksWithLoadingObserverGettingController> getTracksWithLoadingObserversFromTracksColleciton(
       {required TracksCollection tracksCollection,
       required List<TrackWithLoadingObserver> responseList,
-      int offset = 0}) async {
+      int offset = 0}) async { 
     final rawResponseList = List<Track?>.empty(growable: true);
     final rawController = await _networkTracksRepository.getTracksFromTracksCollection(
         GetTracksFromTracksCollectionArgs(
