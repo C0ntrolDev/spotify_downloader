@@ -176,7 +176,7 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
         emit(DownloadTracksCollectionOnAllTracksGot(
             tracksCollection: _tracksCollection!,
             tracks: _filteredTracks,
-            displayingTracksCount: getDisplayingTracksCount()));
+            displayingTracksCount: _filteredTracks.length));
       }
     } else {
       if (event.result.failure is NetworkFailure) {
