@@ -10,5 +10,4 @@ abstract class DowloadTracksRepository {
   Future<Result<Failure, LoadingTrackObserver>> dowloadTrack(TrackWithLazyYoutubeUrl lazyTrack);
   Result<Failure, void> cancelTrackLoading(Track track);
   Future<Result<Failure, LoadingTrackObserver?>> getLoadingTrackObserver(Track track);
-  Future<Result<Failure, void>> removeLoadingTrackObserver(LoadingTrackObserver loadingTrackObserver);
 }

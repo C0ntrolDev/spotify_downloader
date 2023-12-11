@@ -62,14 +62,12 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
     if (loadingTrackObserver != null) {
       selectStateBasedOnLoadingTrackObserver(loadingTrackObserver);
 
-      loadingTrackObserver.onStartLoading = () {
-        add(const TrackTileLoadingPercentChanged());
-      };
-      loadingTrackObserver.onLoadingPercentChanged =
-          (percent) => add(TrackTileLoadingPercentChanged(loadingPercent: percent));
-      loadingTrackObserver.onLoaded = (savePath) => add(TrackTileTrackLoaded());
-      loadingTrackObserver.onFailure = (failure) => add(TrackTileTrackLoadingFailure(failure));
-      loadingTrackObserver.onLoadingCancelled = () => add(TrackTileSetToDeffaultState());
+      loadingTrackObserver.startLoadingStream.listen((youtubeUrl) => add(const TrackTileLoadingPercentChanged()));
+      loadingTrackObserver.loadingPercentChangedStream
+          .listen((percent) => add(TrackTileLoadingPercentChanged(loadingPercent: percent)));
+      loadingTrackObserver.loadedStream.listen((savePath) => add(TrackTileTrackLoaded()));
+      loadingTrackObserver.loadingFailureStream.listen((failure) => add(TrackTileTrackLoadingFailure(failure)));
+      loadingTrackObserver.loadingCancelledStream.listen((event) => add(TrackTileSetToDeffaultState()));
     } else {
       if (_trackWithLoadingObserver.track.isLoaded) {
         add(TrackTileTrackLoaded());

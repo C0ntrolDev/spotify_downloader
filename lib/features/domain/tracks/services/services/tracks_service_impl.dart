@@ -101,14 +101,11 @@ class TracksServiceImpl implements TracksService {
           if (videoResult.result == null) {
             return const Result.notSuccessful(NotFoundFailure(message: 'track not found on youtube'));
           }
-
+          
           return Result.isSuccessful(videoResult.result!.url);
         }));
 
-    // final serviceTrackObserverResult = await _dowloadTracksRepository.getLoadingTrackObserver(track);
-    // if (serviceTrackObserverResult.isSuccessful) {
-    //   final serviceTrackObserver = serviceTrackObserverResult.result!;
-    // }
+    //final serviceTrackObserver = resultTrackObsever.result!;
 
     return resultTrackObsever;
   }
