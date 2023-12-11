@@ -41,7 +41,7 @@ class _TrackTileState extends State<TrackTile> {
                   CachedNetworkImage(
                     width: 50,
                     height: 50,
-                    imageUrl: state.track.imageUrl ?? '',
+                    imageUrl: state.track.album?.imageUrl ?? '',
                     placeholder: (context, imageUrl) =>
                         Image.asset('resources/images/another/loading_track_collection_image.png'),
                     errorWidget: (context, imageUrl, _) =>

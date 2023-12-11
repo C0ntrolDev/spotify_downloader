@@ -15,9 +15,9 @@ class AudioMetadataEditorImpl implements AudioMetadataEditor {
       {required String audioPath, required AudioMetadata audioMetadata}) async {
     Uint8List? imageData;
 
-    if (audioMetadata.imageUrl != null) {
+    if (audioMetadata.album?.imageUrl != null) {
       try {
-        final getImageResponce = await http.get(Uri.parse(audioMetadata.imageUrl!));
+        final getImageResponce = await http.get(Uri.parse(audioMetadata.album!.imageUrl!));
         if (getImageResponce.statusCode == 200) {
           imageData = getImageResponce.bodyBytes;
         }

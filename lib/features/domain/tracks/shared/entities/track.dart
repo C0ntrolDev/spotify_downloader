@@ -1,4 +1,5 @@
 import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks/shared/entities/album.dart';
 
 class Track {
   Track(
@@ -6,9 +7,9 @@ class Track {
       required this.parentCollection,
       this.isLoaded = false,
       required this.name,
+      this.album,
       this.youtubeUrl,
       this.artists,
-      this.imageUrl,
       this.duration});
 
   final String spotifyId;
@@ -18,7 +19,7 @@ class Track {
   String? youtubeUrl;
   bool isLoaded;
 
+  final Album? album;
   final List<String>? artists;
-  final String? imageUrl;
   final Duration? duration;
 }
