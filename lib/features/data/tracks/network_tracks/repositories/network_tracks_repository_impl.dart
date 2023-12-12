@@ -53,9 +53,11 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
       TracksGettingStream tracksGettingStream, GetTracksFromTracksCollectionArgs args) {
     final observer = TracksGettingObserver(cancelGetting: () {});
 
-    tracksGettingStream.onEnded = (result) => observer.onEnded?.call(result.isSuccessful
-        ? Result.isSuccessful(_convertDtoStatusToStatus(result.result!))
-        : Result.notSuccessful(result.failure));
+    tracksGettingStream.onEnded = (result) {
+      observer.onEnded?.call(result.isSuccessful
+          ? Result.isSuccessful(_convertDtoStatusToStatus(result.result!))
+          : Result.notSuccessful(result.failure));
+    };
     tracksGettingStream.onPartGot = (dtoTracksPart) {
       final tracksPart = dtoTracksPart.map((dt) => _trackDtoToTrackConverter.convert((dt, args.tracksCollection)));
       args.responseList.addAll(tracksPart);

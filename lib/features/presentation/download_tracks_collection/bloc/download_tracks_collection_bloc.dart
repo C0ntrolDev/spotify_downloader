@@ -109,7 +109,9 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
 
     final tracksCollectionResult = await _getTracksCollectionByUrl.call(event.url);
     if (!tracksCollectionResult.isSuccessful) {
-      if (tracksCollectionResult.failure is! NetworkFailure) {
+      if (tracksCollectionResult.failure is NetworkFailure) {
+        emit(DownloadTracksCollectionBeforeInitialNoInternetConnection());
+      } else {
         emit(DownloadTracksCollectionFailure(failure: tracksCollectionResult.failure!));
       }
       return;
@@ -120,8 +122,10 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
     final tracksGettingObserverResult =
         await _getFromTracksColleciton.call((_tracksCollection!, _tracksGettingResponseList));
     if (!tracksGettingObserverResult.isSuccessful) {
-      if (tracksGettingObserverResult.failure is! NetworkFailure) {
-        emit(DownloadTracksCollectionFailure(failure: tracksGettingObserverResult.failure!));
+       if (tracksCollectionResult.failure is NetworkFailure) {
+        emit(DownloadTracksCollectionBeforeInitialNoInternetConnection());
+      } else {
+        emit(DownloadTracksCollectionFailure(failure: tracksCollectionResult.failure!));
       }
       return;
     }
@@ -202,7 +206,7 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
       emit(DownloadTracksCollectionOnAllTracksGot(
           tracksCollection: _tracksCollection!,
           tracks: _filteredTracks,
-          displayingTracksCount: getDisplayingTracksCount()));
+          displayingTracksCount: _filteredTracks.length));
     }
 
     if (state is DownloadTracksCollectionOnTracksPartGot) {

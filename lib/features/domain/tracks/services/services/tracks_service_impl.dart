@@ -51,7 +51,8 @@ class TracksServiceImpl implements TracksService {
       responseList.addAll(part);
       trackGettingObserver.onPartGot?.call();
     };
-    rawObserver.onEnded = trackGettingObserver.onEnded;
+    
+    rawObserver.onEnded = (result) => trackGettingObserver.onEnded?.call(result);
 
     return trackGettingObserver;
   }

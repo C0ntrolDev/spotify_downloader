@@ -131,10 +131,12 @@ class NetworkTracksDataSource {
     cancellableStream.stream.listen((message) {
       if (message is List<Track>) {
         tracksGettingStream.onPartGot?.call(message);
+        return;
       }
 
       if (message is Result<Failure, TracksDtoGettingEndedStatus>) {
         tracksGettingStream.onEnded?.call(message);
+        return;
       }
     });
 
@@ -193,7 +195,7 @@ class NetworkTracksDataSource {
 
   Future<Result<Failure, T>> _handleExceptions<T>(Future<Result<Failure, T>> Function() function) async {
     try {
-      final result = await function();
+      final result = await function.call();
       return result;
     } on SpotifyException catch (e) {
       if (e.status == 404) {

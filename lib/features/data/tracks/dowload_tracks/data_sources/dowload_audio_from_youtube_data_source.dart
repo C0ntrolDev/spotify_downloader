@@ -1,5 +1,3 @@
-// ignore_for_file: empty_catches
-
 import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
@@ -87,8 +85,9 @@ class DownloadAudioFromYoutubeDataSource {
           return const CancellableResult.isCancelled();
         }
 
-        final changeMetadataResult = await _audioMetadataEditor.changeAudioMetadata(audioPath: audioPath, audioMetadata: args.audioMetadata);
-        if(!changeMetadataResult.isSuccessful) {
+        final changeMetadataResult =
+            await _audioMetadataEditor.changeAudioMetadata(audioPath: audioPath, audioMetadata: args.audioMetadata);
+        if (!changeMetadataResult.isSuccessful) {
           await File(audioPath).delete();
           return CancellableResult.notSuccessful(changeMetadataResult.failure);
         }
@@ -139,76 +138,79 @@ class DownloadAudioFromYoutubeDataSource {
 
   Future<CancellableResult<Failure, void>> _downloadVideoFromYoutube(AudioOnlyStreamInfo downloadStreamInfo,
       String savePath, void Function(double percent) setLoadingPercent, CancellationToken token) async {
-    final yt = YoutubeExplode();
-    final downloadStream = yt.videos.streamsClient.get(downloadStreamInfo);
-    final videoFile = File(savePath);
+    try {
+      final yt = YoutubeExplode();
+      final downloadStream = yt.videos.streamsClient.get(downloadStreamInfo);
+      final videoFile = File(savePath);
 
-    if (await videoFile.exists()) {
-      await videoFile.delete();
-    }
+      if (await videoFile.exists()) {
+        await videoFile.delete();
+      }
 
-    final videoFileStream = videoFile.openWrite();
+      final videoFileStream = videoFile.openWrite();
 
-    late final StreamSubscription<List<int>> downloadStreamListener;
+      late final StreamSubscription<List<int>> downloadStreamListener;
 
-    final videoFileSize = downloadStreamInfo.size.totalBytes;
-    int loadedBytesCount = 0;
+      final videoFileSize = downloadStreamInfo.size.totalBytes;
+      int loadedBytesCount = 0;
 
-    final cancellationTokenCompleter = Completer<Void?>();
-    final failureCompleter = Completer<Failure>();
+      final cancellationTokenCompleter = Completer<Void?>();
+      final failureCompleter = Completer<Failure>();
 
-    downloadStreamListener = downloadStream.listen((chunk) {
-      try {
-        if (token.isCancelled) {
-          if (!cancellationTokenCompleter.isCompleted) {
-            cancellationTokenCompleter.complete(null);
+      downloadStreamListener = downloadStream.listen((chunk) async {
+          if (token.isCancelled) {
+            if (!cancellationTokenCompleter.isCompleted) {
+              cancellationTokenCompleter.complete(null);
+            }
+            return;
           }
-          return;
-        }
 
-        videoFileStream.add(chunk);
+          videoFileStream.add(chunk);
 
-        loadedBytesCount += chunk.length;
-        setLoadingPercent.call((loadedBytesCount / videoFileSize) * 90);
-      } catch (e) {
+          loadedBytesCount += chunk.length;
+          setLoadingPercent.call((loadedBytesCount / videoFileSize) * 90);
+
+      })..onError((e) {
+         if (!failureCompleter.isCompleted) {
+            failureCompleter.complete(Failure(message: e));
+          }
+      });
+
+      Failure failure = const Failure(message: '');
+
+      Connectivity()
+          .onConnectivityChanged
+          .firstWhere((result) => result == ConnectivityResult.none || result == ConnectivityResult.other)
+          .then((value) {
         if (!failureCompleter.isCompleted) {
-          failureCompleter.complete(Failure(message: e));
+          failureCompleter.complete(const NetworkFailure());
         }
+      });
+
+      await Future.any([
+        downloadStreamListener.asFuture(),
+        cancellationTokenCompleter.future,
+        (() async {
+          failure = await failureCompleter.future;
+        }).call(),
+      ]);
+
+      await videoFileStream.flush();
+      await videoFileStream.close();
+
+      if (failureCompleter.isCompleted) {
+        return CancellableResult.notSuccessful(failure);
       }
-    });
 
-    Failure failure = const Failure(message: '');
-
-    Connectivity()
-        .onConnectivityChanged
-        .firstWhere((result) => result == ConnectivityResult.none || result == ConnectivityResult.other)
-        .then((value) {
-      if (!failureCompleter.isCompleted) {
-        failureCompleter.complete(const NetworkFailure());
+      if (cancellationTokenCompleter.isCompleted) {
+        await videoFile.delete();
+        return const CancellableResult.isCancelled();
       }
-    });
 
-    await Future.any([
-      downloadStreamListener.asFuture(),
-      cancellationTokenCompleter.future,
-      (() async {
-        failure = await failureCompleter.future;
-      }).call(),
-    ]);
-
-    await videoFileStream.flush();
-    await videoFileStream.close();
-
-    if (failureCompleter.isCompleted) {
-      return CancellableResult.notSuccessful(failure);
+      return const CancellableResult.isSuccessful(null);
+    } catch (e) {
+      return CancellableResult.notSuccessful(Failure(message: e));
     }
-
-    if (cancellationTokenCompleter.isCompleted) {
-      await videoFile.delete();
-      return const CancellableResult.isCancelled();
-    }
-
-    return const CancellableResult.isSuccessful(null);
   }
 
   Future<void> _convertFileToMp3(String rawPath, String audioPath) async {
@@ -216,7 +218,6 @@ class DownloadAudioFromYoutubeDataSource {
     if (await audioFile.exists()) {
       await audioFile.delete();
     }
-
     await _fileToMp3Converter.convertFileToMp3(rawPath, audioPath);
   }
 }
