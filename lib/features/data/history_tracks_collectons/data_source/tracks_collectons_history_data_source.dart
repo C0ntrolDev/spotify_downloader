@@ -37,7 +37,7 @@ class TracksCollectonsHistoryDataSource {
       'type': historyTracksCollection.type.index,
       'name': historyTracksCollection.name,
       'openDate': historyTracksCollection.openDate.millisecondsSinceEpoch,
-      'image': historyTracksCollection.image,
+      'imageUrl': historyTracksCollection.imageUrl,
     };
   }
 
@@ -46,7 +46,7 @@ class TracksCollectonsHistoryDataSource {
         spotifyId: map['spotifyId'],
         type: HistoryTracksCollectionType.values[map['type'] as int],
         name: map['name'],
-        image: map['image'],
+        imageUrl: map['imageUrl'],
         openDate: DateTime.fromMillisecondsSinceEpoch(map['openDate'] as int));
   }
 }

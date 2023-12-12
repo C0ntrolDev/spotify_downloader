@@ -15,7 +15,7 @@ class HistoryTracksCollectionsConverter implements ValueConverter<HistoryTracksC
         type: tracksCollectionTypesConverter.convert(tracksCollection.type),
         name: tracksCollection.name,
         openDate: tracksCollection.openDate ?? DateTime.now(),
-        image: tracksCollection.image);
+        imageUrl: tracksCollection.imageUrl);
   }
 
 
@@ -26,7 +26,7 @@ class HistoryTracksCollectionsConverter implements ValueConverter<HistoryTracksC
         type: tracksCollectionTypesConverter.convertBack(historyTracksCollection.type),
         name: historyTracksCollection.name,
         openDate: historyTracksCollection.openDate,
-        image: historyTracksCollection.image);
+        imageUrl: historyTracksCollection.imageUrl);
   }
 
 }

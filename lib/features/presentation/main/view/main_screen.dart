@@ -12,6 +12,7 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoTabsRouter(
         routes: const [HomeRoute(), HistoryRoute()],
+        navigatorObservers: () => [AutoRouteObserver()],
         builder: (context, child) {
           final tabsRouter = AutoTabsRouter.of(context);
           return Scaffold(

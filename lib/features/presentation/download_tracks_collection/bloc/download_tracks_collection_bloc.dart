@@ -7,6 +7,7 @@ import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/domain/history_tracks_collectons/entities/history_tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/history_tracks_collectons/use_cases/add_tracks_collection_to_history.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_ended_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection.dart';
@@ -21,6 +22,7 @@ part 'download_tracks_collection_state.dart';
 class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEvent, DownloadTracksCollectionBlocState> {
   final GetTracksCollectionByUrl _getTracksCollectionByUrl;
   final GetTracksWithLoadingObserverFromTracksColleciton _getFromTracksColleciton;
+  final AddTracksCollectionToHistory _addTracksCollectionToHistory;
   final GetTracksWithLoadingObserverFromTracksCollecitonWithOffset _getFromTracksCollectionWithOffset;
 
   late final StreamSubscription<ConnectivityResult> _connectivitySubscription;
@@ -48,10 +50,12 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
   DownloadTracksCollectionBloc(
       {required GetTracksCollectionByUrl getTracksCollectionByUrl,
       required GetTracksWithLoadingObserverFromTracksColleciton getTracksFromTracksColleciton,
-      required GetTracksWithLoadingObserverFromTracksCollecitonWithOffset getFromTracksCollectionWithOffset})
+      required GetTracksWithLoadingObserverFromTracksCollecitonWithOffset getFromTracksCollectionWithOffset,
+      required AddTracksCollectionToHistory addTracksCollectionToHistory})
       : _getTracksCollectionByUrl = getTracksCollectionByUrl,
         _getFromTracksColleciton = getTracksFromTracksColleciton,
         _getFromTracksCollectionWithOffset = getFromTracksCollectionWithOffset,
+        _addTracksCollectionToHistory = addTracksCollectionToHistory,
         super(DownloadTracksCollectionInitialLoading()) {
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen((event) {
       _onInternetChanged(event);
@@ -109,24 +113,22 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
 
     final tracksCollectionResult = await _getTracksCollectionByUrl.call(event.url);
     if (!tracksCollectionResult.isSuccessful) {
-      if (tracksCollectionResult.failure is NetworkFailure) {
-        emit(DownloadTracksCollectionBeforeInitialNoInternetConnection());
-      } else {
-        emit(DownloadTracksCollectionFailure(failure: tracksCollectionResult.failure!));
-      }
+      emitFailureStateBasedOnFailureType(emit, tracksCollectionResult.failure!);
       return;
     }
 
     _tracksCollection = tracksCollectionResult.result;
 
+    final addTracksCollectionToHistoryResult = await _addTracksCollectionToHistory.call(_tracksCollection!);
+    if (!addTracksCollectionToHistoryResult.isSuccessful) {
+      emitFailureStateBasedOnFailureType(emit, addTracksCollectionToHistoryResult.failure!);
+      return;
+    }
+
     final tracksGettingObserverResult =
         await _getFromTracksColleciton.call((_tracksCollection!, _tracksGettingResponseList));
     if (!tracksGettingObserverResult.isSuccessful) {
-       if (tracksCollectionResult.failure is NetworkFailure) {
-        emit(DownloadTracksCollectionBeforeInitialNoInternetConnection());
-      } else {
-        emit(DownloadTracksCollectionFailure(failure: tracksCollectionResult.failure!));
-      }
+      emitFailureStateBasedOnFailureType(emit, tracksGettingObserverResult.failure!);
       return;
     }
 
@@ -143,9 +145,7 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
     final tracksGettingObserverResult = await _getFromTracksCollectionWithOffset
         .call((_tracksCollection!, _tracksGettingResponseList, _tracksGettingResponseList.length));
     if (!tracksGettingObserverResult.isSuccessful) {
-      if (tracksGettingObserverResult.failure is! NetworkFailure) {
-        emit(DownloadTracksCollectionFailure(failure: tracksGettingObserverResult.failure!));
-      }
+      emitFailureStateBasedOnFailureType(emit, tracksGettingObserverResult.failure!);
       return;
     }
 
@@ -223,5 +223,13 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
     } else {
       return _filteredTracks.length;
     }
+  }
+
+  void emitFailureStateBasedOnFailureType(Emitter<DownloadTracksCollectionBlocState> emit, Failure failure) {
+    if (failure is NetworkFailure) {
+        emit(DownloadTracksCollectionBeforeInitialNoInternetConnection());
+      } else {
+        emit(DownloadTracksCollectionFailure(failure: failure));
+      }
   }
 }

@@ -42,7 +42,7 @@ class LocalDbImpl extends LocalDb {
           "type INTEGER NOT NULL,"
           "openDate INTEGER NOT NULL,"
           "name TEXT NOT NULL,"
-          "image BLOB"
+          "imageUrl TEXT NOT NULL"
           ")");
 
         db.execute("CREATE TABLE downloadTracksCollections ("

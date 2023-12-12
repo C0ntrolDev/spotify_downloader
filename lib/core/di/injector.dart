@@ -31,6 +31,7 @@ import 'package:spotify_downloader/features/domain/tracks_collections/repositori
 import 'package:spotify_downloader/features/domain/tracks_collections/use_cases/get_tracks_collection_by_url.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/bloc/download_tracks_collection_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/bloc/track_tile_bloc.dart';
+import 'package:spotify_downloader/features/presentation/history/bloc/history_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
 
 final injector = GetIt.instance;
@@ -82,8 +83,8 @@ void _provideRepositories() {
 }
 
 void _provideUseCases() {
-  injector.registerFactory<AddHistoryTracksCollectionToHistory>(() => AddHistoryTracksCollectionToHistory(
-      historyPlaylistsRepository: injector.get<TracksCollectionsHistoryRepository>()));
+  injector.registerFactory<AddTracksCollectionToHistory>(() =>
+      AddTracksCollectionToHistory(historyPlaylistsRepository: injector.get<TracksCollectionsHistoryRepository>()));
   injector.registerFactory<GetOrderedHistory>(
       () => GetOrderedHistory(historyPlaylistsRepository: injector.get<TracksCollectionsHistoryRepository>()));
   injector.registerFactory<GetTracksCollectionByUrl>(
@@ -98,9 +99,10 @@ void _provideUseCases() {
 }
 
 void _provideBlocs() {
-  injector.registerFactory<HomeBloc>(
-      () => HomeBloc(addTracksCollectionToHistory: injector.get<AddHistoryTracksCollectionToHistory>()));
+  injector.registerFactory<HomeBloc>(() => HomeBloc());
+  injector.registerFactory<HistoryBloc>(() => HistoryBloc(getOrderedHistory: injector.get<GetOrderedHistory>()));
   injector.registerFactory<DownloadTracksCollectionBloc>(() => DownloadTracksCollectionBloc(
+      addTracksCollectionToHistory: injector.get<AddTracksCollectionToHistory>(),
       getFromTracksCollectionWithOffset: injector.get<GetTracksWithLoadingObserverFromTracksCollecitonWithOffset>(),
       getTracksCollectionByUrl: injector.get<GetTracksCollectionByUrl>(),
       getTracksFromTracksColleciton: injector.get<GetTracksWithLoadingObserverFromTracksColleciton>()));

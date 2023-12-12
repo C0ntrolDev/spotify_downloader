@@ -6,12 +6,3 @@ final class HomeInitial extends HomeState {
   @override
   List<Object?> get props => [];
 }
-
-final class HomeLoaded extends HomeState {
-  HomeLoaded({required this.tracksCollectionsHistory});
-
-  final List<HistoryTracksCollection>? tracksCollectionsHistory;
-
-  @override
-  List<Object?> get props => [tracksCollectionsHistory];
-}
