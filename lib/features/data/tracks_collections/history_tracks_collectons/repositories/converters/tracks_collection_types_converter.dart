@@ -1,6 +1,6 @@
 import 'package:spotify_downloader/core/util/converters/simple_converters/value_converter.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/history_tracks_collectons/models/history_tracks_collection_dto.dart';
-import '../../../../../domain/shared/entities/tracks_collection_type.dart';
+import '../../../../../domain/tracks/shared/entities/tracks_collection_type.dart';
 
 class TracksCollectionTypesConverter implements ValueConverter<HistoryTracksCollectionType, TracksCollectionType> {
   @override

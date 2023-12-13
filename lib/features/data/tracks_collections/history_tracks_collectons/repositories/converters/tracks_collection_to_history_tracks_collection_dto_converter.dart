@@ -1,7 +1,7 @@
 import 'package:spotify_downloader/core/util/converters/simple_converters/value_converter.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/history_tracks_collectons/models/history_tracks_collection_dto.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/history_tracks_collectons/repositories/converters/tracks_collection_types_converter.dart';
-import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection.dart';
 
 class TracksCollectionToHistoryTracksCollectionDtoConverter
     implements ValueConverter<HistoryTracksCollectionDTO, TracksCollection> {

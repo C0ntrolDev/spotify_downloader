@@ -56,6 +56,7 @@ class LocalDbImpl extends LocalDb {
           "spotifyId TEXT NOT NULL,"
           "isLoaded INTEGER NOT NULL,"
           "youtubeUrl TEXT,"
+          "savePath TEXT"
           "FOREIGN KEY (downloadTracksCollection_spotifyId) REFERENCES downloadTracksCollections (spotifyId) ON DELETE CASCADE,"
           "FOREIGN KEY (downloadTracksCollection_type) REFERENCES downloadTracksCollections (type) ON DELETE CASCADE,"
           "PRIMARY KEY (downloadTracksCollection_spotifyId, downloadTracksCollection_type, spotifyId)"

@@ -5,7 +5,7 @@ import 'package:spotify_downloader/features/data/tracks/network_tracks/models/ge
 import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tracks_dto_getting_ended_status.dart';
 import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tracks_getting_stream.dart';
 import 'package:spotify_downloader/features/data/tracks/network_tracks/repositories/converters/track_dto_to_track_converter.dart';
-import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection_type.dart';
+import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection_type.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/get_tracks_from_tracks_collection_args.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_ended_status.dart';

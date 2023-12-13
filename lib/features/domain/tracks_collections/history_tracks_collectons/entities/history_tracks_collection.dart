@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection_type.dart';
+import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection_type.dart';
 
 class HistoryTracksCollection extends Equatable {
   const HistoryTracksCollection({

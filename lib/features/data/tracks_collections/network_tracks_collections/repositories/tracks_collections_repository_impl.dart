@@ -6,8 +6,8 @@ import 'package:spotify_downloader/features/data/tracks_collections/network_trac
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/repositories/converters/album_dto_to_tracks_collection_converter.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/repositories/converters/playlist_dto_to_tracks_collection_converter.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/repositories/converters/track_dto_to_tracks_collection_converter.dart';
-import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection_type.dart';
-import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection_type.dart';
+import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/repositories/network_tracks_collections_repository.dart';
 
 class NetworkTracksCollectionsRepositoryImpl implements NetworkTracksCollectionsRepository {

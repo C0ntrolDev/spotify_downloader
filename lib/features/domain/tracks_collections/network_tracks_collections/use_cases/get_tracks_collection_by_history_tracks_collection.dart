@@ -1,8 +1,8 @@
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/core/util/use_case/use_case.dart';
-import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection_type.dart';
-import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection_type.dart';
+import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/repositories/network_tracks_collections_repository.dart';
 
 class GetTracksCollectionByTypeAndSpotifyId

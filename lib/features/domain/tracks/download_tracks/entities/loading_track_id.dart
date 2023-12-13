@@ -1,5 +1,5 @@
 import 'package:quiver/core.dart';
-import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection_type.dart';
+import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection_type.dart';
 
 class LoadingTrackId {
   LoadingTrackId({required this.parentSpotifyId, required this.parentType, required this.spotifyId});

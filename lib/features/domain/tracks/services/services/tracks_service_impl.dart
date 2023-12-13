@@ -1,7 +1,8 @@
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
-import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositories/local_tracks_repository.dart';
+import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/track_with_lazy_youtube_url.dart';
@@ -18,14 +19,17 @@ class TracksServiceImpl implements TracksService {
   TracksServiceImpl(
       {required NetworkTracksRepository networkTracksRepository,
       required DowloadTracksRepository dowloadTracksRepository,
-      required SearchVideosByTrackRepository searchVideosByTrackRepository})
+      required SearchVideosByTrackRepository searchVideosByTrackRepository,
+      required LocalTracksRepository localTracksRepository})
       : _networkTracksRepository = networkTracksRepository,
         _dowloadTracksRepository = dowloadTracksRepository,
-        _searchVideosByTrackRepository = searchVideosByTrackRepository;
+        _searchVideosByTrackRepository = searchVideosByTrackRepository,
+        _localTracksRepository = localTracksRepository;
 
   final NetworkTracksRepository _networkTracksRepository;
   final DowloadTracksRepository _dowloadTracksRepository;
   final SearchVideosByTrackRepository _searchVideosByTrackRepository;
+  final LocalTracksRepository _localTracksRepository;
 
   @override
   Future<TracksWithLoadingObserverGettingObserver> getTracksWithLoadingObserversFromTracksColleciton(
@@ -51,7 +55,7 @@ class TracksServiceImpl implements TracksService {
       responseList.addAll(part);
       trackGettingObserver.onPartGot?.call();
     };
-    
+
     rawObserver.onEnded = (result) => trackGettingObserver.onEnded?.call(result);
 
     return trackGettingObserver;
@@ -102,11 +106,11 @@ class TracksServiceImpl implements TracksService {
           if (videoResult.result == null) {
             return const Result.notSuccessful(NotFoundFailure(message: 'track not found on youtube'));
           }
-          
+
           return Result.isSuccessful(videoResult.result!.url);
         }));
 
-    //final serviceTrackObserver = resultTrackObsever.result!;
+    final serviceTrackObserver = resultTrackObsever.result!;
 
     return resultTrackObsever;
   }

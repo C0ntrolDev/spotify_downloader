@@ -2,6 +2,8 @@ import 'package:get_it/get_it.dart';
 import 'package:spotify_downloader/core/consts/spotify_client.dart';
 import 'package:spotify_downloader/core/db/local_db.dart';
 import 'package:spotify_downloader/core/db/local_db_impl.dart';
+import 'package:spotify_downloader/features/data/tracks/local_tracks/data_sources/local_tracks_data_source.dart';
+import 'package:spotify_downloader/features/data/tracks/local_tracks/repositories/local_tracks_repository_impl.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/history_tracks_collectons/data_source/tracks_collectons_history_data_source.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/history_tracks_collectons/repositories/tracks_collections_history_repository_impl.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/data_sources/dowload_audio_from_youtube_data_source.dart';
@@ -14,6 +16,7 @@ import 'package:spotify_downloader/features/data/tracks/search_videos_by_track/d
 import 'package:spotify_downloader/features/data/tracks/search_videos_by_track/repositories/search_videos_by_track_repository_impl.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/data_source/network_tracks_collections_data_source.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/repositories/tracks_collections_repository_impl.dart';
+import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositories/local_tracks_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/repositories/tracks_collections_history_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/use_cases/add_tracks_collection_to_history.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/use_cases/get_ordered_history.dart';
@@ -63,6 +66,7 @@ Future<void> _provideDataSources() async {
   await injector.get<NetworkTracksDataSource>().init();
   injector.registerSingleton<SearchVideoOnYoutubeDataSource>(SearchVideoOnYoutubeDataSource());
   await injector.get<SearchVideoOnYoutubeDataSource>().init();
+  injector.registerSingleton<LocalTracksDataSource>(LocalTracksDataSource(localDb: injector.get<LocalDb>()));
 }
 
 void _provideRepositories() {
@@ -76,11 +80,13 @@ void _provideRepositories() {
       dowloadAudioFromYoutubeDataSource: injector.get<DownloadAudioFromYoutubeDataSource>()));
   injector.registerSingleton<SearchVideosByTrackRepository>(SearchVideosByTrackRepositoryImpl(
       searchVideoOnYoutubeDataSource: injector.get<SearchVideoOnYoutubeDataSource>()));
+  injector.registerSingleton<LocalTracksRepository>(LocalTracksRepositoryImpl(dataSource: injector.get<LocalTracksDataSource>()));
 
   injector.registerSingleton<TracksService>(TracksServiceImpl(
       searchVideosByTrackRepository: injector.get<SearchVideosByTrackRepository>(),
       networkTracksRepository: injector.get<NetworkTracksRepository>(),
-      dowloadTracksRepository: injector.get<DowloadTracksRepository>()));
+      dowloadTracksRepository: injector.get<DowloadTracksRepository>(),
+      localTracksRepository: injector.get<LocalTracksRepository>()));
 }
 
 void _provideUseCases() {
