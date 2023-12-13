@@ -1,6 +1,6 @@
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
-import 'package:spotify_downloader/features/domain/history_tracks_collectons/entities/history_tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection.dart';
 
 abstract class TracksCollectionsHistoryRepository {

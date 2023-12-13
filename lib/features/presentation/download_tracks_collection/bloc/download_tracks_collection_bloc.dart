@@ -6,21 +6,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
-import 'package:spotify_downloader/features/domain/history_tracks_collectons/entities/history_tracks_collection.dart';
-import 'package:spotify_downloader/features/domain/history_tracks_collectons/use_cases/add_tracks_collection_to_history.dart';
+import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/entities/history_tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/use_cases/add_tracks_collection_to_history.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_ended_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/domain/shared/entities/tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_controller.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/use_cases/get_tracks_with_loading_observer_from_tracks_colleciton.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/use_cases/get_tracks_with_loading_observer_from_tracks_colleciton_with_offset.dart';
-import 'package:spotify_downloader/features/domain/tracks_collections/use_cases/get_tracks_collection_by_url.dart';
+import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_history_tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_url.dart';
 
 part 'download_tracks_collection_event.dart';
 part 'download_tracks_collection_state.dart';
 
 class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEvent, DownloadTracksCollectionBlocState> {
   final GetTracksCollectionByUrl _getTracksCollectionByUrl;
+  final GetTracksCollectionByTypeAndSpotifyId _getTracksCollectionByTypeAndSpotifyId;
   final GetTracksWithLoadingObserverFromTracksColleciton _getFromTracksColleciton;
   final AddTracksCollectionToHistory _addTracksCollectionToHistory;
   final GetTracksWithLoadingObserverFromTracksCollecitonWithOffset _getFromTracksCollectionWithOffset;
@@ -48,11 +50,13 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
       }).toList();
 
   DownloadTracksCollectionBloc(
-      {required GetTracksCollectionByUrl getTracksCollectionByUrl,
+      {required GetTracksCollectionByTypeAndSpotifyId getTracksCollectionByTypeAndSpotifyId,
+      required GetTracksCollectionByUrl getTracksCollectionByUrl,
       required GetTracksWithLoadingObserverFromTracksColleciton getTracksFromTracksColleciton,
       required GetTracksWithLoadingObserverFromTracksCollecitonWithOffset getFromTracksCollectionWithOffset,
       required AddTracksCollectionToHistory addTracksCollectionToHistory})
-      : _getTracksCollectionByUrl = getTracksCollectionByUrl,
+      : _getTracksCollectionByTypeAndSpotifyId = getTracksCollectionByTypeAndSpotifyId,
+        _getTracksCollectionByUrl = getTracksCollectionByUrl,
         _getFromTracksColleciton = getTracksFromTracksColleciton,
         _getFromTracksCollectionWithOffset = getFromTracksCollectionWithOffset,
         _addTracksCollectionToHistory = addTracksCollectionToHistory,
@@ -63,6 +67,10 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
 
     on<DownloadTracksCollectionLoadWithTracksCollecitonUrl>((event, emit) async {
       await _onLoadWithTracksCollecitonUrl(event, emit);
+    });
+
+    on<DownloadTracksCollectionLoadWithHistoryTracksColleciton>((event, emit) async {
+      await _onLoadWithHistoryTracksCollection(event, emit);
     });
 
     on<DownloadTracksCollectionContinueTracksGetting>((event, emit) {
@@ -109,7 +117,6 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
   Future<void> _onLoadWithTracksCollecitonUrl(DownloadTracksCollectionLoadWithTracksCollecitonUrl event,
       Emitter<DownloadTracksCollectionBlocState> emit) async {
     emit(DownloadTracksCollectionInitialLoading());
-    Future(() async => _onInternetChanged(await Connectivity().checkConnectivity()));
 
     final tracksCollectionResult = await _getTracksCollectionByUrl.call(event.url);
     if (!tracksCollectionResult.isSuccessful) {
@@ -125,6 +132,32 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
       return;
     }
 
+    await startGettingTracksFromTracksColleciton(emit);
+  }
+
+  Future<void> _onLoadWithHistoryTracksCollection(DownloadTracksCollectionLoadWithHistoryTracksColleciton event,
+      Emitter<DownloadTracksCollectionBlocState> emit) async {
+    emit(DownloadTracksCollectionInitialLoading());
+
+    final tracksCollectionResult = await _getTracksCollectionByTypeAndSpotifyId
+        .call((event.historyTracksCollection.type, event.historyTracksCollection.spotifyId));
+    if (!tracksCollectionResult.isSuccessful) {
+      emitFailureStateBasedOnFailureType(emit, tracksCollectionResult.failure!);
+      return;
+    }
+
+    _tracksCollection = tracksCollectionResult.result;
+
+    final addTracksCollectionToHistoryResult = await _addTracksCollectionToHistory.call(_tracksCollection!);
+    if (!addTracksCollectionToHistoryResult.isSuccessful) {
+      emitFailureStateBasedOnFailureType(emit, addTracksCollectionToHistoryResult.failure!);
+      return;
+    }
+
+    await startGettingTracksFromTracksColleciton(emit);
+  }
+
+    Future<void> startGettingTracksFromTracksColleciton(Emitter<DownloadTracksCollectionBlocState> emit) async {
     final tracksGettingObserverResult =
         await _getFromTracksColleciton.call((_tracksCollection!, _tracksGettingResponseList));
     if (!tracksGettingObserverResult.isSuccessful) {
@@ -227,9 +260,9 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
 
   void emitFailureStateBasedOnFailureType(Emitter<DownloadTracksCollectionBlocState> emit, Failure failure) {
     if (failure is NetworkFailure) {
-        emit(DownloadTracksCollectionBeforeInitialNoInternetConnection());
-      } else {
-        emit(DownloadTracksCollectionFailure(failure: failure));
-      }
+      emit(DownloadTracksCollectionBeforeInitialNoInternetConnection());
+    } else {
+      emit(DownloadTracksCollectionFailure(failure: failure));
+    }
   }
 }

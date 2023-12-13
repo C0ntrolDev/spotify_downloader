@@ -1,0 +1,1 @@
+const double bottomNavigationBarHeight = 50;

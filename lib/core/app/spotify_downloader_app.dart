@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
@@ -15,7 +16,9 @@ class _SpotifyDownloaderAppState extends State<SpotifyDownloaderApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: _appRouter.config(),
+      routerConfig: _appRouter.config(
+        navigatorObservers: () => [AutoRouteObserver()]
+      ),
       theme: mainTheme,
     );
   }

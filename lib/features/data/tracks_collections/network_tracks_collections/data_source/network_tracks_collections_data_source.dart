@@ -5,8 +5,8 @@ import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 
-class TracksCollectionsDataSource {
-  TracksCollectionsDataSource({
+class NetworkTracksCollectionsDataSource {
+  NetworkTracksCollectionsDataSource({
     required String clientId,
     required String clientSecret,
   })  : _clientId = clientId,

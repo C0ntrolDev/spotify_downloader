@@ -2,6 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spotify_downloader/core/app/colors/colors.dart';
+import 'package:spotify_downloader/core/app/router/router.dart';
+import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/presentation/history/bloc/history_bloc.dart';
 
@@ -48,24 +51,56 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
               builder: (context, state) {
                 if (state is HistoryBlocLoaded) {
                   return Padding(
-                    padding: const EdgeInsets.only(top: 30),
-                    child: ListView.builder(
-                        itemCount: state.historyTracksCollections.length,
-                        itemBuilder: (context, index) {
-                          final historyTracksCollection = state.historyTracksCollections[index];
-                          return Row(children: [
-                            CachedNetworkImage(
-                              width: 50,
-                              height: 50,
-                              imageUrl: historyTracksCollection.imageUrl ?? '',
-                              placeholder: (context, imageUrl) =>
-                                  Image.asset('resources/images/another/loading_track_collection_image.png'),
-                              errorWidget: (context, imageUrl, _) =>
-                                  Image.asset('resources/images/another/loading_track_collection_image.png'),
-                            ),
-                            Text(historyTracksCollection.name)
-                          ]);
-                        }),
+                    padding: const EdgeInsets.only(top: 20),
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverList.builder(
+                            itemCount: state.historyTracksCollections.length,
+                            itemBuilder: (context, index) {
+                              final historyTracksCollection = state.historyTracksCollections[index];
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 20),
+                                child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                  CachedNetworkImage(
+                                    width: 70,
+                                    height: 70,
+                                    imageUrl: historyTracksCollection.imageUrl ?? '',
+                                    placeholder: (context, imageUrl) =>
+                                        Image.asset('resources/images/another/loading_track_collection_image.png'),
+                                    errorWidget: (context, imageUrl, _) =>
+                                        Image.asset('resources/images/another/loading_track_collection_image.png'),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Text(
+                                        historyTracksCollection.name,
+                                        style: theme.textTheme.bodyMedium,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                      alignment: Alignment.centerRight,
+                                      child: IconButton(
+                                        iconSize: 30,
+                                        icon: const Icon(Icons.arrow_forward_ios_rounded),
+                                        color: onBackgroundSecondaryColor,
+                                        onPressed: () async {
+                                          AutoRouter.of(context)
+                                              .push(DownloadTracksCollectionRouteWithHistoryTracksCollection(
+                                                  historyTracksCollection: historyTracksCollection))
+                                              .then((value) => _historyBloc.add(HistoryBlocLoadHistory()));
+                                        },
+                                      ))
+                                ]),
+                              );
+                            }),
+                        SliverToBoxAdapter(
+                          child: Container(height: bottomNavigationBarHeight),
+                        )
+                      ],
+                    ),
                   );
                 }
 
