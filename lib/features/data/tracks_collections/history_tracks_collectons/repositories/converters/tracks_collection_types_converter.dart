@@ -13,7 +13,7 @@ class TracksCollectionTypesConverter implements ValueConverter<HistoryTracksColl
       case TracksCollectionType.playlist:
         return HistoryTracksCollectionType.playlist;
       case TracksCollectionType.track:
-        return HistoryTracksCollectionType.album;
+        return HistoryTracksCollectionType.track;
     }
   }
 
