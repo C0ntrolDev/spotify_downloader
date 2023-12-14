@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
+import 'package:spotify_downloader/features/presentation/download_track_info/view/download_track_info.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/bloc/track_tile_bloc.dart';
 
 class TrackTile extends StatefulWidget {
@@ -81,20 +82,20 @@ class _TrackTileState extends State<TrackTile> {
                 padding: const EdgeInsets.only(right: 10),
                 child: BlocBuilder<TrackTileBloc, TrackTileState>(
                   bloc: _trackTileBloc,
-                  builder: (context, state) {      
+                  builder: (context, state) {
                     if (state is TrackTileOnTrackLoading) {
                       return GestureDetector(
                         onTap: () {
                           _trackTileBloc.add(TrackTileCancelTrackLoading());
                         },
-                        child:  SvgPicture.asset(
+                        child: SvgPicture.asset(
                           'resources/images/svg/track_tile/cancel_icon.svg',
                           height: 23,
                           width: 23,
                         ),
                       );
                     }
-              
+
                     if (state is TrackTileTrackOnFailure) {
                       return GestureDetector(
                         onTap: () {},
@@ -106,7 +107,7 @@ class _TrackTileState extends State<TrackTile> {
                         ),
                       );
                     }
-              
+
                     return Container();
                   },
                 ),
@@ -123,10 +124,10 @@ class _TrackTileState extends State<TrackTile> {
                           onTap: () {
                             _trackTileBloc.add(TrackTitleDownloadTrack());
                           },
-                          child:
-                              SvgPicture.asset('resources/images/svg/track_tile/download_icon.svg', height: 30, width: 30));
+                          child: SvgPicture.asset('resources/images/svg/track_tile/download_icon.svg',
+                              height: 30, width: 30));
                     }
-              
+
                     if (state is TrackTileOnTrackLoading) {
                       return Container(
                         padding: const EdgeInsets.all(0),
@@ -139,13 +140,13 @@ class _TrackTileState extends State<TrackTile> {
                             if (state.percent != null) {
                               return state.percent! / 100;
                             }
-              
+
                             return null;
                           }).call(),
                         ),
                       );
                     }
-              
+
                     if (state is TrackTileOnTrackLoaded) {
                       return SvgPicture.asset(
                         'resources/images/svg/track_tile/downloaded_icon.svg',
@@ -154,7 +155,7 @@ class _TrackTileState extends State<TrackTile> {
                         colorFilter: const ColorFilter.mode(primaryColor, BlendMode.srcIn),
                       );
                     }
-              
+
                     if (state is TrackTileTrackOnFailure) {
                       return GestureDetector(
                         onTap: () => _trackTileBloc.add(TrackTitleDownloadTrack()),
@@ -165,7 +166,7 @@ class _TrackTileState extends State<TrackTile> {
                         ),
                       );
                     }
-              
+
                     return Container();
                   },
                 ),
@@ -175,15 +176,22 @@ class _TrackTileState extends State<TrackTile> {
         ),
         Padding(
           padding: const EdgeInsets.only(right: 10),
-          child: SizedBox(
-              width: 20,
-              height: 50,
-              child: IconButton(
-                  onPressed: () {},
-                  icon: SvgPicture.asset(
-                    'resources/images/svg/track_tile/more_info.svg',
-                    fit: BoxFit.fitHeight,
-                  ))),
+          child: BlocBuilder<TrackTileBloc, TrackTileState>(
+            bloc: _trackTileBloc,
+            builder: (context, state) {
+              return SizedBox(
+                  width: 20,
+                  height: 50,
+                  child: IconButton(
+                      onPressed: () {
+                        showDownloadTrackInfoBottomSheet(context, state.trackWithLoadingObserver);
+                      },
+                      icon: SvgPicture.asset(
+                        'resources/images/svg/track_tile/more_info.svg',
+                        fit: BoxFit.fitHeight,
+                      )));
+            },
+          ),
         )
       ],
     );

@@ -29,9 +29,9 @@ dependencies:
   metadata_god: ^0.5.2
   cached_network_image: ^3.3.0
   path: ^1.8.3
-  shimmer: ^3.0.0
   connectivity_plus: ^5.0.2
   draggable_scrollbar: ^0.1.0
+  modal_bottom_sheet: ^2.1.2
 
 dev_dependencies:
   flutter_test:
@@ -45,7 +45,6 @@ flutter:
 
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - resources/images/svg/bottom_bar/history_icon_active.svg
     - resources/images/svg/bottom_bar/history_icon.svg
@@ -62,20 +61,7 @@ flutter:
     - resources/images/svg/back_icon.svg
     - resources/images/another/liked_tracks.jpg
     - resources/images/another/loading_track_collection_image.png
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
 
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware
-
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/assets-and-images/#from-packages
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
   fonts:
     - family: OpenSans
       fonts:
@@ -87,5 +73,3 @@ flutter:
           weight: 700
         - asset: resources/fonts/OpenSans-ExtraBold.ttf
           weight: 800
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages

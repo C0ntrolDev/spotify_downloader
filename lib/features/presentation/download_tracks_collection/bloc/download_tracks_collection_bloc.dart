@@ -88,10 +88,6 @@ class DownloadTracksCollectionBloc extends Bloc<DownloadTracksCollectionBlocEven
       _onTracksGettingEnded(event, emit);
     });
 
-    on<DownloadTracksCollectionCancelTracksGetting>((event, emit) {
-      _tracksGettingObserver?.cancelGetting();
-    });
-
     on<DownloadTracksCollectionInternetConnectionGoneAfterInitial>((event, emit) {
       emit(DownloadTracksCollectionAfterInititalNoInternetConnection(
           tracksCollection: _tracksCollection!,

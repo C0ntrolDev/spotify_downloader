@@ -33,6 +33,7 @@ import 'package:spotify_downloader/features/domain/tracks/services/use_cases/get
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/repositories/network_tracks_collections_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_history_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_url.dart';
+import 'package:spotify_downloader/features/presentation/download_track_info/bloc/download_track_info_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/bloc/download_tracks_collection_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/bloc/track_tile_bloc.dart';
 import 'package:spotify_downloader/features/presentation/history/bloc/history_bloc.dart';
@@ -80,7 +81,8 @@ void _provideRepositories() {
       dowloadAudioFromYoutubeDataSource: injector.get<DownloadAudioFromYoutubeDataSource>()));
   injector.registerSingleton<SearchVideosByTrackRepository>(SearchVideosByTrackRepositoryImpl(
       searchVideoOnYoutubeDataSource: injector.get<SearchVideoOnYoutubeDataSource>()));
-  injector.registerSingleton<LocalTracksRepository>(LocalTracksRepositoryImpl(dataSource: injector.get<LocalTracksDataSource>()));
+  injector.registerSingleton<LocalTracksRepository>(
+      LocalTracksRepositoryImpl(dataSource: injector.get<LocalTracksDataSource>()));
 
   injector.registerSingleton<TracksService>(TracksServiceImpl(
       searchVideosByTrackRepository: injector.get<SearchVideosByTrackRepository>(),
@@ -119,6 +121,11 @@ void _provideBlocs() {
   injector.registerFactoryParam<TrackTileBloc, TrackWithLoadingObserver, void>((trackwithLoadingObserver, _) =>
       TrackTileBloc(
           trackWithLoadingObserver: trackwithLoadingObserver,
-          dowloadTrack: injector.get<DownloadTrack>(),
+          downloadTrack: injector.get<DownloadTrack>(),
+          cancelTrackLoading: injector.get<CancelTrackLoading>()));
+  injector.registerFactoryParam<DownloadTrackInfoBloc, TrackWithLoadingObserver, void>((trackwithLoadingObserver, _) =>
+      DownloadTrackInfoBloc(
+          trackWithLoadingObserver: trackwithLoadingObserver,
+          downloadTrack: injector.get<DownloadTrack>(),
           cancelTrackLoading: injector.get<CancelTrackLoading>()));
 }

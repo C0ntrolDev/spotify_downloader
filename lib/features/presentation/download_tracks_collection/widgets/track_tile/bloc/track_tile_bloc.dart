@@ -18,11 +18,11 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
 
   TrackTileBloc({
     required TrackWithLoadingObserver trackWithLoadingObserver,
-    required DownloadTrack dowloadTrack,
+    required DownloadTrack downloadTrack,
     required CancelTrackLoading cancelTrackLoading,
   })  : _cancelTrackLoading = cancelTrackLoading,
         _trackWithLoadingObserver = trackWithLoadingObserver,
-        _dowloadTrack = dowloadTrack,
+        _dowloadTrack = downloadTrack,
         super(returnStateBasedOnTrackWithLoadingObserver(trackWithLoadingObserver)) {
     _trackWithLoadingObserver.onTrackObserverChanged = onLoadingTrackObserverChanged;
 
@@ -35,24 +35,24 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
       if (loadingObserverResult.isSuccessful) {
         _trackWithLoadingObserver.loadingObserver = loadingObserverResult.result;
       } else {
-        emit(TrackTileTrackOnFailure(_trackWithLoadingObserver.track, failure: loadingObserverResult.failure));
+        emit(TrackTileTrackOnFailure(_trackWithLoadingObserver, failure: loadingObserverResult.failure));
       }
     });
 
     on<TrackTileSetToDeffaultState>((event, emit) {
-      emit(TrackTileDeffault(_trackWithLoadingObserver.track));
+      emit(TrackTileDeffault(_trackWithLoadingObserver));
     });
 
     on<TrackTileLoadingPercentChanged>((event, emit) {
-      emit(TrackTileOnTrackLoading(_trackWithLoadingObserver.track, percent: event.loadingPercent));
+      emit(TrackTileOnTrackLoading(_trackWithLoadingObserver, percent: event.loadingPercent));
     });
 
     on<TrackTileTrackLoaded>((event, emit) {
-      emit(TrackTileOnTrackLoaded(_trackWithLoadingObserver.track));
+      emit(TrackTileOnTrackLoaded(_trackWithLoadingObserver));
     });
 
     on<TrackTileTrackLoadingFailure>((event, emit) {
-      emit(TrackTileTrackOnFailure(_trackWithLoadingObserver.track, failure: event.failure));
+      emit(TrackTileTrackOnFailure(_trackWithLoadingObserver, failure: event.failure));
     });
 
     onLoadingTrackObserverChanged(_trackWithLoadingObserver.loadingObserver);
@@ -62,24 +62,24 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
     if (trackWithLoadingObserver.loadingObserver != null) {
       switch (trackWithLoadingObserver.loadingObserver!.status) {
         case LoadingTrackStatus.waitInLoadingQueue:
-          return TrackTileOnTrackLoading(trackWithLoadingObserver.track);
+          return TrackTileOnTrackLoading(trackWithLoadingObserver);
         case LoadingTrackStatus.loading:
-          return TrackTileOnTrackLoading(trackWithLoadingObserver.track,
+          return TrackTileOnTrackLoading(trackWithLoadingObserver,
               percent: trackWithLoadingObserver.loadingObserver!.loadingPercent);
         case LoadingTrackStatus.loaded:
-          return TrackTileOnTrackLoaded(trackWithLoadingObserver.track);
+          return TrackTileOnTrackLoaded(trackWithLoadingObserver);
         case LoadingTrackStatus.loadingCancelled:
-          return TrackTileDeffault(trackWithLoadingObserver.track);
+          return TrackTileDeffault(trackWithLoadingObserver);
         case LoadingTrackStatus.failure:
-          return TrackTileTrackOnFailure(trackWithLoadingObserver.track,
+          return TrackTileTrackOnFailure(trackWithLoadingObserver,
               failure: trackWithLoadingObserver.loadingObserver?.failure);
       }
     }
 
     if (trackWithLoadingObserver.track.isLoaded) {
-      return TrackTileOnTrackLoaded(trackWithLoadingObserver.track);
+      return TrackTileOnTrackLoaded(trackWithLoadingObserver);
     } else {
-      return TrackTileDeffault(trackWithLoadingObserver.track);
+      return TrackTileDeffault(trackWithLoadingObserver);
     }
   }
 

@@ -39,11 +39,6 @@ final class DownloadTracksCollectionTracksGettingEnded extends DownloadTracksCol
   List<Object> get props => [result];
 }
 
-final class DownloadTracksCollectionCancelTracksGetting extends DownloadTracksCollectionBlocEvent {
-  @override
-  List<Object> get props => [];
-}
-
 final class DownloadTracksCollectionContinueTracksGetting extends DownloadTracksCollectionBlocEvent {
   @override
   List<Object> get props => [];
