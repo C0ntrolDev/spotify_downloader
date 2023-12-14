@@ -23,7 +23,7 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
   })  : _cancelTrackLoading = cancelTrackLoading,
         _trackWithLoadingObserver = trackWithLoadingObserver,
         _dowloadTrack = dowloadTrack,
-        super(TrackTileDeffault(trackWithLoadingObserver.track)) {
+        super(returnStateBasedOnTrackWithLoadingObserver(trackWithLoadingObserver)) {
     _trackWithLoadingObserver.onTrackObserverChanged = onLoadingTrackObserverChanged;
 
     on<TrackTileCancelTrackLoading>((event, emit) {
@@ -58,9 +58,34 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
     onLoadingTrackObserverChanged(_trackWithLoadingObserver.loadingObserver);
   }
 
+  static TrackTileState returnStateBasedOnTrackWithLoadingObserver(TrackWithLoadingObserver trackWithLoadingObserver) {
+    if (trackWithLoadingObserver.loadingObserver != null) {
+      switch (trackWithLoadingObserver.loadingObserver!.status) {
+        case LoadingTrackStatus.waitInLoadingQueue:
+          return TrackTileOnTrackLoading(trackWithLoadingObserver.track);
+        case LoadingTrackStatus.loading:
+          return TrackTileOnTrackLoading(trackWithLoadingObserver.track,
+              percent: trackWithLoadingObserver.loadingObserver!.loadingPercent);
+        case LoadingTrackStatus.loaded:
+          return TrackTileOnTrackLoaded(trackWithLoadingObserver.track);
+        case LoadingTrackStatus.loadingCancelled:
+          return TrackTileDeffault(trackWithLoadingObserver.track);
+        case LoadingTrackStatus.failure:
+          return TrackTileTrackOnFailure(trackWithLoadingObserver.track,
+              failure: trackWithLoadingObserver.loadingObserver?.failure);
+      }
+    }
+
+    if (trackWithLoadingObserver.track.isLoaded) {
+      return TrackTileOnTrackLoaded(trackWithLoadingObserver.track);
+    } else {
+      return TrackTileDeffault(trackWithLoadingObserver.track);
+    }
+  }
+
   void onLoadingTrackObserverChanged(LoadingTrackObserver? loadingTrackObserver) {
     if (loadingTrackObserver != null) {
-      selectStateBasedOnLoadingTrackObserver(loadingTrackObserver);
+      addEventBasedOnLoadingTrackObserver(loadingTrackObserver);
 
       loadingTrackObserver.startLoadingStream.listen((youtubeUrl) => add(const TrackTileLoadingPercentChanged()));
       loadingTrackObserver.loadingPercentChangedStream
@@ -77,7 +102,7 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
     }
   }
 
-  void selectStateBasedOnLoadingTrackObserver(LoadingTrackObserver loadingTrackObserver) {
+  void addEventBasedOnLoadingTrackObserver(LoadingTrackObserver loadingTrackObserver) {
     switch (loadingTrackObserver.status) {
       case LoadingTrackStatus.waitInLoadingQueue:
         add(const TrackTileLoadingPercentChanged());
