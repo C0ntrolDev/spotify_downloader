@@ -3,14 +3,12 @@ import 'package:spotify_downloader/features/data/tracks/local_tracks/models/loca
 class LocalTrackDto {
   LocalTrackDto(
       {required this.spotifyId,
-      required this.isLoaded,
       required this.savePath,
       required this.tracksCollection,
-      this.youtubeUrl});
+      required this.youtubeUrl});
 
   String spotifyId;
-  bool isLoaded;
-  String? youtubeUrl;
-  String? savePath;
+  String youtubeUrl;
+  String savePath;
   LocalTracksCollectionDto tracksCollection;
 }

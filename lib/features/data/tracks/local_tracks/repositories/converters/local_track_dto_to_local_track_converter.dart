@@ -11,7 +11,6 @@ class LocalTrackDtoToLocalTrackConverter implements ValueConverter<LocalTrack, L
   LocalTrack convert(LocalTrackDto dto) {
     return LocalTrack(
         spotifyId: dto.spotifyId,
-        isLoaded: dto.isLoaded,
         savePath: dto.savePath,
         tracksCollection: _collectionsConverter.convert(dto.tracksCollection),
         youtubeUrl: dto.youtubeUrl);
@@ -21,7 +20,6 @@ class LocalTrackDtoToLocalTrackConverter implements ValueConverter<LocalTrack, L
   LocalTrackDto convertBack(LocalTrack entity) {
     return LocalTrackDto(
         spotifyId: entity.spotifyId,
-        isLoaded: entity.isLoaded,
         savePath: entity.savePath,
         tracksCollection: _collectionsConverter.convertBack(entity.tracksCollection),
         youtubeUrl: entity.youtubeUrl);

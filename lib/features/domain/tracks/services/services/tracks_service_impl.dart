@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_track.dart';
+import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_tracks_collection_type.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositories/local_tracks_repository.dart';
+import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_ended_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
@@ -14,6 +20,7 @@ import 'package:spotify_downloader/features/domain/tracks/services/entities/trac
 import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_controller.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/services/tracks_service.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
+import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection_type.dart';
 
 class TracksServiceImpl implements TracksService {
   TracksServiceImpl(
@@ -40,8 +47,11 @@ class TracksServiceImpl implements TracksService {
     final rawObserver = await _networkTracksRepository.getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs(
         tracksCollection: tracksCollection, responseList: rawResponseList, offset: offset));
 
-    final trackGettingObserver =
+    final tracksGettingObserver =
         TracksWithLoadingObserverGettingObserver(cancelFunction: () => rawObserver.cancelGetting());
+
+    bool isRawPartLast = false;
+    late Result<Failure, TracksGettingEndedStatus> tracksGettingResult;
 
     rawObserver.onPartGot = (rawPart) async {
       final filteredRawPart = rawPart.where((track) => track != null);
@@ -53,12 +63,23 @@ class TracksServiceImpl implements TracksService {
       }
 
       responseList.addAll(part);
-      trackGettingObserver.onPartGot?.call();
+      tracksGettingObserver.onPartGot?.call();
+
+      if (isRawPartLast) {
+        tracksGettingObserver.onEnded?.call(tracksGettingResult);
+      }
     };
 
-    rawObserver.onEnded = (result) => trackGettingObserver.onEnded?.call(result);
+    rawObserver.onEnded = (result) {
+      if (!result.isSuccessful || result.result == TracksGettingEndedStatus.cancelled) {
+        tracksGettingObserver.onEnded?.call(result);
+      } else {
+        isRawPartLast = true;
+        tracksGettingResult = result;
+      }
+    };
 
-    return trackGettingObserver;
+    return tracksGettingObserver;
   }
 
   @override
@@ -69,7 +90,28 @@ class TracksServiceImpl implements TracksService {
 
   Future<TrackWithLoadingObserver> _findAllInfoAboutTrack(Track track) async {
     final getloadingTrackObserverResult = await _dowloadTracksRepository.getLoadingTrackObserver(track);
+    final localTrackResult = await _localTracksRepository.getLocalTrack(
+        LocalTracksCollection(
+            spotifyId: track.parentCollection.spotifyId,
+            type: _convertTracksCollectionTypeToLocalTracksCollectionType(track.parentCollection.type)),
+        track.spotifyId);
+
+    final localTrack = localTrackResult.result;
+
+    if (localTrack != null) {
+      if (await checkLocalTrackToExistence(localTrack)) {
+        track.isLoaded = true;
+        track.youtubeUrl = localTrack.spotifyId;
+      } else {
+        _localTracksRepository.removeLocalTrack(localTrack);
+      }
+    }
+
     return TrackWithLoadingObserver(track: track, loadingObserver: getloadingTrackObserverResult.result);
+  }
+
+  Future<bool> checkLocalTrackToExistence(LocalTrack localTrack) async {
+    return await File(localTrack.savePath).exists();
   }
 
   Future<Result<Failure, void>> dowloadTracksWithLoadingObserverRange(
@@ -92,8 +134,6 @@ class TracksServiceImpl implements TracksService {
 
   @override
   Future<Result<Failure, LoadingTrackObserver>> downloadTrack(Track track) async {
-    if (track.youtubeUrl == null) {}
-
     final resultTrackObsever = await _dowloadTracksRepository.dowloadTrack(TrackWithLazyYoutubeUrl(
         track: track,
         getYoutubeUrlFunction: () async {
@@ -111,7 +151,30 @@ class TracksServiceImpl implements TracksService {
         }));
 
     final serviceTrackObserver = resultTrackObsever.result!;
+    serviceTrackObserver.loadedStream.listen((savePath) {
+      _localTracksRepository.saveLocalTrack(LocalTrack(
+          spotifyId: track.spotifyId,
+          savePath: savePath,
+          tracksCollection: LocalTracksCollection(
+              spotifyId: track.parentCollection.spotifyId,
+              type: _convertTracksCollectionTypeToLocalTracksCollectionType(track.parentCollection.type)),
+          youtubeUrl: track.youtubeUrl!));
+    });
 
     return resultTrackObsever;
+  }
+
+  LocalTracksCollectionType _convertTracksCollectionTypeToLocalTracksCollectionType(
+      TracksCollectionType tracksCollectionType) {
+    switch (tracksCollectionType) {
+      case TracksCollectionType.likedTracks:
+        return LocalTracksCollectionType.likedTracks;
+      case TracksCollectionType.playlist:
+        return LocalTracksCollectionType.playlist;
+      case TracksCollectionType.album:
+        return LocalTracksCollectionType.album;
+      case TracksCollectionType.track:
+        return LocalTracksCollectionType.track;
+    }
   }
 }

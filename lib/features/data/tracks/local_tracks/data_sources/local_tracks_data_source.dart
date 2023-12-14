@@ -28,13 +28,13 @@ class LocalTracksDataSource {
         ]);
   }
 
-  Future<List<LocalTrackDto>> getLocalTracksFromStorageByLocalTracksCollection(
-      LocalTracksCollectionDto localTracksCollectionDto) async {
+  Future<LocalTrackDto?> getLocalTrackFromStorage(
+      LocalTracksCollectionDto localTracksCollectionDto, String spotifyId) async {
     final database = _localDb.getDb();
     final rawLocalTracks = await database.query('downloadTracks',
-        where: 'downloadTracksCollection_spotifyId = ? and downloadTracksCollection_type = ?',
-        whereArgs: [localTracksCollectionDto.spotifyId, localTracksCollectionDto.type.index]);
-    return rawLocalTracks.map((rawLocalTrack) => _localTrackDtoFromMap(rawLocalTrack)).toList();
+        where: 'downloadTracksCollection_spotifyId = ? and downloadTracksCollection_type = ? and spotifyId = ?',
+        whereArgs: [localTracksCollectionDto.spotifyId, localTracksCollectionDto.type.index, spotifyId]);
+    return rawLocalTracks.map((rawLocalTrack) => _localTrackDtoFromMap(rawLocalTrack)).firstOrNull;
   }
 
   Map<String, dynamic> _localTracksCollectionDtoToMap(LocalTracksCollectionDto localTracksCollectionDto) {
@@ -46,7 +46,6 @@ class LocalTracksDataSource {
       'downloadTracksCollection_spotifyId': localTrackDto.tracksCollection.spotifyId,
       'downloadTracksCollection_type': localTrackDto.tracksCollection.type.index,
       'spotifyId': localTrackDto.spotifyId,
-      'isLoaded': localTrackDto.isLoaded ? 1 : 0,
       'youtubeUrl': localTrackDto.youtubeUrl,
       'savePath': localTrackDto.savePath
     };
@@ -58,7 +57,6 @@ class LocalTracksDataSource {
           spotifyId: map['downloadTracksCollection_spotifyId'],
           type: LocalTracksCollectionDtoType.values[map['downloadTracksCollection_type'] as int]),
       spotifyId: map['spotifyId'],
-      isLoaded: map['isLoaded'] as int == 1,
       youtubeUrl: map['youtubeUrl'],
       savePath: map['savePath'],
     );

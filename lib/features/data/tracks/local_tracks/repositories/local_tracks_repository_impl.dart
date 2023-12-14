@@ -17,12 +17,15 @@ class LocalTracksRepositoryImpl implements LocalTracksRepository {
   final LocalTrackDtoToLocalTrackConverter _localTrackConverter = LocalTrackDtoToLocalTrackConverter();
 
   @override
-  Future<Result<Failure, List<LocalTrack>>> getLocalTracksByLocalTracksCollection(
-      LocalTracksCollection localTracksCollection) async {
+  Future<Result<Failure, LocalTrack?>> getLocalTrack(
+      LocalTracksCollection localTracksCollection, String spotifyId) async {
     try {
-      final localDtoTracks = await _dataSource
-          .getLocalTracksFromStorageByLocalTracksCollection(_collectionsConverter.convertBack(localTracksCollection));
-      return Result.isSuccessful(localDtoTracks.map((dtoTrack) => _localTrackConverter.convert(dtoTrack)).toList());
+      final localDtoTrack = await _dataSource.getLocalTrackFromStorage(
+          _collectionsConverter.convertBack(localTracksCollection), spotifyId);
+      if (localDtoTrack == null) {
+        return const Result.isSuccessful(null);
+      }
+      return Result.isSuccessful(_localTrackConverter.convert(localDtoTrack));
     } catch (e) {
       return Result.notSuccessful(Failure(message: e));
     }

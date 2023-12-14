@@ -4,7 +4,7 @@ import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_tracks_collection.dart';
 
 abstract class LocalTracksRepository {
-  Future<Result<Failure, List<LocalTrack>>> getLocalTracksByLocalTracksCollection(LocalTracksCollection localTracksCollection);
+  Future<Result<Failure, LocalTrack?>> getLocalTrack(LocalTracksCollection localTracksCollection, String spotifyId);
   Future<Result<Failure, void>> saveLocalTrack(LocalTrack localTrack);
   Future<Result<Failure, void>> removeLocalTrack(LocalTrack localTrack);
 }
