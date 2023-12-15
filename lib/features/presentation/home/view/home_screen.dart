@@ -6,7 +6,7 @@ import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/search_text_field.dart';
-import '../widgets/playlist_tile.dart';
+import '../widgets/liked_tracks_tile.dart';
 
 @RoutePage()
 class HomeScreen extends StatefulWidget {
@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text('Скачать любимые треки', style: theme.textTheme.titleMedium),
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
-                    child: PlaylistTile(
+                    child: LikedTracksTile(
                       theme: theme,
                       title: 'Любимые треки',
                       onTapped: () {},

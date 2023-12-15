@@ -31,7 +31,7 @@ dependencies:
   path: ^1.8.3
   connectivity_plus: ^5.0.2
   draggable_scrollbar: ^0.1.0
-  modal_bottom_sheet: ^2.1.2
+  modal_bottom_sheet: 3.0.0-pre
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +56,8 @@ flutter:
     - resources/images/svg/track_tile/error_icon.svg
     - resources/images/svg/track_tile/downloaded_icon.svg
     - resources/images/svg/track_tile/more_info.svg
+    - resources/images/svg/download_track_info/reference_icon.svg
+    - resources/images/svg/download_track_info/edit_icon.svg
     - resources/images/svg/settings_icon.svg
     - resources/images/svg/search_icon.svg
     - resources/images/svg/back_icon.svg

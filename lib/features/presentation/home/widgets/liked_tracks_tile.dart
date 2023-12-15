@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 
-class PlaylistTile extends StatelessWidget {
-  const PlaylistTile({
+class LikedTracksTile extends StatelessWidget {
+  const LikedTracksTile({
     super.key,
     required this.theme,
     required this.title,

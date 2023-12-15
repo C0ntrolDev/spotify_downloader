@@ -1,8 +1,14 @@
+import 'dart:async';
+
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 
 class TrackWithLoadingObserver {
-  TrackWithLoadingObserver({required this.track, LoadingTrackObserver? loadingObserver}) : _loadingObserver = loadingObserver;
+  TrackWithLoadingObserver({required this.track, LoadingTrackObserver? loadingObserver})
+      : _loadingObserver = loadingObserver,
+        _onTrackObserverChangedStreamController = StreamController<LoadingTrackObserver>() {
+    onLoadingTrackObserverChangedStream = _onTrackObserverChangedStreamController.stream.asBroadcastStream();
+  }
 
   final Track track;
 
@@ -10,8 +16,9 @@ class TrackWithLoadingObserver {
   LoadingTrackObserver? get loadingObserver => _loadingObserver;
   set loadingObserver(LoadingTrackObserver? value) {
     _loadingObserver = value;
-    onTrackObserverChanged?.call(value);
+    _onTrackObserverChangedStreamController.add(value);
   }
 
-  void Function(LoadingTrackObserver?)? onTrackObserverChanged;
+  final StreamController<LoadingTrackObserver?> _onTrackObserverChangedStreamController;
+  late final Stream<LoadingTrackObserver?> onLoadingTrackObserverChangedStream;
 }

@@ -101,7 +101,8 @@ class TracksServiceImpl implements TracksService {
     if (localTrack != null) {
       if (await checkLocalTrackToExistence(localTrack)) {
         track.isLoaded = true;
-        track.youtubeUrl = localTrack.spotifyId;
+        print(localTrack.youtubeUrl);
+        track.youtubeUrl = localTrack.youtubeUrl;
       } else {
         _localTracksRepository.removeLocalTrack(localTrack);
       }

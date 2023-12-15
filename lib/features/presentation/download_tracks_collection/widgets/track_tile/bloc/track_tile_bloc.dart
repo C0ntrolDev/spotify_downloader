@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
@@ -16,6 +18,8 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
   final CancelTrackLoading _cancelTrackLoading;
   final TrackWithLoadingObserver _trackWithLoadingObserver;
 
+  StreamSubscription<LoadingTrackObserver?>? loadingTrackObserverChangedSubscription;
+
   TrackTileBloc({
     required TrackWithLoadingObserver trackWithLoadingObserver,
     required DownloadTrack downloadTrack,
@@ -24,7 +28,7 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
         _trackWithLoadingObserver = trackWithLoadingObserver,
         _dowloadTrack = downloadTrack,
         super(returnStateBasedOnTrackWithLoadingObserver(trackWithLoadingObserver)) {
-    _trackWithLoadingObserver.onTrackObserverChanged = onLoadingTrackObserverChanged;
+    loadingTrackObserverChangedSubscription = _trackWithLoadingObserver.onLoadingTrackObserverChangedStream.listen(onLoadingTrackObserverChanged);
 
     on<TrackTileCancelTrackLoading>((event, emit) {
       _cancelTrackLoading.call(_trackWithLoadingObserver.track);
@@ -57,6 +61,14 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
 
     onLoadingTrackObserverChanged(_trackWithLoadingObserver.loadingObserver);
   }
+
+  @override
+  Future<void> close() async {
+    await loadingTrackObserverChangedSubscription?.cancel();
+    await super.close();
+    return;
+  }
+
 
   static TrackTileState returnStateBasedOnTrackWithLoadingObserver(TrackWithLoadingObserver trackWithLoadingObserver) {
     if (trackWithLoadingObserver.loadingObserver != null) {
