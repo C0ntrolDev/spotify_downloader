@@ -1,9 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
+import 'package:spotify_downloader/core/app/router/router.dart';
+import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/presentation/download_track_info/bloc/download_track_info_bloc.dart';
@@ -144,7 +147,9 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                       height: 23,
                       width: 23,
                       colorFilter: const ColorFilter.mode(onSurfaceSecondaryColor, BlendMode.srcIn)),
-                  onTap: () {},
+                  onTap: () {
+                    AutoRouter.of(context).push(ChangeSourceVideoRoute(track: state.trackWithLoadingObserver.track));
+                  },
                 ),
               ]);
             },
@@ -156,13 +161,8 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
 
   void showSnackBar(String message, BuildContext context) async {
     ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(
-        message,
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.bodyMedium,
-      ),
-      duration: const Duration(seconds: 2),
-    ));
+    showBigTextSnackBar(message, context);
   }
+
+  
 }

@@ -51,3 +51,26 @@ final mainTheme = ThemeData(
     selectionHandleColor: primaryColor,
   ),
 );
+
+void showSmallTextSnackBar(String message, BuildContext context, [Duration duration = const Duration(seconds: 2)]) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    content: Text(
+      message,
+      textAlign: TextAlign.center,
+      style: Theme.of(context).textTheme.bodyMedium,
+    ),
+    duration: duration,
+  ));
+}
+
+void showBigTextSnackBar(String message, BuildContext context, [Duration duration = const Duration(seconds: 2)]) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+    content: Text(
+      message,
+      textAlign: TextAlign.center,
+      style: Theme.of(context).textTheme.labelMedium,
+    ),
+    duration: duration,
+  ));
+}

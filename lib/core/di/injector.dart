@@ -17,6 +17,9 @@ import 'package:spotify_downloader/features/data/tracks/search_videos_by_track/r
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/data_source/network_tracks_collections_data_source.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/repositories/tracks_collections_repository_impl.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositories/local_tracks_repository.dart';
+import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/use_cases/find_10_videos_by_track.dart';
+import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/use_cases/get_video_by_url.dart';
+import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/repositories/tracks_collections_history_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/use_cases/add_tracks_collection_to_history.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/use_cases/get_ordered_history.dart';
@@ -33,6 +36,7 @@ import 'package:spotify_downloader/features/domain/tracks/services/use_cases/get
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/repositories/network_tracks_collections_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_history_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_url.dart';
+import 'package:spotify_downloader/features/presentation/change_source_video/bloc/change_source_video_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_track_info/bloc/download_track_info_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_track_info/widgets/download_track_info_status_tile/cubit/download_track_info_status_tile_cubit.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/bloc/download_tracks_collection_bloc.dart';
@@ -108,6 +112,10 @@ void _provideUseCases() {
   injector.registerFactory<DownloadTrack>(() => DownloadTrack(tracksService: injector.get<TracksService>()));
   injector.registerFactory<CancelTrackLoading>(
       () => CancelTrackLoading(dowloadTracksRepository: injector.get<DowloadTracksRepository>()));
+  injector.registerFactory<Find10VideosByTrack>(
+      () => Find10VideosByTrack(searchVideosByTrackRepository: injector.get<SearchVideosByTrackRepository>()));
+  injector.registerFactory<GetVideoByUrl>(
+      () => GetVideoByUrl(searchVideosByTrackRepository: injector.get<SearchVideosByTrackRepository>()));
 }
 
 void _provideBlocs() {
@@ -131,4 +139,8 @@ void _provideBlocs() {
           cancelTrackLoading: injector.get<CancelTrackLoading>()));
   injector.registerFactoryParam<DownloadTrackInfoStatusTileCubit, TrackWithLoadingObserver, void>(
       (trackwithLoadingObserver, _) => DownloadTrackInfoStatusTileCubit(trackwithLoadingObserver));
+  injector.registerFactoryParam<ChangeSourceVideoBloc, Track, void>((track, _) => ChangeSourceVideoBloc(
+      sourceTrack: track,
+      find10VideosByTrack: injector.get<Find10VideosByTrack>(),
+      getVideoByUrl: injector.get<GetVideoByUrl>()));
 }

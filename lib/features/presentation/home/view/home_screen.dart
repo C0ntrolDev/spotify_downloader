@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
+import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/search_text_field.dart';
@@ -72,14 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         searchTextFieldController.clear();
                       } else if (value != '') {
                         searchTextFieldController.clear();
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                            'Неправильная ссылка',
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                          duration: const Duration(seconds: 2),
-                        ));
+                        showBigTextSnackBar('Неправильная ссылка', context);
                       }
                     },
                   ),

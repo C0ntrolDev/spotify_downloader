@@ -15,6 +15,16 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    ChangeSourceVideoRoute.name: (routeData) {
+      final args = routeData.argsAs<ChangeSourceVideoRouteArgs>();
+      return AutoRoutePage<String?>(
+        routeData: routeData,
+        child: ChangeSourceVideoScreen(
+          key: args.key,
+          track: args.track,
+        ),
+      );
+    },
     DownloadTracksCollectionRouteWithHistoryTracksCollection.name: (routeData) {
       final args = routeData.argsAs<
           DownloadTracksCollectionRouteWithHistoryTracksCollectionArgs>();
@@ -55,6 +65,44 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
   };
+}
+
+/// generated route for
+/// [ChangeSourceVideoScreen]
+class ChangeSourceVideoRoute extends PageRouteInfo<ChangeSourceVideoRouteArgs> {
+  ChangeSourceVideoRoute({
+    Key? key,
+    required Track track,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ChangeSourceVideoRoute.name,
+          args: ChangeSourceVideoRouteArgs(
+            key: key,
+            track: track,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'ChangeSourceVideoRoute';
+
+  static const PageInfo<ChangeSourceVideoRouteArgs> page =
+      PageInfo<ChangeSourceVideoRouteArgs>(name);
+}
+
+class ChangeSourceVideoRouteArgs {
+  const ChangeSourceVideoRouteArgs({
+    this.key,
+    required this.track,
+  });
+
+  final Key? key;
+
+  final Track track;
+
+  @override
+  String toString() {
+    return 'ChangeSourceVideoRouteArgs{key: $key, track: $track}';
+  }
 }
 
 /// generated route for

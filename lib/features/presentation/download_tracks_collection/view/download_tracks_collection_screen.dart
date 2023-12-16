@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
+import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/entities/history_tracks_collection.dart';
@@ -74,7 +75,6 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // ignore: deprecated_member_use
     return Scaffold(
       body: BlocListener<DownloadTracksCollectionBloc, DownloadTracksCollectionBlocState>(
         bloc: _downloadTrackCollectionBloc,
@@ -102,25 +102,9 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
 
           if (state is DownloadTracksCollectionFailure) {
             if (state.failure is NotFoundFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                content: Text(
-                  'По данному url не было ничего найдено',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyMedium,
-                ),
-                duration: const Duration(seconds: 3),
-              ));
+              showBigTextSnackBar('По данному url не было ничего найдено', context, const Duration(seconds: 3));
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                content: Text(
-                  state.failure.toString(),
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.labelMedium,
-                ),
-                duration: const Duration(seconds: 3),
-              ));
+              showSmallTextSnackBar(state.failure.toString(), context, const Duration(seconds: 3));
             }
             AutoRouter.of(context).pop();
           }
