@@ -271,9 +271,11 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                   if (state
                                                       is DownloadTracksCollectionAfterInititalNoInternetConnection) {
                                                     return Positioned.fill(
-                                                      child: Container(
-                                                        color: const Color.fromARGB(50, 0, 0, 0),
-                                                        height: 10,
+                                                      child: IgnorePointer(
+                                                        child: Container(
+                                                          color: const Color.fromARGB(50, 0, 0, 0),
+                                                          height: 10,
+                                                        ),
                                                       ),
                                                     );
                                                   }

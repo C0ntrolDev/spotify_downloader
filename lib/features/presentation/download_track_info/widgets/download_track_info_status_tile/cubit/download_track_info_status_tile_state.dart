@@ -4,7 +4,7 @@ sealed class DownloadTrackInfoStatusTileState extends Equatable {
   const DownloadTrackInfoStatusTileState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 final class DownloadTrackInfoStatusTileDeffault extends DownloadTrackInfoStatusTileState {
@@ -15,6 +15,9 @@ final class DownloadTrackInfoStatusTileLoading extends DownloadTrackInfoStatusTi
   const DownloadTrackInfoStatusTileLoading({required this.percent});
 
   final double? percent;
+
+  @override
+  List<Object?> get props => [percent];
 }
 
 final class DownloadTrackInfoStatusTileLoaded extends DownloadTrackInfoStatusTileState {
@@ -25,4 +28,7 @@ final class DownloadTrackInfoStatusTileFailure extends DownloadTrackInfoStatusTi
   const DownloadTrackInfoStatusTileFailure({required this.failure});
 
   final Failure? failure;
+
+  @override
+  List<Object?> get props => [failure];
 }

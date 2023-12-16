@@ -34,6 +34,7 @@ import 'package:spotify_downloader/features/domain/tracks_collections/network_tr
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_history_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_url.dart';
 import 'package:spotify_downloader/features/presentation/download_track_info/bloc/download_track_info_bloc.dart';
+import 'package:spotify_downloader/features/presentation/download_track_info/widgets/download_track_info_status_tile/cubit/download_track_info_status_tile_cubit.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/bloc/download_tracks_collection_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/bloc/track_tile_bloc.dart';
 import 'package:spotify_downloader/features/presentation/history/bloc/history_bloc.dart';
@@ -128,4 +129,6 @@ void _provideBlocs() {
           trackWithLoadingObserver: trackwithLoadingObserver,
           downloadTrack: injector.get<DownloadTrack>(),
           cancelTrackLoading: injector.get<CancelTrackLoading>()));
+  injector.registerFactoryParam<DownloadTrackInfoStatusTileCubit, TrackWithLoadingObserver, void>(
+      (trackwithLoadingObserver, _) => DownloadTrackInfoStatusTileCubit(trackwithLoadingObserver));
 }

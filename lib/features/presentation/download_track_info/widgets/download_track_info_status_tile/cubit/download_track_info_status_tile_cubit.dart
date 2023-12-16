@@ -71,9 +71,9 @@ class DownloadTrackInfoStatusTileCubit extends Cubit<DownloadTrackInfoStatusTile
         case LoadingTrackStatus.loading:
           return DownloadTrackInfoStatusTileLoading(percent: trackWithLoadingObserver.loadingObserver!.loadingPercent);
         case LoadingTrackStatus.loaded:
-          return DownloadTrackInfoStatusTileLoaded();
+          return const DownloadTrackInfoStatusTileLoaded();
         case LoadingTrackStatus.loadingCancelled:
-          return DownloadTrackInfoStatusTileDeffault();
+          return const DownloadTrackInfoStatusTileDeffault();
         case LoadingTrackStatus.failure:
           return DownloadTrackInfoStatusTileFailure(failure: trackWithLoadingObserver.loadingObserver!.failure);
       }

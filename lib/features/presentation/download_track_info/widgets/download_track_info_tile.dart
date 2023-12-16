@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 
 class DownloadTrackInfoTile extends StatefulWidget {
   const DownloadTrackInfoTile({
     super.key,
     required this.title,
-    this.svgAssetName,
-    this.iconWidget,
-    this.onTap, 
+    required this.iconWidget,
+    this.onTap,
   });
 
   final String title;
   final Widget? iconWidget;
-  final String? svgAssetName;
   final Function()? onTap;
 
   @override
@@ -33,20 +30,7 @@ class _DownloadTrackInfoTileState extends State<DownloadTrackInfoTile> {
         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
         child: Row(
           children: [
-            Builder(
-              builder: (context) {
-                if (widget.iconWidget != null) {
-                  return widget.iconWidget!;
-                }
-
-                return SvgPicture.asset(
-                  widget.svgAssetName ?? '',
-                  height: 23,
-                  width: 23,
-                  colorFilter: const ColorFilter.mode(onSurfaceSecondaryColor, BlendMode.srcIn),
-                );
-              }
-            ),
+            widget.iconWidget ?? Container(),
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.only(left: 15),

@@ -2,10 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/presentation/download_track_info/bloc/download_track_info_bloc.dart';
+import 'package:spotify_downloader/features/presentation/download_track_info/widgets/download_track_info_status_tile/view/download_track_info_status_tile.dart';
 
 import '../widgets/download_track_info_tile.dart';
 
@@ -42,7 +44,7 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SizedBox(
-      height: 250,
+      height: 290,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Padding(
@@ -56,7 +58,8 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                   child: Container(
                     width: 50,
                     height: 4,
-                    decoration: BoxDecoration(color: onSurfaceSecondaryColor, borderRadius: BorderRadius.circular(2.5)),
+                    decoration:
+                        BoxDecoration(color: onSurfaceSecondaryColor, borderRadius: BorderRadius.circular(2.5)),
                   ),
                 ),
                 Padding(
@@ -120,35 +123,27 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                       ],
                     )),
                 const Divider(color: onSurfaceSecondaryColor, height: 20),
+                DownloadTrackInfoStatusTile(trackWithLoadingObserver: state.trackWithLoadingObserver),
                 DownloadTrackInfoTile(
-                  title: 'Ссылка на источник',
-                  svgAssetName: 'resources/images/svg/download_track_info/reference_icon.svg',
-                  onTap: () async {
-                    if (state.trackWithLoadingObserver.track.youtubeUrl != null) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                          'Url скопирован!',
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        duration: const Duration(seconds: 2),
-                      ));
-                      await Clipboard.setData(ClipboardData(text: state.trackWithLoadingObserver.track.youtubeUrl!));
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                          'Url не выбран',
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        duration: const Duration(seconds: 2),
-                      ));
-                    }
-                  },
-                ),
+                    title: 'Ссылка на источник',
+                    iconWidget: SvgPicture.asset('resources/images/svg/download_track_info/reference_icon.svg',
+                        height: 23,
+                        width: 23,
+                        colorFilter: const ColorFilter.mode(onSurfaceSecondaryColor, BlendMode.srcIn)),
+                    onTap: () async {
+                      if (state.trackWithLoadingObserver.track.youtubeUrl != null) {
+                        showSnackBar('Url скопирован!', context);
+                        await Clipboard.setData(ClipboardData(text: state.trackWithLoadingObserver.track.youtubeUrl!));
+                      } else {
+                        showSnackBar('Url не выбран', context);
+                      }
+                    }),
                 DownloadTrackInfoTile(
                   title: 'Изменить источник',
-                  svgAssetName: 'resources/images/svg/download_track_info/edit_icon.svg',
+                  iconWidget: SvgPicture.asset('resources/images/svg/download_track_info/edit_icon.svg',
+                      height: 23,
+                      width: 23,
+                      colorFilter: const ColorFilter.mode(onSurfaceSecondaryColor, BlendMode.srcIn)),
                   onTap: () {},
                 ),
               ]);
@@ -157,5 +152,17 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
         ),
       ),
     );
+  }
+
+  void showSnackBar(String message, BuildContext context) async {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        message,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
+      duration: const Duration(seconds: 2),
+    ));
   }
 }
