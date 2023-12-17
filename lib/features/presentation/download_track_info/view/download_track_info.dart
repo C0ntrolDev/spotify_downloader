@@ -16,6 +16,7 @@ import '../widgets/download_track_info_tile.dart';
 
 void showDownloadTrackInfoBottomSheet(BuildContext context, TrackWithLoadingObserver trackWithLoadingObserver) {
   showModalBottomSheet(
+      elevation: 0,
       backgroundColor: surfaceColor,
       context: context,
       builder: (buildContext) {
@@ -88,35 +89,34 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                                 state.trackWithLoadingObserver.track.name,
                                 style: theme.textTheme.bodyMedium,
                               ),
-                              Flex(direction: Axis.horizontal, children: [
-                                Flexible(
-                                  fit: FlexFit.loose,
-                                  flex: 1,
-                                  child: Text(
-                                    state.trackWithLoadingObserver.track.artists?.join(', ') ?? '',
-                                    style: theme.textTheme.labelLarge?.copyWith(color: onSurfaceSecondaryColor),
-                                  ),
-                                ),
-                                Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                                    child: Container(
-                                      width: 4,
-                                      height: 4,
-                                      decoration:
-                                          const BoxDecoration(color: onSurfaceSecondaryColor, shape: BoxShape.circle),
+                              LayoutBuilder(builder: (context, constrains) {
+                                return Row(children: [
+                                  Container(
+                                    constraints: BoxConstraints(maxWidth: constrains.maxWidth / 2),
+                                    child: Text(
+                                      state.trackWithLoadingObserver.track.artists?.join(', ') ?? '',
+                                      style: theme.textTheme.labelLarge?.copyWith(color: onSurfaceSecondaryColor),
                                     ),
                                   ),
-                                ),
-                                Flexible(
-                                  fit: FlexFit.tight,
-                                  flex: 1,
-                                  child: Text(
-                                    state.trackWithLoadingObserver.track.album?.name ?? '',
-                                    style: theme.textTheme.labelLarge?.copyWith(color: onSurfaceSecondaryColor),
+                                  Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                                      child: Container(
+                                        width: 4,
+                                        height: 4,
+                                        decoration: const BoxDecoration(
+                                            color: onSurfaceSecondaryColor, shape: BoxShape.circle),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ]),
+                                  Expanded(
+                                    child: Text(
+                                      state.trackWithLoadingObserver.track.album?.name ?? '',
+                                      style: theme.textTheme.labelLarge?.copyWith(color: onSurfaceSecondaryColor),
+                                    ),
+                                  ),
+                                ]);
+                              }),
                             ],
                           ),
                         )),
