@@ -18,7 +18,8 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
   final CancelTrackLoading _cancelTrackLoading;
   final TrackWithLoadingObserver _trackWithLoadingObserver;
 
-  StreamSubscription<LoadingTrackObserver?>? loadingTrackObserverChangedSubscription;
+  final List<StreamSubscription> _loadingTrackObserverSubscriptions = List.empty(growable: true);
+  StreamSubscription<LoadingTrackObserver?>? _loadingTrackObserverChangedSubscription;
 
   TrackTileBloc({
     required TrackWithLoadingObserver trackWithLoadingObserver,
@@ -28,7 +29,8 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
         _trackWithLoadingObserver = trackWithLoadingObserver,
         _dowloadTrack = downloadTrack,
         super(returnStateBasedOnTrackWithLoadingObserver(trackWithLoadingObserver)) {
-    loadingTrackObserverChangedSubscription = _trackWithLoadingObserver.onLoadingTrackObserverChangedStream.listen(onLoadingTrackObserverChanged);
+    _loadingTrackObserverChangedSubscription =
+        _trackWithLoadingObserver.onLoadingTrackObserverChangedStream.listen(onLoadingTrackObserverChanged);
 
     on<TrackTileCancelTrackLoading>((event, emit) {
       _cancelTrackLoading.call(_trackWithLoadingObserver.track);
@@ -64,11 +66,11 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
 
   @override
   Future<void> close() async {
-    await loadingTrackObserverChangedSubscription?.cancel();
+    await unsubscribeFromLoadingTrackObserver();
+    await _loadingTrackObserverChangedSubscription?.cancel();
     await super.close();
     return;
   }
-
 
   static TrackTileState returnStateBasedOnTrackWithLoadingObserver(TrackWithLoadingObserver trackWithLoadingObserver) {
     if (trackWithLoadingObserver.loadingObserver != null) {
@@ -95,16 +97,11 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
     }
   }
 
-  void onLoadingTrackObserverChanged(LoadingTrackObserver? loadingTrackObserver) {
+  Future<void> onLoadingTrackObserverChanged(LoadingTrackObserver? loadingTrackObserver) async {
     if (loadingTrackObserver != null) {
+      await unsubscribeFromLoadingTrackObserver();
       addEventBasedOnLoadingTrackObserver(loadingTrackObserver);
-
-      loadingTrackObserver.startLoadingStream.listen((youtubeUrl) => add(const TrackTileLoadingPercentChanged()));
-      loadingTrackObserver.loadingPercentChangedStream
-          .listen((percent) => add(TrackTileLoadingPercentChanged(loadingPercent: percent)));
-      loadingTrackObserver.loadedStream.listen((savePath) => add(TrackTileTrackLoaded()));
-      loadingTrackObserver.loadingFailureStream.listen((failure) => add(TrackTileTrackLoadingFailure(failure)));
-      loadingTrackObserver.loadingCancelledStream.listen((event) => add(TrackTileSetToDeffaultState()));
+      subscribeToLoadingTrackObserver(loadingTrackObserver);
     } else {
       if (_trackWithLoadingObserver.track.isLoaded) {
         add(TrackTileTrackLoaded());
@@ -112,6 +109,24 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
         add(TrackTileSetToDeffaultState());
       }
     }
+  }
+
+  void subscribeToLoadingTrackObserver(LoadingTrackObserver loadingTrackObserver) {
+    final sub1 = loadingTrackObserver.startLoadingStream.listen((youtubeUrl) => add(const TrackTileLoadingPercentChanged()));
+    final sub2 = loadingTrackObserver.loadingPercentChangedStream
+        .listen((percent) => add(TrackTileLoadingPercentChanged(loadingPercent: percent)));
+    final sub3 = loadingTrackObserver.loadedStream.listen((savePath) => add(TrackTileTrackLoaded()));
+    final sub4 = loadingTrackObserver.loadingFailureStream.listen((failure) => add(TrackTileTrackLoadingFailure(failure)));
+    final sub5 = loadingTrackObserver.loadingCancelledStream.listen((event) => add(TrackTileSetToDeffaultState()));
+
+    _loadingTrackObserverSubscriptions.addAll([sub1, sub2, sub3, sub4, sub5]);
+  }
+
+  Future<void> unsubscribeFromLoadingTrackObserver() async {
+    for (var subscription in _loadingTrackObserverSubscriptions) {
+      await subscription.cancel();
+    }
+    _loadingTrackObserverSubscriptions.clear();
   }
 
   void addEventBasedOnLoadingTrackObserver(LoadingTrackObserver loadingTrackObserver) {

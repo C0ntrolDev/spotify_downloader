@@ -12,12 +12,12 @@ part 'download_track_info_status_tile_state.dart';
 class DownloadTrackInfoStatusTileCubit extends Cubit<DownloadTrackInfoStatusTileState> {
   final TrackWithLoadingObserver _trackWithLoadingObserver;
   final List<StreamSubscription> _loadingTrackObserverSubscriptions = List.empty(growable: true);
-  StreamSubscription? onLoadingTrackObserverChangedSubscription;
+  StreamSubscription? _loadingTrackObserverChangedSubscription;
 
   DownloadTrackInfoStatusTileCubit(TrackWithLoadingObserver trackWithLoadingObserver)
       : _trackWithLoadingObserver = trackWithLoadingObserver,
         super(_selectStateBasedOnLoadingObserver(trackWithLoadingObserver)) {
-    onLoadingTrackObserverChangedSubscription =
+    _loadingTrackObserverChangedSubscription =
         _trackWithLoadingObserver.onLoadingTrackObserverChangedStream.listen((loadingObserver) async {
       await unsubscribeFromLoadingTrackObserver();
       emit(_selectStateBasedOnLoadingObserver(_trackWithLoadingObserver));
@@ -34,7 +34,7 @@ class DownloadTrackInfoStatusTileCubit extends Cubit<DownloadTrackInfoStatusTile
   @override
   Future<void> close() async {
     await unsubscribeFromLoadingTrackObserver();
-    await onLoadingTrackObserverChangedSubscription?.cancel();
+    await _loadingTrackObserverChangedSubscription?.cancel();
     return super.close();
   }
 

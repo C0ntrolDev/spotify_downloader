@@ -27,6 +27,12 @@ class _TrackTileState extends State<TrackTile> {
   }
 
   @override
+  void dispose() {
+    _trackTileBloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
