@@ -56,12 +56,10 @@ class _TrackTileState extends State<TrackTile> {
                       children: [
                         Text(
                           state.track.name,
-                          overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodyMedium,
                         ),
                         Text(
                           state.track.artists?.join(', ') ?? '',
-                          overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.labelLarge?.copyWith(color: onBackgroundSecondaryColor),
                         )
                       ],

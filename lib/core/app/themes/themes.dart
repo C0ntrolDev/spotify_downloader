@@ -52,7 +52,7 @@ final mainTheme = ThemeData(
   ),
 );
 
-void showSmallTextSnackBar(String message, BuildContext context, [Duration duration = const Duration(seconds: 2)]) {
+void showBigTextSnackBar(String message, BuildContext context, [Duration duration = const Duration(seconds: 2)]) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     content: Text(
       message,
@@ -63,7 +63,7 @@ void showSmallTextSnackBar(String message, BuildContext context, [Duration durat
   ));
 }
 
-void showBigTextSnackBar(String message, BuildContext context, [Duration duration = const Duration(seconds: 2)]) {
+void showSmallTextSnackBar(String message, BuildContext context, [Duration duration = const Duration(seconds: 2)]) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
     content: Text(

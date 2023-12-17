@@ -36,7 +36,6 @@ class _DownloadTrackInfoTileState extends State<DownloadTrackInfoTile> {
               padding: const EdgeInsets.only(left: 15),
               child: Text(
                 widget.title,
-                overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodyMedium?.copyWith(color: onSurfacePrimaryColor),
               ),
             ))

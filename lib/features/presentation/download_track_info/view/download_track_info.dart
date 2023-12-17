@@ -86,7 +86,6 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                             children: [
                               Text(
                                 state.trackWithLoadingObserver.track.name,
-                                overflow: TextOverflow.ellipsis,
                                 style: theme.textTheme.bodyMedium,
                               ),
                               Flex(direction: Axis.horizontal, children: [
@@ -95,7 +94,6 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                                   flex: 1,
                                   child: Text(
                                     state.trackWithLoadingObserver.track.artists?.join(', ') ?? '',
-                                    overflow: TextOverflow.ellipsis,
                                     style: theme.textTheme.labelLarge?.copyWith(color: onSurfaceSecondaryColor),
                                   ),
                                 ),
@@ -115,7 +113,6 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                                   flex: 1,
                                   child: Text(
                                     state.trackWithLoadingObserver.track.album?.name ?? '',
-                                    overflow: TextOverflow.ellipsis,
                                     style: theme.textTheme.labelLarge?.copyWith(color: onSurfaceSecondaryColor),
                                   ),
                                 ),
@@ -147,8 +144,12 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                       height: 23,
                       width: 23,
                       colorFilter: const ColorFilter.mode(onSurfaceSecondaryColor, BlendMode.srcIn)),
-                  onTap: () {
-                    AutoRouter.of(context).push(ChangeSourceVideoRoute(track: state.trackWithLoadingObserver.track));
+                  onTap: () async {
+                    final changedUrl = await AutoRouter.of(context)
+                        .push<String?>(ChangeSourceVideoRoute(track: state.trackWithLoadingObserver.track));
+                    if (changedUrl != null) {
+                      _downloadTrackInfoBloc.add(DownloadTrackInfoChangeYoutubeUrl(youtubeUrl: changedUrl));
+                    }
                   },
                 ),
               ]);
@@ -163,6 +164,4 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
     ScaffoldMessenger.of(context).clearSnackBars();
     showBigTextSnackBar(message, context);
   }
-
-  
 }

@@ -76,7 +76,6 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
                                       child: Text(
                                         historyTracksCollection.name,
                                         style: theme.textTheme.bodyMedium,
-                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ),

@@ -57,7 +57,6 @@ class SearchVideosByTrackRepositoryImpl implements SearchVideosByTrackRepository
 
     final maxRating = videosWithRating.first.$1;
     final mostRatedVideos = videosWithRating.where((v) => v.$1 == maxRating).toList();
-    mostRatedVideos.sort((first, second) => first.$2.likesCount?.compareTo(second.$2.likesCount!) ?? 0);
 
     return mostRatedVideos.reversed.first.$2;
   }

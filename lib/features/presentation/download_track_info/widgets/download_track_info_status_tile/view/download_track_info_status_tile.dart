@@ -29,6 +29,12 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
   }
 
   @override
+  void dispose() {
+    _infoStatusTileCubit.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<DownloadTrackInfoStatusTileCubit, DownloadTrackInfoStatusTileState>(
       bloc: _infoStatusTileCubit,
@@ -46,10 +52,10 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
               title: 'Трек загружается: ${state.percent != null ? formatDouble(state.percent!) : '...'}%',
               iconWidget: Container(
                 padding: const EdgeInsets.all(0),
-                height: 23,
-                width: 23,
+                height: 21,
+                width: 21,
                 child: CircularProgressIndicator(
-                  strokeWidth: 4,
+                  strokeWidth: 3,
                   color: primaryColor,
                   value: (() {
                     if (state.percent != null) {

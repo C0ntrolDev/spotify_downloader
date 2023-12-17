@@ -12,13 +12,15 @@ part 'download_track_info_status_tile_state.dart';
 class DownloadTrackInfoStatusTileCubit extends Cubit<DownloadTrackInfoStatusTileState> {
   final TrackWithLoadingObserver _trackWithLoadingObserver;
   final List<StreamSubscription> _loadingTrackObserverSubscriptions = List.empty(growable: true);
+  StreamSubscription? onLoadingTrackObserverChangedSubscription;
 
   DownloadTrackInfoStatusTileCubit(TrackWithLoadingObserver trackWithLoadingObserver)
       : _trackWithLoadingObserver = trackWithLoadingObserver,
         super(_selectStateBasedOnLoadingObserver(trackWithLoadingObserver)) {
-    _trackWithLoadingObserver.onLoadingTrackObserverChangedStream.listen((loadingObserver) async {
+    onLoadingTrackObserverChangedSubscription =
+        _trackWithLoadingObserver.onLoadingTrackObserverChangedStream.listen((loadingObserver) async {
       await unsubscribeFromLoadingTrackObserver();
-      _selectStateBasedOnLoadingObserver(_trackWithLoadingObserver);
+      emit(_selectStateBasedOnLoadingObserver(_trackWithLoadingObserver));
       if (_trackWithLoadingObserver.loadingObserver != null) {
         subscribeToLoadingTrackObserver(_trackWithLoadingObserver.loadingObserver!);
       }
@@ -32,6 +34,7 @@ class DownloadTrackInfoStatusTileCubit extends Cubit<DownloadTrackInfoStatusTile
   @override
   Future<void> close() async {
     await unsubscribeFromLoadingTrackObserver();
+    await onLoadingTrackObserverChangedSubscription?.cancel();
     return super.close();
   }
 
@@ -40,10 +43,12 @@ class DownloadTrackInfoStatusTileCubit extends Cubit<DownloadTrackInfoStatusTile
         loadingTrackObserver.status == LoadingTrackStatus.loading)) {
       final sub1 = loadingTrackObserver.loadingPercentChangedStream
           .listen((percent) => emit(DownloadTrackInfoStatusTileLoading(percent: percent)));
-      final sub2 =loadingTrackObserver.loadingCancelledStream.listen((event) => emit(const DownloadTrackInfoStatusTileDeffault()));
+      final sub2 = loadingTrackObserver.loadingCancelledStream
+          .listen((event) => emit(const DownloadTrackInfoStatusTileDeffault()));
       final sub3 = loadingTrackObserver.loadingFailureStream
           .listen((failure) => emit(DownloadTrackInfoStatusTileFailure(failure: failure)));
-      final sub4 = loadingTrackObserver.loadedStream.listen((event) => emit(const DownloadTrackInfoStatusTileLoaded()));
+      final sub4 =
+          loadingTrackObserver.loadedStream.listen((event) => emit(const DownloadTrackInfoStatusTileLoaded()));
 
       _loadingTrackObserverSubscriptions.addAll([sub1, sub2, sub3, sub4]);
     }
@@ -69,6 +74,7 @@ class DownloadTrackInfoStatusTileCubit extends Cubit<DownloadTrackInfoStatusTile
         case LoadingTrackStatus.waitInLoadingQueue:
           return const DownloadTrackInfoStatusTileLoading(percent: null);
         case LoadingTrackStatus.loading:
+          print('saoidjfhksdjfhasdkfolsdfhsaf');
           return DownloadTrackInfoStatusTileLoading(percent: trackWithLoadingObserver.loadingObserver!.loadingPercent);
         case LoadingTrackStatus.loaded:
           return const DownloadTrackInfoStatusTileLoaded();

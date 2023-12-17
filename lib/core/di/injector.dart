@@ -135,7 +135,6 @@ void _provideBlocs() {
   injector.registerFactoryParam<DownloadTrackInfoBloc, TrackWithLoadingObserver, void>((trackwithLoadingObserver, _) =>
       DownloadTrackInfoBloc(
           trackWithLoadingObserver: trackwithLoadingObserver,
-          downloadTrack: injector.get<DownloadTrack>(),
           cancelTrackLoading: injector.get<CancelTrackLoading>()));
   injector.registerFactoryParam<DownloadTrackInfoStatusTileCubit, TrackWithLoadingObserver, void>(
       (trackwithLoadingObserver, _) => DownloadTrackInfoStatusTileCubit(trackwithLoadingObserver));

@@ -32,94 +32,166 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: BlocListener<ChangeSourceVideoBloc, ChangeSourceVideoState>(
-        bloc: _changeSourceVideoBloc,
-        listener: (context, state) {
-          if (state is ChangeSourceVideoFailure) {
-            showSmallTextSnackBar(state.failure?.message.toString() ?? '', context);
-          }
-        },
-        child: Column(
-          children: [
-            SizedBox(
-              height: 55 + MediaQuery.of(context).viewPadding.top,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).viewPadding.top,
-                ),
-                child: Row(
-                  children: [
-                    IconButton(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onPressed: () {
-                          AutoRouter.of(context).pop();
-                        },
-                        icon: SvgPicture.asset(
-                          'resources/images/svg/back_icon.svg',
-                          height: 35,
-                          width: 35,
-                        )),
-                    Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          'Изменить источник загрузки',
-                          style: theme.textTheme.titleSmall,
-                        )),
-                  ],
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) {
+        if (didPop) return;
+        popPage(context);
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: BlocListener<ChangeSourceVideoBloc, ChangeSourceVideoState>(
+          bloc: _changeSourceVideoBloc,
+          listener: (context, state) {
+            if (state is ChangeSourceVideoFailure) {
+              showSmallTextSnackBar(state.failure?.message.toString() ?? '', context);
+            }
+          },
+          child: Column(
+            children: [
+              SizedBox(
+                height: 55 + MediaQuery.of(context).viewPadding.top,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).viewPadding.top,
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onPressed: () {
+                            popPage(context);
+                          },
+                          icon: SvgPicture.asset(
+                            'resources/images/svg/back_icon.svg',
+                            height: 35,
+                            width: 35,
+                          )),
+                      Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            'Изменить источник загрузки',
+                            style: theme.textTheme.titleSmall,
+                          )),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-              child: BlocBuilder<ChangeSourceVideoBloc, ChangeSourceVideoState>(
-                bloc: _changeSourceVideoBloc,
-                builder: (context, state) {
-                  if (state is ChangeSourceVideoLoaded) {
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 30),
-                      child: ListView.builder(
-                          itemCount: 100,
+              Expanded(
+                child: BlocBuilder<ChangeSourceVideoBloc, ChangeSourceVideoState>(
+                  bloc: _changeSourceVideoBloc,
+                  builder: (context, state) {
+                    if (state is ChangeSourceVideoLoaded) {
+                      return ListView.builder(
+                          padding: EdgeInsets.zero,
+                          itemCount: state.videos.length,
                           itemBuilder: (context, index) {
-                            return Container(
-                              height: 1,
+                            final video = state.videos[index];
+                            final isVideoSelected = video == state.selectedVideo;
+
+                            return InkWell(
+                              splashColor: onSurfaceSplashColor,
+                              highlightColor: onSurfaceHighlightColor,
+                              onTap: () => _changeSourceVideoBloc
+                                  .add(ChangeSourceVideoChangeSelectedVideo(selectedVideo: video)),
+                              child: Container(
+                                  color: isVideoSelected ? onSurfaceHighlightColor : Colors.transparent,
+                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Image.network(
+                                        video.thumbnailUrl,
+                                        height: 80,
+                                        width: 100,
+                                        fit: BoxFit.fitHeight,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          padding: const EdgeInsets.only(left: 10),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                video.title,
+                                                style: theme.textTheme.bodyMedium,
+                                              ),
+                                              Text(
+                                                '${formatViewsCount(video.viewsCount)} просмотров',
+                                                style: theme.textTheme.labelMedium
+                                                    ?.copyWith(color: onBackgroundSecondaryColor),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 5),
+                                                child: Text(
+                                                  video.author,
+                                                  style: theme.textTheme.bodyMedium
+                                                      ?.copyWith(color: onBackgroundSecondaryColor),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  )),
                             );
-                          }),
-                    );
-                  }
+                          });
+                    }
 
-                  if (state is ChangeSourceVideoNetworkFailure) {
-                    return Center(
-                        child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'С соединением что-то не так',
-                          style: theme.textTheme.titleLarge,
-                        ),
-                        TextButton(
-                            style: TextButton.styleFrom(foregroundColor: primaryColor),
-                            onPressed: () {},
-                            child: Text(
-                              'Попробовать снова',
-                              style: theme.textTheme.bodyMedium?.copyWith(color: primaryColor),
-                            ))
-                      ],
-                    ));
-                  }
+                    if (state is ChangeSourceVideoNetworkFailure) {
+                      return Center(
+                          child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'С соединением что-то не так',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                          TextButton(
+                              style: TextButton.styleFrom(foregroundColor: primaryColor),
+                              onPressed: () {},
+                              child: Text(
+                                'Попробовать снова',
+                                style: theme.textTheme.bodyMedium?.copyWith(color: primaryColor),
+                              ))
+                        ],
+                      ));
+                    }
 
-                  if (state is ChangeSourceVideoLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+                    if (state is ChangeSourceVideoLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                  return Container();
-                },
-              ),
-            )
-          ],
+                    return Container();
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  void popPage(BuildContext context) {
+    if (_changeSourceVideoBloc.state is ChangeSourceVideoLoaded) {
+      Navigator.of(context).pop((_changeSourceVideoBloc.state as ChangeSourceVideoLoaded).selectedVideo?.url);
+      return;
+    }
+    Navigator.of(context).pop(null);
+  }
+
+  String formatViewsCount(int likesCount) {
+    if (likesCount < 1000) {
+      return likesCount.toString();
+    }
+
+    if (likesCount < 1000000) {
+      return '${likesCount ~/ 1000} тыс';
+    }
+
+    return '${likesCount ~/ 1000000} млн';
   }
 }

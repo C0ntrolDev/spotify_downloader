@@ -16,7 +16,7 @@ final class ChangeSourceVideoLoaded extends ChangeSourceVideoState {
   final Video? selectedVideo;
 
   @override
-  List<Object?> get props => [videos];
+  List<Object?> get props => [videos, selectedVideo];
 }
 
 final class ChangeSourceVideoFailure extends ChangeSourceVideoState {

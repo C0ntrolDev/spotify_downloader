@@ -12,7 +12,7 @@ class VideoDtoToVideoConverter implements ValueConverter<entity.Video, model.Vid
         url: videoDto.url,
         title: videoDto.title,
         thumbnailUrl: videoDto.thumbnails.highResUrl,
-        likesCount: videoDto.watchPage?.videoLikeCount,
+        viewsCount: videoDto.engagement.viewCount,
         author: videoDto.author);
   }
 

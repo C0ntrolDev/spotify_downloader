@@ -6,7 +6,7 @@ import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.
 class TrackWithLoadingObserver {
   TrackWithLoadingObserver({required this.track, LoadingTrackObserver? loadingObserver})
       : _loadingObserver = loadingObserver,
-        _onTrackObserverChangedStreamController = StreamController<LoadingTrackObserver>() {
+        _onTrackObserverChangedStreamController = StreamController<LoadingTrackObserver?>() {
     onLoadingTrackObserverChangedStream = _onTrackObserverChangedStreamController.stream.asBroadcastStream();
   }
 
