@@ -52,8 +52,8 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
               title: 'Трек загружается: ${state.percent != null ? formatDouble(state.percent!) : '...'}%',
               iconWidget: Container(
                 padding: const EdgeInsets.all(0),
-                height: 21,
-                width: 21,
+                height: 23,
+                width: 23,
                 child: CircularProgressIndicator(
                   strokeWidth: 3,
                   color: primaryColor,
@@ -93,7 +93,7 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
       doublePart = splittedValue[1];
     }
 
-    if(doublePart != null && doublePart.isNotEmpty) {
+    if (doublePart != null && doublePart.isNotEmpty) {
       return '$intPart.${doublePart.substring(0, min(doublePart.length, 2))}';
     } else {
       return intPart;
