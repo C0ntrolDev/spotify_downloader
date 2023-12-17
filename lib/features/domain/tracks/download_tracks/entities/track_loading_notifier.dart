@@ -31,7 +31,7 @@ class TrackLoadingNotifier {
 
   void loadingPercentChanged(double? percent) {
     if (_status == LoadingTrackStatus.loading) {
-       _status = LoadingTrackStatus.loading;
+      _status = LoadingTrackStatus.loading;
       _loadingPercentChangedStreamController.add(percent);
     }
   }
@@ -44,7 +44,7 @@ class TrackLoadingNotifier {
   }
 
   void loadingCancelled() {
-    if (_status == LoadingTrackStatus.loading) {
+    if (_status == LoadingTrackStatus.loading || _status == LoadingTrackStatus.waitInLoadingQueue) {
       _status = LoadingTrackStatus.loadingCancelled;
       _loadingCancelledStreamController.add(null);
     }
