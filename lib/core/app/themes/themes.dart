@@ -54,10 +54,14 @@ final mainTheme = ThemeData(
 
 void showBigTextSnackBar(String message, BuildContext context, [Duration duration = const Duration(seconds: 2)]) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    content: Text(
-      message,
-      textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.bodyMedium,
+    content: Column(
+      children: [
+        Text(
+          message,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(overflow: TextOverflow.visible),
+        ),
+      ],
     ),
     duration: duration,
   ));

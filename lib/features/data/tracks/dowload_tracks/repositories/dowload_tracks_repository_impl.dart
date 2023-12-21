@@ -4,8 +4,9 @@ import 'package:spotify_downloader/core/util/result/cancellable_result.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/data_sources/dowload_audio_from_youtube_data_source.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/dowload_audio_from_youtube_args.dart';
-import 'package:spotify_downloader/features/data/tracks/dowload_tracks/models/loading_stream/audio_loading_stream.dart';
 import 'package:spotify_downloader/features/data/tracks/dowload_tracks/repositories/converters/track_to_audio_metadata_converter.dart';
+import 'package:spotify_downloader/features/data/tracks/dowload_tracks/repositories/repository_impl_classes/loading_track_info.dart';
+import 'package:spotify_downloader/features/data/tracks/dowload_tracks/repositories/repository_impl_classes/waiting_in_loading_queue_track_info.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/track_loading_notifier.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_id.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
@@ -20,9 +21,8 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
   final DownloadAudioFromYoutubeDataSource _dowloadAudioFromYoutubeDataSource;
   final TrackToAudioMetadataConverter _trackToAudioMetadataConverter = TrackToAudioMetadataConverter();
 
-  final List<(LoadingTrackId, TrackWithLazyYoutubeUrl, TrackLoadingNotifier)> _loadingTracksQueue =
-      List.empty(growable: true);
-  final List<(LoadingTrackId, AudioLoadingStream, TrackLoadingNotifier)> _loadingTracks = List.empty(growable: true);
+  final List<WaitingInLoadingQueueTrackInfo> _loadingTracksQueue = List.empty(growable: true);
+  final List<LoadingTrackInfo> _loadingTracks = List.empty(growable: true);
   final int _sameTimeloadingTracksLimit = 5;
 
   @override
@@ -38,12 +38,16 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
     }
 
     final trackLoadingNotifier = TrackLoadingNotifier();
+    final trackInfo = WaitingInLoadingQueueTrackInfo(
+          loadingTrackId: loadingTrackId,
+          trackWithLazyYoutubeUrl: lazyTrack,
+          trackLoadingNotifier: trackLoadingNotifier);
 
     if (_loadingTracks.length < _sameTimeloadingTracksLimit) {
-      _startTrackLoading(loadingTrackId, lazyTrack, trackLoadingNotifier);
+      _startTrackLoading(trackInfo);
       return Result.isSuccessful(trackLoadingNotifier.loadingTrackObserver);
     } else {
-      _loadingTracksQueue.add((loadingTrackId, lazyTrack, trackLoadingNotifier));
+      _loadingTracksQueue.add(trackInfo);
       return Result.isSuccessful(trackLoadingNotifier.loadingTrackObserver);
     }
   }
@@ -55,18 +59,18 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
         parentType: track.parentCollection.type,
         spotifyId: track.spotifyId);
 
-    final foundLoadingTrack = _loadingTracks.where((e) => e.$1 == loadingTrackId).firstOrNull;
+    final foundLoadingTrack = _loadingTracks.where((e) => e.loadingTrackId == loadingTrackId).firstOrNull;
     if (foundLoadingTrack != null) {
-      foundLoadingTrack.$2.cancel();
+      foundLoadingTrack.audioLoadingStream?.cancel();
       _loadingTracks.remove(foundLoadingTrack);
 
       return const Result.isSuccessful(null);
     }
 
-    final foundWaitingTrack = _loadingTracksQueue.where((e) => e.$1 == loadingTrackId).firstOrNull;
+    final foundWaitingTrack = _loadingTracksQueue.where((e) => e.loadingTrackId == loadingTrackId).firstOrNull;
     if (foundWaitingTrack != null) {
       _loadingTracksQueue.remove(foundWaitingTrack);
-      foundWaitingTrack.$3.loadingCancelled();
+      foundWaitingTrack.trackLoadingNotifier.loadingCancelled();
       return const Result.isSuccessful(null);
     }
 
@@ -80,21 +84,22 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
         parentType: track.parentCollection.type,
         spotifyId: track.spotifyId);
 
-    final queueLoadingTrack = _loadingTracksQueue.where((e) => e.$1 == loadingTrackId).firstOrNull;
+    final queueLoadingTrack = _loadingTracksQueue.where((e) => e.loadingTrackId == loadingTrackId).firstOrNull;
     if (queueLoadingTrack != null) {
-      return Result.isSuccessful(queueLoadingTrack.$3.loadingTrackObserver);
+      return Result.isSuccessful(queueLoadingTrack.trackLoadingNotifier.loadingTrackObserver);
     }
 
-    final loadingTrack = _loadingTracks.where((e) => e.$1 == loadingTrackId).firstOrNull;
+    final loadingTrack = _loadingTracks.where((e) => e.loadingTrackId == loadingTrackId).firstOrNull;
     if (loadingTrack != null) {
-      return Result.isSuccessful(loadingTrack.$3.loadingTrackObserver);
+      return Result.isSuccessful(loadingTrack.trackLoadingNotifier.loadingTrackObserver);
     }
 
     return const Result.isSuccessful(null);
   }
 
   void _onLoadingStreamEnded(CancellableResult<Failure, String> result, TrackLoadingNotifier trackLoadingNotifier) {
-    _loadingTracks.removeWhere((e) => e.$3.loadingTrackObserver == trackLoadingNotifier.loadingTrackObserver);
+    _loadingTracks
+        .removeWhere((e) => e.trackLoadingNotifier.loadingTrackObserver == trackLoadingNotifier.loadingTrackObserver);
 
     if (result.isSuccessful) {
       trackLoadingNotifier.loaded(result.result!);
@@ -113,35 +118,40 @@ class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
         final firstQueueObj = _loadingTracksQueue.first;
         _loadingTracksQueue.remove(firstQueueObj);
 
-        _startTrackLoading(firstQueueObj.$1, firstQueueObj.$2, firstQueueObj.$3);
+        _startTrackLoading(firstQueueObj);
       }
     }
   }
 
-  Future<void> _startTrackLoading(LoadingTrackId loadingTrackId, TrackWithLazyYoutubeUrl lazyTrack,
-      TrackLoadingNotifier trackLoadingNotifier) async {
+  Future<void> _startTrackLoading(WaitingInLoadingQueueTrackInfo trackInfo) async {
     const saveDirectoryPath = 'storage/emulated/0/Download/';
 
-    final trackYoutubeUrlResult = await lazyTrack.getYoutubeUrl();
+    final loadingTrackInfo = LoadingTrackInfo(
+        loadingTrackId: trackInfo.loadingTrackId,
+        audioLoadingStream: null,
+        trackLoadingNotifier: trackInfo.trackLoadingNotifier);
+    _loadingTracks.add(loadingTrackInfo);
+
+    final trackYoutubeUrlResult = await trackInfo.trackWithLazyYoutubeUrl.getYoutubeUrl();
     if (!trackYoutubeUrlResult.isSuccessful) {
-      trackLoadingNotifier.loadingFailure(trackYoutubeUrlResult.failure);
+      trackInfo.trackLoadingNotifier.loadingFailure(trackYoutubeUrlResult.failure);
       _loadNextTrackInQueue();
       return;
     }
 
-    trackLoadingNotifier.startLoading(trackYoutubeUrlResult.result!);
+    trackInfo.trackLoadingNotifier.startLoading(trackYoutubeUrlResult.result!);
 
     final loadingStream = await _dowloadAudioFromYoutubeDataSource.dowloadAudioFromYoutube(
         DownloadAudioFromYoutubeArgs(
             youtubeUrl: trackYoutubeUrlResult.result!,
             saveDirectoryPath: saveDirectoryPath,
-            audioMetadata: _trackToAudioMetadataConverter.convert(lazyTrack.track)));
+            audioMetadata: _trackToAudioMetadataConverter.convert(trackInfo.trackWithLazyYoutubeUrl.track)));
 
-    loadingStream.onEnded = (result) => _onLoadingStreamEnded(result, trackLoadingNotifier);
+    loadingStream.onEnded = (result) => _onLoadingStreamEnded(result, trackInfo.trackLoadingNotifier);
     loadingStream.onLoadingPercentChanged = (newPercent) {
-      trackLoadingNotifier.loadingPercentChanged(newPercent);
+      trackInfo.trackLoadingNotifier.loadingPercentChanged(newPercent);
     };
 
-    _loadingTracks.add((loadingTrackId, loadingStream, trackLoadingNotifier));
+    loadingTrackInfo.audioLoadingStream = loadingStream;
   }
 }
