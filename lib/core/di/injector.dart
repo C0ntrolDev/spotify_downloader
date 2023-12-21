@@ -20,6 +20,7 @@ import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositor
 import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/use_cases/find_10_videos_by_track.dart';
 import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/use_cases/get_video_by_url.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
+import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/repositories/tracks_collections_history_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/use_cases/add_tracks_collection_to_history.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/use_cases/get_ordered_history.dart';
@@ -31,18 +32,21 @@ import 'package:spotify_downloader/features/domain/tracks/services/entities/trac
 import 'package:spotify_downloader/features/domain/tracks/services/services/tracks_service.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/services/tracks_service_impl.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/use_cases/download_track.dart';
-import 'package:spotify_downloader/features/domain/tracks/services/use_cases/get_tracks_with_loading_observer_from_tracks_colleciton.dart';
-import 'package:spotify_downloader/features/domain/tracks/services/use_cases/get_tracks_with_loading_observer_from_tracks_colleciton_with_offset.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/use_cases/get_tracks_with_loading_observer_from_tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/use_cases/get_tracks_with_loading_observer_from_tracks_collection_with_offset.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/repositories/network_tracks_collections_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_history_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_url.dart';
 import 'package:spotify_downloader/features/presentation/change_source_video/bloc/change_source_video_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_track_info/bloc/download_track_info_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_track_info/widgets/download_track_info_status_tile/cubit/download_track_info_status_tile_cubit.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/bloc/download_tracks_collection_bloc.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/bloc/track_tile_bloc.dart';
 import 'package:spotify_downloader/features/presentation/history/bloc/history_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
+import 'package:spotify_downloader/features/presentation/shared/tracks_list/widgets/track_tile/bloc/track_tile_bloc.dart';
+import 'package:spotify_downloader/features/presentation/test_download_tracks_collection/blocs/filter_tracks/filter_tracks_bloc.dart';
+import 'package:spotify_downloader/features/presentation/test_download_tracks_collection/blocs/get_and_download_tracks/get_and_download_tracks_bloc.dart';
+import 'package:spotify_downloader/features/presentation/test_download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_history_bloc.dart';
+import 'package:spotify_downloader/features/presentation/test_download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_url_bloc.dart';
 
 final injector = GetIt.instance;
 
@@ -105,10 +109,10 @@ void _provideUseCases() {
       () => GetTracksCollectionByUrl(repository: injector.get<NetworkTracksCollectionsRepository>()));
   injector.registerFactory<GetTracksCollectionByTypeAndSpotifyId>(
       () => GetTracksCollectionByTypeAndSpotifyId(repository: injector.get<NetworkTracksCollectionsRepository>()));
-  injector.registerFactory<GetTracksWithLoadingObserverFromTracksColleciton>(
-      () => GetTracksWithLoadingObserverFromTracksColleciton(tracksService: injector.get<TracksService>()));
-  injector.registerFactory<GetTracksWithLoadingObserverFromTracksCollecitonWithOffset>(
-      () => GetTracksWithLoadingObserverFromTracksCollecitonWithOffset(tracksService: injector.get<TracksService>()));
+  injector.registerFactory<GetTracksWithLoadingObserverFromTracksCollection>(
+      () => GetTracksWithLoadingObserverFromTracksCollection(tracksService: injector.get<TracksService>()));
+  injector.registerFactory<GetTracksWithLoadingObserverFromTracksCollectionWithOffset>(
+      () => GetTracksWithLoadingObserverFromTracksCollectionWithOffset(tracksService: injector.get<TracksService>()));
   injector.registerFactory<DownloadTrack>(() => DownloadTrack(tracksService: injector.get<TracksService>()));
   injector.registerFactory<CancelTrackLoading>(
       () => CancelTrackLoading(dowloadTracksRepository: injector.get<DowloadTracksRepository>()));
@@ -121,12 +125,21 @@ void _provideUseCases() {
 void _provideBlocs() {
   injector.registerFactory<HomeBloc>(() => HomeBloc());
   injector.registerFactory<HistoryBloc>(() => HistoryBloc(getOrderedHistory: injector.get<GetOrderedHistory>()));
-  injector.registerFactory<DownloadTracksCollectionBloc>(() => DownloadTracksCollectionBloc(
-      getTracksCollectionByTypeAndSpotifyId: injector.get<GetTracksCollectionByTypeAndSpotifyId>(),
+
+  injector.registerFactoryParam<GetTracksCollectionByUrlBloc, String, void>((url, _) => GetTracksCollectionByUrlBloc(
       addTracksCollectionToHistory: injector.get<AddTracksCollectionToHistory>(),
-      getFromTracksCollectionWithOffset: injector.get<GetTracksWithLoadingObserverFromTracksCollecitonWithOffset>(),
-      getTracksCollectionByUrl: injector.get<GetTracksCollectionByUrl>(),
-      getTracksFromTracksColleciton: injector.get<GetTracksWithLoadingObserverFromTracksColleciton>()));
+      getTracksCollection: injector.get<GetTracksCollectionByUrl>(),
+      url: url));
+  injector.registerFactoryParam<GetTracksCollectionByHistoryBloc, HistoryTracksCollection, void>(
+      (historyCollection, _) => GetTracksCollectionByHistoryBloc(
+          addTracksCollectionToHistory: injector.get<AddTracksCollectionToHistory>(),
+          getTracksCollection: injector.get<GetTracksCollectionByTypeAndSpotifyId>(),
+          historyTracksCollection: historyCollection));
+  injector.registerFactory<GetAndDownloadTracksBloc>(() => GetAndDownloadTracksBloc(
+      getTracks: injector.get<GetTracksWithLoadingObserverFromTracksCollection>(),
+      getTracksWithOffset: injector.get<GetTracksWithLoadingObserverFromTracksCollectionWithOffset>()));
+  injector.registerFactory<FilterTracksBloc>(() => FilterTracksBloc());
+
   injector.registerFactoryParam<TrackTileBloc, TrackWithLoadingObserver, void>((trackwithLoadingObserver, _) =>
       TrackTileBloc(
           trackWithLoadingObserver: trackwithLoadingObserver,
@@ -134,8 +147,7 @@ void _provideBlocs() {
           cancelTrackLoading: injector.get<CancelTrackLoading>()));
   injector.registerFactoryParam<DownloadTrackInfoBloc, TrackWithLoadingObserver, void>((trackwithLoadingObserver, _) =>
       DownloadTrackInfoBloc(
-          trackWithLoadingObserver: trackwithLoadingObserver,
-          cancelTrackLoading: injector.get<CancelTrackLoading>()));
+          trackWithLoadingObserver: trackwithLoadingObserver, cancelTrackLoading: injector.get<CancelTrackLoading>()));
   injector.registerFactoryParam<DownloadTrackInfoStatusTileCubit, TrackWithLoadingObserver, void>(
       (trackwithLoadingObserver, _) => DownloadTrackInfoStatusTileCubit(trackwithLoadingObserver));
   injector.registerFactoryParam<ChangeSourceVideoBloc, Track, void>((track, _) => ChangeSourceVideoBloc(

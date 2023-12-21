@@ -51,7 +51,7 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
 
   TracksGettingObserver _getLinkedToStreamObserver(
       TracksGettingStream tracksGettingStream, GetTracksFromTracksCollectionArgs args) {
-    final observer = TracksGettingObserver(cancelGetting: () {});
+    final observer = TracksGettingObserver();
 
     tracksGettingStream.onEnded = (result) {
       observer.onEnded?.call(result.isSuccessful
@@ -60,7 +60,6 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
     };
     tracksGettingStream.onPartGot = (dtoTracksPart) {
       final tracksPart = dtoTracksPart.map((dt) => _trackDtoToTrackConverter.convert((dt, args.tracksCollection)));
-      args.responseList.addAll(tracksPart);
       observer.onPartGot?.call(tracksPart);
     };
 

@@ -4,12 +4,6 @@ import 'package:spotify_downloader/features/domain/tracks/network_tracks/entitie
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 
 class TracksGettingObserver {
-  TracksGettingObserver({required Function() cancelGetting}) : _cancelGetting = cancelGetting ;
-
-  final Function() _cancelGetting;
-
   Function(Result<Failure, TracksGettingEndedStatus>)? onEnded;
   Function(Iterable<Track?>)? onPartGot;
-
-  void cancelGetting() => _cancelGetting.call();
 }

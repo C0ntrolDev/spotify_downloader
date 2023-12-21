@@ -174,7 +174,7 @@ class NetworkTracksDataSource {
           args.responseList.addAll(callbackTracks);
           tracksGettingStream.onPartGot?.call(callbackTracks);
           break;
-        }
+        } 
 
         callbackTracks.addAll(newTracks);
 

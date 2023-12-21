@@ -74,7 +74,6 @@ class DownloadTrackInfoStatusTileCubit extends Cubit<DownloadTrackInfoStatusTile
         case LoadingTrackStatus.waitInLoadingQueue:
           return const DownloadTrackInfoStatusTileLoading(percent: null);
         case LoadingTrackStatus.loading:
-          print('saoidjfhksdjfhasdkfolsdfhsaf');
           return DownloadTrackInfoStatusTileLoading(percent: trackWithLoadingObserver.loadingObserver!.loadingPercent);
         case LoadingTrackStatus.loaded:
           return const DownloadTrackInfoStatusTileLoaded();

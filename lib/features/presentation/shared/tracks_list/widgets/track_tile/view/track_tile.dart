@@ -6,7 +6,7 @@ import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/presentation/download_track_info/view/download_track_info.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/bloc/track_tile_bloc.dart';
+import 'package:spotify_downloader/features/presentation/shared/tracks_list/widgets/track_tile/bloc/track_tile_bloc.dart';
 
 class TrackTile extends StatefulWidget {
   const TrackTile({super.key, required this.trackWithLoadingObserver});
@@ -94,8 +94,8 @@ class _TrackTileState extends State<TrackTile> {
                         },
                         child: SvgPicture.asset(
                           'resources/images/svg/track_tile/cancel_icon.svg',
-                          height: 23,
-                          width: 23,
+                          height: 28,
+                          width: 28,
                         ),
                       );
                     }
@@ -105,8 +105,8 @@ class _TrackTileState extends State<TrackTile> {
                         onTap: () {},
                         child: SvgPicture.asset(
                           'resources/images/svg/track_tile/error_icon.svg',
-                          height: 27,
-                          width: 27,
+                          height: 32,
+                          width: 32,
                           colorFilter: const ColorFilter.mode(errorPrimaryColor, BlendMode.srcIn),
                         ),
                       );
@@ -118,7 +118,7 @@ class _TrackTileState extends State<TrackTile> {
               ),
               Container(
                 alignment: Alignment.center,
-                width: 40,
+                width: 50,
                 padding: const EdgeInsets.only(right: 10),
                 child: BlocBuilder<TrackTileBloc, TrackTileState>(
                   bloc: _trackTileBloc,
@@ -129,14 +129,14 @@ class _TrackTileState extends State<TrackTile> {
                             _trackTileBloc.add(TrackTitleDownloadTrack());
                           },
                           child: SvgPicture.asset('resources/images/svg/track_tile/download_icon.svg',
-                              height: 30, width: 30));
+                              height: 35, width: 35));
                     }
 
                     if (state is TrackTileOnTrackLoading) {
                       return Container(
                         padding: const EdgeInsets.all(0),
-                        height: 27,
-                        width: 27,
+                        height: 32,
+                        width: 32,
                         child: CircularProgressIndicator(
                           strokeWidth: 4,
                           color: primaryColor,
@@ -154,8 +154,8 @@ class _TrackTileState extends State<TrackTile> {
                     if (state is TrackTileOnTrackLoaded) {
                       return SvgPicture.asset(
                         'resources/images/svg/track_tile/downloaded_icon.svg',
-                        height: 30,
-                        width: 30,
+                        height: 35,
+                        width: 35,
                         colorFilter: const ColorFilter.mode(primaryColor, BlendMode.srcIn),
                       );
                     }
@@ -165,8 +165,8 @@ class _TrackTileState extends State<TrackTile> {
                         onTap: () => _trackTileBloc.add(TrackTitleDownloadTrack()),
                         child: SvgPicture.asset(
                           'resources/images/svg/track_tile/reload_icon.svg',
-                          height: 27,
-                          width: 27,
+                          height: 32,
+                          width: 32,
                         ),
                       );
                     }
@@ -184,7 +184,7 @@ class _TrackTileState extends State<TrackTile> {
             bloc: _trackTileBloc,
             builder: (context, state) {
               return SizedBox(
-                  width: 20,
+                  width: 30,
                   height: 50,
                   child: IconButton(
                       onPressed: () {

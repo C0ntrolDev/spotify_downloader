@@ -1,14 +1,15 @@
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_ended_status.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
 
 class TracksWithLoadingObserverGettingObserver {
-  TracksWithLoadingObserverGettingObserver({required Function cancelFunction}) : _cancelFunction = cancelFunction;
+    TracksWithLoadingObserverGettingObserver({
+    required this.onEnded,
+    required this.onPartGot,
+  });
 
-  Function(Result<Failure, TracksGettingEndedStatus>)? onEnded;
-  Function()? onPartGot;
 
-  final Function _cancelFunction;
-
-  void cancelGetting() => _cancelFunction.call();
+  Stream<Result<Failure, TracksGettingEndedStatus>> onEnded;
+  Stream<List<TrackWithLoadingObserver>> onPartGot;
 }

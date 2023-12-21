@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:spotify_downloader/core/util/failures/failure.dart';
@@ -8,6 +9,7 @@ import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_tracks_collection_type.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositories/local_tracks_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_ended_status.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/services/tracks_service.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
@@ -18,7 +20,6 @@ import 'package:spotify_downloader/features/domain/tracks/network_tracks/reposit
 import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/repositories/search_videos_by_track_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_controller.dart';
-import 'package:spotify_downloader/features/domain/tracks/services/services/tracks_service.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection_type.dart';
 
@@ -41,14 +42,16 @@ class TracksServiceImpl implements TracksService {
   @override
   Future<TracksWithLoadingObserverGettingObserver> getTracksWithLoadingObserversFromTracksColleciton(
       {required TracksCollection tracksCollection,
-      required List<TrackWithLoadingObserver> responseList,
       int offset = 0}) async {
-    final rawResponseList = List<Track?>.empty(growable: true);
     final rawObserver = await _networkTracksRepository.getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs(
-        tracksCollection: tracksCollection, responseList: rawResponseList, offset: offset));
+        tracksCollection: tracksCollection, offset: offset));
 
-    final tracksGettingObserver =
-        TracksWithLoadingObserverGettingObserver(cancelFunction: () => rawObserver.cancelGetting());
+    final onPartGotStreamController = StreamController<List<TrackWithLoadingObserver>>();
+    final onEndedSteamController = StreamController<Result<Failure, TracksGettingEndedStatus>>();
+
+    final tracksGettingObserver = TracksWithLoadingObserverGettingObserver(
+        onPartGot: onPartGotStreamController.stream.asBroadcastStream(),
+        onEnded: onEndedSteamController.stream.asBroadcastStream());
 
     bool isRawPartLast = false;
     late Result<Failure, TracksGettingEndedStatus> tracksGettingResult;
@@ -62,17 +65,16 @@ class TracksServiceImpl implements TracksService {
         part.add(partElement);
       }
 
-      responseList.addAll(part);
-      tracksGettingObserver.onPartGot?.call();
+      onPartGotStreamController.add(part);
 
       if (isRawPartLast) {
-        tracksGettingObserver.onEnded?.call(tracksGettingResult);
+        onEndedSteamController.add(tracksGettingResult);
       }
     };
 
     rawObserver.onEnded = (result) {
       if (!result.isSuccessful || result.result == TracksGettingEndedStatus.cancelled) {
-        tracksGettingObserver.onEnded?.call(result);
+        onEndedSteamController.add(result);
       } else {
         isRawPartLast = true;
         tracksGettingResult = result;
