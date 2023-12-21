@@ -114,14 +114,13 @@ class TracksServiceImpl implements TracksService {
     return await File(localTrack.savePath).exists();
   }
 
-
   @override
-  Future<Result<Failure, void>> dowloadTracksRange(
-      List<TrackWithLoadingObserver> tracksWithLoadingObservers) async {
+  Future<Result<Failure, void>> dowloadTracksRange(List<TrackWithLoadingObserver> tracksWithLoadingObservers) async {
     for (var trackWithLoadingObserver in tracksWithLoadingObservers) {
-      if (trackWithLoadingObserver.loadingObserver == null ||
-          trackWithLoadingObserver.loadingObserver!.status == LoadingTrackStatus.loaded ||
-          trackWithLoadingObserver.loadingObserver!.status == LoadingTrackStatus.loadingCancelled) {
+      if (!trackWithLoadingObserver.track.isLoaded &&
+          (trackWithLoadingObserver.loadingObserver == null ||
+              trackWithLoadingObserver.loadingObserver!.status == LoadingTrackStatus.failure ||
+              trackWithLoadingObserver.loadingObserver!.status == LoadingTrackStatus.loadingCancelled)) {
         final trackObserverResult = await downloadTrack(trackWithLoadingObserver.track);
         if (trackObserverResult.isSuccessful) {
           trackWithLoadingObserver.loadingObserver = trackObserverResult.result;
@@ -135,7 +134,6 @@ class TracksServiceImpl implements TracksService {
 
     return const Result.isSuccessful(null);
   }
-
 
   @override
   Future<Result<Failure, LoadingTrackObserver>> downloadTrack(Track track) async {
