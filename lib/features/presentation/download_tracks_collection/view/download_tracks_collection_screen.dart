@@ -67,8 +67,8 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
   }
 
   @override
-  Future<void> dispose() async {
-    await _getAndDownloadTracksBloc.close();
+  void dispose() {
+    _getAndDownloadTracksBloc.close();
     super.dispose();
   }
 
@@ -197,17 +197,22 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                                 FilterTracksChangeFilterQuery(newQuery: newQuery)),
                                                             onAllDownloadButtonClicked: () {
                                                               final filterTracksBlocState = _filterTracksBloc.state;
-                                                              if (filterTracksBlocState is! FilterTracksChanged) return;
+                                                              if (filterTracksBlocState is! FilterTracksChanged)
+                                                                return;
 
-                                                              if (filterTracksBlocState.isFilterQueryEmpty) {
+                                                              if (!filterTracksBlocState.isFilterQueryEmpty ||
+                                                                  getTracksState is GetAndDownloadTracksAllGot) {
                                                                 _getAndDownloadTracksBloc.add(
                                                                     GetAndDownloadTracksDownloadTracksRange(
                                                                         tracksRange:
                                                                             filterTracksBlocState.filteredTracks));
                                                               } else {
-                                                                _getAndDownloadTracksBloc.add(GetAndDownloadTracksDownloadAllTracks());
+                                                                showSmallTextSnackBar(
+                                                                    'Пожалуйста дождись загрузки всего плейлиста ^_^ (еще не сделана мгновенная загрузка)',
+                                                                    context);
+                                                                //_getAndDownloadTracksBloc
+                                                                //  .add(GetAndDownloadTracksDownloadAllTracks());
                                                               }
-
                                                             })),
                                                   ]),
                                                 ),

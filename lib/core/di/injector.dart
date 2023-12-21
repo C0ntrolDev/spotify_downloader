@@ -19,6 +19,7 @@ import 'package:spotify_downloader/features/data/tracks_collections/network_trac
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositories/local_tracks_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/use_cases/find_10_videos_by_track.dart';
 import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/use_cases/get_video_by_url.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/use_cases/download_tracks_range.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/repositories/tracks_collections_history_repository.dart';
@@ -120,6 +121,8 @@ void _provideUseCases() {
       () => Find10VideosByTrack(searchVideosByTrackRepository: injector.get<SearchVideosByTrackRepository>()));
   injector.registerFactory<GetVideoByUrl>(
       () => GetVideoByUrl(searchVideosByTrackRepository: injector.get<SearchVideosByTrackRepository>()));
+  injector
+      .registerFactory<DownloadTracksRange>(() => DownloadTracksRange(tracksService: injector.get<TracksService>()));
 }
 
 void _provideBlocs() {
@@ -136,7 +139,8 @@ void _provideBlocs() {
           getTracksCollection: injector.get<GetTracksCollectionByTypeAndSpotifyId>(),
           historyTracksCollection: historyCollection));
   injector.registerFactory<GetAndDownloadTracksBloc>(() => GetAndDownloadTracksBloc(
-      getTracks: injector.get<GetTracksWithLoadingObserverFromTracksCollection>(),
+      downloadTracksRange: injector.get<DownloadTracksRange>(),
+      getTracksFromTracksCollection: injector.get<GetTracksWithLoadingObserverFromTracksCollection>(),
       getTracksWithOffset: injector.get<GetTracksWithLoadingObserverFromTracksCollectionWithOffset>()));
   injector.registerFactory<FilterTracksBloc>(() => FilterTracksBloc());
 

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/track_loading_notifier.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_track.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_tracks_collection_type.dart';
@@ -41,10 +42,9 @@ class TracksServiceImpl implements TracksService {
 
   @override
   Future<TracksWithLoadingObserverGettingObserver> getTracksWithLoadingObserversFromTracksColleciton(
-      {required TracksCollection tracksCollection,
-      int offset = 0}) async {
-    final rawObserver = await _networkTracksRepository.getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs(
-        tracksCollection: tracksCollection, offset: offset));
+      {required TracksCollection tracksCollection, int offset = 0}) async {
+    final rawObserver = await _networkTracksRepository.getTracksFromTracksCollection(
+        GetTracksFromTracksCollectionArgs(tracksCollection: tracksCollection, offset: offset));
 
     final onPartGotStreamController = StreamController<List<TrackWithLoadingObserver>>();
     final onEndedSteamController = StreamController<Result<Failure, TracksGettingEndedStatus>>();
@@ -114,7 +114,9 @@ class TracksServiceImpl implements TracksService {
     return await File(localTrack.savePath).exists();
   }
 
-  Future<Result<Failure, void>> dowloadTracksWithLoadingObserverRange(
+
+  @override
+  Future<Result<Failure, void>> dowloadTracksRange(
       List<TrackWithLoadingObserver> tracksWithLoadingObservers) async {
     for (var trackWithLoadingObserver in tracksWithLoadingObservers) {
       if (trackWithLoadingObserver.loadingObserver == null ||
@@ -124,13 +126,16 @@ class TracksServiceImpl implements TracksService {
         if (trackObserverResult.isSuccessful) {
           trackWithLoadingObserver.loadingObserver = trackObserverResult.result;
         } else {
-          return Result.notSuccessful(trackObserverResult.failure);
+          final fakeLoadingNotifier = TrackLoadingNotifier();
+          trackWithLoadingObserver.loadingObserver = fakeLoadingNotifier.loadingTrackObserver;
+          fakeLoadingNotifier.loadingFailure(trackObserverResult.failure);
         }
       }
     }
 
     return const Result.isSuccessful(null);
   }
+
 
   @override
   Future<Result<Failure, LoadingTrackObserver>> downloadTrack(Track track) async {
