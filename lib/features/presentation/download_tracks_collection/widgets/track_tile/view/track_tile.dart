@@ -6,7 +6,7 @@ import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/presentation/download_track_info/view/download_track_info.dart';
-import 'package:spotify_downloader/features/presentation/shared/tracks_list/widgets/track_tile/bloc/track_tile_bloc.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/bloc/track_tile_bloc.dart';
 
 class TrackTile extends StatefulWidget {
   const TrackTile({super.key, required this.trackWithLoadingObserver});
@@ -87,7 +87,7 @@ class _TrackTileState extends State<TrackTile> {
                 child: BlocBuilder<TrackTileBloc, TrackTileState>(
                   bloc: _trackTileBloc,
                   builder: (context, state) {
-                    if (state is TrackTileOnTrackLoading) {
+                    if (state is TrackTileTrackLoading) {
                       return GestureDetector(
                         onTap: () {
                           _trackTileBloc.add(TrackTileCancelTrackLoading());
@@ -100,7 +100,7 @@ class _TrackTileState extends State<TrackTile> {
                       );
                     }
 
-                    if (state is TrackTileTrackOnFailure) {
+                    if (state is TrackTileTrackFailure) {
                       return GestureDetector(
                         onTap: () {},
                         child: SvgPicture.asset(
@@ -132,7 +132,7 @@ class _TrackTileState extends State<TrackTile> {
                               height: 35, width: 35));
                     }
 
-                    if (state is TrackTileOnTrackLoading) {
+                    if (state is TrackTileTrackLoading) {
                       return Container(
                         padding: const EdgeInsets.all(0),
                         height: 32,
@@ -151,7 +151,7 @@ class _TrackTileState extends State<TrackTile> {
                       );
                     }
 
-                    if (state is TrackTileOnTrackLoaded) {
+                    if (state is TrackTileTrackLoaded) {
                       return SvgPicture.asset(
                         'resources/images/svg/track_tile/downloaded_icon.svg',
                         height: 35,
@@ -160,7 +160,7 @@ class _TrackTileState extends State<TrackTile> {
                       );
                     }
 
-                    if (state is TrackTileTrackOnFailure) {
+                    if (state is TrackTileTrackFailure) {
                       return GestureDetector(
                         onTap: () => _trackTileBloc.add(TrackTitleDownloadTrack()),
                         child: SvgPicture.asset(

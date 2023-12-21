@@ -43,14 +43,12 @@ class DownloadAudioFromYoutubeDataSource {
         cancelFunction = cancellationTokenSource.cancel;
 
         final getDownloadStreamInfoCompute = await _isolatePool.compute(_getDownloadStreamInfo, args);
-
         if (token.isCancelled) {
           getDownloadStreamInfoCompute.cancel();
           return const CancellableResult.isCancelled();
         }
 
         cancelFunction = getDownloadStreamInfoCompute.cancel;
-
         final getDownloadStreamInfoResult = await getDownloadStreamInfoCompute.future;
         if (getDownloadStreamInfoResult.isCancelled) {
           return const CancellableResult.isCancelled();
@@ -158,23 +156,29 @@ class DownloadAudioFromYoutubeDataSource {
       final failureCompleter = Completer<Failure>();
 
       downloadStreamListener = downloadStream.listen((chunk) async {
-          if (token.isCancelled) {
-            if (!cancellationTokenCompleter.isCompleted) {
-              cancellationTokenCompleter.complete(null);
-            }
-            return;
+        if (token.isCancelled) {
+          if (!cancellationTokenCompleter.isCompleted) {
+            cancellationTokenCompleter.complete(null);
           }
+          return;
+        }
 
+        try {
           videoFileStream.add(chunk);
-
-          loadedBytesCount += chunk.length;
-          setLoadingPercent.call((loadedBytesCount / videoFileSize) * 90);
-
-      })..onError((e) {
-         if (!failureCompleter.isCompleted) {
+        } catch (e) {
+          if (!failureCompleter.isCompleted) {
             failureCompleter.complete(Failure(message: e));
           }
-      });
+        }
+
+        loadedBytesCount += chunk.length;
+        setLoadingPercent.call((loadedBytesCount / videoFileSize) * 90);
+      })
+        ..onError((e) {
+          if (!failureCompleter.isCompleted) {
+            failureCompleter.complete(Failure(message: e));
+          }
+        });
 
       Failure failure = const Failure(message: '');
 

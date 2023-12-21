@@ -40,9 +40,9 @@ import 'package:spotify_downloader/features/domain/tracks_collections/network_tr
 import 'package:spotify_downloader/features/presentation/change_source_video/bloc/change_source_video_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_track_info/bloc/download_track_info_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_track_info/widgets/download_track_info_status_tile/cubit/download_track_info_status_tile_cubit.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/bloc/track_tile_bloc.dart';
 import 'package:spotify_downloader/features/presentation/history/bloc/history_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
-import 'package:spotify_downloader/features/presentation/shared/tracks_list/widgets/track_tile/bloc/track_tile_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/filter_tracks/filter_tracks_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_and_download_tracks/get_and_download_tracks_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_history_bloc.dart';

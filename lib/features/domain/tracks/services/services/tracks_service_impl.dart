@@ -101,7 +101,7 @@ class TracksServiceImpl implements TracksService {
     final localTrack = localTrackResult.result;
 
     if (localTrack != null) {
-      if (await checkLocalTrackToExistence(localTrack)) {
+      if (await _checkLocalTrackToExistence(localTrack)) {
         track.isLoaded = true;
         track.youtubeUrl = localTrack.youtubeUrl;
       }
@@ -110,7 +110,7 @@ class TracksServiceImpl implements TracksService {
     return TrackWithLoadingObserver(track: track, loadingObserver: getloadingTrackObserverResult.result);
   }
 
-  Future<bool> checkLocalTrackToExistence(LocalTrack localTrack) async {
+  Future<bool> _checkLocalTrackToExistence(LocalTrack localTrack) async {
     return await File(localTrack.savePath).exists();
   }
 
@@ -142,7 +142,6 @@ class TracksServiceImpl implements TracksService {
           if (!videoResult.isSuccessful) {
             return Result.notSuccessful(videoResult.failure);
           }
-
           if (videoResult.result == null) {
             return const Result.notSuccessful(NotFoundFailure(message: 'track not found on youtube'));
           }

@@ -10,8 +10,6 @@ import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/util_methods.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/entities/history_tracks_collection.dart';
-import 'package:spotify_downloader/features/presentation/shared/tracks_list/widgets/track_tile/view/track_tile.dart';
-import 'package:spotify_downloader/features/presentation/shared/tracks_list/widgets/track_tile_placeholder.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/filter_tracks/filter_tracks_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_and_download_tracks/get_and_download_tracks_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/base/get_tracks_collection_bloc.dart';
@@ -19,6 +17,8 @@ import 'package:spotify_downloader/features/presentation/download_tracks_collect
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_url_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/gradient_app_bar_with_opacity.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/network_failure_splash.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/view/track_tile.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile_placeholder.dart';
 import 'dart:math' as math;
 
 import '../widgets/tracks_collection_manage_bar.dart';
@@ -64,6 +64,12 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
     super.initState();
     initTracksCollectionBloc();
     _getTracksCollectionBloc.add(GetTracksCollectionLoad());
+  }
+
+  @override
+  Future<void> dispose() async {
+    await _getAndDownloadTracksBloc.close();
+    super.dispose();
   }
 
   void initTracksCollectionBloc() {
@@ -124,9 +130,10 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                     bloc: _getAndDownloadTracksBloc,
                     builder: (context, getTracksState) {
                       if (getTracksState is GetAndDownloadTracksBeforePartGotNetworkFailure) {
-                        return NetworkFailureSplash(onRetryAgainButtonClicked: () =>
-                          _getAndDownloadTracksBloc.add(GetAndDownloadTracksGetTracks(tracksCollection: getTracksCollectionState.tracksCollection))
-                        );
+                        return NetworkFailureSplash(
+                            onRetryAgainButtonClicked: () => _getAndDownloadTracksBloc.add(
+                                GetAndDownloadTracksGetTracks(
+                                    tracksCollection: getTracksCollectionState.tracksCollection)));
                       }
 
                       if (getTracksState is GetAndDownloadTracksTracksGot) {
@@ -188,7 +195,20 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                         child: TracksCollectionManageBar(
                                                             onFilterQueryChanged: (newQuery) => _filterTracksBloc.add(
                                                                 FilterTracksChangeFilterQuery(newQuery: newQuery)),
-                                                            onAllDownloadButtonClicked: () {})),
+                                                            onAllDownloadButtonClicked: () {
+                                                              final filterTracksBlocState = _filterTracksBloc.state;
+                                                              if (filterTracksBlocState is! FilterTracksChanged) return;
+
+                                                              if (filterTracksBlocState.isFilterQueryEmpty) {
+                                                                _getAndDownloadTracksBloc.add(
+                                                                    GetAndDownloadTracksDownloadTracksRange(
+                                                                        tracksRange:
+                                                                            filterTracksBlocState.filteredTracks));
+                                                              } else {
+                                                                _getAndDownloadTracksBloc.add(GetAndDownloadTracksDownloadAllTracks());
+                                                              }
+
+                                                            })),
                                                   ]),
                                                 ),
                                               ),

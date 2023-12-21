@@ -23,7 +23,7 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
   TracksCollection? _sourceTracksCollection;
 
   final List<TrackWithLoadingObserver> _tracksList = List.empty(growable: true);
-  final List<StreamSubscription> _gettingObserverSubscriptions = List.empty(growable: true);
+  final List<StreamController> _gettingObserverStreamControllers = List.empty(growable: true);
 
   bool isAllTracksGot = false;
   final Completer<void> subscribeToConnectivityCompleter = Completer();
@@ -43,6 +43,12 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
     add(GetAndDownloadTracksSubscribeToConnectivity());
   }
 
+  @override
+  Future<void> close() async {
+    await _unsubscribeFromTracksGettingObserver();
+    return super.close();
+  }
+
   Future<void> _subscribeToConnectivity(Emitter<GetAndDownloadTracksState> emit) async {
     if (subscribeToConnectivityCompleter.isCompleted) return;
     subscribeToConnectivityCompleter.complete();
@@ -52,6 +58,7 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
 
   GetAndDownloadTracksState _onInternetChanged(ConnectivityResult status) {
     if (status == ConnectivityResult.none || status == ConnectivityResult.other) {
+      _unsubscribeFromTracksGettingObserver();
       return _getNetworkFailureState();
     } else {
       if (state is GetAndDownloadTracksAfterPartGotNetworkFailure) {
@@ -76,7 +83,7 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
     isAllTracksGot = false;
     _tracksList.clear();
     _sourceTracksCollection = event.tracksCollection;
-    _unsubscribeFromTracksGettingObserver();
+    await _unsubscribeFromTracksGettingObserver();
 
     final getTracksResult = await _getTrackFromTracksCollection.call(_sourceTracksCollection!);
     if (!getTracksResult.isSuccessful) {
@@ -106,28 +113,29 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
 
   Future<void> _subscribeToTracksGettingObserver(
       Emitter<GetAndDownloadTracksState> emit, TracksWithLoadingObserverGettingObserver observer) async {
-    final partGotFuture = emit.forEach(_subscribeToStreamAndGetEmitterStream(observer.onPartGot), onData: (part) {
+    final partGotFuture = emit.forEach(_subscribeToStream(observer.onPartGot), onData: (part) {
       _tracksList.addAll(part);
 
       return GetAndDownloadTracksPartGot(tracksWithLoadingObservers: _tracksList);
     });
-    final onEndedFuture =
-        emit.forEach(_subscribeToStreamAndGetEmitterStream(observer.onEnded), onData: _onTracksGettingEnded);
+    final onEndedFuture = emit.forEach(_subscribeToStream(observer.onEnded), onData: _onTracksGettingEnded);
 
     await Future.wait([partGotFuture, onEndedFuture]);
   }
 
-  Stream<T> _subscribeToStreamAndGetEmitterStream<T>(Stream<T> stream) {
-    final emitterStreamController = StreamController<T>();
-    final subscription = stream.listen((event) {
-      emitterStreamController.add(event);
+  Stream<T> _subscribeToStream<T>(Stream<T> stream) {
+    final subscribedStreamController = StreamController<T>();
+    final streamSub = stream.listen((event) {
+      subscribedStreamController.add(event);
     });
-
-    _gettingObserverSubscriptions.add(subscription);
-    return emitterStreamController.stream;
+    subscribedStreamController.onCancel = () => streamSub.cancel();
+    _gettingObserverStreamControllers.add(subscribedStreamController);
+    return subscribedStreamController.stream;
   }
 
   GetAndDownloadTracksState _onTracksGettingEnded(Result<Failure, TracksGettingEndedStatus> result) {
+    _unsubscribeFromTracksGettingObserver();
+
     if (result.isSuccessful) {
       isAllTracksGot = true;
       return GetAndDownloadTracksAllGot(tracksWithLoadingObservers: _tracksList);
@@ -144,7 +152,6 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
   }
 
   GetAndDownloadTracksState _getNetworkFailureState() {
-    _unsubscribeFromTracksGettingObserver();
     if (_tracksList.isNotEmpty) {
       return GetAndDownloadTracksAfterPartGotNetworkFailure(tracksWithLoadingObservers: _tracksList);
     } else {
@@ -152,9 +159,9 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
     }
   }
 
-  void _unsubscribeFromTracksGettingObserver() {
-    for (var sub in _gettingObserverSubscriptions) {
-      sub.cancel();
+  Future<void> _unsubscribeFromTracksGettingObserver() async {
+    for (var controller in _gettingObserverStreamControllers) {
+      await controller.close();
     }
   }
 }
