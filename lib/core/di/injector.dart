@@ -43,10 +43,10 @@ import 'package:spotify_downloader/features/presentation/download_track_info/wid
 import 'package:spotify_downloader/features/presentation/history/bloc/history_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
 import 'package:spotify_downloader/features/presentation/shared/tracks_list/widgets/track_tile/bloc/track_tile_bloc.dart';
-import 'package:spotify_downloader/features/presentation/test_download_tracks_collection/blocs/filter_tracks/filter_tracks_bloc.dart';
-import 'package:spotify_downloader/features/presentation/test_download_tracks_collection/blocs/get_and_download_tracks/get_and_download_tracks_bloc.dart';
-import 'package:spotify_downloader/features/presentation/test_download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_history_bloc.dart';
-import 'package:spotify_downloader/features/presentation/test_download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_url_bloc.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/filter_tracks/filter_tracks_bloc.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_and_download_tracks/get_and_download_tracks_bloc.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_history_bloc.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_url_bloc.dart';
 
 final injector = GetIt.instance;
 

@@ -6,7 +6,7 @@ import 'package:spotify_downloader/features/presentation/change_source_video/vie
 import 'package:spotify_downloader/features/presentation/history/view/history_screen.dart';
 import 'package:spotify_downloader/features/presentation/home/view/home_screen.dart';
 import 'package:spotify_downloader/features/presentation/main/view/main_screen.dart';
-import 'package:spotify_downloader/features/presentation/test_download_tracks_collection/view/download_tracks_collection_screen.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/view/download_tracks_collection_screen.dart';
 
 part 'router.gr.dart';            
               
