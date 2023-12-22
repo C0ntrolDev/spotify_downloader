@@ -36,9 +36,10 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 20, left: 15, right: 15),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 20),
         child: Column(children: [
-          SizedBox(
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 15),
             height: 50,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,41 +59,43 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
                             itemCount: state.historyTracksCollections.length,
                             itemBuilder: (context, index) {
                               final historyTracksCollection = state.historyTracksCollections[index];
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 20),
-                                child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                                  CachedNetworkImage(
-                                    width: 70,
-                                    height: 70,
-                                    imageUrl: historyTracksCollection.imageUrl ?? '',
-                                    placeholder: (context, imageUrl) =>
-                                        Image.asset('resources/images/another/loading_track_collection_image.png'),
-                                    errorWidget: (context, imageUrl, _) =>
-                                        Image.asset('resources/images/another/loading_track_collection_image.png'),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Text(
-                                        historyTracksCollection.name,
-                                        style: theme.textTheme.bodyMedium,
+                              return InkWell(
+                                splashColor: onSurfaceSplashColor,
+                                highlightColor: onSurfaceHighlightColor,
+                                onTap: () async {
+                                  AutoRouter.of(context)
+                                      .push(DownloadTracksCollectionRouteWithHistoryTracksCollection(
+                                          historyTracksCollection: historyTracksCollection))
+                                      .then((value) => _historyBloc.add(HistoryBlocLoadHistory()));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                                  child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                    CachedNetworkImage(
+                                      width: 70,
+                                      height: 70,
+                                      imageUrl: historyTracksCollection.imageUrl ?? '',
+                                      placeholder: (context, imageUrl) =>
+                                          Image.asset('resources/images/another/loading_track_collection_image.png'),
+                                      errorWidget: (context, imageUrl, _) =>
+                                          Image.asset('resources/images/another/loading_track_collection_image.png'),
+                                    ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 10),
+                                        child: Text(
+                                          historyTracksCollection.name,
+                                          style: theme.textTheme.bodyMedium,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
+                                    Container(
                                       alignment: Alignment.centerRight,
-                                      child: IconButton(
-                                        iconSize: 30,
-                                        icon: const Icon(Icons.arrow_forward_ios_rounded),
-                                        color: onBackgroundSecondaryColor,
-                                        onPressed: () async {
-                                          AutoRouter.of(context)
-                                              .push(DownloadTracksCollectionRouteWithHistoryTracksCollection(
-                                                  historyTracksCollection: historyTracksCollection))
-                                              .then((value) => _historyBloc.add(HistoryBlocLoadHistory()));
-                                        },
-                                      ))
-                                ]),
+                                      child: const Icon(Icons.arrow_forward_ios_rounded,
+                                          color: onBackgroundSecondaryColor, size: 27),
+                                    )
+                                  ]),
+                                ),
                               );
                             }),
                         SliverToBoxAdapter(
