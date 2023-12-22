@@ -41,6 +41,8 @@ class TrackTileBloc extends Bloc<TrackTileEvent, TrackTileState> {
     on<TrackTitleDownloadTrack>(_onDownloadTrack);
 
     on<TrackTileLoadingObserverChanged>(_onLoadingTrackObserverChanged);
+    
+    add(TrackTileLoadingObserverChanged(_trackWithLoadingObserver.loadingObserver));
   }
 
   @override

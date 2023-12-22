@@ -3,7 +3,7 @@ import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/core/util/use_case/use_case.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/services/tracks_service.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection.dart';
-import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_controller.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_observer.dart';
 
 class GetTracksWithLoadingObserverFromTracksCollectionWithOffset
     implements

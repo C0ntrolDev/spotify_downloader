@@ -20,7 +20,7 @@ import 'package:spotify_downloader/features/domain/tracks/network_tracks/entitie
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/repositories/network_tracks_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/repositories/search_videos_by_track_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
-import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_controller.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection_type.dart';
 

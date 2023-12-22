@@ -8,7 +8,7 @@ import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_ended_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
-import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_controller.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/use_cases/download_tracks_range.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/use_cases/get_tracks_with_loading_observer_from_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/use_cases/get_tracks_with_loading_observer_from_tracks_collection_with_offset.dart';
