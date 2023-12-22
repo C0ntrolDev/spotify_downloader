@@ -8,8 +8,8 @@ import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.
 abstract class DownloadTracksService {
   Future<Result<Failure, LoadingTrackObserver>> downloadTrack(Track track);
 
-  Future<Result<Failure, void>> dowloadTracksRange(List<TrackWithLoadingObserver> tracksWithLoadingObservers);
+  Future<Result<Failure, void>> downloadTracksRange(List<TrackWithLoadingObserver> tracksWithLoadingObservers);
 
-  Future<Result<Failure, void>> downloadTracksFromGettingStream(
+  Future<Result<Failure, void>> downloadTracksFromGettingObserver(
       TracksWithLoadingObserverGettingObserver tracksWithLoadingObserverGettingObserver);
 }

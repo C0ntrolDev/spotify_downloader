@@ -199,9 +199,10 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                                 FilterTracksChangeFilterQuery(newQuery: newQuery)),
                                                             onAllDownloadButtonClicked: () {
                                                               final filterTracksBlocState = _filterTracksBloc.state;
-                                                              if (filterTracksBlocState is! FilterTracksChanged)
+                                                              if (filterTracksBlocState is! FilterTracksChanged) {
                                                                 return;
-
+                                                              }
+                                                              
                                                               if (!filterTracksBlocState.isFilterQueryEmpty ||
                                                                   getTracksState is GetAndDownloadTracksAllGot) {
                                                                 _getAndDownloadTracksBloc.add(
@@ -209,11 +210,8 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                                         tracksRange:
                                                                             filterTracksBlocState.filteredTracks));
                                                               } else {
-                                                                showSmallTextSnackBar(
-                                                                    'Пожалуйста дождись загрузки всего плейлиста ^_^ (еще не сделана мгновенная загрузка)',
-                                                                    context);
-                                                                //_getAndDownloadTracksBloc
-                                                                //  .add(GetAndDownloadTracksDownloadAllTracks());
+                                                                _getAndDownloadTracksBloc
+                                                                    .add(GetAndDownloadTracksDownloadAllTracks());
                                                               }
                                                             })),
                                                   ]),

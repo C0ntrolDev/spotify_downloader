@@ -33,13 +33,16 @@ class DownloadTracksServiceImpl implements DownloadTracksService {
       TracksCollectionTypeToLocalTracksCollectionTypeConverter();
 
   @override
-  Future<Result<Failure, void>> downloadTracksFromGettingStream(
-      TracksWithLoadingObserverGettingObserver tracksWithLoadingObserverGettingObserver) {
-    throw UnimplementedError();
+  Future<Result<Failure, void>> downloadTracksFromGettingObserver(
+      TracksWithLoadingObserverGettingObserver tracksWithLoadingObserverGettingObserver) async {
+    tracksWithLoadingObserverGettingObserver.onPartGot.listen((part) async {
+      await downloadTracksRange(part);
+    });
+    return const Result.isSuccessful(null);
   }
 
   @override
-  Future<Result<Failure, void>> dowloadTracksRange(List<TrackWithLoadingObserver> tracksWithLoadingObservers) async {
+  Future<Result<Failure, void>> downloadTracksRange(List<TrackWithLoadingObserver> tracksWithLoadingObservers) async {
     for (var trackWithLoadingObserver in tracksWithLoadingObservers) {
       if (!trackWithLoadingObserver.track.isLoaded &&
           (trackWithLoadingObserver.loadingObserver == null ||

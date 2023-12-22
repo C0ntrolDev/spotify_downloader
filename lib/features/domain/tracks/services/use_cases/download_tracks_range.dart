@@ -11,6 +11,6 @@ class DownloadTracksRange implements UseCase<Failure, void, List<TrackWithLoadin
 
   @override
   Future<Result<Failure, void>> call(List<TrackWithLoadingObserver> tracks) async {
-    return _downloadTracksService.dowloadTracksRange(tracks);
+    return _downloadTracksService.downloadTracksRange(tracks);
   }
 }

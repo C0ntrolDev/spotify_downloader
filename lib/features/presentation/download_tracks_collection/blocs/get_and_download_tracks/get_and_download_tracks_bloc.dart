@@ -9,6 +9,7 @@ import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_ended_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_observer.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/use_cases/download_tracks_from_getting_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/use_cases/download_tracks_range.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/use_cases/get_tracks_with_loading_observer_from_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/use_cases/get_tracks_with_loading_observer_from_tracks_collection_with_offset.dart';
@@ -22,11 +23,13 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
   final GetTracksWithLoadingObserverFromTracksCollectionWithOffset _getTracksWithOffset;
 
   final DownloadTracksRange _downloadTracksRange;
+  final DownloadTracksFromGettingObserver _downloadTracksFromGettingObserver;
 
   TracksCollection? _sourceTracksCollection;
 
   final List<TrackWithLoadingObserver> _tracksList = List.empty(growable: true);
   final List<StreamController> _gettingObserverStreamControllers = List.empty(growable: true);
+  TracksWithLoadingObserverGettingObserver? _gettingObserver;
 
   bool isAllTracksGot = false;
   final Completer<void> subscribeToConnectivityCompleter = Completer();
@@ -34,14 +37,18 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
   GetAndDownloadTracksBloc(
       {required GetTracksWithLoadingObserverFromTracksCollection getTracksFromTracksCollection,
       required GetTracksWithLoadingObserverFromTracksCollectionWithOffset getTracksWithOffset,
-      required DownloadTracksRange downloadTracksRange})
+      required DownloadTracksRange downloadTracksRange,
+      required DownloadTracksFromGettingObserver downloadTracksFromGettingObserver})
       : _getTracksFromTracksCollection = getTracksFromTracksCollection,
         _getTracksWithOffset = getTracksWithOffset,
         _downloadTracksRange = downloadTracksRange,
+        _downloadTracksFromGettingObserver = downloadTracksFromGettingObserver,
         super(GetAndDownloadTracksInitital()) {
     on<GetAndDownloadTracksSubscribeToConnectivity>((event, emit) async => await _subscribeToConnectivity(emit));
 
     on<GetAndDownloadTracksGetTracks>(_onGetTracks);
+
+    on<GetAndDownloadTracksDownloadAllTracks>(_onDownloadAllTracks);
 
     on<GetAndDownloadTracksContinueTracksGetting>(_onContinueTracksGetting);
 
@@ -80,6 +87,21 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
     return state;
   }
 
+  Future<void> _onDownloadAllTracks(
+      GetAndDownloadTracksDownloadAllTracks event, Emitter<GetAndDownloadTracksState> emit) async {
+    Future<Result<Failure, void>>? downloadTracksFromGettingObserverFuture;
+    if (_gettingObserver != null) {
+      downloadTracksFromGettingObserverFuture = _downloadTracksFromGettingObserver.call(_gettingObserver!);
+    }
+
+    await _onDownloadTracksRange(GetAndDownloadTracksDownloadTracksRange(tracksRange: _tracksList), emit);
+
+    final downloadTracksFromGettingObserverResult = await downloadTracksFromGettingObserverFuture;
+    if (!(downloadTracksFromGettingObserverResult?.isSuccessful ?? true)) {
+      emit(GetAndDownloadTracksFailure(failure: downloadTracksFromGettingObserverResult?.failure));
+    }
+  }
+
   Future<void> _onDownloadTracksRange(
       GetAndDownloadTracksDownloadTracksRange event, Emitter<GetAndDownloadTracksState> emit) async {
     final downloadTracksRangeResult = await _downloadTracksRange.call(event.tracksRange);
@@ -98,6 +120,7 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
     isAllTracksGot = false;
     _tracksList.clear();
     _sourceTracksCollection = event.tracksCollection;
+    _gettingObserver = null;
     await _unsubscribeFromTracksGettingObserver();
 
     final getTracksResult = await _getTracksFromTracksCollection.call(_sourceTracksCollection!);
@@ -106,6 +129,7 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
       return;
     }
 
+    _gettingObserver = getTracksResult.result!;
     await _subscribeToTracksGettingObserver(emit, getTracksResult.result!);
   }
 
