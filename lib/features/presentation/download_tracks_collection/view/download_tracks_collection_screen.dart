@@ -69,6 +69,8 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
   @override
   void dispose() {
     _getAndDownloadTracksBloc.close();
+    _getTracksCollectionBloc.close();
+    _filterTracksBloc.close();
     super.dispose();
   }
 

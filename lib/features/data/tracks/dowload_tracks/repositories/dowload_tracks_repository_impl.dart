@@ -14,7 +14,7 @@ import 'package:spotify_downloader/features/domain/tracks/download_tracks/entiti
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/repositories/dowload_tracks_repository.dart';
 
-class DowloadTracksRepositoryImpl implements DowloadTracksRepository {
+class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
   DowloadTracksRepositoryImpl({required DownloadAudioFromYoutubeDataSource dowloadAudioFromYoutubeDataSource})
       : _dowloadAudioFromYoutubeDataSource = dowloadAudioFromYoutubeDataSource;
 

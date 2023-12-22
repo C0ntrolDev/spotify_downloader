@@ -5,10 +5,10 @@ import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/repositories/dowload_tracks_repository.dart';
 
 class CancelTrackLoading implements UseCase<Failure, void, Track> {
-  CancelTrackLoading({required DowloadTracksRepository dowloadTracksRepository})
+  CancelTrackLoading({required DownloadTracksRepository dowloadTracksRepository})
       : _dowloadTracksRepository = dowloadTracksRepository;
 
-  final DowloadTracksRepository _dowloadTracksRepository;
+  final DownloadTracksRepository _dowloadTracksRepository;
 
   @override
   Future<Result<Failure, void>> call(Track track) async {
