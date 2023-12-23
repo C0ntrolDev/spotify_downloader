@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
-import 'package:spotify_downloader/core/di/injector.dart';
-import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/search_text_field.dart';
 import '../widgets/liked_tracks_tile.dart';
 
@@ -19,7 +17,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   // ignore: unused_field
-  final HomeBloc _homeBloc = injector.get<HomeBloc>();
   final TextEditingController searchTextFieldController = TextEditingController();
 
   @override

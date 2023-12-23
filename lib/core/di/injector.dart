@@ -17,6 +17,9 @@ import 'package:spotify_downloader/features/data/tracks/search_videos_by_track/r
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/data_source/network_tracks_collections_data_source.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/repositories/tracks_collections_repository_impl.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositories/local_tracks_repository.dart';
+import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/repository/observe_tracks_loading_repository.dart';
+import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/repository/observe_tracks_loading_repository_impl.dart';
+import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/use_cases/get_loading_tracks_collections_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/use_cases/find_10_videos_by_track.dart';
 import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/use_cases/get_video_by_url.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/services/download_tracks_service/download_tracks_service.dart';
@@ -42,11 +45,10 @@ import 'package:spotify_downloader/features/domain/tracks_collections/network_tr
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_history_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_url.dart';
 import 'package:spotify_downloader/features/presentation/change_source_video/bloc/change_source_video_bloc.dart';
-import 'package:spotify_downloader/features/presentation/download_track_info/bloc/download_track_info_bloc.dart';
-import 'package:spotify_downloader/features/presentation/download_track_info/widgets/download_track_info_status_tile/cubit/download_track_info_status_tile_cubit.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/bloc/download_track_info_bloc.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_status_tile/cubit/download_track_info_status_tile_cubit.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/bloc/track_tile_bloc.dart';
 import 'package:spotify_downloader/features/presentation/history/bloc/history_bloc.dart';
-import 'package:spotify_downloader/features/presentation/home/bloc/home_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/filter_tracks/filter_tracks_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_and_download_tracks/get_and_download_tracks_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_history_bloc.dart';
@@ -96,8 +98,10 @@ void _provideRepositories() {
       searchVideoOnYoutubeDataSource: injector.get<SearchVideoOnYoutubeDataSource>()));
   injector.registerSingleton<LocalTracksRepository>(
       LocalTracksRepositoryImpl(dataSource: injector.get<LocalTracksDataSource>()));
+  injector.registerSingleton<ObserveTracksLoadingRepository>(ObserveTracksLoadingRepositoryImpl());
 
   injector.registerSingleton<DownloadTracksService>(DownloadTracksServiceImpl(
+      observeTracksLoadingRepository: injector.get<ObserveTracksLoadingRepository>(),
       dowloadTracksRepository: injector.get<DownloadTracksRepository>(),
       searchVideosByTrackRepository: injector.get<SearchVideosByTrackRepository>(),
       localTracksRepository: injector.get<LocalTracksRepository>()));
@@ -133,10 +137,11 @@ void _provideUseCases() {
       () => DownloadTracksRange(downloadTracksService: injector.get<DownloadTracksService>()));
   injector.registerFactory<DownloadTracksFromGettingObserver>(
       () => DownloadTracksFromGettingObserver(downloadTracksService: injector.get<DownloadTracksService>()));
+  injector.registerFactory<GetLoadingTracksCollectionsObserver>(
+      () => GetLoadingTracksCollectionsObserver(repository: injector.get<ObserveTracksLoadingRepository>()));
 }
 
 void _provideBlocs() {
-  injector.registerFactory<HomeBloc>(() => HomeBloc());
   injector.registerFactory<HistoryBloc>(() => HistoryBloc(getOrderedHistory: injector.get<GetOrderedHistory>()));
 
   injector.registerFactoryParam<GetTracksCollectionByUrlBloc, String, void>((url, _) => GetTracksCollectionByUrlBloc(

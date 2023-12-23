@@ -9,6 +9,7 @@ import 'package:spotify_downloader/features/domain/tracks/download_tracks/reposi
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_track.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositories/local_tracks_repository.dart';
+import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/repository/observe_tracks_loading_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/repositories/search_videos_by_track_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_observer.dart';
@@ -20,14 +21,17 @@ class DownloadTracksServiceImpl implements DownloadTracksService {
   DownloadTracksServiceImpl(
       {required DownloadTracksRepository dowloadTracksRepository,
       required SearchVideosByTrackRepository searchVideosByTrackRepository,
-      required LocalTracksRepository localTracksRepository})
+      required LocalTracksRepository localTracksRepository,
+      required ObserveTracksLoadingRepository observeTracksLoadingRepository})
       : _dowloadTracksRepository = dowloadTracksRepository,
         _searchVideosByTrackRepository = searchVideosByTrackRepository,
-        _localTracksRepository = localTracksRepository;
+        _localTracksRepository = localTracksRepository,
+        _observeTracksLoadingRepository = observeTracksLoadingRepository;
 
   final DownloadTracksRepository _dowloadTracksRepository;
   final SearchVideosByTrackRepository _searchVideosByTrackRepository;
   final LocalTracksRepository _localTracksRepository;
+  final ObserveTracksLoadingRepository _observeTracksLoadingRepository;
 
   final TracksCollectionTypeToLocalTracksCollectionTypeConverter _collectionTypeConverter =
       TracksCollectionTypeToLocalTracksCollectionTypeConverter();
@@ -90,6 +94,8 @@ class DownloadTracksServiceImpl implements DownloadTracksService {
           youtubeUrl: track.youtubeUrl!));
     });
 
+    _observeTracksLoadingRepository.observeLoadingTrack(serviceTrackObserver, track.parentCollection);
+    
     return resultTrackObsever;
   }
 }
