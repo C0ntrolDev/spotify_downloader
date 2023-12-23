@@ -18,30 +18,32 @@ abstract class GetTracksCollectionBloc extends Bloc<GetTracksCollectionEvent, Ge
   GetTracksCollectionBloc({required AddTracksCollectionToHistory addTracksCollectionToHistory})
       : _addTracksCollectionToHistory = addTracksCollectionToHistory,
         super(GetTracksCollectionLoading()) {
-    on<GetTracksCollectionLoad>((event, emit) async {
-      if (_isTracksCollectionLoading) {
-        return;
-      }
+    on<GetTracksCollectionLoad>(_onLoad);
+  }
 
-      emit(GetTracksCollectionLoading());
+  Future<void> _onLoad(GetTracksCollectionLoad event, Emitter<GetTracksCollectionState> emit) async {
+    if (_isTracksCollectionLoading) {
+      return;
+    }
 
-      _isTracksCollectionLoading = true;
-      final loadTracksCollectionResult = await loadTracksCollection();
+    emit(GetTracksCollectionLoading());
 
-      if (loadTracksCollectionResult.isSuccessful) {
-        _loadedTracksCollection = loadTracksCollectionResult.result!;
-        _addTracksCollectionToHistory.call(_loadedTracksCollection!);
+    _isTracksCollectionLoading = true;
+    final loadTracksCollectionResult = await loadTracksCollection();
 
-        emit(GetTracksCollectionLoaded(tracksCollection: _loadedTracksCollection!));
+    if (loadTracksCollectionResult.isSuccessful) {
+      _loadedTracksCollection = loadTracksCollectionResult.result!;
+      _addTracksCollectionToHistory.call(_loadedTracksCollection!);
+
+      emit(GetTracksCollectionLoaded(tracksCollection: _loadedTracksCollection!));
+    } else {
+      if (loadTracksCollectionResult.failure is NetworkFailure) {
+        emit(GetTracksCollectionNetworkFailure());
       } else {
-        if (loadTracksCollectionResult.failure is NetworkFailure) {
-          emit(GetTracksCollectionNetworkFailure());
-        } else {
-          emit(GetTracksCollectionFailure(failure: loadTracksCollectionResult.failure));
-        }
+        emit(GetTracksCollectionFailure(failure: loadTracksCollectionResult.failure));
       }
-      _isTracksCollectionLoading = false;
-    });
+    }
+    _isTracksCollectionLoading = false;
   }
 
   Future<Result<Failure, TracksCollection>> loadTracksCollection();
