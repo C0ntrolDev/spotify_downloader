@@ -1,22 +1,15 @@
 part of 'loading_tracks_collections_list_bloc.dart';
 
-sealed class LoadingTracksCollectionsListState extends Equatable {
+sealed class LoadingTracksCollectionsListState {
   const LoadingTracksCollectionsListState();
-
-  @override
-  List<Object> get props => [];
 }
 
 final class LoadingTracksCollectionsListInitial extends LoadingTracksCollectionsListState {}
 
 final class LoadingTracksCollectionsListLoaded extends LoadingTracksCollectionsListState {
-  const LoadingTracksCollectionsListLoaded({required this.loadingCollectionsObservers}) : _length = loadingCollectionsObservers.length;
+  const LoadingTracksCollectionsListLoaded({required this.loadingCollectionsObservers});
 
   final List<LoadingTracksCollectionObserver> loadingCollectionsObservers;
-  final int _length;
-
-  @override
-  List<Object> get props => [loadingCollectionsObservers, _length];
 }
 
 final class LoadingTracksCollectionsListFailure extends LoadingTracksCollectionsListState {

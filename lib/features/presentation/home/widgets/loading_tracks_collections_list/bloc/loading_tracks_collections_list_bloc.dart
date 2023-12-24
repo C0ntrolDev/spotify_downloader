@@ -40,23 +40,27 @@ class LoadingTracksCollectionsListBloc
 
     await _loadingCollectionsChangedStreamSubscription?.cancel();
     _loadingCollectionsChangedStreamSubscription =
-        result.result!.loadingTracksCollectionsChangedStream.listen((event) {
+        result.result!.loadingTracksCollectionsChangedStream.listen((event) async {
+      changeLoadingTracksCollections(result.result!.loadingTracksCollections);
       add(LoadingTracksCollectionsListUpdate(loadingCollectionsObservers: result.result!.loadingTracksCollections));
     });
 
+    await changeLoadingTracksCollections(result.result!.loadingTracksCollections);
     await _onUpdate(
         LoadingTracksCollectionsListUpdate(loadingCollectionsObservers: result.result!.loadingTracksCollections),
         emit);
   }
 
+  Future<void> changeLoadingTracksCollections(List<LoadingTracksCollectionObserver> loadingTracksCollections) async {
+    _loadingCollectionsObservers.clear();
+    _loadingCollectionsObservers.addAll(loadingTracksCollections);
+    
+    await unsubscribeFromLoadingTracksCollections();
+    subscribeToLoadingTracksCollections(loadingTracksCollections);
+  }
+
   Future<void> _onUpdate(
       LoadingTracksCollectionsListUpdate event, Emitter<LoadingTracksCollectionsListState> emit) async {
-    await unsubscribeFromLoadingTracksCollections();
-    subscribeToLoadingTracksCollections(event.loadingCollectionsObservers);
-
-    _loadingCollectionsObservers.clear();
-    _loadingCollectionsObservers.addAll(event.loadingCollectionsObservers);
-
     emit(LoadingTracksCollectionsListLoaded(
         loadingCollectionsObservers: _loadingCollectionsObservers
             .where((o) => o.loadingStatus != LoadingTracksCollectionStatus.loaded)
