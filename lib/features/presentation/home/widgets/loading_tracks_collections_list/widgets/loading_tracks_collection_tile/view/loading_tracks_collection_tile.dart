@@ -7,6 +7,7 @@ import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/entities/history_tracks_collection.dart';
+import 'package:spotify_downloader/features/presentation/home/view/home_screen.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/widgets/loading_tracks_collection_tile/cubit/loading_tracks_collection_tile_cubit.dart';
 
 class LoadingTracksCollectionTile extends StatefulWidget {
@@ -71,7 +72,7 @@ class _LoadingTracksCollectionTileState extends State<LoadingTracksCollectionTil
                     name: state.loadingTrackInfo.tracksCollection!.name)));
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: homePageHorizontalPadding, vertical: 5),
             child: Row(
               children: [
                 CachedNetworkImage(

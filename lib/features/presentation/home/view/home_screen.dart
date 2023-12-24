@@ -8,6 +8,8 @@ import 'package:spotify_downloader/features/presentation/home/widgets/loading_tr
 import 'package:spotify_downloader/features/presentation/shared/widgets/search_text_field.dart';
 import '../widgets/liked_tracks_tile.dart';
 
+const homePageHorizontalPadding = 15.0;
+
 @RoutePage()
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,7 +19,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // ignore: unused_field
   final TextEditingController searchTextFieldController = TextEditingController();
 
   @override
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 20),
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
+            padding: const EdgeInsets.symmetric(horizontal: homePageHorizontalPadding),
             child: Column(
               children: [
                 SizedBox(
@@ -118,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: homePageHorizontalPadding),
                       child: Text('Активные загрузки', style: theme.textTheme.titleMedium),
                     ),
                      Expanded(
