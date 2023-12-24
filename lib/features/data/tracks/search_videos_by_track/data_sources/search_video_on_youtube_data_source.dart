@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:http/http.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/isolate_pool/isolate_pool.dart';
@@ -14,40 +15,21 @@ class SearchVideoOnYoutubeDataSource {
     _isolatePool = await IsolatePool.create();
   }
 
-  Future<Result<Failure, Video?>> findVideoOnYoutube(String searchQuery) async {
-    final compute = await _isolatePool.compute((searchQuery, token) async {
-      final yt = YoutubeExplode();
-      try {
-        final videos = await yt.search.search(searchQuery);
-        yt.close();
-        return Result.isSuccessful(videos.firstOrNull);
-      } on SocketException {
-        yt.close();
-        return const Result.notSuccessful(NetworkFailure());
-      }
-    }, searchQuery);
-
-    final result = await compute.future;
-
-    if (result.isSuccessful) {
-      return Result.isSuccessful(result.result);
-    } else {
-      return Result.notSuccessful(result.failure);
-    }
-  }
-
   Future<Result<Failure, List<Video>>> findVideosOnYoutube(String searchQuery, {int count = 10}) async {
     final compute = await _isolatePool.compute((searchQuery, token) async {
-      YoutubeExplode yt = YoutubeExplode();
+      final yt = YoutubeExplode();
       try {
         final videos = await yt.search.search(searchQuery);
         yt.close();
 
         final maxCount = videos.length;
         return Result.isSuccessful(videos.getRange(0, min(maxCount, count)).toList());
-      } on SocketException {
+      } catch (e) {
         yt.close();
-        return const Result.notSuccessful(NetworkFailure());
+        if (e is ClientException || e is SocketException) {
+          return const Result.notSuccessful(NetworkFailure());
+        }
+        return Result.notSuccessful(Failure(message: e));
       }
     }, searchQuery);
 
@@ -67,12 +49,18 @@ class SearchVideoOnYoutubeDataSource {
         final video = await yt.videos.get(VideoId.parseVideoId(url));
         yt.close();
         return Result.isSuccessful(video);
-      } on SocketException {
+      } catch (e) {
         yt.close();
-        return const Result.notSuccessful(NetworkFailure());
-      } on ArgumentError {
-        yt.close();
-        return Result.notSuccessful(NotFoundFailure(message: 'video with this url not found: $url'));
+
+        if (e is ArgumentError) {
+          return Result.notSuccessful(NotFoundFailure(message: 'video with this url not found: $url'));
+        }
+
+        if (e is ClientException || e is SocketException) {
+          return const Result.notSuccessful(NetworkFailure());
+        }
+
+        return Result.notSuccessful(Failure(message: e));
       }
     }, url);
 

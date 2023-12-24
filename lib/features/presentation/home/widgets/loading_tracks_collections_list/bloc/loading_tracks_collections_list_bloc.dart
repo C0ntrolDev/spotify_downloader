@@ -9,12 +9,14 @@ import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading
 part 'loading_tracks_collections_list_event.dart';
 part 'loading_tracks_collections_list_state.dart';
 
-class LoadingTracksCollectionsListBloc extends Bloc<LoadingTracksCollectionsListEvent, LoadingTracksCollectionsListState> {
+class LoadingTracksCollectionsListBloc
+    extends Bloc<LoadingTracksCollectionsListEvent, LoadingTracksCollectionsListState> {
   final GetLoadingTracksCollectionsObserver _getLoadingTracksCollectionsObserver;
-  final List<LoadingTracksCollectionObserver> _loadingCollectionsObservers = List.empty();
+  final List<LoadingTracksCollectionObserver> _loadingCollectionsObservers = List.empty(growable: true);
   StreamController<void>? _loadingCollectionsChangedStreamController;
 
-  LoadingTracksCollectionsListBloc(this._getLoadingTracksCollectionsObserver) : super(LoadingTracksCollectionsListInitial()) {
+  LoadingTracksCollectionsListBloc(this._getLoadingTracksCollectionsObserver)
+      : super(LoadingTracksCollectionsListInitial()) {
     on<LoadingTracksCollectionsListLoad>(_onLoad);
   }
 
@@ -36,12 +38,15 @@ class LoadingTracksCollectionsListBloc extends Bloc<LoadingTracksCollectionsList
       _loadingCollectionsChangedStreamController!.add(null);
     });
 
+    emit(_onLoadingTracksCollectionsChanged(result.result!.loadingTracksCollections));
+
     await emit.forEach(_loadingCollectionsChangedStreamController!.stream, onData: (event) {
       return _onLoadingTracksCollectionsChanged(result.result!.loadingTracksCollections);
     });
   }
 
-  LoadingTracksCollectionsListState _onLoadingTracksCollectionsChanged(List<LoadingTracksCollectionObserver> loadingCollectionsObservers) {
+  LoadingTracksCollectionsListState _onLoadingTracksCollectionsChanged(
+      List<LoadingTracksCollectionObserver> loadingCollectionsObservers) {
     _loadingCollectionsObservers.clear();
     _loadingCollectionsObservers.addAll(loadingCollectionsObservers);
     return LoadingTracksCollectionsListLoaded(loadingCollectionsObservers: _loadingCollectionsObservers);

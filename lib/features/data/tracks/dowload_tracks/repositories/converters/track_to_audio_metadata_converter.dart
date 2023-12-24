@@ -7,16 +7,27 @@ class TrackToAudioMetadataConverter implements ValueConverter<AudioMetadata, Tra
   @override
   AudioMetadata convert(Track track) {
     return AudioMetadata(
-        name: track.name.replaceAll('/', '').replaceAll('\\', ''),
+        name: formatStringToAudioMetadata(track.name)!,
         artists: track.artists,
         album: AlbumMetadata(
-            name: track.album?.name,
-            imageUrl: track.album?.imageUrl,
+            name: formatStringToAudioMetadata(track.album?.name), 
+            imageUrl: track.album?.imageUrl, 
             artists: track.parentCollection.artists));
   }
 
   @override
   Track convertBack(AudioMetadata value) {
     throw UnimplementedError();
+  }
+
+  String? formatStringToAudioMetadata(String? string) {
+    final forbiddenChars = ['/', '\\', ':', '*', '?', '<', '>', '|'];
+
+    String? formattedString = string;
+    for (var char in forbiddenChars) {
+      formattedString = formattedString?.replaceAll(char, '');
+    }
+
+    return formattedString;
   }
 }

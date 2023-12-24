@@ -46,7 +46,7 @@ class LoadingTracksCollectionController {
   void _update() {
     _updateLoadingTracksCollectionInfo();
     _changedStreamController.add(null);
-    if (_loadingInfo.loadedTracks == _loadingInfo.totalTracks) {
+    if (_loadingInfo.loadingTracks == 0) {
       _allLoadedStreamController.add(null);
     }
   }

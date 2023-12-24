@@ -10,9 +10,13 @@ sealed class LoadingTracksCollectionsListState extends Equatable {
 final class LoadingTracksCollectionsListInitial extends LoadingTracksCollectionsListState {}
 
 final class LoadingTracksCollectionsListLoaded extends LoadingTracksCollectionsListState {
-  const LoadingTracksCollectionsListLoaded({required this.loadingCollectionsObservers});
+  const LoadingTracksCollectionsListLoaded({required this.loadingCollectionsObservers}) : _length = loadingCollectionsObservers.length;
 
   final List<LoadingTracksCollectionObserver> loadingCollectionsObservers;
+  final int _length;
+
+  @override
+  List<Object> get props => [loadingCollectionsObservers, _length];
 }
 
 final class LoadingTracksCollectionsListFailure extends LoadingTracksCollectionsListState {

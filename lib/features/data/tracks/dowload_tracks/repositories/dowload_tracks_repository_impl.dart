@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/cancellable_result.dart';
@@ -39,9 +40,9 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
 
     final trackLoadingNotifier = TrackLoadingNotifier();
     final trackInfo = WaitingInLoadingQueueTrackInfo(
-          loadingTrackId: loadingTrackId,
-          trackWithLazyYoutubeUrl: lazyTrack,
-          trackLoadingNotifier: trackLoadingNotifier);
+        loadingTrackId: loadingTrackId,
+        trackWithLazyYoutubeUrl: lazyTrack,
+        trackLoadingNotifier: trackLoadingNotifier);
 
     if (_loadingTracks.length < _sameTimeloadingTracksLimit) {
       _startTrackLoading(trackInfo);
@@ -118,14 +119,13 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
         final firstQueueObj = _loadingTracksQueue.first;
         _loadingTracksQueue.remove(firstQueueObj);
 
-        _startTrackLoading(firstQueueObj);
+        await _startTrackLoading(firstQueueObj);
       }
     }
   }
 
   Future<void> _startTrackLoading(WaitingInLoadingQueueTrackInfo trackInfo) async {
     const saveDirectoryPath = 'storage/emulated/0/Download/';
-
     final loadingTrackInfo = LoadingTrackInfo(
         loadingTrackId: trackInfo.loadingTrackId,
         audioLoadingStream: null,
@@ -134,8 +134,8 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
 
     final trackYoutubeUrlResult = await trackInfo.trackWithLazyYoutubeUrl.getYoutubeUrl();
     if (!trackYoutubeUrlResult.isSuccessful) {
-      trackInfo.trackLoadingNotifier.loadingFailure(trackYoutubeUrlResult.failure);
-      _loadNextTrackInQueue();
+      _onLoadingStreamEnded(
+          CancellableResult.notSuccessful(trackYoutubeUrlResult.failure), trackInfo.trackLoadingNotifier);
       return;
     }
 

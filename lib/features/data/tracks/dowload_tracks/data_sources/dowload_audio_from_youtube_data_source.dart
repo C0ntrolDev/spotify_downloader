@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:http/http.dart';
 import 'package:path/path.dart' as p;
 import 'package:spotify_downloader/core/util/cancellation_token/cancellation_token.dart';
 import 'package:spotify_downloader/core/util/cancellation_token/cancellation_token_source.dart';
@@ -121,13 +122,18 @@ class DownloadAudioFromYoutubeDataSource {
       if (token.isCancelled) return const CancellableResult.isCancelled();
 
       downloadStreamInfo = manifest.audioOnly.withHighestBitrate();
-    } on SocketException {
+    } catch (e) {
       yt.close();
-      return const CancellableResult.notSuccessful(NetworkFailure());
-    } on ArgumentError {
-      yt.close();
-      return CancellableResult.notSuccessful(
-          NotFoundFailure(message: 'video with this url not found: ${args.youtubeUrl}'));
+      if (e is ClientException || e is SocketException) {
+        return const CancellableResult.notSuccessful(NetworkFailure());
+      }
+
+      if (e is ArgumentError) {
+        return CancellableResult.notSuccessful(
+            NotFoundFailure(message: 'video with this url not found: ${args.youtubeUrl}'));
+      }
+
+      return CancellableResult.notSuccessful(Failure(message: e));
     }
 
     yt.close();
@@ -201,6 +207,7 @@ class DownloadAudioFromYoutubeDataSource {
 
       await videoFileStream.flush();
       await videoFileStream.close();
+      yt.close();
 
       if (failureCompleter.isCompleted) {
         return CancellableResult.notSuccessful(failure);

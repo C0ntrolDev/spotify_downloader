@@ -111,7 +111,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Активные загрузки', style: theme.textTheme.titleMedium),
-                    const LoadingTracksCollectionsList()
+                     Expanded(
+                      child: Container(
+                          padding: const EdgeInsets.only(top: 10),
+                          alignment: Alignment.topCenter,
+                          child: const LoadingTracksCollectionsList()),
+                    ),
                   ],
                 ),
               ),
