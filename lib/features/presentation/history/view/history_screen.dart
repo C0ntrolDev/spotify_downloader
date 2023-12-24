@@ -39,7 +39,7 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
         padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 20),
         child: Column(children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 15),
             height: 50,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

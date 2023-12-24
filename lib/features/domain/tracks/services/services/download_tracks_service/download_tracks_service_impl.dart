@@ -94,8 +94,8 @@ class DownloadTracksServiceImpl implements DownloadTracksService {
           youtubeUrl: track.youtubeUrl!));
     });
 
-    _observeTracksLoadingRepository.observeLoadingTrack(serviceTrackObserver, track.parentCollection);
-    
+    _observeTracksLoadingRepository.observeLoadingTrack(serviceTrackObserver, track);
+
     return resultTrackObsever;
   }
 }

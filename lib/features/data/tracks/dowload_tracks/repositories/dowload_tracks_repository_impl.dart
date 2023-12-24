@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/cancellable_result.dart';
@@ -119,7 +118,8 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
         final firstQueueObj = _loadingTracksQueue.first;
         _loadingTracksQueue.remove(firstQueueObj);
 
-        await _startTrackLoading(firstQueueObj);
+        _startTrackLoading(firstQueueObj);
+        _loadNextTrackInQueue();
       }
     }
   }

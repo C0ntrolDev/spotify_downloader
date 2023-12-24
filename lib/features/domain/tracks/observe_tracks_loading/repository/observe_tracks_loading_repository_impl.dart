@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
+import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_track_observer_with_id.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_tracks_collection_controller.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/repository/loading_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/repository/loading_tracks_collection_id.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/repository/observe_tracks_loading_repository.dart';
-import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 
 import '../entities/repository/loading_tracks_collections_observer.dart';
 
@@ -27,19 +28,19 @@ class ObserveTracksLoadingRepositoryImpl implements ObserveTracksLoadingReposito
   }
 
   @override
-  void observeLoadingTrack(LoadingTrackObserver loadingTrack, TracksCollection parentCollection) {
-    final loadingTracksCollectionId =
-        LoadingTracksCollectionId(spotifyId: parentCollection.spotifyId, tracksCollectionType: parentCollection.type);
+  void observeLoadingTrack(LoadingTrackObserver loadingTrack, Track track) {
+    final loadingTracksCollectionId = LoadingTracksCollectionId(
+        spotifyId: track.parentCollection.spotifyId, tracksCollectionType: track.parentCollection.type);
 
     var loadingCollection = _loadingCollections.where((c) => c.id == loadingTracksCollectionId).firstOrNull;
     if (loadingCollection == null) {
       loadingCollection = LoadingTracksCollection(
-          id: loadingTracksCollectionId,
-          controller: LoadingTracksCollectionController(parentCollection));
+          id: loadingTracksCollectionId, controller: LoadingTracksCollectionController(track.parentCollection));
       _loadingCollections.add(loadingCollection);
       _loadingCollectionsChangedStreamController.add(null);
     }
 
-    loadingCollection.controller.addLoadingTrack(loadingTrack);
+    loadingCollection.controller
+        .addLoadingTrack(LoadingTrackObserverWithId(loadingTrackObserver: loadingTrack, spotifyId: track.spotifyId));
   }
 }

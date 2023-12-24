@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
+import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_track_observer_with_id.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection.dart';
 
@@ -14,7 +14,7 @@ class LoadingTracksCollectionController {
         getLoadingInfo: () => _loadingInfo);
   }
 
-  final List<LoadingTrackObserver> _loadingTracks = List.empty(growable: true);
+  final List<LoadingTrackObserverWithId> _loadingTracks = List.empty(growable: true);
 
   late final LoadingTracksCollectionObserver _observer;
   LoadingTracksCollectionObserver get observer => _observer;
@@ -25,17 +25,25 @@ class LoadingTracksCollectionController {
   final StreamController<void> _changedStreamController = StreamController();
   final StreamController<void> _allLoadedStreamController = StreamController();
 
-  void addLoadingTrack(LoadingTrackObserver loadingTrack) {
+  void addLoadingTrack(LoadingTrackObserverWithId loadingTrack) {
+    final foundLoadingTrack = _loadingTracks.where((l) => l.spotifyId == loadingTrack.spotifyId).firstOrNull;
+    if (foundLoadingTrack != null) {
+      if (foundLoadingTrack.loadingTrackObserver.status == LoadingTrackStatus.loading ||
+          foundLoadingTrack.loadingTrackObserver.status == LoadingTrackStatus.waitInLoadingQueue) return;
+
+      _loadingTracks.remove(foundLoadingTrack);
+    }
+
     _subscribeToLoadingTrack(loadingTrack);
     _loadingTracks.add(loadingTrack);
     _update();
   }
 
-  void _subscribeToLoadingTrack(LoadingTrackObserver loadingTrack) {
-    loadingTrack.loadedStream.listen((event) => _update());
-    loadingTrack.loadingFailureStream.listen((event) => _update());
+  void _subscribeToLoadingTrack(LoadingTrackObserverWithId loadingTrack) {
+    loadingTrack.loadingTrackObserver.loadedStream.listen((event) => _update());
+    loadingTrack.loadingTrackObserver.loadingFailureStream.listen((event) => _update());
 
-    loadingTrack.loadingCancelledStream.listen((event) {
+    loadingTrack.loadingTrackObserver.loadingCancelledStream.listen((event) {
       if (_loadingTracks.contains(loadingTrack)) {
         _loadingTracks.remove(loadingTrack);
       }
@@ -58,18 +66,18 @@ class LoadingTracksCollectionController {
     int failuredTracks = 0;
 
     for (var loadingTrack in _loadingTracks) {
-      if (loadingTrack.status == LoadingTrackStatus.loading ||
-          loadingTrack.status == LoadingTrackStatus.waitInLoadingQueue) {
+      if (loadingTrack.loadingTrackObserver.status == LoadingTrackStatus.loading ||
+          loadingTrack.loadingTrackObserver.status == LoadingTrackStatus.waitInLoadingQueue) {
         loadingTracks++;
         continue;
       }
 
-      if (loadingTrack.status == LoadingTrackStatus.failure) {
+      if (loadingTrack.loadingTrackObserver.status == LoadingTrackStatus.failure) {
         failuredTracks++;
         continue;
       }
 
-      if (loadingTrack.status == LoadingTrackStatus.loaded) {
+      if (loadingTrack.loadingTrackObserver.status == LoadingTrackStatus.loaded) {
         loadedTracks++;
         continue;
       }
