@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_track_observer_with_id.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
+import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_tracks_collection_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection.dart';
 
 import 'loading_tracks_collection_info.dart';
@@ -11,7 +12,9 @@ class LoadingTracksCollectionController {
     _observer = LoadingTracksCollectionObserver(
         changedStream: _changedStreamController.stream.asBroadcastStream(),
         allLoadedStream: _allLoadedStreamController.stream.asBroadcastStream(),
-        getLoadingInfo: () => _loadingInfo);
+        loadingStatusChangedStream: _loadingStatusChangedStreamController.stream.asBroadcastStream(),
+        getLoadingInfo: () => _loadingInfo,
+        getLoadingStatus: () => _loadingStatus);
   }
 
   final List<LoadingTrackObserverWithId> _loadingTracks = List.empty(growable: true);
@@ -22,8 +25,18 @@ class LoadingTracksCollectionController {
   final TracksCollection _sourceTracksCollection;
   LoadingTracksCollectionInfo _loadingInfo = const LoadingTracksCollectionInfo.empty();
 
+  LoadingTracksCollectionStatus _loadingStatusField = LoadingTracksCollectionStatus.loading;
+  LoadingTracksCollectionStatus get _loadingStatus => _loadingStatusField;
+  set _loadingStatus(LoadingTracksCollectionStatus newStatus) {
+    if (newStatus != _loadingStatusField) {
+      _loadingStatusChangedStreamController.add(null);
+    }
+    _loadingStatusField = newStatus;
+  }
+
   final StreamController<void> _changedStreamController = StreamController();
   final StreamController<void> _allLoadedStreamController = StreamController();
+  final StreamController<void> _loadingStatusChangedStreamController = StreamController();
 
   void addLoadingTrack(LoadingTrackObserverWithId loadingTrack) {
     final foundLoadingTrack = _loadingTracks.where((l) => l.spotifyId == loadingTrack.spotifyId).firstOrNull;
@@ -54,8 +67,12 @@ class LoadingTracksCollectionController {
   void _update() {
     _updateLoadingTracksCollectionInfo();
     _changedStreamController.add(null);
+
     if (_loadingInfo.loadingTracks == 0) {
       _allLoadedStreamController.add(null);
+      _loadingStatus = LoadingTracksCollectionStatus.loaded;
+    } else {
+      _loadingStatus = LoadingTracksCollectionStatus.loading;
     }
   }
 

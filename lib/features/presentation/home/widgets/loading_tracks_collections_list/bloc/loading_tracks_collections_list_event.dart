@@ -8,3 +8,9 @@ sealed class LoadingTracksCollectionsListEvent extends Equatable {
 }
 
 final class LoadingTracksCollectionsListLoad extends LoadingTracksCollectionsListEvent {}
+
+final class LoadingTracksCollectionsListUpdate extends LoadingTracksCollectionsListEvent {
+  final List<LoadingTracksCollectionObserver> loadingCollectionsObservers;
+
+  const LoadingTracksCollectionsListUpdate({required this.loadingCollectionsObservers});
+}

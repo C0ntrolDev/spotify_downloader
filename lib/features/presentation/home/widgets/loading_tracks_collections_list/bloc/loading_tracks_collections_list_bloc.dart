@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
+import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_tracks_collection_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/use_cases/get_loading_tracks_collections_observer.dart';
 
 part 'loading_tracks_collections_list_event.dart';
@@ -13,16 +14,20 @@ class LoadingTracksCollectionsListBloc
     extends Bloc<LoadingTracksCollectionsListEvent, LoadingTracksCollectionsListState> {
   final GetLoadingTracksCollectionsObserver _getLoadingTracksCollectionsObserver;
   final List<LoadingTracksCollectionObserver> _loadingCollectionsObservers = List.empty(growable: true);
-  StreamController<void>? _loadingCollectionsChangedStreamController;
+  StreamSubscription<void>? _loadingCollectionsChangedStreamSubscription;
+
+  final List<StreamSubscription> _statusStreamSubscriptions = List.empty(growable: true);
 
   LoadingTracksCollectionsListBloc(this._getLoadingTracksCollectionsObserver)
       : super(LoadingTracksCollectionsListInitial()) {
     on<LoadingTracksCollectionsListLoad>(_onLoad);
+    on<LoadingTracksCollectionsListUpdate>(_onUpdate);
   }
 
   @override
   Future<void> close() async {
-    await _loadingCollectionsChangedStreamController?.close();
+    await _loadingCollectionsChangedStreamSubscription?.cancel();
+    await unsubscribeFromLoadingTracksCollections();
     await super.close();
   }
 
@@ -33,22 +38,43 @@ class LoadingTracksCollectionsListBloc
       return;
     }
 
-    _loadingCollectionsChangedStreamController = StreamController<void>();
-    result.result!.loadingTracksCollectionsChangedStream.listen((event) {
-      _loadingCollectionsChangedStreamController!.add(null);
+    await _loadingCollectionsChangedStreamSubscription?.cancel();
+    _loadingCollectionsChangedStreamSubscription =
+        result.result!.loadingTracksCollectionsChangedStream.listen((event) {
+      add(LoadingTracksCollectionsListUpdate(loadingCollectionsObservers: result.result!.loadingTracksCollections));
     });
 
-    emit(_onLoadingTracksCollectionsChanged(result.result!.loadingTracksCollections));
-
-    await emit.forEach(_loadingCollectionsChangedStreamController!.stream, onData: (event) {
-      return _onLoadingTracksCollectionsChanged(result.result!.loadingTracksCollections);
-    });
+    await _onUpdate(
+        LoadingTracksCollectionsListUpdate(loadingCollectionsObservers: result.result!.loadingTracksCollections),
+        emit);
   }
 
-  LoadingTracksCollectionsListState _onLoadingTracksCollectionsChanged(
-      List<LoadingTracksCollectionObserver> loadingCollectionsObservers) {
+  Future<void> _onUpdate(
+      LoadingTracksCollectionsListUpdate event, Emitter<LoadingTracksCollectionsListState> emit) async {
+    await unsubscribeFromLoadingTracksCollections();
+    subscribeToLoadingTracksCollections(event.loadingCollectionsObservers);
+
     _loadingCollectionsObservers.clear();
-    _loadingCollectionsObservers.addAll(loadingCollectionsObservers);
-    return LoadingTracksCollectionsListLoaded(loadingCollectionsObservers: _loadingCollectionsObservers);
+    _loadingCollectionsObservers.addAll(event.loadingCollectionsObservers);
+
+    emit(LoadingTracksCollectionsListLoaded(
+        loadingCollectionsObservers: _loadingCollectionsObservers
+            .where((o) => o.loadingStatus != LoadingTracksCollectionStatus.loaded)
+            .toList()));
+  }
+
+  Future<void> unsubscribeFromLoadingTracksCollections() async {
+    for (var sub in _statusStreamSubscriptions) {
+      await sub.cancel();
+    }
+    _statusStreamSubscriptions.clear();
+  }
+
+  void subscribeToLoadingTracksCollections(List<LoadingTracksCollectionObserver> loadingTracksCollections) async {
+    for (var loadingTracksCollection in loadingTracksCollections) {
+      _statusStreamSubscriptions.add(loadingTracksCollection.loadingStatusChangedStream.listen((event) {
+        add(LoadingTracksCollectionsListUpdate(loadingCollectionsObservers: _loadingCollectionsObservers));
+      }));
+    }
   }
 }
