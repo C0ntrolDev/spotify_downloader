@@ -1,4 +1,4 @@
 # spotify_downloader
 status : developing
 
-the release is scheduled until 2025
+the first version is planned no earlier than January 2024
