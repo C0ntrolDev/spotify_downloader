@@ -60,8 +60,7 @@ class _LoadingTracksCollectionsListState extends State<LoadingTracksCollectionsL
                   itemCount: blocState.loadingCollectionsObservers.length,
                   itemBuilder: (context, index) {
                     return LoadingTracksCollectionTile(
-                      loadingTracksCollection: blocState.loadingCollectionsObservers[index],
-                    );
+                        loadingTracksCollection: blocState.loadingCollectionsObservers[index]);
                   });
             }
           }

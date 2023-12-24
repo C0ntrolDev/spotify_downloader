@@ -14,5 +14,3 @@ final class LoadingTracksCollectionTileChanged extends LoadingTracksCollectionTi
   @override
   List<Object> get props => [loadingTrackInfo];
 }
-
-final class LoadingTracksCollectionAllLoaded extends LoadingTracksCollectionTileState {}

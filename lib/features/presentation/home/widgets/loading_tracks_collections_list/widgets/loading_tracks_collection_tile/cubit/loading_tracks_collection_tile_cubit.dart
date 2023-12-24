@@ -24,12 +24,7 @@ class LoadingTracksCollectionTileCubit extends Cubit<LoadingTracksCollectionTile
   }
 
   void _subscribeToLoadingObserver() {
-    if (_loadingObserver.loadingInfo.loadedTracks == _loadingObserver.loadingInfo.totalTracks) {
-      _onAllLoaded();
-    }
-
     _loadingObserverSubscriptions.addAll([
-      _loadingObserver.allLoadedStream.listen((event) => _onAllLoaded()),
       _loadingObserver.changedStream.listen((event) => _onLoadingCollectionInfoChanged())
     ]);
   }
@@ -42,9 +37,5 @@ class LoadingTracksCollectionTileCubit extends Cubit<LoadingTracksCollectionTile
 
   void _onLoadingCollectionInfoChanged() {
     emit(LoadingTracksCollectionTileChanged(loadingTrackInfo: _loadingObserver.loadingInfo));
-  }
-
-  void _onAllLoaded() {
-    emit(LoadingTracksCollectionAllLoaded());
   }
 }
