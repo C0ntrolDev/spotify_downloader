@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_ended_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_observer.dart';
@@ -29,6 +30,7 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
 
   final List<TrackWithLoadingObserver> _tracksList = List.empty(growable: true);
   final List<StreamController> _gettingObserverStreamControllers = List.empty(growable: true);
+  final List<StreamSubscription> _tracksToLoadingObserversStreamSubscriptions = List.empty(growable: true);
   TracksWithLoadingObserverGettingObserver? _gettingObserver;
 
   bool isAllTracksGot = false;
@@ -60,6 +62,7 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
   @override
   Future<void> close() async {
     await _unsubscribeFromTracksGettingObserver();
+    await _unsubscribeTracksFromLoadingObservers();
     return super.close();
   }
 
@@ -122,6 +125,7 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
     _sourceTracksCollection = event.tracksCollection;
     _gettingObserver = null;
     await _unsubscribeFromTracksGettingObserver();
+    await _unsubscribeTracksFromLoadingObservers();
 
     final getTracksResult = await _getTracksFromTracksCollection.call(_sourceTracksCollection!);
     if (!getTracksResult.isSuccessful) {
@@ -154,6 +158,7 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
       Emitter<GetAndDownloadTracksState> emit, TracksWithLoadingObserverGettingObserver observer) async {
     final partGotFuture = emit.forEach(_subscribeToStream(observer.onPartGot), onData: (part) {
       _tracksList.addAll(part);
+      _subscribeTracksToLoadingObservers(part);
 
       return GetAndDownloadTracksPartGot(tracksWithLoadingObservers: _tracksList);
     });
@@ -170,6 +175,25 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
     subscribedStreamController.onCancel = () => streamSub.cancel();
     _gettingObserverStreamControllers.add(subscribedStreamController);
     return subscribedStreamController.stream;
+  }
+
+  void _subscribeTracksToLoadingObservers(List<TrackWithLoadingObserver> tracksWithLoadingObservers) {
+    for (var trackWithLoadingObserver in tracksWithLoadingObservers) {
+      final track = trackWithLoadingObserver.track;
+      final loadingObserver = trackWithLoadingObserver.loadingObserver;
+
+      if (loadingObserver != null) {
+        if (loadingObserver.youtubeUrl != null) {
+          track.youtubeUrl = loadingObserver.youtubeUrl;
+        } else {
+          if (loadingObserver.status == LoadingTrackStatus.waitInLoadingQueue) {
+            _tracksToLoadingObserversStreamSubscriptions.add(loadingObserver.startLoadingStream.listen((youtubeUrl) {
+              track.youtubeUrl = youtubeUrl;
+            }));
+          }
+        }
+      }
+    }
   }
 
   GetAndDownloadTracksState _onTracksGettingEnded(Result<Failure, TracksGettingEndedStatus> result) {
@@ -203,4 +227,11 @@ class GetAndDownloadTracksBloc extends Bloc<GetAndDownloadTracksEvent, GetAndDow
       await controller.close();
     }
   }
+
+  Future<void> _unsubscribeTracksFromLoadingObservers() async {
+    for (var sub in _tracksToLoadingObserversStreamSubscriptions) {
+      await sub.cancel();
+    }
+  }
+
 }

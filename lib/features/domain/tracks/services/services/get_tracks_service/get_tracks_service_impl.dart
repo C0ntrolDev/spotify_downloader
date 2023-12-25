@@ -100,18 +100,6 @@ class GetTracksServiceImpl implements GetTracksService {
       }
     }
 
-    if (getloadingTrackObserverResult.isSuccessful) {
-      if (getloadingTrackObserverResult.result != null) {
-        track.youtubeUrl = getloadingTrackObserverResult.result!.youtubeUrl;
-
-        if (getloadingTrackObserverResult.result!.youtubeUrl == null) {
-          getloadingTrackObserverResult.result!.startLoadingStream.listen((youtubeUrl) {
-            track.youtubeUrl = youtubeUrl;
-          });
-        }
-      }
-    }
-
     return TrackWithLoadingObserver(track: track, loadingObserver: getloadingTrackObserverResult.result);
   }
 
