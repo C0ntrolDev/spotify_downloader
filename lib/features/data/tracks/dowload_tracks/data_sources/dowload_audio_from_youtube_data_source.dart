@@ -50,7 +50,15 @@ class DownloadAudioFromYoutubeDataSource {
         }
 
         cancelFunction = getDownloadStreamInfoCompute.cancel;
-        final getDownloadStreamInfoResult = await getDownloadStreamInfoCompute.future;
+        final getDownloadStreamInfoResult = await Future.any([
+          getDownloadStreamInfoCompute.future,
+          Future(() async {
+            await Connectivity().onConnectivityChanged.firstWhere((connectivityResult) =>
+                connectivityResult == ConnectivityResult.none || connectivityResult == ConnectivityResult.other);
+            return const CancellableResult.notSuccessful(NetworkFailure());
+          })
+        ]);
+
         if (getDownloadStreamInfoResult.isCancelled) {
           return const CancellableResult.isCancelled();
         } else if (!getDownloadStreamInfoResult.isSuccessful) {

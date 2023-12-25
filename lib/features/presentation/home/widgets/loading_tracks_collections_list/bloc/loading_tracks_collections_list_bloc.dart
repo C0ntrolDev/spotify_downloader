@@ -54,7 +54,7 @@ class LoadingTracksCollectionsListBloc
   Future<void> changeLoadingTracksCollections(List<LoadingTracksCollectionObserver> loadingTracksCollections) async {
     _loadingCollectionsObservers.clear();
     _loadingCollectionsObservers.addAll(loadingTracksCollections);
-    
+
     await unsubscribeFromLoadingTracksCollections();
     subscribeToLoadingTracksCollections(loadingTracksCollections);
   }
@@ -63,7 +63,9 @@ class LoadingTracksCollectionsListBloc
       LoadingTracksCollectionsListUpdate event, Emitter<LoadingTracksCollectionsListState> emit) async {
     emit(LoadingTracksCollectionsListLoaded(
         loadingCollectionsObservers: _loadingCollectionsObservers
-            .where((o) => o.loadingStatus != LoadingTracksCollectionStatus.loaded)
+            .where((o) =>
+                o.loadingStatus != LoadingTracksCollectionStatus.loaded ||
+                o.loadingInfo.failuredTracks / o.loadingInfo.totalTracks > 0.3)
             .toList()));
   }
 
