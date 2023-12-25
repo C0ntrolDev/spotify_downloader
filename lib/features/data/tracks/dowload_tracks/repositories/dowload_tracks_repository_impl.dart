@@ -60,10 +60,11 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
         spotifyId: track.spotifyId);
 
     final foundLoadingTrack = _loadingTracks.where((e) => e.loadingTrackId == loadingTrackId).firstOrNull;
-    if (foundLoadingTrack != null) {
-      foundLoadingTrack.audioLoadingStream?.cancel();
+    if (foundLoadingTrack != null && foundLoadingTrack.audioLoadingStream != null) {
+      foundLoadingTrack.audioLoadingStream!.cancel();
       _loadingTracks.remove(foundLoadingTrack);
-
+      foundLoadingTrack.trackLoadingNotifier.loadingCancelled();
+      _loadNextTrackInQueue();
       return const Result.isSuccessful(null);
     }
 
@@ -101,15 +102,14 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
     _loadingTracks
         .removeWhere((e) => e.trackLoadingNotifier.loadingTrackObserver == trackLoadingNotifier.loadingTrackObserver);
 
-    if (result.isSuccessful) {
-      trackLoadingNotifier.loaded(result.result!);
-    } else if (result.isCancelled) {
-      trackLoadingNotifier.loadingCancelled();
-    } else {
-      trackLoadingNotifier.loadingFailure(result.failure);
+    if (!result.isCancelled) {
+      if (result.isSuccessful) {
+        trackLoadingNotifier.loaded(result.result!);
+      } else {
+        trackLoadingNotifier.loadingFailure(result.failure);
+      }
+      _loadNextTrackInQueue();
     }
-
-    _loadNextTrackInQueue();
   }
 
   Future<void> _loadNextTrackInQueue() async {

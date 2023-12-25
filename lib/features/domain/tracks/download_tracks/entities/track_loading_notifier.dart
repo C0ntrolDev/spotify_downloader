@@ -37,7 +37,7 @@ class TrackLoadingNotifier {
   }
 
   void loaded(String savePath) {
-    if (_status == LoadingTrackStatus.loading) {
+    if (_status == LoadingTrackStatus.loading || _status == LoadingTrackStatus.loadingCancelled) {
       _status = LoadingTrackStatus.loaded;
       _loadedStreamController.add(savePath);
     }
@@ -51,7 +51,9 @@ class TrackLoadingNotifier {
   }
 
   void loadingFailure(Failure? failure) {
-    if (_status == LoadingTrackStatus.loading || _status == LoadingTrackStatus.waitInLoadingQueue) {
+    if (_status == LoadingTrackStatus.loading ||
+        _status == LoadingTrackStatus.waitInLoadingQueue ||
+        _status == LoadingTrackStatus.loadingCancelled) {
       _status = LoadingTrackStatus.failure;
       _loadingFailureStreamController.add(failure);
     }
