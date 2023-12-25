@@ -29,7 +29,7 @@ class GetTracksServiceImpl implements GetTracksService {
   final NetworkTracksRepository _networkTracksRepository;
   final DownloadTracksRepository _downloadTracksRepository;
   final LocalTracksRepository _localTracksRepository;
-  
+
   final TracksCollectionTypeToLocalTracksCollectionTypeConverter _collectionTypeConverter =
       TracksCollectionTypeToLocalTracksCollectionTypeConverter();
 
@@ -97,6 +97,18 @@ class GetTracksServiceImpl implements GetTracksService {
       if (await _checkLocalTrackToExistence(localTrack)) {
         track.isLoaded = true;
         track.youtubeUrl = localTrack.youtubeUrl;
+      }
+    }
+
+    if (getloadingTrackObserverResult.isSuccessful) {
+      if (getloadingTrackObserverResult.result != null) {
+        track.youtubeUrl = getloadingTrackObserverResult.result!.youtubeUrl;
+
+        if (getloadingTrackObserverResult.result!.youtubeUrl == null) {
+          getloadingTrackObserverResult.result!.startLoadingStream.listen((youtubeUrl) {
+            track.youtubeUrl = youtubeUrl;
+          });
+        }
       }
     }
 
