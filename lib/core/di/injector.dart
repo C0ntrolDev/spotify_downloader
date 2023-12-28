@@ -56,6 +56,7 @@ import 'package:spotify_downloader/features/presentation/download_tracks_collect
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_url_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/bloc/loading_tracks_collections_list_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/widgets/loading_tracks_collection_tile/cubit/loading_tracks_collection_tile_cubit.dart';
+import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notification/bloc/tracks_collections_loading_notifications_bloc.dart';
 
 final injector = GetIt.instance;
 
@@ -182,4 +183,6 @@ void _provideBlocs() {
       sourceTrack: track,
       find10VideosByTrack: injector.get<Find10VideosByTrack>(),
       getVideoByUrl: injector.get<GetVideoByUrl>()));
+  injector.registerFactory<TracksCollectionsLoadingNotificationsBloc>(
+      () => TracksCollectionsLoadingNotificationsBloc(injector.get<GetLoadingTracksCollectionsObserver>()));
 }
