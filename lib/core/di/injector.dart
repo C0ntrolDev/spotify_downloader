@@ -2,6 +2,10 @@ import 'package:get_it/get_it.dart';
 import 'package:spotify_downloader/core/consts/spotify_client.dart';
 import 'package:spotify_downloader/core/db/local_db.dart';
 import 'package:spotify_downloader/core/db/local_db_impl.dart';
+import 'package:spotify_downloader/features/data/auth/local_auth/data_source/local_auth_data_source.dart';
+import 'package:spotify_downloader/features/data/auth/local_auth/repository/local_auth_repository_impl.dart';
+import 'package:spotify_downloader/features/data/auth/network_auth/data_source/network_auth_data_source.dart';
+import 'package:spotify_downloader/features/data/auth/network_auth/repository/network_auth_repository_impl.dart';
 import 'package:spotify_downloader/features/data/tracks/local_tracks/data_sources/local_tracks_data_source.dart';
 import 'package:spotify_downloader/features/data/tracks/local_tracks/repositories/local_tracks_repository_impl.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/history_tracks_collectons/data_source/tracks_collectons_history_data_source.dart';
@@ -16,6 +20,11 @@ import 'package:spotify_downloader/features/data/tracks/search_videos_by_track/d
 import 'package:spotify_downloader/features/data/tracks/search_videos_by_track/repositories/search_videos_by_track_repository_impl.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/data_source/network_tracks_collections_data_source.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/repositories/tracks_collections_repository_impl.dart';
+import 'package:spotify_downloader/features/domain/auth/local_auth/repository/local_auth_repository.dart';
+import 'package:spotify_downloader/features/domain/auth/local_auth/use_cases/get_local_auth_credentials.dart';
+import 'package:spotify_downloader/features/domain/auth/local_auth/use_cases/save_local_auth_credentials.dart';
+import 'package:spotify_downloader/features/domain/auth/network_auth/repository/network_auth_repository.dart';
+import 'package:spotify_downloader/features/domain/auth/network_auth/use_cases/authorize_user.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositories/local_tracks_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/repository/observe_tracks_loading_repository.dart';
@@ -56,6 +65,7 @@ import 'package:spotify_downloader/features/presentation/download_tracks_collect
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_url_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/bloc/loading_tracks_collections_list_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/widgets/loading_tracks_collection_tile/cubit/loading_tracks_collection_tile_cubit.dart';
+import 'package:spotify_downloader/features/presentation/settings/widgets/settings_auth_tile/bloc/settings_auth_tile_bloc.dart';
 import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notification/bloc/tracks_collections_loading_notifications_bloc.dart';
 
 final injector = GetIt.instance;
@@ -77,16 +87,19 @@ Future<void> _provideDataSources() async {
   injector.registerSingleton<TracksCollectonsHistoryDataSource>(
       TracksCollectonsHistoryDataSource(localDb: injector.get<LocalDb>()));
   injector.registerSingleton<NetworkTracksCollectionsDataSource>(
-      NetworkTracksCollectionsDataSource(clientId: clientId, clientSecret: clientSecret));
+      NetworkTracksCollectionsDataSource(clientId: deffaultClientId, clientSecret: deffaultClientSecret));
   injector.registerSingleton<DownloadAudioFromYoutubeDataSource>(DownloadAudioFromYoutubeDataSource(
       audioMetadataEditor: AudioMetadataEditorImpl(), fileToMp3Converter: FFmpegFileToMp3Converter()));
   await injector.get<DownloadAudioFromYoutubeDataSource>().init();
   injector.registerSingleton<NetworkTracksDataSource>(
-      NetworkTracksDataSource(clientId: clientId, clientSecret: clientSecret));
+      NetworkTracksDataSource(clientId: deffaultClientId, clientSecret: deffaultClientSecret));
   await injector.get<NetworkTracksDataSource>().init();
   injector.registerSingleton<SearchVideoOnYoutubeDataSource>(SearchVideoOnYoutubeDataSource());
   await injector.get<SearchVideoOnYoutubeDataSource>().init();
   injector.registerSingleton<LocalTracksDataSource>(LocalTracksDataSource(localDb: injector.get<LocalDb>()));
+
+  injector.registerSingleton<LocalAuthDataSource>(LocalAuthDataSource());
+  injector.registerSingleton<NetworkAuthDataSource>(NetworkAuthDataSource());
 }
 
 void _provideRepositories() {
@@ -114,6 +127,11 @@ void _provideRepositories() {
       networkTracksRepository: injector.get<NetworkTracksRepository>(),
       downloadTracksRepository: injector.get<DownloadTracksRepository>(),
       localTracksRepository: injector.get<LocalTracksRepository>()));
+
+  injector.registerSingleton<LocalAuthRepository>(
+      LocalAuthRepositoryImpl(dataSource: injector.get<LocalAuthDataSource>()));
+  injector.registerSingleton<NetworkAuthRepository>(
+      NetworkAuthRepositoryImpl(dataSource: injector.get<NetworkAuthDataSource>()));
 }
 
 void _provideUseCases() {
@@ -143,6 +161,13 @@ void _provideUseCases() {
       () => DownloadTracksFromGettingObserver(downloadTracksService: injector.get<DownloadTracksService>()));
   injector.registerFactory<GetLoadingTracksCollectionsObserver>(
       () => GetLoadingTracksCollectionsObserver(repository: injector.get<ObserveTracksLoadingRepository>()));
+
+  injector.registerFactory<GetLocalAuthCredentials>(
+      () => GetLocalAuthCredentials(localAuthRepository: injector.get<LocalAuthRepository>()));
+  injector.registerFactory<SaveLocalAuthCredentials>(
+      () => SaveLocalAuthCredentials(localAuthRepository: injector.get<LocalAuthRepository>()));
+  injector.registerFactory<AuthorizeUser>(
+      () => AuthorizeUser(networkAuthRepository: injector.get<NetworkAuthRepository>()));
 }
 
 void _provideBlocs() {
@@ -185,4 +210,9 @@ void _provideBlocs() {
       getVideoByUrl: injector.get<GetVideoByUrl>()));
   injector.registerFactory<TracksCollectionsLoadingNotificationsBloc>(
       () => TracksCollectionsLoadingNotificationsBloc(injector.get<GetLoadingTracksCollectionsObserver>()));
+
+  injector.registerFactory<SettingsAuthTileBloc>(() => SettingsAuthTileBloc(
+      authorizeUser: injector.get<AuthorizeUser>(),
+      getLocalAuthCredentials: injector.get<GetLocalAuthCredentials>(),
+      saveLocalAuthCredentials: injector.get<SaveLocalAuthCredentials>()));
 }

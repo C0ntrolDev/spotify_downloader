@@ -179,7 +179,7 @@ class NetworkTracksDataSource {
         callbackTracks.addAll(newTracks);
 
         if (callbackTracks.length >= (isFirstCallbackInvoked ? args.callbackLength : args.firstCallbackLength)) {
-          if (isFirstCallbackInvoked == false) {
+          if (!isFirstCallbackInvoked) {
             isFirstCallbackInvoked = true;
           }
 

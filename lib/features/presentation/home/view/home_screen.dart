@@ -47,7 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Text('SpotifyDownloader', style: theme.textTheme.titleLarge),
                       IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            AutoRouter.of(context).push(const SettingsRoute());
+                          },
                           icon: SvgPicture.asset(
                             'resources/images/svg/settings_icon.svg',
                             height: 27,

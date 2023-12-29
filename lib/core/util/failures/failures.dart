@@ -11,3 +11,7 @@ final class NetworkFailure extends Failure {
 final class ConverterFailure extends Failure {
   const ConverterFailure({super.message = 'converter failure'});
 }
+
+final class AuthFailure extends Failure {
+  AuthFailure({super.message = 'auth failure'});
+}
