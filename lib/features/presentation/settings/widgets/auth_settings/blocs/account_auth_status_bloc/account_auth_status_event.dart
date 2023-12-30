@@ -8,10 +8,10 @@ sealed class AccountAuthStatusEvent extends Equatable {
 }
 
 final class AccountAuthStatusChangeCredentials extends AccountAuthStatusEvent {
-  const AccountAuthStatusChangeCredentials({required this.authorizedClientCredentials});
+  const AccountAuthStatusChangeCredentials({required this.clientCredentials});
 
-  final AuthorizedClientCredentials authorizedClientCredentials;
+  final AuthorizedClientCredentials clientCredentials;
 
   @override
-  List<Object?> get props => [authorizedClientCredentials];
+  List<Object?> get props => [clientCredentials];
 }

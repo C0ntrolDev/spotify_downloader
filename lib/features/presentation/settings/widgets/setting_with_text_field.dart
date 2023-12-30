@@ -33,7 +33,7 @@ class _SettingWithTextFieldState extends State<SettingWithTextField> {
     final theme = Theme.of(context);
 
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
             child: Text(

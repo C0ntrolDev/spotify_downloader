@@ -6,6 +6,8 @@ import 'package:spotify_downloader/features/data/auth/local_auth/data_source/loc
 import 'package:spotify_downloader/features/data/auth/local_auth/repository/local_auth_repository_impl.dart';
 import 'package:spotify_downloader/features/data/auth/network_auth/data_source/network_auth_data_source.dart';
 import 'package:spotify_downloader/features/data/auth/network_auth/repository/network_auth_repository_impl.dart';
+import 'package:spotify_downloader/features/data/spotify_profile/data_source/spotify_profile_data_source.dart';
+import 'package:spotify_downloader/features/data/spotify_profile/repository/spotify_profile_repository_impl.dart';
 import 'package:spotify_downloader/features/data/tracks/local_tracks/data_sources/local_tracks_data_source.dart';
 import 'package:spotify_downloader/features/data/tracks/local_tracks/repositories/local_tracks_repository_impl.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/history_tracks_collectons/data_source/tracks_collectons_history_data_source.dart';
@@ -25,6 +27,10 @@ import 'package:spotify_downloader/features/domain/auth/local_auth/use_cases/get
 import 'package:spotify_downloader/features/domain/auth/local_auth/use_cases/save_local_auth_credentials.dart';
 import 'package:spotify_downloader/features/domain/auth/network_auth/repository/network_auth_repository.dart';
 import 'package:spotify_downloader/features/domain/auth/network_auth/use_cases/authorize_user.dart';
+import 'package:spotify_downloader/features/domain/spotify_profile/repository/spotify_profile_repostitory.dart';
+import 'package:spotify_downloader/features/domain/spotify_profile/service/spotify_profile_service.dart';
+import 'package:spotify_downloader/features/domain/spotify_profile/service/spotify_profile_service_impl.dart';
+import 'package:spotify_downloader/features/domain/spotify_profile/use_cases/get_spotify_profile.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositories/local_tracks_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/repository/observe_tracks_loading_repository.dart';
@@ -65,6 +71,7 @@ import 'package:spotify_downloader/features/presentation/download_tracks_collect
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_url_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/bloc/loading_tracks_collections_list_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/widgets/loading_tracks_collection_tile/cubit/loading_tracks_collection_tile_cubit.dart';
+import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/account_auth_status_bloc/account_auth_status_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/auth_settings_bloc/auth_settings_bloc.dart';
 import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notification/bloc/tracks_collections_loading_notifications_bloc.dart';
 
@@ -100,6 +107,7 @@ Future<void> _provideDataSources() async {
 
   injector.registerSingleton<LocalAuthDataSource>(LocalAuthDataSource());
   injector.registerSingleton<NetworkAuthDataSource>(NetworkAuthDataSource());
+  injector.registerSingleton<SpotifyProfileDataSource>(SpotifyProfileDataSource());
 }
 
 void _provideRepositories() {
@@ -116,6 +124,12 @@ void _provideRepositories() {
   injector.registerSingleton<LocalTracksRepository>(
       LocalTracksRepositoryImpl(dataSource: injector.get<LocalTracksDataSource>()));
   injector.registerSingleton<ObserveTracksLoadingRepository>(ObserveTracksLoadingRepositoryImpl());
+  injector.registerSingleton<LocalAuthRepository>(
+      LocalAuthRepositoryImpl(dataSource: injector.get<LocalAuthDataSource>()));
+  injector.registerSingleton<NetworkAuthRepository>(
+      NetworkAuthRepositoryImpl(dataSource: injector.get<NetworkAuthDataSource>()));
+  injector.registerSingleton<SpotifyProfileRepository>(
+      SpotifyProfileRepositoryImpl(dataSource: injector.get<SpotifyProfileDataSource>()));
 
   injector.registerSingleton<DownloadTracksService>(DownloadTracksServiceImpl(
       observeTracksLoadingRepository: injector.get<ObserveTracksLoadingRepository>(),
@@ -128,10 +142,9 @@ void _provideRepositories() {
       downloadTracksRepository: injector.get<DownloadTracksRepository>(),
       localTracksRepository: injector.get<LocalTracksRepository>()));
 
-  injector.registerSingleton<LocalAuthRepository>(
-      LocalAuthRepositoryImpl(dataSource: injector.get<LocalAuthDataSource>()));
-  injector.registerSingleton<NetworkAuthRepository>(
-      NetworkAuthRepositoryImpl(dataSource: injector.get<NetworkAuthDataSource>()));
+  injector.registerSingleton<SpotifyProfileService>(SpotifyProfileServiceImpl(
+      localAuthRepository: injector.get<LocalAuthRepository>(),
+      spotifyProfileRepository: injector.get<SpotifyProfileRepository>()));
 }
 
 void _provideUseCases() {
@@ -168,6 +181,8 @@ void _provideUseCases() {
       () => SaveLocalAuthCredentials(localAuthRepository: injector.get<LocalAuthRepository>()));
   injector.registerFactory<AuthorizeUser>(
       () => AuthorizeUser(networkAuthRepository: injector.get<NetworkAuthRepository>()));
+  injector.registerFactory<GetSpotifyProfile>(
+      () => GetSpotifyProfile(spotifyProfileService: injector.get<SpotifyProfileService>()));
 }
 
 void _provideBlocs() {
@@ -215,4 +230,7 @@ void _provideBlocs() {
       authorizeUser: injector.get<AuthorizeUser>(),
       getLocalAuthCredentials: injector.get<GetLocalAuthCredentials>(),
       saveLocalAuthCredentials: injector.get<SaveLocalAuthCredentials>()));
+
+  injector.registerFactory<AccountAuthStatusBloc>(
+      () => AccountAuthStatusBloc(getSpotifyProfile: injector.get<GetSpotifyProfile>()));
 }
