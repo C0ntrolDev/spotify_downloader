@@ -1,10 +1,8 @@
-import 'dart:io';
-import 'package:http/http.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/isolate_pool/isolate_pool.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/core/util/util_methods.dart';
 import 'package:spotify_downloader/features/data/tracks/network_tracks/models/get_tracks_args.dart';
 import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tracks_dto_getting_ended_status.dart';
 import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tracks_getting_stream.dart';
@@ -28,7 +26,7 @@ class NetworkTracksDataSource {
       final tracksGettingStream = TracksGettingStream();
 
       Future(() async {
-        final tracksPagesResult = await _handleExceptions<Pages<Track>>(() async {
+        final tracksPagesResult = await handleSpotifyClientExceptions<Pages<Track>>(() async {
           final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
           final trackPages = spotify.playlists.getTracksByPlaylistId(args.spotifyId);
           return Result.isSuccessful(trackPages);
@@ -56,7 +54,7 @@ class NetworkTracksDataSource {
       final tracksGettingStream = TracksGettingStream();
 
       Future(() async {
-        final tracksPagesResult = await _handleExceptions<Pages<TrackSimple>>(() async {
+        final tracksPagesResult = await handleSpotifyClientExceptions<Pages<TrackSimple>>(() async {
           final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
           final trackPages = spotify.albums.tracks(args.spotifyId);
           return Result.isSuccessful(trackPages);
@@ -66,7 +64,7 @@ class NetworkTracksDataSource {
           tracksGettingStream.onEnded?.call(Result.notSuccessful(tracksPagesResult.failure));
         }
 
-        final albumResult = await _handleExceptions<Album>(() async {
+        final albumResult = await handleSpotifyClientExceptions<Album>(() async {
           final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
           final album = await spotify.albums.get(args.spotifyId);
           return Result.isSuccessful(album);
@@ -102,7 +100,7 @@ class NetworkTracksDataSource {
     final tracksGettingStream = TracksGettingStream();
 
     Future(() async {
-      final result = await _handleExceptions<Track>(() async {
+      final result = await handleSpotifyClientExceptions<Track>(() async {
         final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
         final track = await spotify.tracks.get(args.spotifyId);
         return Result.isSuccessful(track);
@@ -158,7 +156,7 @@ class NetworkTracksDataSource {
           return;
         }
 
-        final newTracksResult = await _handleExceptions<Iterable<Track>?>(() async {
+        final newTracksResult = await handleSpotifyClientExceptions<Iterable<Track>?>(() async {
           final responseTracks = await getPageTracks.call(50, i * 50 + args.offset);
           return Result.isSuccessful(responseTracks);
         });
@@ -174,7 +172,7 @@ class NetworkTracksDataSource {
           args.responseList.addAll(callbackTracks);
           tracksGettingStream.onPartGot?.call(callbackTracks);
           break;
-        } 
+        }
 
         callbackTracks.addAll(newTracks);
 
@@ -191,23 +189,5 @@ class NetworkTracksDataSource {
 
       tracksGettingStream.onEnded?.call(const Result.isSuccessful(TracksDtoGettingEndedStatus.loaded));
     });
-  }
-
-  Future<Result<Failure, T>> _handleExceptions<T>(Future<Result<Failure, T>> Function() function) async {
-    try {
-      final result = await function.call();
-      return result;
-    } on SpotifyException catch (e) {
-      if (e.status == 404) {
-        return Result.notSuccessful(NotFoundFailure(message: e));
-      }
-      return Result.notSuccessful(Failure(message: e));
-    } on ClientException catch (e) {
-      return Result.notSuccessful(NetworkFailure(message: e));
-    } on SocketException catch (e) {
-      return Result.notSuccessful(NetworkFailure(message: e));
-    } catch (e) {
-      return Result.notSuccessful(Failure(message: e));
-    }
   }
 }

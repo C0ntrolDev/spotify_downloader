@@ -65,7 +65,7 @@ import 'package:spotify_downloader/features/presentation/download_tracks_collect
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_url_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/bloc/loading_tracks_collections_list_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/widgets/loading_tracks_collection_tile/cubit/loading_tracks_collection_tile_cubit.dart';
-import 'package:spotify_downloader/features/presentation/settings/widgets/settings_auth_tile/bloc/settings_auth_tile_bloc.dart';
+import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/auth_settings_bloc/auth_settings_bloc.dart';
 import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notification/bloc/tracks_collections_loading_notifications_bloc.dart';
 
 final injector = GetIt.instance;
@@ -211,7 +211,7 @@ void _provideBlocs() {
   injector.registerFactory<TracksCollectionsLoadingNotificationsBloc>(
       () => TracksCollectionsLoadingNotificationsBloc(injector.get<GetLoadingTracksCollectionsObserver>()));
 
-  injector.registerFactory<SettingsAuthTileBloc>(() => SettingsAuthTileBloc(
+  injector.registerFactory<AuthSettingsBloc>(() => AuthSettingsBloc(
       authorizeUser: injector.get<AuthorizeUser>(),
       getLocalAuthCredentials: injector.get<GetLocalAuthCredentials>(),
       saveLocalAuthCredentials: injector.get<SaveLocalAuthCredentials>()));

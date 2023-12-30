@@ -42,6 +42,7 @@ final mainTheme = ThemeData(
       titleLarge: _titleLarge,
       titleMedium: _titleMedium,
       titleSmall: _titleSmall,
+      bodyLarge: _bodyLarge,
       bodyMedium: _bodyMedium,
       bodySmall: _bodySmall,
       labelLarge: _labelLarge,

@@ -1,4 +1,6 @@
-import 'package:spotify_downloader/features/domain/auth/shared/client_credentials.dart';
+
+
+import 'package:spotify_downloader/features/domain/shared/client_credentials.dart';
 
 class AuthorizedClientCredentials extends ClientCredentials {
   final String? refreshToken;

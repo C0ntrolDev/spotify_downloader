@@ -21,6 +21,13 @@ const _titleSmall = TextStyle(
     fontSize: 16,
     overflow: TextOverflow.ellipsis);
 
+const _bodyLarge = TextStyle(
+    fontFamily: 'OpenSans',
+    fontWeight: FontWeight.w700,
+    color: onBackgroundPrimaryColor,
+    fontSize: 15,
+    overflow: TextOverflow.ellipsis);
+
 const _bodyMedium = TextStyle(
     fontFamily: 'OpenSans',
     fontWeight: FontWeight.w600,

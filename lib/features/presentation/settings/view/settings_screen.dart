@@ -1,7 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:spotify_downloader/features/presentation/settings/widgets/settings_auth_tile/view/settings_auth_tile.dart';
+import 'package:spotify_downloader/features/presentation/home/view/home_screen.dart';
+import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/view/auth_settings.dart';
 
 @RoutePage()
 class SettingsScreen extends StatefulWidget {
@@ -47,7 +48,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
         ),
-        const SettingsAuthTile()
+        Expanded(
+            child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(left: homePageHorizontalPadding, right: homePageHorizontalPadding, top: 10),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              const AuthSettings(),
+              Container(
+                height: 10000,
+              )
+            ]),
+          ),
+        ))
       ]),
     );
   }
