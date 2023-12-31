@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/features/domain/auth/local_auth/use_cases/get_client_credentials.dart';
 import 'package:spotify_downloader/features/domain/auth/local_auth/use_cases/save_client_credentials.dart';
-import 'package:spotify_downloader/features/domain/shared/client_credentials.dart';
+import 'package:spotify_downloader/features/domain/auth/shared/client_credentials.dart';
 
 part 'client_auth_event.dart';
 part 'client_auth_state.dart';

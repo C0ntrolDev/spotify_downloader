@@ -9,7 +9,7 @@ class SpotifyRequestsConverter implements ValueConverter<SpotifyApiRequest, Spot
   @override
   SpotifyApiRequest convert(SpotifyRepositoryRequest repositoryRequest) {
     return SpotifyApiRequest(
-        spotifyApiCredentials: _credentialsConverter.convert(repositoryRequest.clientCredentials),
+        spotifyApiCredentials: _credentialsConverter.convert(repositoryRequest.credentials),
         onCredentialsRefreshed: (newSpotifyApiCredentials) => repositoryRequest.onCredentialsRefreshed
             ?.call(_credentialsConverter.convertBack(newSpotifyApiCredentials)));
   }

@@ -1,11 +1,11 @@
-import 'package:spotify_downloader/features/domain/shared/authorized_client_credentials.dart';
+import 'package:spotify_downloader/features/domain/auth/shared/full_credentials.dart';
 
 class SpotifyRepositoryRequest {
   SpotifyRepositoryRequest({
-    required this.clientCredentials,
+    required this.credentials,
     this.onCredentialsRefreshed
   });
 
-  final AuthorizedClientCredentials clientCredentials;
-  final Function(AuthorizedClientCredentials)? onCredentialsRefreshed;
+  final FullCredentials credentials;
+  final Function(FullCredentials)? onCredentialsRefreshed;
 }

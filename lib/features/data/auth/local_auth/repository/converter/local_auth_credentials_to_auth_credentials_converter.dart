@@ -1,14 +1,14 @@
 import 'package:spotify_downloader/core/util/converters/simple_converters/value_converter.dart';
 import 'package:spotify_downloader/features/data/auth/local_auth/models/local_auth_credentials.dart';
-import 'package:spotify_downloader/features/domain/shared/authorized_client_credentials.dart';
+import 'package:spotify_downloader/features/domain/auth/shared/full_credentials.dart';
 
 class LocalAuthCredentialsToAuthCredentialsConverter
-    implements ValueConverter<AuthorizedClientCredentials, LocalAuthCredentials> {
+    implements ValueConverter<FullCredentials, LocalAuthCredentials> {
   static const String _notSpecified = 'not specified';
 
   @override
-  AuthorizedClientCredentials convert(LocalAuthCredentials localAuthCredentials) {
-    return AuthorizedClientCredentials(
+  FullCredentials convert(LocalAuthCredentials localAuthCredentials) {
+    return FullCredentials(
         clientId: localAuthCredentials.clientId,
         clientSecret: localAuthCredentials.clientSecret,
         refreshToken: localAuthCredentials.refreshToken == _notSpecified ? null : localAuthCredentials.refreshToken,
@@ -19,13 +19,13 @@ class LocalAuthCredentialsToAuthCredentialsConverter
   }
 
   @override
-  LocalAuthCredentials convertBack(AuthorizedClientCredentials authCredentials) {
+  LocalAuthCredentials convertBack(FullCredentials fullCredentials) {
     return LocalAuthCredentials(
-        clientId: authCredentials.clientId,
-        clientSecret: authCredentials.clientSecret,
-        refreshToken: authCredentials.refreshToken ?? _notSpecified,
-        accessToken: authCredentials.accessToken ?? _notSpecified,
+        clientId: fullCredentials.clientId,
+        clientSecret: fullCredentials.clientSecret,
+        refreshToken: fullCredentials.refreshToken ?? _notSpecified,
+        accessToken: fullCredentials.accessToken ?? _notSpecified,
         expirationInMillisecondsSinceEpoch:
-            authCredentials.expiration?.millisecondsSinceEpoch.toString() ?? _notSpecified);
+            fullCredentials.expiration?.millisecondsSinceEpoch.toString() ?? _notSpecified);
   }
 }
