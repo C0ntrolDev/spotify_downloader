@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
-import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/account_auth_status_bloc/account_auth_status_bloc.dart';
-import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/auth_settings_bloc/auth_settings_bloc.dart';
+import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/account_auth/account_auth_bloc.dart';
+import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/client_auth/client_auth_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/setting_with_text_field.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/settings_group.dart';
 
@@ -16,12 +16,12 @@ class AuthSettings extends StatefulWidget {
 }
 
 class _AuthSettingsState extends State<AuthSettings> {
-  final AuthSettingsBloc _mainAuthBloc = injector.get<AuthSettingsBloc>();
-  final AccountAuthStatusBloc _accountAuthStatusBloc = injector.get<AccountAuthStatusBloc>();
+  final ClientAuthBloc _clientAuthBloc = injector.get<ClientAuthBloc>();
+  final AccountAuthBloc _accountAuthBloc = injector.get<AccountAuthBloc>();
 
   @override
   void initState() {
-    _mainAuthBloc.add(AuthSettingsLoad());
+    _clientAuthBloc.add((ClientAuthLoad()));
     super.initState();
   }
 
@@ -30,83 +30,135 @@ class _AuthSettingsState extends State<AuthSettings> {
     final theme = Theme.of(context);
 
     return SizedBox(
-      child: BlocListener<AuthSettingsBloc, AuthSettingsState>(
+      child: BlocListener<ClientAuthBloc, ClientAuthState>(
           listener: (context, state) {
-            if (state is AuthSettingsFailure) {
+            if (state is ClientAuthFailure) {
               showSmallTextSnackBar(state.failure.toString(), context);
             }
 
-            if (state is AuthSettingsLoaded) {
-              print(state.clientCredentials.refreshToken);
-              _accountAuthStatusBloc
-                  .add(AccountAuthStatusChangeCredentials(clientCredentials: state.clientCredentials));
+            if (state is ClientAuthChanged) {
+              _accountAuthBloc.add(AccountAuthUpdate());
             }
           },
-          bloc: _mainAuthBloc,
+          bloc: _clientAuthBloc,
           child: SettingsGroup(header: 'SpotifySDK и Аккаунт', settings: [
-            BlocBuilder<AuthSettingsBloc, AuthSettingsState>(
-              bloc: _mainAuthBloc,
-              buildWhen: (previous, current) => current is! AuthSettingsFailure,
+            BlocBuilder<ClientAuthBloc, ClientAuthState>(
+              bloc: _clientAuthBloc,
+              buildWhen: (previous, current) => current is! ClientAuthFailure,
               builder: (context, state) {
-                if (state is! AuthSettingsLoaded) return Container();
+                if (state is! ClientAuthChanged) return Container();
 
                 return SettingWithTextField(
                   title: 'Client Id',
                   value: state.clientCredentials.clientId,
                   onValueSubmitted: (newClientId) {
-                    _mainAuthBloc.add(AuthSettingsChangeClientId(newClientId: newClientId));
+                    _clientAuthBloc.add(ClientAuthChangeClientId(clientId: newClientId));
                   },
                 );
               },
             ),
-            BlocBuilder<AuthSettingsBloc, AuthSettingsState>(
-              bloc: _mainAuthBloc,
-              buildWhen: (previous, current) => current is! AuthSettingsFailure,
+            BlocBuilder<ClientAuthBloc, ClientAuthState>(
+              bloc: _clientAuthBloc,
+              buildWhen: (previous, current) => current is! ClientAuthFailure,
               builder: (context, state) {
-                if (state is! AuthSettingsLoaded) return Container();
+                if (state is! ClientAuthChanged) return Container();
 
                 return SettingWithTextField(
                   title: 'Client Secret',
                   value: state.clientCredentials.clientSecret,
                   onValueSubmitted: (newClientSecret) {
-                    _mainAuthBloc.add(AuthSettingsChangeClientSecret(newClientSecret: newClientSecret));
+                    _clientAuthBloc.add(ClientAuthChangeClientSecret(clientSecret: newClientSecret));
                   },
                 );
               },
             ),
-            BlocConsumer<AccountAuthStatusBloc, AccountAuthStatusState>(
+            BlocConsumer<AccountAuthBloc, AccountAuthState>(
               listener: (context, state) {
-                if (state is AccountAuthStatusFailure) {
+                if (state is AccountAuthFailure) {
+                  showSmallTextSnackBar(state.failure.toString(), context);
+                }
+
+                if (state is AccountAuthInvalidCredentialsFailure) {
                   showSmallTextSnackBar(state.failure.toString(), context);
                 }
               },
-              bloc: _accountAuthStatusBloc,
+              bloc: _accountAuthBloc,
+              buildWhen: (previous, current) => current is! AccountAuthFailure,
               builder: (context, state) {
-                if (state is AccountAuthStatusLoading) {
-                  return const Text('Информация об аккаунте загружается');
-                }
+                if (state is AccountAuthFailure) return Container();
 
-                if (state is AccountAuthStatusNotAuthorized) {
-                  return Row(
+                return SizedBox(
+                  height: 30,
+                  child: Row(
                     children: [
-                      const Expanded(child: Text('Вы не вошли в аккаунт')),
-                      OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: primaryColor,
-                            side: const BorderSide(width: 1, color: primaryColor),
-                          ),
-                          onPressed: () {
-                            _mainAuthBloc.add(AuthSettingsAuthorize());
-                          },
-                          child: Text(
-                            'Войти в аккаунт',
-                            style: theme.textTheme.bodySmall?.copyWith(color: primaryColor),
-                          ))
-                    ],
-                  );
-                }
+                      Expanded(
+                        child: Builder(builder: (context) {
+                          switch (state) {
+                            case AccountAuthLoading():
+                              return const Text('Информация об аккаунте загружается', maxLines: 2);
+                            case AccountAuthAuthorized():
+                              return Row(
+                                children: [
+                                  ClipOval(
+                                      child: SizedBox.fromSize(
+                                          size: const Size.fromRadius(13),
+                                          child: Image.network(state.profile.pictureUrl, fit: BoxFit.cover))),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Text(state.profile.name, maxLines: 2),
+                                    ),
+                                  )
+                                ],
+                              );
+                            case AccountAuthNotAuthorized():
+                              return const Text('Вы не вошли в аккаунт', maxLines: 2);
+                            case AccountAuthFailure():
+                              return const Text('Неизвестная ошибка', maxLines: 2);
+                            case AccountAuthNetworkFailure():
+                              return const Text('Ошибка соединения', maxLines: 2);
+                            case AccountAuthInvalidCredentialsFailure():
+                              return const Text('Не удалось войти в аккаунт', maxLines: 2);
+                          }
+                        }),
+                      ),
+                      Builder(builder: (context) {
+                        if (state is AccountAuthLoading) {
+                          return const Center(
+                              child: SizedBox(
+                                  width: 23,
+                                  height: 23,
+                                  child: CircularProgressIndicator(
+                                    color: primaryColor,
+                                    strokeWidth: 3,
+                                  )));
+                        }
 
-                return Container();
+                        late final String buttonText;
+                        late final void Function() onButtonClicked;
+
+                        if (state is AccountAuthAuthorized || state is AccountAuthNetworkFailure) {
+                          buttonText = 'Выйти';
+                          onButtonClicked = () => _accountAuthBloc.add(AccountAuthLogOut());
+                        } else {
+                          buttonText = 'Войти';
+                          onButtonClicked = () => _accountAuthBloc.add(AccountAuthAuthorize());
+                        }
+
+                        return OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: primaryColor,
+                              side: const BorderSide(width: 1, color: primaryColor),
+                            ),
+                            onPressed: onButtonClicked,
+                            child: Text(
+                              buttonText,
+                              style: theme.textTheme.bodySmall?.copyWith(color: primaryColor),
+                            ));
+                      }),
+                    ],
+                  ),
+                );
               },
             )
           ])),

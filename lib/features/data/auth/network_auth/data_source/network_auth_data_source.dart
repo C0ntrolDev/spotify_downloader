@@ -11,8 +11,9 @@ class NetworkAuthDataSource {
     try {
       final client = SpotifyOAuth2Client(
           redirectUri: 'com.cdev.spotifydownloader://callback', customUriScheme: 'com.cdev.spotifydownloader');
-      final accessTokenResponse = await client
-          .getTokenWithAuthCodeFlow(clientId: clientId, scopes: ['playlist-read-private', 'user-library-read']);
+      final accessTokenResponse = await client.getTokenWithAuthCodeFlow(
+          clientId: clientId,
+          scopes: ['playlist-read-private', 'user-library-read', 'user-read-email', 'user-read-private']);
 
       if (accessTokenResponse.error != null) {
         return Result.notSuccessful(

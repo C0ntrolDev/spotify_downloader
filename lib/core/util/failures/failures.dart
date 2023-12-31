@@ -16,10 +16,14 @@ final class AuthFailure extends Failure {
   AuthFailure({super.message = 'auth failure'});
 }
 
-final class InvalidAuthCredentialsFailure extends Failure {
-  InvalidAuthCredentialsFailure({super.message = 'invalid auth credentials failure'});
+final class InvalidClientCredentialsFailure extends Failure {
+  InvalidClientCredentialsFailure({super.message = 'invalid auth credentials failure'});
 }
 
-final class InvalidRefreshTokenFailure extends Failure {
-  InvalidRefreshTokenFailure({super.message = 'invalid refresh token failure'});
+final class InvalidAccountCredentialsFailure extends Failure {
+  InvalidAccountCredentialsFailure({super.message = 'invalid refresh token failure'});
+}
+
+final class NotAuthorizedFailure extends Failure {
+  NotAuthorizedFailure({super.message = 'User not authorized'});
 }

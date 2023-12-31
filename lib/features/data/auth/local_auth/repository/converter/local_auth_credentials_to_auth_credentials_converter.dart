@@ -10,7 +10,8 @@ class LocalAuthCredentialsToAuthCredentialsConverter implements ValueConverter<A
     return AuthorizedClientCredentials(
         clientId: localAuthCredentials.clientId,
         clientSecret: localAuthCredentials.clientSecret,
-        refreshToken: localAuthCredentials.refreshToken == _notSpecified ? null : localAuthCredentials.refreshToken);
+        refreshToken: localAuthCredentials.refreshToken == _notSpecified ? null : localAuthCredentials.refreshToken,
+        accessToken: localAuthCredentials.accessToken == _notSpecified ? null : localAuthCredentials.accessToken);
   }
 
   @override
@@ -18,6 +19,7 @@ class LocalAuthCredentialsToAuthCredentialsConverter implements ValueConverter<A
     return LocalAuthCredentials(
       clientId: authCredentials.clientId, 
       clientSecret: authCredentials.clientSecret ,
-      refreshToken: authCredentials.refreshToken ?? _notSpecified);
+      refreshToken: authCredentials.refreshToken ?? _notSpecified,
+      accessToken: authCredentials.accessToken ?? _notSpecified);
   }
 }

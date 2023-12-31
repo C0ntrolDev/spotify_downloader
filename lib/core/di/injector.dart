@@ -23,8 +23,10 @@ import 'package:spotify_downloader/features/data/tracks/search_videos_by_track/r
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/data_source/network_tracks_collections_data_source.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/repositories/tracks_collections_repository_impl.dart';
 import 'package:spotify_downloader/features/domain/auth/local_auth/repository/local_auth_repository.dart';
-import 'package:spotify_downloader/features/domain/auth/local_auth/use_cases/get_local_auth_credentials.dart';
-import 'package:spotify_downloader/features/domain/auth/local_auth/use_cases/save_local_auth_credentials.dart';
+import 'package:spotify_downloader/features/domain/auth/local_auth/use_cases/delete_user_credentials.dart';
+import 'package:spotify_downloader/features/domain/auth/local_auth/use_cases/get_client_credentials.dart';
+import 'package:spotify_downloader/features/domain/auth/local_auth/use_cases/save_client_credentials.dart';
+import 'package:spotify_downloader/features/domain/auth/local_auth/use_cases/save_user_credentials.dart';
 import 'package:spotify_downloader/features/domain/auth/network_auth/repository/network_auth_repository.dart';
 import 'package:spotify_downloader/features/domain/auth/network_auth/use_cases/authorize_user.dart';
 import 'package:spotify_downloader/features/domain/spotify_profile/repository/spotify_profile_repostitory.dart';
@@ -71,8 +73,8 @@ import 'package:spotify_downloader/features/presentation/download_tracks_collect
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_url_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/bloc/loading_tracks_collections_list_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/widgets/loading_tracks_collection_tile/cubit/loading_tracks_collection_tile_cubit.dart';
-import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/account_auth_status_bloc/account_auth_status_bloc.dart';
-import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/auth_settings_bloc/auth_settings_bloc.dart';
+import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/account_auth/account_auth_bloc.dart';
+import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/client_auth/client_auth_bloc.dart';
 import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notification/bloc/tracks_collections_loading_notifications_bloc.dart';
 
 final injector = GetIt.instance;
@@ -175,14 +177,18 @@ void _provideUseCases() {
   injector.registerFactory<GetLoadingTracksCollectionsObserver>(
       () => GetLoadingTracksCollectionsObserver(repository: injector.get<ObserveTracksLoadingRepository>()));
 
-  injector.registerFactory<GetLocalAuthCredentials>(
-      () => GetLocalAuthCredentials(localAuthRepository: injector.get<LocalAuthRepository>()));
-  injector.registerFactory<SaveLocalAuthCredentials>(
-      () => SaveLocalAuthCredentials(localAuthRepository: injector.get<LocalAuthRepository>()));
+  injector.registerFactory<GetClientCredentials>(
+      () => GetClientCredentials(localAuthRepository: injector.get<LocalAuthRepository>()));
+  injector.registerFactory<SaveClientCredentials>(
+      () => SaveClientCredentials(localAuthRepository: injector.get<LocalAuthRepository>()));
   injector.registerFactory<AuthorizeUser>(
       () => AuthorizeUser(networkAuthRepository: injector.get<NetworkAuthRepository>()));
   injector.registerFactory<GetSpotifyProfile>(
       () => GetSpotifyProfile(spotifyProfileService: injector.get<SpotifyProfileService>()));
+  injector.registerFactory<DeleteUserCredentials>(
+      () => DeleteUserCredentials(localAuthRepository: injector.get<LocalAuthRepository>()));
+  injector.registerFactory<SaveUserCredentials>(
+      () => SaveUserCredentials(localAuthRepository: injector.get<LocalAuthRepository>()));
 }
 
 void _provideBlocs() {
@@ -226,11 +232,14 @@ void _provideBlocs() {
   injector.registerFactory<TracksCollectionsLoadingNotificationsBloc>(
       () => TracksCollectionsLoadingNotificationsBloc(injector.get<GetLoadingTracksCollectionsObserver>()));
 
-  injector.registerFactory<AuthSettingsBloc>(() => AuthSettingsBloc(
-      authorizeUser: injector.get<AuthorizeUser>(),
-      getLocalAuthCredentials: injector.get<GetLocalAuthCredentials>(),
-      saveLocalAuthCredentials: injector.get<SaveLocalAuthCredentials>()));
+  injector.registerFactory<ClientAuthBloc>(() => ClientAuthBloc(
+      getClientCredentials: injector.get<GetClientCredentials>(),
+      saveClientCredentials: injector.get<SaveClientCredentials>()));
 
-  injector.registerFactory<AccountAuthStatusBloc>(
-      () => AccountAuthStatusBloc(getSpotifyProfile: injector.get<GetSpotifyProfile>()));
+  injector.registerFactory<AccountAuthBloc>(() => AccountAuthBloc(
+      getClientCredentials: injector.get<GetClientCredentials>(),
+      authorizeUser: injector.get<AuthorizeUser>(),
+      deleteUserCredentials: injector.get<DeleteUserCredentials>(),
+      saveUserCredentials: injector.get<SaveUserCredentials>(),
+      getSpotifyProfile: injector.get<GetSpotifyProfile>()));
 }

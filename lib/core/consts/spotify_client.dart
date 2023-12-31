@@ -1,2 +1,2 @@
-const deffaultClientId = '65f68eda368843db80010af77bdfbf29';
-const deffaultClientSecret = 'befaa3da27a24255a7aad93460476e75';
+const deffaultClientId = 'e6187f63ef044f3cb72b5cb6707b66a9';
+const deffaultClientSecret = '2dd4ff57587e4029938bcef3ec258b34';

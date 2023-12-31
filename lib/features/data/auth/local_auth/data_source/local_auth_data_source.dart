@@ -31,7 +31,8 @@ class LocalAuthDataSource {
     return jsonEncode({
       'clientId': localAuthCredentials.clientId,
       'clientSecret': localAuthCredentials.clientSecret,
-      'refreshToken': localAuthCredentials.refreshToken
+      'refreshToken': localAuthCredentials.refreshToken,
+      'accessToken': localAuthCredentials.accessToken
     });
   }
 
@@ -40,6 +41,7 @@ class LocalAuthDataSource {
     return LocalAuthCredentials(
         clientId: decodedData['clientId'],
         clientSecret: decodedData['clientSecret'],
-        refreshToken: decodedData['refreshToken']);
+        refreshToken: decodedData['refreshToken'],
+        accessToken: decodedData['accessToken']);
   }
 }

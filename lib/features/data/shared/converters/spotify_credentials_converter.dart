@@ -9,7 +9,8 @@ class SpotifyCredentialsConverter
     return SpotifyApiCredentials(
       clientCredentials.clientId, 
       clientCredentials.clientSecret,
-      refreshToken: clientCredentials.refreshToken);
+      refreshToken: clientCredentials.refreshToken,
+      accessToken: clientCredentials.accessToken);
   }
 
   @override
@@ -17,6 +18,7 @@ class SpotifyCredentialsConverter
     return AuthorizedClientCredentials(
       clientId: spotifyApiCredentials.clientId ?? '', 
       clientSecret: spotifyApiCredentials.clientSecret ?? '', 
-      refreshToken: spotifyApiCredentials.refreshToken);
+      refreshToken: spotifyApiCredentials.refreshToken,
+      accessToken: spotifyApiCredentials.accessToken);
   }
 }
