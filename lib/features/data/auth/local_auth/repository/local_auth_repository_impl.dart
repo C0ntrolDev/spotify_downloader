@@ -29,7 +29,11 @@ class LocalAuthRepositoryImpl implements LocalAuthRepository {
       return Result.isSuccessful(authCredentials);
     } else {
       return Result.isSuccessful(AuthorizedClientCredentials(
-          clientId: deffaultClientId, clientSecret: deffaultClientSecret, refreshToken: null, accessToken: null));
+          clientId: deffaultClientId,
+          clientSecret: deffaultClientSecret,
+          refreshToken: null,
+          accessToken: null,
+          expiration: null));
     }
   }
 
@@ -53,7 +57,8 @@ class LocalAuthRepositoryImpl implements LocalAuthRepository {
         clientId: clientCredentials.clientId,
         clientSecret: clientCredentials.clientSecret,
         refreshToken: currentCredentials.refreshToken,
-        accessToken: currentCredentials.accessToken));
+        accessToken: currentCredentials.accessToken,
+        expiration: currentCredentials.expiration));
   }
 
   @override
@@ -69,7 +74,8 @@ class LocalAuthRepositoryImpl implements LocalAuthRepository {
         clientId: currentCredentials.clientId,
         clientSecret: currentCredentials.clientSecret,
         refreshToken: null,
-        accessToken: null));
+        accessToken: null,
+        expiration: null));
   }
 
   @override
@@ -85,6 +91,7 @@ class LocalAuthRepositoryImpl implements LocalAuthRepository {
         clientId: currentCredentials.clientId,
         clientSecret: currentCredentials.clientSecret,
         refreshToken: authCredentials.refreshToken,
-        accessToken: authCredentials.accessToken));
+        accessToken: authCredentials.accessToken,
+        expiration: authCredentials.expiration));
   }
 }

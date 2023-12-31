@@ -32,7 +32,8 @@ class LocalAuthDataSource {
       'clientId': localAuthCredentials.clientId,
       'clientSecret': localAuthCredentials.clientSecret,
       'refreshToken': localAuthCredentials.refreshToken,
-      'accessToken': localAuthCredentials.accessToken
+      'accessToken': localAuthCredentials.accessToken,
+      'expiration': localAuthCredentials.expirationInMillisecondsSinceEpoch
     });
   }
 
@@ -42,6 +43,7 @@ class LocalAuthDataSource {
         clientId: decodedData['clientId'],
         clientSecret: decodedData['clientSecret'],
         refreshToken: decodedData['refreshToken'],
-        accessToken: decodedData['accessToken']);
+        accessToken: decodedData['accessToken'],
+        expirationInMillisecondsSinceEpoch: decodedData['expiration']);
   }
 }

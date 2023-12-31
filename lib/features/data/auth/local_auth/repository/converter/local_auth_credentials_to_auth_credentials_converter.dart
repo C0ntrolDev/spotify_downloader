@@ -2,7 +2,8 @@ import 'package:spotify_downloader/core/util/converters/simple_converters/value_
 import 'package:spotify_downloader/features/data/auth/local_auth/models/local_auth_credentials.dart';
 import 'package:spotify_downloader/features/domain/shared/authorized_client_credentials.dart';
 
-class LocalAuthCredentialsToAuthCredentialsConverter implements ValueConverter<AuthorizedClientCredentials, LocalAuthCredentials> {
+class LocalAuthCredentialsToAuthCredentialsConverter
+    implements ValueConverter<AuthorizedClientCredentials, LocalAuthCredentials> {
   static const String _notSpecified = 'not specified';
 
   @override
@@ -11,15 +12,20 @@ class LocalAuthCredentialsToAuthCredentialsConverter implements ValueConverter<A
         clientId: localAuthCredentials.clientId,
         clientSecret: localAuthCredentials.clientSecret,
         refreshToken: localAuthCredentials.refreshToken == _notSpecified ? null : localAuthCredentials.refreshToken,
-        accessToken: localAuthCredentials.accessToken == _notSpecified ? null : localAuthCredentials.accessToken);
+        accessToken: localAuthCredentials.accessToken == _notSpecified ? null : localAuthCredentials.accessToken,
+        expiration: localAuthCredentials.expirationInMillisecondsSinceEpoch == _notSpecified
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(int.parse(localAuthCredentials.expirationInMillisecondsSinceEpoch)));
   }
 
   @override
   LocalAuthCredentials convertBack(AuthorizedClientCredentials authCredentials) {
     return LocalAuthCredentials(
-      clientId: authCredentials.clientId, 
-      clientSecret: authCredentials.clientSecret ,
-      refreshToken: authCredentials.refreshToken ?? _notSpecified,
-      accessToken: authCredentials.accessToken ?? _notSpecified);
+        clientId: authCredentials.clientId,
+        clientSecret: authCredentials.clientSecret,
+        refreshToken: authCredentials.refreshToken ?? _notSpecified,
+        accessToken: authCredentials.accessToken ?? _notSpecified,
+        expirationInMillisecondsSinceEpoch:
+            authCredentials.expiration?.millisecondsSinceEpoch.toString() ?? _notSpecified);
   }
 }

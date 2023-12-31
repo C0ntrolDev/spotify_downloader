@@ -19,7 +19,8 @@ class NetworkAuthRepositoryImpl implements NetworkAuthRepository {
           clientId: clientCredentials.clientId,
           clientSecret: clientCredentials.clientSecret,
           refreshToken: response.result!.refreshToken,
-          accessToken: response.result!.accessToken));
+          accessToken: response.result!.accessToken,
+          expiration: response.result!.expiration));
     }
     
     return Result.notSuccessful(response.failure);
