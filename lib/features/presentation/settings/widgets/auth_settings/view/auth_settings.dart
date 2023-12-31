@@ -51,7 +51,7 @@ class _AuthSettingsState extends State<AuthSettings> {
                 return SettingWithTextField(
                   title: 'Client Id',
                   value: state.clientCredentials.clientId,
-                  onValueSubmitted: (newClientId) {
+                  onChangedValueSubmitted: (newClientId) {
                     _clientAuthBloc.add(ClientAuthChangeClientId(clientId: newClientId));
                   },
                 );
@@ -66,7 +66,7 @@ class _AuthSettingsState extends State<AuthSettings> {
                 return SettingWithTextField(
                   title: 'Client Secret',
                   value: state.clientCredentials.clientSecret,
-                  onValueSubmitted: (newClientSecret) {
+                  onChangedValueSubmitted: (newClientSecret) {
                     _clientAuthBloc.add(ClientAuthChangeClientSecret(clientSecret: newClientSecret));
                   },
                 );
