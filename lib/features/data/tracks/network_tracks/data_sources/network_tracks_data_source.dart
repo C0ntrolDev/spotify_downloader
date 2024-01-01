@@ -15,13 +15,13 @@ class NetworkTracksDataSource {
   late final IsolatePool _isolatePool;
 
   Future<TracksGettingStream> getTracksFromPlaylist(GetTracksArgs args) {
-    return _runTracksGettingFunctionInIsolate(() {
+    return _runTracksGettingFunctionInIsolate((isolateOnCredentialsRefreshed) {
       final tracksGettingStream = TracksGettingStream();
 
       Future(() async {
         final tracksPagesResult = await handleSpotifyClientExceptions<Pages<Track>>(() async {
           final spotify = await SpotifyApi.asyncFromCredentials(args.spotifyApiRequest.spotifyApiCredentials,
-              onCredentialsRefreshed: args.spotifyApiRequest.onCredentialsRefreshed);
+              onCredentialsRefreshed: isolateOnCredentialsRefreshed);
           final trackPages = spotify.playlists.getTracksByPlaylistId(args.spotifyId);
           return Result.isSuccessful(trackPages);
         });
@@ -40,17 +40,17 @@ class NetworkTracksDataSource {
       });
 
       return tracksGettingStream;
-    });
+    }, args.spotifyApiRequest.onCredentialsRefreshed);
   }
 
   Future<TracksGettingStream> getTracksFromAlbum(GetTracksArgs args) {
-    return _runTracksGettingFunctionInIsolate(() {
+    return _runTracksGettingFunctionInIsolate((isolateOnCredentialsRefreshed) {
       final tracksGettingStream = TracksGettingStream();
 
       Future(() async {
         final tracksPagesResult = await handleSpotifyClientExceptions<Pages<TrackSimple>>(() async {
           final spotify = await SpotifyApi.asyncFromCredentials(args.spotifyApiRequest.spotifyApiCredentials,
-              onCredentialsRefreshed: args.spotifyApiRequest.onCredentialsRefreshed);
+              onCredentialsRefreshed: isolateOnCredentialsRefreshed);
           final trackPages = spotify.albums.tracks(args.spotifyId);
           return Result.isSuccessful(trackPages);
         });
@@ -61,7 +61,7 @@ class NetworkTracksDataSource {
 
         final albumResult = await handleSpotifyClientExceptions<Album>(() async {
           final spotify = await SpotifyApi.asyncFromCredentials(args.spotifyApiRequest.spotifyApiCredentials,
-              onCredentialsRefreshed: args.spotifyApiRequest.onCredentialsRefreshed);
+              onCredentialsRefreshed: isolateOnCredentialsRefreshed);
           final album = await spotify.albums.get(args.spotifyId);
           return Result.isSuccessful(album);
         });
@@ -80,17 +80,26 @@ class NetworkTracksDataSource {
       });
 
       return tracksGettingStream;
-    });
+    }, args.spotifyApiRequest.onCredentialsRefreshed);
+  }
+
+  Track _trackSimpleToTrack(TrackSimple trackSimple, Album album) {
+    final track = Track();
+    track.name = trackSimple.name;
+    track.album = album;
+    track.artists = trackSimple.artists;
+    track.id = trackSimple.id;
+    return track;
   }
 
   Future<TracksGettingStream> getLikedTracks(GetTracksArgs args) {
-    return _runTracksGettingFunctionInIsolate(() {
+    return _runTracksGettingFunctionInIsolate((isolateOnCredentialsRefreshed) {
       final tracksGettingStream = TracksGettingStream();
 
       Future(() async {
         final tracksPagesResult = await handleSpotifyClientExceptions<Pages<TrackSaved>>(() async {
           final spotify = await SpotifyApi.asyncFromCredentials(args.spotifyApiRequest.spotifyApiCredentials,
-              onCredentialsRefreshed: args.spotifyApiRequest.onCredentialsRefreshed);
+              onCredentialsRefreshed: isolateOnCredentialsRefreshed);
           final trackPages = spotify.tracks.me.saved;
           return Result.isSuccessful(trackPages);
         });
@@ -111,16 +120,7 @@ class NetworkTracksDataSource {
       });
 
       return tracksGettingStream;
-    });
-  }
-
-  Track _trackSimpleToTrack(TrackSimple trackSimple, Album album) {
-    final track = Track();
-    track.name = trackSimple.name;
-    track.album = album;
-    track.artists = trackSimple.artists;
-    track.id = trackSimple.id;
-    return track;
+    }, args.spotifyApiRequest.onCredentialsRefreshed);
   }
 
   TracksGettingStream getTrackBySpotifyId(GetTracksArgs args) {
@@ -146,11 +146,13 @@ class NetworkTracksDataSource {
     return tracksGettingStream;
   }
 
-  Future<TracksGettingStream> _runTracksGettingFunctionInIsolate(TracksGettingStream Function() function) async {
+  Future<TracksGettingStream> _runTracksGettingFunctionInIsolate(
+      TracksGettingStream Function(void Function(SpotifyApiCredentials)? onCredentialsRefreshed) function,
+      [void Function(SpotifyApiCredentials)? onCredentialsRefreshed]) async {
     final tracksGettingStream = TracksGettingStream();
 
     final cancellableStream = await _isolatePool.add((sendPort, params, token) async {
-      final isolateTracksGettingStream = function.call();
+      final isolateTracksGettingStream = function.call((newCredentials) => sendPort.send(newCredentials));
       isolateTracksGettingStream.onPartGot = (part) => sendPort.send(part);
       isolateTracksGettingStream.onEnded = (result) => sendPort.send(result);
     }, null);
@@ -163,6 +165,10 @@ class NetworkTracksDataSource {
       if (message is Result<Failure, TracksDtoGettingEndedStatus>) {
         tracksGettingStream.onEnded?.call(message);
         return;
+      }
+
+      if (message is SpotifyApiCredentials) {
+        onCredentialsRefreshed?.call(message);
       }
     });
 
