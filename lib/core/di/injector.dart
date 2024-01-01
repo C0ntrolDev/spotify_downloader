@@ -63,7 +63,9 @@ import 'package:spotify_downloader/features/domain/tracks/services/use_cases/dow
 import 'package:spotify_downloader/features/domain/tracks/services/use_cases/get_tracks_with_loading_observer_from_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/use_cases/get_tracks_with_loading_observer_from_tracks_collection_with_offset.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/repositories/network_tracks_collections_repository.dart';
-import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_history_tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/service/network_tracks_collections_service.dart';
+import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/service/network_tracks_collections_service_impl.dart';
+import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_type_and_spotify_id.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/use_cases/get_tracks_collection_by_url.dart';
 import 'package:spotify_downloader/features/presentation/change_source_video/bloc/change_source_video_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/bloc/download_track_info_bloc.dart';
@@ -99,7 +101,7 @@ Future<void> _provideDataSources() async {
   injector.registerSingleton<TracksCollectonsHistoryDataSource>(
       TracksCollectonsHistoryDataSource(localDb: injector.get<LocalDb>()));
   injector.registerSingleton<NetworkTracksCollectionsDataSource>(
-      NetworkTracksCollectionsDataSource(clientId: deffaultClientId, clientSecret: deffaultClientSecret));
+      NetworkTracksCollectionsDataSource());
   injector.registerSingleton<DownloadAudioFromYoutubeDataSource>(DownloadAudioFromYoutubeDataSource(
       audioMetadataEditor: AudioMetadataEditorImpl(), fileToMp3Converter: FFmpegFileToMp3Converter()));
   await injector.get<DownloadAudioFromYoutubeDataSource>().init();
@@ -139,6 +141,11 @@ void _provideRepositories() {
   injector.registerSingleton<LocalClientAuthRepository>(localAuthRepository);
   injector.registerSingleton<LocalFullAuthRepository>(localAuthRepository);
 
+  injector.registerSingleton<NetworkTracksCollectionsService>(NetworkTracksCollectionsServiceImpl(
+    networkTracksCollectionsRepository: injector.get<NetworkTracksCollectionsRepository>(),
+    fullAuthRepository: injector.get<LocalFullAuthRepository>()
+  ));
+
   injector.registerSingleton<DownloadTracksService>(DownloadTracksServiceImpl(
       observeTracksLoadingRepository: injector.get<ObserveTracksLoadingRepository>(),
       dowloadTracksRepository: injector.get<DownloadTracksRepository>(),
@@ -166,9 +173,9 @@ void _provideUseCases() {
   injector.registerFactory<GetOrderedHistory>(
       () => GetOrderedHistory(historyPlaylistsRepository: injector.get<TracksCollectionsHistoryRepository>()));
   injector.registerFactory<GetTracksCollectionByUrl>(
-      () => GetTracksCollectionByUrl(repository: injector.get<NetworkTracksCollectionsRepository>()));
+      () => GetTracksCollectionByUrl(service: injector.get<NetworkTracksCollectionsService>()));
   injector.registerFactory<GetTracksCollectionByTypeAndSpotifyId>(
-      () => GetTracksCollectionByTypeAndSpotifyId(repository: injector.get<NetworkTracksCollectionsRepository>()));
+      () => GetTracksCollectionByTypeAndSpotifyId(service: injector.get<NetworkTracksCollectionsService>()));
   injector.registerFactory<GetTracksWithLoadingObserverFromTracksCollection>(
       () => GetTracksWithLoadingObserverFromTracksCollection(getTracksService: injector.get<GetTracksService>()));
   injector.registerFactory<GetTracksWithLoadingObserverFromTracksCollectionWithOffset>(() =>

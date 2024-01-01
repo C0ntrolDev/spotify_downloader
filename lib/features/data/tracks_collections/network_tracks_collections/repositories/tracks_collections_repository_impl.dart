@@ -2,18 +2,23 @@ import 'dart:async';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/features/data/shared/converters/spotify_requests_converter.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/data_source/network_tracks_collections_data_source.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/repositories/converters/album_dto_to_tracks_collection_converter.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/repositories/converters/playlist_dto_to_tracks_collection_converter.dart';
 import 'package:spotify_downloader/features/data/tracks_collections/network_tracks_collections/repositories/converters/track_dto_to_tracks_collection_converter.dart';
+import 'package:spotify_downloader/features/domain/shared/spotify_repository_request.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection_type.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/network_tracks_collections/repositories/network_tracks_collections_repository.dart';
 
 class NetworkTracksCollectionsRepositoryImpl implements NetworkTracksCollectionsRepository {
-  NetworkTracksCollectionsRepositoryImpl({required NetworkTracksCollectionsDataSource dataSource}) : _dataSource = dataSource;
+  NetworkTracksCollectionsRepositoryImpl({required NetworkTracksCollectionsDataSource dataSource})
+      : _dataSource = dataSource;
 
   final NetworkTracksCollectionsDataSource _dataSource;
+
+  final SpotifyRequestsConverter _spotifyRequestsConverter = SpotifyRequestsConverter();
 
   final PlaylistDtoToTracksCollectionConverter _playlistDtoToTracksCollectionConverter =
       PlaylistDtoToTracksCollectionConverter();
@@ -24,10 +29,11 @@ class NetworkTracksCollectionsRepositoryImpl implements NetworkTracksCollections
 
   @override
   Future<Result<Failure, TracksCollection>> getTracksCollectionByTypeAndSpotifyId(
-      TracksCollectionType type, String spotifyId) async {
+      SpotifyRepositoryRequest spotifyRepositoryRequest, TracksCollectionType type, String spotifyId) async {
     switch (type) {
       case TracksCollectionType.playlist:
-        final playlistResult = await _dataSource.getPlaylistBySpotifyId(spotifyId);
+        final playlistResult = await _dataSource.getPlaylistBySpotifyId(
+            _spotifyRequestsConverter.convert(spotifyRepositoryRequest), spotifyId);
         if (playlistResult.isSuccessful) {
           final convertedPlaylistResult = _playlistDtoToTracksCollectionConverter.convert(playlistResult.result!);
           return convertedPlaylistResult;
@@ -35,7 +41,8 @@ class NetworkTracksCollectionsRepositoryImpl implements NetworkTracksCollections
           return Result.notSuccessful(playlistResult.failure);
         }
       case TracksCollectionType.album:
-        final albumResult = await _dataSource.getAlbumBySpotifyId(spotifyId);
+        final albumResult = await _dataSource.getAlbumBySpotifyId(
+            _spotifyRequestsConverter.convert(spotifyRepositoryRequest), spotifyId);
         if (albumResult.isSuccessful) {
           final convertedAlbumResult = _albumDtoToTracksCollectionConverter.convert(albumResult.result!);
           return convertedAlbumResult;
@@ -43,7 +50,8 @@ class NetworkTracksCollectionsRepositoryImpl implements NetworkTracksCollections
           return Result.notSuccessful(albumResult.failure);
         }
       case TracksCollectionType.track:
-        final trackResult = await _dataSource.getTrackBySpotifyId(spotifyId);
+        final trackResult = await _dataSource.getTrackBySpotifyId(
+            _spotifyRequestsConverter.convert(spotifyRepositoryRequest), spotifyId);
         if (trackResult.isSuccessful) {
           final convertedTrackResult = _trackDtoToTracksCollectionConverter.convert(trackResult.result!);
           return convertedTrackResult;
@@ -57,9 +65,11 @@ class NetworkTracksCollectionsRepositoryImpl implements NetworkTracksCollections
   }
 
   @override
-  Future<Result<Failure, TracksCollection>> getTracksCollectionByUrl(String url) async {
+  Future<Result<Failure, TracksCollection>> getTracksCollectionByUrl(
+      SpotifyRepositoryRequest spotifyRepositoryRequest, String url) async {
     try {
-      return getTracksCollectionByTypeAndSpotifyId(_getTracksCollectionTypeFromUrl(url), _getSpotifyIdFromUrl(url));
+      return getTracksCollectionByTypeAndSpotifyId(
+          spotifyRepositoryRequest, _getTracksCollectionTypeFromUrl(url), _getSpotifyIdFromUrl(url));
     } catch (e) {
       return const Result.notSuccessful(NotFoundFailure());
     }

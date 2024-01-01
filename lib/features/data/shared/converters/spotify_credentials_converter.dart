@@ -1,4 +1,5 @@
 import 'package:spotify/spotify.dart';
+import 'package:spotify_downloader/core/consts/spotify_client.dart';
 import 'package:spotify_downloader/core/util/converters/simple_converters/value_converter.dart';
 import 'package:spotify_downloader/features/domain/auth/shared/full_credentials.dart';
 
@@ -11,7 +12,8 @@ class SpotifyCredentialsConverter
       fullCredentials.clientSecret,
       refreshToken: fullCredentials.refreshToken,
       accessToken: fullCredentials.accessToken,
-      expiration: fullCredentials.expiration);
+      expiration: fullCredentials.expiration,
+      scopes: clientScopes);
   }
 
   @override
