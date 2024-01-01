@@ -8,16 +8,9 @@ import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tr
 import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tracks_getting_stream.dart';
 
 class NetworkTracksDataSource {
-  NetworkTracksDataSource({required String clientId, required String clientSecret})
-      : _clientId = clientId,
-        _clientSecret = clientSecret;
-
   Future<void> init() async {
     _isolatePool = await IsolatePool.create();
   }
-
-  final String _clientId;
-  final String _clientSecret;
 
   late final IsolatePool _isolatePool;
 
@@ -27,7 +20,8 @@ class NetworkTracksDataSource {
 
       Future(() async {
         final tracksPagesResult = await handleSpotifyClientExceptions<Pages<Track>>(() async {
-          final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
+          final spotify = await SpotifyApi.asyncFromCredentials(args.spotifyApiRequest.spotifyApiCredentials,
+              onCredentialsRefreshed: args.spotifyApiRequest.onCredentialsRefreshed);
           final trackPages = spotify.playlists.getTracksByPlaylistId(args.spotifyId);
           return Result.isSuccessful(trackPages);
         });
@@ -55,7 +49,8 @@ class NetworkTracksDataSource {
 
       Future(() async {
         final tracksPagesResult = await handleSpotifyClientExceptions<Pages<TrackSimple>>(() async {
-          final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
+          final spotify = await SpotifyApi.asyncFromCredentials(args.spotifyApiRequest.spotifyApiCredentials,
+              onCredentialsRefreshed: args.spotifyApiRequest.onCredentialsRefreshed);
           final trackPages = spotify.albums.tracks(args.spotifyId);
           return Result.isSuccessful(trackPages);
         });
@@ -65,7 +60,8 @@ class NetworkTracksDataSource {
         }
 
         final albumResult = await handleSpotifyClientExceptions<Album>(() async {
-          final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
+          final spotify = await SpotifyApi.asyncFromCredentials(args.spotifyApiRequest.spotifyApiCredentials,
+              onCredentialsRefreshed: args.spotifyApiRequest.onCredentialsRefreshed);
           final album = await spotify.albums.get(args.spotifyId);
           return Result.isSuccessful(album);
         });
@@ -87,6 +83,37 @@ class NetworkTracksDataSource {
     });
   }
 
+  Future<TracksGettingStream> getLikedTracks(GetTracksArgs args) {
+    return _runTracksGettingFunctionInIsolate(() {
+      final tracksGettingStream = TracksGettingStream();
+
+      Future(() async {
+        final tracksPagesResult = await handleSpotifyClientExceptions<Pages<TrackSaved>>(() async {
+          final spotify = await SpotifyApi.asyncFromCredentials(args.spotifyApiRequest.spotifyApiCredentials,
+              onCredentialsRefreshed: args.spotifyApiRequest.onCredentialsRefreshed);
+          final trackPages = spotify.tracks.me.saved;
+          return Result.isSuccessful(trackPages);
+        });
+
+        if (tracksPagesResult.isSuccessful) {
+          _getTracksFromPages(
+              getPageTracks: (limit, offset) async {
+                final page = await tracksPagesResult.result!.getPage(limit, offset);
+                return page.items
+                    ?.where((savedTrack) => savedTrack.track != null)
+                    .map((savedTrack) => savedTrack.track!);
+              },
+              tracksGettingStream: tracksGettingStream,
+              args: args);
+        } else {
+          tracksGettingStream.onEnded?.call(Result.notSuccessful(tracksPagesResult.failure));
+        }
+      });
+
+      return tracksGettingStream;
+    });
+  }
+
   Track _trackSimpleToTrack(TrackSimple trackSimple, Album album) {
     final track = Track();
     track.name = trackSimple.name;
@@ -101,7 +128,8 @@ class NetworkTracksDataSource {
 
     Future(() async {
       final result = await handleSpotifyClientExceptions<Track>(() async {
-        final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
+        final spotify = await SpotifyApi.asyncFromCredentials(args.spotifyApiRequest.spotifyApiCredentials,
+            onCredentialsRefreshed: args.spotifyApiRequest.onCredentialsRefreshed);
         final track = await spotify.tracks.get(args.spotifyId);
         return Result.isSuccessful(track);
       });

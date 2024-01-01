@@ -18,4 +18,7 @@ class HistoryTracksCollection extends Equatable {
 
   @override
   List<Object?> get props => [spotifyId, name, type, imageUrl, openDate];
+
+  static HistoryTracksCollection get likedTracks => const HistoryTracksCollection(
+      spotifyId: 'liked_tracks', type: TracksCollectionType.likedTracks, name: 'Liked Tracks');
 }

@@ -7,7 +7,7 @@ class TracksCollection extends Equatable {
       {required this.spotifyId,
       required this.type,
       required this.name,
-      required this.tracksCount,
+      this.tracksCount,
       this.artists,
       this.smallImageUrl,
       this.bigImageUrl});
@@ -15,11 +15,19 @@ class TracksCollection extends Equatable {
   final String spotifyId;
   final TracksCollectionType type;
   final String name;
-  final int tracksCount;
+  final int? tracksCount;
   final List<String>? artists;
   final String? smallImageUrl;
   final String? bigImageUrl;
 
   @override
-  List<Object?> get props => [spotifyId, type, name, tracksCount, artists, smallImageUrl, bigImageUrl];
+  List<Object?> get props => [spotifyId, type, name, artists, smallImageUrl, bigImageUrl];
+
+  static TracksCollection get likedTracks => const TracksCollection(
+      spotifyId: 'likedTracks',
+      type: TracksCollectionType.likedTracks,
+      name: 'Liked Tracks',
+      artists: ['^_^'],
+      smallImageUrl: 'https://misc.scdn.co/liked-songs/liked-songs-300.png',
+      bigImageUrl: 'https://misc.scdn.co/liked-songs/liked-songs-640.png');
 }

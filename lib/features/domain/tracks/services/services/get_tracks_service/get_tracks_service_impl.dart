@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/features/domain/auth/local_auth/repositories/local_full_auth_repository.dart';
+import 'package:spotify_downloader/features/domain/shared/spotify_repository_request.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_track.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositories/local_tracks_repository.dart';
@@ -21,23 +23,35 @@ class GetTracksServiceImpl implements GetTracksService {
   GetTracksServiceImpl(
       {required NetworkTracksRepository networkTracksRepository,
       required DownloadTracksRepository downloadTracksRepository,
-      required LocalTracksRepository localTracksRepository})
+      required LocalTracksRepository localTracksRepository,
+      required LocalFullAuthRepository authRepository})
       : _networkTracksRepository = networkTracksRepository,
         _downloadTracksRepository = downloadTracksRepository,
-        _localTracksRepository = localTracksRepository;
+        _localTracksRepository = localTracksRepository,
+        _authRepository = authRepository;
 
   final NetworkTracksRepository _networkTracksRepository;
   final DownloadTracksRepository _downloadTracksRepository;
   final LocalTracksRepository _localTracksRepository;
+  final LocalFullAuthRepository _authRepository;
 
   final TracksCollectionTypeToLocalTracksCollectionTypeConverter _collectionTypeConverter =
       TracksCollectionTypeToLocalTracksCollectionTypeConverter();
 
   @override
-  Future<TracksWithLoadingObserverGettingObserver> getTracksWithLoadingObserversFromTracksColleciton(
+  Future<Result<Failure, TracksWithLoadingObserverGettingObserver>> getTracksWithLoadingObserversFromTracksColleciton(
       {required TracksCollection tracksCollection, int offset = 0}) async {
-    final rawObserver = await _networkTracksRepository.getTracksFromTracksCollection(
-        GetTracksFromTracksCollectionArgs(tracksCollection: tracksCollection, offset: offset));
+    final getFullCredentialsResult = await _authRepository.getFullCredentials();
+    if (!getFullCredentialsResult.isSuccessful) {
+      return Result.notSuccessful(getFullCredentialsResult.failure);
+    }
+
+    final rawObserver = await _networkTracksRepository.getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs(
+        spotifyRepositoryRequest: SpotifyRepositoryRequest(
+            credentials: getFullCredentialsResult.result!,
+            onCredentialsRefreshed: _authRepository.saveFullCredentials),
+        tracksCollection: tracksCollection,
+        offset: offset));
 
     final onPartGotStreamController = StreamController<List<TrackWithLoadingObserver>>();
     final onEndedSteamController = StreamController<Result<Failure, TracksGettingEndedStatus>>();
@@ -74,13 +88,7 @@ class GetTracksServiceImpl implements GetTracksService {
       }
     };
 
-    return tracksGettingObserver;
-  }
-
-  @override
-  TracksWithLoadingObserverGettingObserver getLikedTracksWithLoadingObservers(
-      List<TrackWithLoadingObserver> responseList) {
-    throw UnimplementedError();
+    return Result.isSuccessful(tracksGettingObserver);
   }
 
   Future<TrackWithLoadingObserver> _findAllInfoAboutTrack(Track track) async {

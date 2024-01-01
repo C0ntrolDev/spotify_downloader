@@ -17,7 +17,7 @@ class GetTracksWithLoadingObserverFromTracksCollectionWithOffset
   @override
   Future<Result<Failure, TracksWithLoadingObserverGettingObserver>> call(
       (TracksCollection, int) params) async {
-    return Result.isSuccessful(await _getTracksService.getTracksWithLoadingObserversFromTracksColleciton(
-        tracksCollection: params.$1, offset: params.$2));
+    return  _getTracksService.getTracksWithLoadingObserversFromTracksColleciton(
+        tracksCollection: params.$1, offset: params.$2);
   }
 }

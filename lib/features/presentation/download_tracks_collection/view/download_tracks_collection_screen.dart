@@ -202,7 +202,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                               if (filterTracksBlocState is! FilterTracksChanged) {
                                                                 return;
                                                               }
-                                                              
+
                                                               if (!filterTracksBlocState.isFilterQueryEmpty ||
                                                                   getTracksState is GetAndDownloadTracksAllGot) {
                                                                 _getAndDownloadTracksBloc.add(
@@ -227,7 +227,8 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                               final filteredTracks = state.filteredTracks;
                                               final isTracksPlaceholdersDisplayed =
                                                   getTracksState is! GetAndDownloadTracksAllGot &&
-                                                      state.isFilterQueryEmpty;
+                                                      state.isFilterQueryEmpty &&
+                                                      getTracksCollectionState.tracksCollection.tracksCount != null;
 
                                               return SliverList.builder(
                                                   itemCount: isTracksPlaceholdersDisplayed
@@ -335,10 +336,12 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
   void _onFatalFailure(Failure? failure) {
     if (failure is NotFoundFailure) {
       showBigTextSnackBar('По данному url не было ничего найдено', context, const Duration(seconds: 3));
+    } else if (failure is NotAuthorizedFailure) {
+      showBigTextSnackBar('Для доступа необходимо авторизоваться', context, const Duration(seconds: 3));
     } else {
       showSmallTextSnackBar(failure.toString(), context, const Duration(seconds: 3));
-
-      AutoRouter.of(context).pop();
     }
+
+    AutoRouter.of(context).pop();
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
+import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/view/loading_tracks_collections_list.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/search_text_field.dart';
 import '../widgets/liked_tracks_tile.dart';
@@ -99,7 +100,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: LikedTracksTile(
                             theme: theme,
                             title: 'Любимые треки',
-                            onTapped: () {},
+                            onTapped: () {
+                              AutoRouter.of(context).push(DownloadTracksCollectionRouteWithHistoryTracksCollection(
+                                  historyTracksCollection: HistoryTracksCollection.likedTracks));
+                            },
                             image: const AssetImage(
                               'resources/images/another/liked_tracks.jpg',
                             ),
@@ -124,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: homePageHorizontalPadding),
                       child: Text('Активные загрузки', style: theme.textTheme.titleMedium),
                     ),
-                     Expanded(
+                    Expanded(
                       child: Container(
                           padding: const EdgeInsets.only(top: 10),
                           alignment: Alignment.topCenter,

@@ -1,5 +1,6 @@
 import 'package:spotify_downloader/core/util/cancellation_token/cancellation_token_source.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/features/data/shared/converters/spotify_requests_converter.dart';
 import 'package:spotify_downloader/features/data/tracks/network_tracks/data_sources/network_tracks_data_source.dart';
 import 'package:spotify_downloader/features/data/tracks/network_tracks/models/get_tracks_args.dart';
 import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tracks_dto_getting_ended_status.dart';
@@ -19,12 +20,14 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
 
   final NetworkTracksDataSource _networkTracksDataSource;
   final TrackDtoToTrackConverter _trackDtoToTrackConverter = TrackDtoToTrackConverter();
+  final SpotifyRequestsConverter _spotifyRequestsConverter = SpotifyRequestsConverter();
 
   @override
   Future<TracksGettingObserver> getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs args) async {
     final responseList = List<dto.Track>.empty(growable: true);
     final cancellationTokenSource = CancellationTokenSource();
     final getTracksArgs = GetTracksArgs(
+        spotifyApiRequest: _spotifyRequestsConverter.convert(args.spotifyRepositoryRequest),
         spotifyId: args.tracksCollection.spotifyId,
         responseList: responseList,
         cancellationToken: cancellationTokenSource.token,
@@ -42,7 +45,7 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
       case TracksCollectionType.track:
         tracksGettingStream = _networkTracksDataSource.getTrackBySpotifyId(getTracksArgs);
       case TracksCollectionType.likedTracks:
-        throw ArgumentError('can\'t load liked tracks using this method');
+         tracksGettingStream = await _networkTracksDataSource.getLikedTracks(getTracksArgs);
     }
 
     final observer = _getLinkedToStreamObserver(tracksGettingStream, args);

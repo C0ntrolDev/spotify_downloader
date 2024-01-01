@@ -1,5 +1,4 @@
 import 'package:get_it/get_it.dart';
-import 'package:spotify_downloader/core/consts/spotify_client.dart';
 import 'package:spotify_downloader/core/db/local_db.dart';
 import 'package:spotify_downloader/core/db/local_db_impl.dart';
 import 'package:spotify_downloader/features/data/auth/local_auth/data_source/local_auth_data_source.dart';
@@ -100,13 +99,12 @@ Future<void> _initCore() async {
 Future<void> _provideDataSources() async {
   injector.registerSingleton<TracksCollectonsHistoryDataSource>(
       TracksCollectonsHistoryDataSource(localDb: injector.get<LocalDb>()));
-  injector.registerSingleton<NetworkTracksCollectionsDataSource>(
-      NetworkTracksCollectionsDataSource());
+  injector.registerSingleton<NetworkTracksCollectionsDataSource>(NetworkTracksCollectionsDataSource());
   injector.registerSingleton<DownloadAudioFromYoutubeDataSource>(DownloadAudioFromYoutubeDataSource(
       audioMetadataEditor: AudioMetadataEditorImpl(), fileToMp3Converter: FFmpegFileToMp3Converter()));
   await injector.get<DownloadAudioFromYoutubeDataSource>().init();
   injector.registerSingleton<NetworkTracksDataSource>(
-      NetworkTracksDataSource(clientId: deffaultClientId, clientSecret: deffaultClientSecret));
+      NetworkTracksDataSource());
   await injector.get<NetworkTracksDataSource>().init();
   injector.registerSingleton<SearchVideoOnYoutubeDataSource>(SearchVideoOnYoutubeDataSource());
   await injector.get<SearchVideoOnYoutubeDataSource>().init();
@@ -142,9 +140,8 @@ void _provideRepositories() {
   injector.registerSingleton<LocalFullAuthRepository>(localAuthRepository);
 
   injector.registerSingleton<NetworkTracksCollectionsService>(NetworkTracksCollectionsServiceImpl(
-    networkTracksCollectionsRepository: injector.get<NetworkTracksCollectionsRepository>(),
-    fullAuthRepository: injector.get<LocalFullAuthRepository>()
-  ));
+      networkTracksCollectionsRepository: injector.get<NetworkTracksCollectionsRepository>(),
+      fullAuthRepository: injector.get<LocalFullAuthRepository>()));
 
   injector.registerSingleton<DownloadTracksService>(DownloadTracksServiceImpl(
       observeTracksLoadingRepository: injector.get<ObserveTracksLoadingRepository>(),
@@ -155,7 +152,8 @@ void _provideRepositories() {
   injector.registerSingleton<GetTracksService>(GetTracksServiceImpl(
       networkTracksRepository: injector.get<NetworkTracksRepository>(),
       downloadTracksRepository: injector.get<DownloadTracksRepository>(),
-      localTracksRepository: injector.get<LocalTracksRepository>()));
+      localTracksRepository: injector.get<LocalTracksRepository>(),
+      authRepository: injector.get<LocalFullAuthRepository>()));
 
   injector.registerSingleton<SpotifyProfileService>(SpotifyProfileServiceImpl(
       localFullAuthRepository: injector.get<LocalFullAuthRepository>(),

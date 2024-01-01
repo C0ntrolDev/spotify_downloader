@@ -26,7 +26,11 @@ Future<Result<Failure, T>> handleSpotifyClientExceptions<T>(Future<Result<Failur
     }
 
     if (e.status == 401) {
-      return Result.notSuccessful(InvalidAccountCredentialsFailure(message: e));
+      return Result.notSuccessful(NotAuthorizedFailure(message: e));
+    }
+
+    if (e.status == 403) {
+      return Result.notSuccessful(NotAuthorizedFailure(message: e));
     }
 
     return Result.notSuccessful(Failure(message: e));

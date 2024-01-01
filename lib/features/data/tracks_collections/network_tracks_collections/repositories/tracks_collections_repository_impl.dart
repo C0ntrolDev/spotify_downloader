@@ -58,9 +58,8 @@ class NetworkTracksCollectionsRepositoryImpl implements NetworkTracksCollections
         } else {
           return Result.notSuccessful(trackResult.failure);
         }
-      default:
-        return Result.notSuccessful(
-            NotFoundFailure(message: 'it is impossible to get information about ${type.name}'));
+      case TracksCollectionType.likedTracks:
+        return Result.isSuccessful(TracksCollection.likedTracks);
     }
   }
 
