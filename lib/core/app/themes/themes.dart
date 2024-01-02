@@ -17,6 +17,29 @@ final mainTheme = ThemeData(
           return onBackgroundSecondaryColor;
         }
       })),
+  switchTheme: SwitchThemeData(
+    trackColor: MaterialStateProperty.resolveWith((states) {
+      if (!states.contains(MaterialState.selected)) {
+        return onBackgroundSecondaryColor;
+      } else {
+        return null;
+      }
+    }),
+    thumbColor: MaterialStateProperty.resolveWith((states) {
+      if (!states.contains(MaterialState.selected)) {
+        return onBackgroundThirdRateColor;
+      } else {
+        return null;
+      }
+    }),
+    trackOutlineColor: MaterialStateProperty.resolveWith((states) {
+      if (!states.contains(MaterialState.selected)) {
+        return onBackgroundThirdRateColor;
+      } else {
+        return Colors.transparent;
+      }
+    }),
+  ),
   scaffoldBackgroundColor: backgroundColor,
   pageTransitionsTheme: const PageTransitionsTheme(builders: {
     TargetPlatform.android: CupertinoPageTransitionsBuilder(),

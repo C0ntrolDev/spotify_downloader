@@ -34,6 +34,7 @@ dependencies:
   modal_bottom_sheet: 3.0.0-pre
   awesome_notifications_core: ^0.8.1
   awesome_notifications: ^0.8.3
+  file_picker: ^6.1.1
 
 dev_dependencies:
   flutter_test:

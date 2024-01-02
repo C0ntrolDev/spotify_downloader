@@ -40,6 +40,7 @@ class _SettingWithTextFieldState extends State<SettingWithTextField> {
             child: Text(
               widget.title,
               style: theme.textTheme.bodyMedium,
+              maxLines: 5,
             ),
           
         ),

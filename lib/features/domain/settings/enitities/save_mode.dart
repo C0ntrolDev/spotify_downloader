@@ -1,0 +1,4 @@
+enum SaveMode {
+  folderForTracksCollection,
+  folderForAll
+}

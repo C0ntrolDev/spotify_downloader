@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 const backgroundColor = Color.fromARGB(255, 18, 18, 18);
 const onBackgroundPrimaryColor = Color.fromARGB(255, 255, 255, 255);
 const onBackgroundSecondaryColor = Color.fromARGB(255, 188, 188, 188);
+const onBackgroundThirdRateColor = Color.fromARGB(255, 110, 110, 110);
 
 const surfaceColor = Color.fromARGB(255, 42, 42, 42);
 const onSurfacePrimaryColor = Color.fromARGB(255, 255, 255, 255);
