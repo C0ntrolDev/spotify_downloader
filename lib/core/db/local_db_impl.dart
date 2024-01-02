@@ -6,7 +6,6 @@ import 'package:spotify_downloader/core/consts/local_paths.dart';
 import 'package:sqflite/sqflite.dart';
 
 class LocalDbImpl extends LocalDb {
-
   late Database _dataBase;
 
   @override
@@ -15,7 +14,7 @@ class LocalDbImpl extends LocalDb {
     final absoluteDbPath = '$localDirectoryPath$dbPath';
 
     final dbFile = File(absoluteDbPath);
-    
+
     await dbFile.delete();
     await initDb();
   }
@@ -33,37 +32,44 @@ class LocalDbImpl extends LocalDb {
 
     if (await dbFile.exists()) {
       database = await openDatabase(absoluteDbPath);
-    }
-    else {
-      database = await openDatabase(absoluteDbPath, version: 1, onCreate: (db, version) {
+    } else {
+      database = await openDatabase(
+        absoluteDbPath,
+        version: 1,
+        onCreate: (db, version) {
+          db.execute("CREATE TABLE tracksCollectionsHistory ("
+              "spotifyId TEXT PRIMARY KEY,"
+              "type INTEGER NOT NULL,"
+              "openDate INTEGER NOT NULL,"
+              "name TEXT NOT NULL,"
+              "imageUrl TEXT NOT NULL"
+              ")");
 
-        db.execute("CREATE TABLE tracksCollectionsHistory ("
-          "spotifyId TEXT PRIMARY KEY,"
-          "type INTEGER NOT NULL,"
-          "openDate INTEGER NOT NULL,"
-          "name TEXT NOT NULL,"
-          "imageUrl TEXT NOT NULL"
-          ")");
+          db.execute("CREATE TABLE downloadTracksCollectionsGroups ("
+              "directoryPath TEXT NOT NULL"
+              ")");
 
-        db.execute("CREATE TABLE downloadTracksCollections ("
-          "spotifyId TEXT NOT NULL,"
-          "type INTEGER NOT NULL"
-          ")");
+          db.execute("CREATE TABLE downloadTracksCollections ("
+              "spotifyId TEXT NOT NULL,"
+              "type INTEGER NOT NULL,"
+              "downloadTracksCollectionsGroups_directoryPath TEXT NOT NULL,"
+              "FOREIGN KEY (downloadTracksCollectionsGroups_directoryPath) REFERENCES downloadTracksCollectionsGroups (directoryPath) ON DELETE CASCADE"
+              ")");
 
-        db.execute("CREATE TABLE downloadTracks ("
-          "downloadTracksCollection_spotifyId TEXT NOT NULL,"
-          "downloadTracksCollection_type INTEGER NOT NULL,"
-          "spotifyId TEXT NOT NULL,"
-          "youtubeUrl TEXT NOT NULL,"
-          "savePath TEXT NOT NULL,"
-          "FOREIGN KEY (downloadTracksCollection_spotifyId) REFERENCES downloadTracksCollections (spotifyId) ON DELETE CASCADE,"
-          "FOREIGN KEY (downloadTracksCollection_type) REFERENCES downloadTracksCollections (type) ON DELETE CASCADE,"
-          "PRIMARY KEY (downloadTracksCollection_spotifyId, downloadTracksCollection_type, spotifyId)"
-          ")");
-      },);
+          db.execute("CREATE TABLE downloadTracks ("
+              "downloadTracksCollection_spotifyId TEXT NOT NULL,"
+              "downloadTracksCollection_type INTEGER NOT NULL,"
+              "spotifyId TEXT NOT NULL,"
+              "youtubeUrl TEXT NOT NULL,"
+              "savePath TEXT NOT NULL,"
+              "FOREIGN KEY (downloadTracksCollection_spotifyId) REFERENCES downloadTracksCollections (spotifyId) ON DELETE CASCADE,"
+              "FOREIGN KEY (downloadTracksCollection_type) REFERENCES downloadTracksCollections (type) ON DELETE CASCADE,"
+              "PRIMARY KEY (downloadTracksCollection_spotifyId, downloadTracksCollection_type, spotifyId)"
+              ")");
+        },
+      );
     }
 
     _dataBase = database;
   }
-
 }

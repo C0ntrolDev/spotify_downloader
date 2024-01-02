@@ -1,6 +1,8 @@
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/features/domain/settings/enitities/download_tracks_settings.dart';
+import 'package:spotify_downloader/features/domain/settings/repository/download_tracks_settings_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/track_loading_notifier.dart';
@@ -8,6 +10,7 @@ import 'package:spotify_downloader/features/domain/tracks/download_tracks/entiti
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/repositories/dowload_tracks_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_track.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_tracks_collection_group.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositories/local_tracks_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/repository/observe_tracks_loading_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/repositories/search_videos_by_track_repository.dart';
@@ -22,16 +25,19 @@ class DownloadTracksServiceImpl implements DownloadTracksService {
       {required DownloadTracksRepository dowloadTracksRepository,
       required SearchVideosByTrackRepository searchVideosByTrackRepository,
       required LocalTracksRepository localTracksRepository,
-      required ObserveTracksLoadingRepository observeTracksLoadingRepository})
+      required ObserveTracksLoadingRepository observeTracksLoadingRepository,
+      required DownloadTracksSettingsRepository downloadTracksSettingsRepository})
       : _dowloadTracksRepository = dowloadTracksRepository,
         _searchVideosByTrackRepository = searchVideosByTrackRepository,
         _localTracksRepository = localTracksRepository,
-        _observeTracksLoadingRepository = observeTracksLoadingRepository;
+        _observeTracksLoadingRepository = observeTracksLoadingRepository,
+        _downloadTracksSettingsRepository = downloadTracksSettingsRepository;
 
   final DownloadTracksRepository _dowloadTracksRepository;
   final SearchVideosByTrackRepository _searchVideosByTrackRepository;
   final LocalTracksRepository _localTracksRepository;
   final ObserveTracksLoadingRepository _observeTracksLoadingRepository;
+  final DownloadTracksSettingsRepository _downloadTracksSettingsRepository;
 
   final TracksCollectionTypeToLocalTracksCollectionTypeConverter _collectionTypeConverter =
       TracksCollectionTypeToLocalTracksCollectionTypeConverter();
@@ -90,7 +96,8 @@ class DownloadTracksServiceImpl implements DownloadTracksService {
           savePath: savePath,
           tracksCollection: LocalTracksCollection(
               spotifyId: track.parentCollection.spotifyId,
-              type: _collectionTypeConverter.convert(track.parentCollection.type)),
+              type: _collectionTypeConverter.convert(track.parentCollection.type),
+              group: LocalTracksCollectionsGroup()),
           youtubeUrl: track.youtubeUrl!));
     });
 
