@@ -44,3 +44,14 @@ Future<Result<Failure, T>> handleSpotifyClientExceptions<T>(Future<Result<Failur
     return Result.notSuccessful(Failure(message: e));
   }
 }
+
+  String? formatStringToFileFormat(String? string) {
+    final forbiddenChars = ['/', '\\', ':', '*', '?', '<', '>', '|'];
+
+    String? formattedString = string;
+    for (var char in forbiddenChars) {
+      formattedString = formattedString?.replaceAll(char, '');
+    }
+
+    return formattedString;
+  }

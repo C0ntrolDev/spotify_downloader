@@ -4,9 +4,10 @@ import 'package:spotify_downloader/features/domain/tracks/download_tracks/entiti
 
 class WaitingInLoadingQueueTrackInfo {
   WaitingInLoadingQueueTrackInfo(
-      {required this.loadingTrackId, required this.trackWithLazyYoutubeUrl, required this.trackLoadingNotifier});
+      {required this.loadingTrackId, required this.trackWithLazyYoutubeUrl, required this.trackLoadingNotifier, required this.savePath});
 
   final LoadingTrackId loadingTrackId;
+  final String savePath;
   final TrackWithLazyYoutubeUrl trackWithLazyYoutubeUrl;
   final TrackLoadingNotifier trackLoadingNotifier;
 }

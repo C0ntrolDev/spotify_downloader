@@ -25,8 +25,8 @@ class LocalTracksDataSource {
     await database.rawDelete('''
       DELETE dt
       FROM downloadTracks dt
-      JOIN downloadTracksCollections dtc ON dtc.downloadTracksCollection_spotifyId = dt.downloadTracksCollection_spotifyId
-                                    AND dtc.downloadTracksCollection_type = dt.downloadTracksCollection_type
+      JOIN downloadTracksCollections dtc ON dtc.spotifyId = dt.downloadTracksCollection_spotifyId
+                                    AND dtc.type = dt.downloadTracksCollection_type
       JOIN downloadTracksCollectionsGroups dtcg ON dtcg.directoryPath = dtc.downloadTracksCollectionsGroups_directoryPath
       WHERE dt.spotifyId = ? 
       AND dtc.spotifyId = ?
@@ -44,10 +44,10 @@ class LocalTracksDataSource {
       LocalTracksCollectionDto localTracksCollectionDto, String spotifyId) async {
     final database = _localDb.getDb();
     final rawLocalTracks = await database.rawQuery('''
-      SELECT dt.*, dtcg.savePath AS group_directoryPath
+      SELECT dt.*, dtcg.directoryPath AS group_directoryPath
       FROM downloadTracks dt
-      JOIN downloadTracksCollections dtc ON dtc.downloadTracksCollection_spotifyId = dt.downloadTracksCollection_spotifyId
-                                    AND dtc.downloadTracksCollection_type = dt.downloadTracksCollection_type
+      JOIN downloadTracksCollections dtc ON dtc.spotifyId = dt.downloadTracksCollection_spotifyId
+                                    AND dtc.type = dt.downloadTracksCollection_type
       JOIN downloadTracksCollectionsGroups dtcg ON dtcg.directoryPath = dtc.downloadTracksCollectionsGroups_directoryPath
       WHERE dt.spotifyId = ? 
       AND dtc.spotifyId = ?

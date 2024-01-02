@@ -2,5 +2,6 @@ enum LocalTracksCollectionDtoType {
   likedTracks, 
   playlist, 
   album, 
-  track
+  track, 
+  allTracks
 }

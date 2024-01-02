@@ -155,13 +155,15 @@ void _provideRepositories() {
       observeTracksLoadingRepository: injector.get<ObserveTracksLoadingRepository>(),
       dowloadTracksRepository: injector.get<DownloadTracksRepository>(),
       searchVideosByTrackRepository: injector.get<SearchVideosByTrackRepository>(),
-      localTracksRepository: injector.get<LocalTracksRepository>()));
+      localTracksRepository: injector.get<LocalTracksRepository>(),
+      downloadTracksSettingsRepository: injector.get<DownloadTracksSettingsRepository>()));
 
   injector.registerSingleton<GetTracksService>(GetTracksServiceImpl(
       networkTracksRepository: injector.get<NetworkTracksRepository>(),
       downloadTracksRepository: injector.get<DownloadTracksRepository>(),
       localTracksRepository: injector.get<LocalTracksRepository>(),
-      authRepository: injector.get<LocalFullAuthRepository>()));
+      authRepository: injector.get<LocalFullAuthRepository>(),
+      downloadTracksSettingsRepository: injector.get<DownloadTracksSettingsRepository>()));
 
   injector.registerSingleton<SpotifyProfileService>(SpotifyProfileServiceImpl(
       localFullAuthRepository: injector.get<LocalFullAuthRepository>(),

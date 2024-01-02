@@ -1,7 +1,10 @@
+import 'package:path/path.dart' as p;
+
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
-import 'package:spotify_downloader/features/domain/settings/enitities/download_tracks_settings.dart';
+import 'package:spotify_downloader/core/util/util_methods.dart';
+import 'package:spotify_downloader/features/domain/settings/enitities/save_mode.dart';
 import 'package:spotify_downloader/features/domain/settings/repository/download_tracks_settings_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
@@ -74,30 +77,47 @@ class DownloadTracksServiceImpl implements DownloadTracksService {
 
   @override
   Future<Result<Failure, LoadingTrackObserver>> downloadTrack(Track track) async {
-    final resultTrackObsever = await _dowloadTracksRepository.dowloadTrack(TrackWithLazyYoutubeUrl(
-        track: track,
-        getYoutubeUrlFunction: () async {
-          final videoResult = await _searchVideosByTrackRepository.findVideoByTrack(track);
+    final getDownloadTracksSettings = await _downloadTracksSettingsRepository.getDownloadTracksSettings();
+    if (!getDownloadTracksSettings.isSuccessful) {
+      return Result.notSuccessful(getDownloadTracksSettings.failure);
+    }
 
-          if (!videoResult.isSuccessful) {
-            return Result.notSuccessful(videoResult.failure);
-          }
-          if (videoResult.result == null) {
-            return const Result.notSuccessful(NotFoundFailure(message: 'track not found on youtube'));
-          }
+    late final String trackSavePath;
+    if (getDownloadTracksSettings.result!.saveMode == SaveMode.folderForTracksCollection) {
+      trackSavePath =
+          p.join(getDownloadTracksSettings.result!.savePath, formatStringToFileFormat(track.parentCollection.name));
+    } else {
+      trackSavePath = p.join(getDownloadTracksSettings.result!.savePath, '_AllTracks');
+    }
 
-          return Result.isSuccessful(videoResult.result!.url);
-        }));
+    final resultTrackObsever = await _dowloadTracksRepository.dowloadTrack(
+        TrackWithLazyYoutubeUrl(
+            track: track,
+            getYoutubeUrlFunction: () async {
+              final videoResult = await _searchVideosByTrackRepository.findVideoByTrack(track);
+
+              if (!videoResult.isSuccessful) {
+                return Result.notSuccessful(videoResult.failure);
+              }
+              if (videoResult.result == null) {
+                return const Result.notSuccessful(NotFoundFailure(message: 'track not found on youtube'));
+              }
+
+              return Result.isSuccessful(videoResult.result!.url);
+            }),
+        trackSavePath);
 
     final serviceTrackObserver = resultTrackObsever.result!;
     serviceTrackObserver.loadedStream.listen((savePath) {
       _localTracksRepository.saveLocalTrack(LocalTrack(
           spotifyId: track.spotifyId,
           savePath: savePath,
-          tracksCollection: LocalTracksCollection(
-              spotifyId: track.parentCollection.spotifyId,
-              type: _collectionTypeConverter.convert(track.parentCollection.type),
-              group: LocalTracksCollectionsGroup()),
+          tracksCollection: getDownloadTracksSettings.result!.saveMode == SaveMode.folderForTracksCollection
+              ? LocalTracksCollection(
+                  spotifyId: track.parentCollection.spotifyId,
+                  type: _collectionTypeConverter.convert(track.parentCollection.type),
+                  group: LocalTracksCollectionsGroup(directoryPath: getDownloadTracksSettings.result!.savePath))
+              : LocalTracksCollection.getAllTracksCollection(getDownloadTracksSettings.result!.savePath),
           youtubeUrl: track.youtubeUrl!));
     });
 

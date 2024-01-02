@@ -7,4 +7,11 @@ class LocalTracksCollection {
   final String spotifyId;
   final LocalTracksCollectionType type;
   final LocalTracksCollectionsGroup group;
+
+  static LocalTracksCollection getAllTracksCollection(String directoryPath) {
+    return LocalTracksCollection(
+      group: LocalTracksCollectionsGroup(directoryPath: directoryPath), 
+      spotifyId: 'allTracksCollection', 
+      type: LocalTracksCollectionType.allTracks);
+  }
 }

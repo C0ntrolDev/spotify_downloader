@@ -73,6 +73,8 @@ class DownloadAudioFromYoutubeDataSource {
 
         cancelFunction = cancellationTokenSource.cancel;
 
+        await Directory(args.saveDirectoryPath).create(recursive: true);
+
         final downloadVideoResult =
             await _downloadVideoFromYoutube(downloadStreamInfo, videoPath, setLoadingPercent, token);
 

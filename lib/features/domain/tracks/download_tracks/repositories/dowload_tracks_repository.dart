@@ -7,7 +7,7 @@ import 'package:spotify_downloader/features/domain/tracks/download_tracks/entiti
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 
 abstract class DownloadTracksRepository {
-  Future<Result<Failure, LoadingTrackObserver>> dowloadTrack(TrackWithLazyYoutubeUrl lazyTrack);
+  Future<Result<Failure, LoadingTrackObserver>> dowloadTrack(TrackWithLazyYoutubeUrl lazyTrack, String savePath);
   Result<Failure, void> cancelTrackLoading(Track track);
   Future<Result<Failure, LoadingTrackObserver?>> getLoadingTrackObserver(Track track);
 }

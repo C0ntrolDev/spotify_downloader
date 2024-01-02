@@ -26,7 +26,7 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
   final int _sameTimeloadingTracksLimit = 5;
 
   @override
-  Future<Result<Failure, LoadingTrackObserver>> dowloadTrack(TrackWithLazyYoutubeUrl lazyTrack) async {
+  Future<Result<Failure, LoadingTrackObserver>> dowloadTrack(TrackWithLazyYoutubeUrl lazyTrack, String savePath) async {
     final loadingTrackId = LoadingTrackId(
         parentSpotifyId: lazyTrack.track.parentCollection.spotifyId,
         parentType: lazyTrack.track.parentCollection.type,
@@ -41,7 +41,8 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
     final trackInfo = WaitingInLoadingQueueTrackInfo(
         loadingTrackId: loadingTrackId,
         trackWithLazyYoutubeUrl: lazyTrack,
-        trackLoadingNotifier: trackLoadingNotifier);
+        trackLoadingNotifier: trackLoadingNotifier,
+        savePath: savePath);
 
     if (_loadingTracks.length < _sameTimeloadingTracksLimit) {
       _startTrackLoading(trackInfo);
@@ -125,7 +126,6 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
   }
 
   Future<void> _startTrackLoading(WaitingInLoadingQueueTrackInfo trackInfo) async {
-    const saveDirectoryPath = 'storage/emulated/0/Download/';
     final loadingTrackInfo = LoadingTrackInfo(
         loadingTrackId: trackInfo.loadingTrackId,
         audioLoadingStream: null,
@@ -144,7 +144,7 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
     final loadingStream = await _dowloadAudioFromYoutubeDataSource.dowloadAudioFromYoutube(
         DownloadAudioFromYoutubeArgs(
             youtubeUrl: trackYoutubeUrlResult.result!,
-            saveDirectoryPath: saveDirectoryPath,
+            saveDirectoryPath: trackInfo.savePath,
             audioMetadata: _trackToAudioMetadataConverter.convert(trackInfo.trackWithLazyYoutubeUrl.track)));
 
     loadingStream.onEnded = (result) => _onLoadingStreamEnded(result, trackInfo.trackLoadingNotifier);

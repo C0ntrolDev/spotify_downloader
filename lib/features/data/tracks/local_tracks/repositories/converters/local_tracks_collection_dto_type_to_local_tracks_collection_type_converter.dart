@@ -15,6 +15,8 @@ class LocalTracksCollectionDtoTypeToLocalTracksCollectionTypeConverter
         return LocalTracksCollectionType.album;
       case LocalTracksCollectionDtoType.track:
         return LocalTracksCollectionType.track;
+      case LocalTracksCollectionDtoType.allTracks:
+        return LocalTracksCollectionType.allTracks;
     }
   }
 
@@ -29,6 +31,8 @@ class LocalTracksCollectionDtoTypeToLocalTracksCollectionTypeConverter
         return LocalTracksCollectionDtoType.album;
       case LocalTracksCollectionType.track:
         return LocalTracksCollectionDtoType.track;
+      case LocalTracksCollectionType.allTracks:
+        return LocalTracksCollectionDtoType.allTracks;
     }
   }
 }

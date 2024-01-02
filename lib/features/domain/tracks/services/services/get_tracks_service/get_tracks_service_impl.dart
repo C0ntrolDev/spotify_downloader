@@ -4,9 +4,13 @@ import 'dart:io';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/features/domain/auth/local_auth/repositories/local_full_auth_repository.dart';
+
+import 'package:spotify_downloader/features/domain/settings/enitities/save_mode.dart';
+import 'package:spotify_downloader/features/domain/settings/repository/download_tracks_settings_repository.dart';
 import 'package:spotify_downloader/features/domain/shared/spotify_repository_request.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_track.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_tracks_collection.dart';
+import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_tracks_collection_group.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositories/local_tracks_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_ended_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/services/converters/tracks_collection_type_to_local_tracks_collection_type_converter.dart';
@@ -24,16 +28,19 @@ class GetTracksServiceImpl implements GetTracksService {
       {required NetworkTracksRepository networkTracksRepository,
       required DownloadTracksRepository downloadTracksRepository,
       required LocalTracksRepository localTracksRepository,
-      required LocalFullAuthRepository authRepository})
+      required LocalFullAuthRepository authRepository,
+      required DownloadTracksSettingsRepository downloadTracksSettingsRepository})
       : _networkTracksRepository = networkTracksRepository,
         _downloadTracksRepository = downloadTracksRepository,
         _localTracksRepository = localTracksRepository,
-        _authRepository = authRepository;
+        _authRepository = authRepository,
+        _downloadTracksSettingsRepository = downloadTracksSettingsRepository;
 
   final NetworkTracksRepository _networkTracksRepository;
   final DownloadTracksRepository _downloadTracksRepository;
   final LocalTracksRepository _localTracksRepository;
   final LocalFullAuthRepository _authRepository;
+  final DownloadTracksSettingsRepository _downloadTracksSettingsRepository;
 
   final TracksCollectionTypeToLocalTracksCollectionTypeConverter _collectionTypeConverter =
       TracksCollectionTypeToLocalTracksCollectionTypeConverter();
@@ -93,18 +100,25 @@ class GetTracksServiceImpl implements GetTracksService {
 
   Future<TrackWithLoadingObserver> _findAllInfoAboutTrack(Track track) async {
     final getloadingTrackObserverResult = await _downloadTracksRepository.getLoadingTrackObserver(track);
-    final localTrackResult = await _localTracksRepository.getLocalTrack(
-        LocalTracksCollection(
-            spotifyId: track.parentCollection.spotifyId,
-            type: _collectionTypeConverter.convert(track.parentCollection.type)),
-        track.spotifyId);
 
-    final localTrack = localTrackResult.result;
+    final getDownloadTracksSettings = await _downloadTracksSettingsRepository.getDownloadTracksSettings();
+    if (getDownloadTracksSettings.isSuccessful) {
+      final localTrackResult = await _localTracksRepository.getLocalTrack(
+          getDownloadTracksSettings.result!.saveMode == SaveMode.folderForTracksCollection
+              ? LocalTracksCollection(
+                  spotifyId: track.parentCollection.spotifyId,
+                  type: _collectionTypeConverter.convert(track.parentCollection.type),
+                  group: LocalTracksCollectionsGroup(directoryPath: getDownloadTracksSettings.result!.savePath))
+              : LocalTracksCollection.getAllTracksCollection(getDownloadTracksSettings.result!.savePath),
+          track.spotifyId);
 
-    if (localTrack != null) {
-      if (await _checkLocalTrackToExistence(localTrack)) {
-        track.isLoaded = true;
-        track.youtubeUrl = localTrack.youtubeUrl;
+      final localTrack = localTrackResult.result;
+
+      if (localTrack != null) {
+        if (await _checkLocalTrackToExistence(localTrack)) {
+          track.isLoaded = true;
+          track.youtubeUrl = localTrack.youtubeUrl;
+        }
       }
     }
 
