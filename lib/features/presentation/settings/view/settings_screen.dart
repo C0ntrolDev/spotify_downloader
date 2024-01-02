@@ -49,16 +49,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
         ),
-        Expanded(
+        const Expanded(
             child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(left: homePageHorizontalPadding, right: homePageHorizontalPadding, top: 10),
+            padding: EdgeInsets.only(left: homePageHorizontalPadding, right: homePageHorizontalPadding, top: 10),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              const AuthSettings(),
-              const DownloadTracksSettingsEditor(),
-              Container(
-                height: 10000,
-              )
+              AuthSettings(),
+              DownloadTracksSettingsEditor()
             ]),
           ),
         ))

@@ -104,8 +104,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               AutoRouter.of(context).push(DownloadTracksCollectionRouteWithHistoryTracksCollection(
                                   historyTracksCollection: HistoryTracksCollection.likedTracks));
                             },
-                            image: const AssetImage(
-                              'resources/images/another/liked_tracks.jpg',
+                            image: const NetworkImage(
+                              'https://misc.scdn.co/liked-songs/liked-songs-300.png',
                             ),
                           ),
                         ),
