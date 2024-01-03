@@ -7,6 +7,7 @@ import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/util/permissions/Permissions_manager.dart';
 import 'package:spotify_downloader/features/presentation/permissions_dialog/view/permissions_dialog.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 @RoutePage()
 class MainScreen extends StatefulWidget {
@@ -86,7 +87,7 @@ class _MainScreenState extends State<MainScreen> with AutoRouteAwareStateMixin {
                                       width: 25,
                                       colorFilter: const ColorFilter.mode(onBackgroundPrimaryColor, BlendMode.srcIn),
                                     ),
-                                    label: 'Главная'),
+                                    label: S.of(context).main),
                                 BottomNavigationBarItem(
                                     icon: SvgPicture.asset(
                                       'resources/images/svg/bottom_bar/history_icon.svg',
@@ -100,7 +101,7 @@ class _MainScreenState extends State<MainScreen> with AutoRouteAwareStateMixin {
                                       width: 25,
                                       colorFilter: const ColorFilter.mode(onBackgroundPrimaryColor, BlendMode.srcIn),
                                     ),
-                                    label: 'История'),
+                                    label: S.of(context).history),
                               ]),
                         ),
                       ),

@@ -8,6 +8,7 @@ import 'package:spotify_downloader/features/domain/settings/enitities/save_mode.
 import 'package:spotify_downloader/features/presentation/settings/widgets/download_tracks_settings/bloc/download_tracks_settings_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/setting_with_text_field.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/settings_group.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 class DownloadTracksSettingsEditor extends StatefulWidget {
   const DownloadTracksSettingsEditor({super.key});
@@ -40,14 +41,14 @@ class _DownloadTracksSettingsEditorState extends State<DownloadTracksSettingsEdi
       builder: (context, state) {
         if (state is! DownloadTracksSettingsChanged) return Container();
         return SettingsGroup(
-          header: 'Загрузка',
+          header: S.of(context).download,
           settings: [
             Row(
               children: [
                 Expanded(
                     child: SettingWithTextField(
                   key: ObjectKey(state.downloadTracksSettings.savePath),
-                  title: 'Место хранения',
+                  title: S.of(context).storagePath,
                   value: state.downloadTracksSettings.savePath,
                   onChangedValueSubmitted: (newSavePath) {
                     _bloc.add(DownloadTracksSettingsChangeSavePath(savePath: newSavePath));
@@ -78,7 +79,7 @@ class _DownloadTracksSettingsEditorState extends State<DownloadTracksSettingsEdi
                         .add(const DownloadTracksSettingsChangeSaveMode(saveMode: SaveMode.folderForTracksCollection));
                   }
                 },
-                title: 'Сохранять все в одной папке')
+                title: S.of(context).saveAllInOneFolder)
           ],
         );
       },

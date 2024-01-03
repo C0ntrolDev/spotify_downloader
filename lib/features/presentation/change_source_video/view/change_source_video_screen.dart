@@ -7,6 +7,7 @@ import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 import 'package:spotify_downloader/features/presentation/change_source_video/bloc/change_source_video_bloc.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 @RoutePage<String?>()
 class ChangeSourceVideoScreen extends StatefulWidget {
@@ -71,7 +72,7 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
                       Padding(
                           padding: const EdgeInsets.only(left: 10),
                           child: Text(
-                            'Изменить источник загрузки',
+                            S.of(context).changeTheDownloadSource,
                             style: theme.textTheme.titleSmall,
                           )),
                     ],
@@ -118,7 +119,7 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
                                                 style: theme.textTheme.bodyMedium,
                                               ),
                                               Text(
-                                                '${formatViewsCount(video.viewsCount)} просмотров',
+                                                S.of(context).nView(formatViewsCount(video.viewsCount)),
                                                 style: theme.textTheme.labelMedium
                                                     ?.copyWith(color: onBackgroundSecondaryColor),
                                               ),
@@ -146,14 +147,14 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'С соединением что-то не так',
+                            S.of(context).theresSomethingWrongWithConnection,
                             style: theme.textTheme.titleLarge,
                           ),
                           TextButton(
                               style: TextButton.styleFrom(foregroundColor: primaryColor),
                               onPressed: () {},
                               child: Text(
-                                'Попробовать снова',
+                                S.of(context).tryAgain,
                                 style: theme.textTheme.bodyMedium?.copyWith(color: primaryColor),
                               ))
                         ],
@@ -189,9 +190,9 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
     }
 
     if (likesCount < 1000000) {
-      return '${likesCount ~/ 1000} тыс';
+      return S.of(context).nThousands(likesCount ~/ 1000);
     }
 
-    return '${likesCount ~/ 1000000} млн';
+    return S.of(context).nMillions(likesCount ~/ 1000000);
   }
 }

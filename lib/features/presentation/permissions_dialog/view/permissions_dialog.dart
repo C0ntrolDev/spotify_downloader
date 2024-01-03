@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/features/presentation/permissions_dialog/widgets/permission_tile.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 showPermissonsDialog(BuildContext context, FutureOr<bool> Function() onRequestButtonClicked) {
   final theme = Theme.of(context);
@@ -15,22 +16,22 @@ showPermissonsDialog(BuildContext context, FutureOr<bool> Function() onRequestBu
           shadowColor: Colors.transparent,
           elevation: 0,
           title: Text(
-            'Предоставьте разрешения',
+            S.of(context).grantPermissions,
             style: theme.textTheme.titleMedium,
             maxLines: 2,
           ),
           insetPadding: const EdgeInsets.symmetric(horizontal: 20),
           contentPadding: const EdgeInsets.fromLTRB(10, 12, 10, 16),
           children: [
-            const PermissionTile(
+            PermissionTile(
               icon: Icons.folder,
-              text: 'Для сохранения музыки в любое место на вашем телефоне, приложению нужно разрешение на работу с хранилищем',
+              text: S.of(context).storagePermissionText,
             ),
-            const Padding(
-              padding: EdgeInsets.only(top: 15),
+            Padding(
+              padding: const EdgeInsets.only(top: 15),
               child: PermissionTile(
                 icon: Icons.notifications,
-                text: 'Для уведомления вас о загрузки, приложению нужен доступ к отправке уведомлений',
+                text: S.of(context).notificationsPermissionText,
               ),
             ),
             Padding(
@@ -46,7 +47,7 @@ showPermissonsDialog(BuildContext context, FutureOr<bool> Function() onRequestBu
                         }
                       },
                       child: Text(
-                        'Предоставить доступ',
+                        S.of(context).grant,
                         style: theme.textTheme.bodySmall?.copyWith(color: onPrimaryColor),
                       )),
                   ElevatedButton(
@@ -55,7 +56,7 @@ showPermissonsDialog(BuildContext context, FutureOr<bool> Function() onRequestBu
                         AutoRouter.of(context).pop();
                       },
                       child: Text(
-                        'Отказать',
+                        S.of(context).refuse,
                         style: theme.textTheme.bodySmall?.copyWith(color: onPrimaryColor),
                       ))
                 ],

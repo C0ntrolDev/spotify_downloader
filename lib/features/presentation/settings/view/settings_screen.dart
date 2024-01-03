@@ -1,13 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/features/presentation/home/view/home_screen.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/view/auth_settings.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/download_tracks_settings/view/download_tracks_settings_editor.dart';
+import 'package:spotify_downloader/features/presentation/settings/widgets/language_setting/view/language_setting.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/settings_group.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 @RoutePage()
 class SettingsScreen extends StatefulWidget {
@@ -46,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child: Text(
-                      'Настройки',
+                      S.of(context).settings,
                       style: theme.textTheme.titleSmall,
                     )),
               ],
@@ -60,7 +61,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               const AuthSettings(),
               const DownloadTracksSettingsEditor(),
-              SettingsGroup(header: 'Иное', settings: [
+              SettingsGroup(header: S.of(context).other, settings: [
+                const LanguageSetting(),
                 SizedBox(
                   height: 40,
                   child: InkWell(
@@ -70,12 +72,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onTap: () {
                       AutoRouter.of(context).push(const AboutAppRoute());
                     },
-                    child: const Row(
+                    child: Row(
                       children: [
                         Expanded(
-                          child: Text('О приложении'),
+                          child: Text(S.of(context).aboutApp),
                         ),
-                        Icon(
+                        const Icon(
                           Icons.info_outline_rounded,
                           color: onBackgroundSecondaryColor,
                           size: 30,

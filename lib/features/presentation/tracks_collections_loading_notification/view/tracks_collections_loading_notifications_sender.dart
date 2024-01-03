@@ -5,6 +5,7 @@ import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/notifications/notifications.dart';
 import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notification/bloc/tracks_collections_loading_notifications_bloc.dart';
 import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notification/bloc_entities/tracks_collections_loading_info.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 class TracksCollectionsLoadingNotificationsSender {
   final TracksCollectionsLoadingNotificationsBloc _bloc = injector.get<TracksCollectionsLoadingNotificationsBloc>();
@@ -42,8 +43,9 @@ class TracksCollectionsLoadingNotificationsSender {
               id: messageId,
               channelKey: mainChannelKey,
               actionType: ActionType.Default,
-              title: 'Идет загрузка треков',
-              body: 'Всего: ${info.totalTracks} | Загружено: ${info.loadedTracks} | Ошибка: ${info.failuredTracks} | $progress%',
+              title: S.current.tracksAreBeingLoaded,
+              body: S.current
+                  .tracksAreBeingLoadedBody(info.totalTracks, info.loadedTracks, info.failuredTracks, progress),
               summary: '^_^',
               notificationLayout: NotificationLayout.ProgressBar,
               progress: progress));
@@ -53,8 +55,8 @@ class TracksCollectionsLoadingNotificationsSender {
               id: messageId,
               channelKey: mainChannelKey,
               actionType: ActionType.Default,
-              title: 'Все треки загружены',
-              body: 'Загружено: ${info.loadedTracks} | Ошибка: ${info.failuredTracks}',
+              title: S.current.allTracksAreLoaded,
+              body: S.current.allTracksAreLoadedBody(info.loadedTracks, info.failuredTracks),
               summary: '^_^',
               notificationLayout: NotificationLayout.Default));
     }

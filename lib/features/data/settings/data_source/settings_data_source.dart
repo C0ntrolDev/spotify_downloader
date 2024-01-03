@@ -30,14 +30,15 @@ class SettingsDataSource {
   }
 
   String _appSettingsToJson(AppSettings appSettings) {
-    return jsonEncode({'saveMode': appSettings.saveMode, 'savePath': appSettings.savePath});
+    return jsonEncode(
+        {'saveMode': appSettings.saveMode, 'savePath': appSettings.savePath, 'language': appSettings.language});
   }
 
   Result<Failure, AppSettings?> _appSettingsFromJson(String jsonData) {
     final decodedData = jsonDecode(jsonData);
     try {
-      return Result.isSuccessful(
-          AppSettings(saveMode: decodedData['saveMode'], savePath: decodedData['savePath']));
+      return Result.isSuccessful(AppSettings(
+          saveMode: decodedData['saveMode'], savePath: decodedData['savePath'], language: decodedData['language']));
     } catch (e) {
       return Result.notSuccessful(Failure(message: e));
     }

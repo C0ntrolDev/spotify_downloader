@@ -7,7 +7,7 @@ import 'package:spotify_downloader/features/data/auth/local_auth/repository/loca
 import 'package:spotify_downloader/features/data/auth/network_auth/data_source/network_auth_data_source.dart';
 import 'package:spotify_downloader/features/data/auth/network_auth/repository/network_auth_repository_impl.dart';
 import 'package:spotify_downloader/features/data/settings/data_source/settings_data_source.dart';
-import 'package:spotify_downloader/features/data/settings/repository/settings_repository.dart';
+import 'package:spotify_downloader/features/data/settings/repository/settings_repository_impl.dart';
 import 'package:spotify_downloader/features/data/spotify_profile/data_source/spotify_profile_data_source.dart';
 import 'package:spotify_downloader/features/data/spotify_profile/repository/spotify_profile_repository_impl.dart';
 import 'package:spotify_downloader/features/data/tracks/local_tracks/data_sources/local_tracks_data_source.dart';
@@ -35,8 +35,12 @@ import 'package:spotify_downloader/features/domain/auth/service/service/auth_ser
 import 'package:spotify_downloader/features/domain/auth/service/service/auth_service_impl.dart';
 import 'package:spotify_downloader/features/domain/auth/service/use_cases/authorize_user.dart';
 import 'package:spotify_downloader/features/domain/settings/repository/download_tracks_settings_repository.dart';
+import 'package:spotify_downloader/features/domain/settings/repository/language_settings_repository.dart';
+import 'package:spotify_downloader/features/domain/settings/use_cases/get_available_languages.dart';
 import 'package:spotify_downloader/features/domain/settings/use_cases/get_download_tracks_settings.dart';
+import 'package:spotify_downloader/features/domain/settings/use_cases/get_language.dart';
 import 'package:spotify_downloader/features/domain/settings/use_cases/save_download_tracks_setting.dart';
+import 'package:spotify_downloader/features/domain/settings/use_cases/save_language.dart';
 import 'package:spotify_downloader/features/domain/spotify_profile/repository/spotify_profile_repostitory.dart';
 import 'package:spotify_downloader/features/domain/spotify_profile/service/spotify_profile_service.dart';
 import 'package:spotify_downloader/features/domain/spotify_profile/service/spotify_profile_service_impl.dart';
@@ -86,6 +90,7 @@ import 'package:spotify_downloader/features/presentation/home/widgets/loading_tr
 import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/account_auth/account_auth_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/client_auth/client_auth_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/download_tracks_settings/bloc/download_tracks_settings_bloc.dart';
+import 'package:spotify_downloader/features/presentation/settings/widgets/language_setting/bloc/language_setting_bloc.dart';
 import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notification/bloc/tracks_collections_loading_notifications_bloc.dart';
 
 final injector = GetIt.instance;
@@ -146,8 +151,9 @@ void _provideRepositories() {
   injector.registerSingleton<LocalClientAuthRepository>(localAuthRepository);
   injector.registerSingleton<LocalFullAuthRepository>(localAuthRepository);
 
-  final settingsRepository = SettingsRepository(settingsDataSource: injector.get<SettingsDataSource>());
+  final settingsRepository = SettingsRepositoryImpl(settingsDataSource: injector.get<SettingsDataSource>());
   injector.registerSingleton<DownloadTracksSettingsRepository>(settingsRepository);
+  injector.registerSingleton<LanguageSettingsRepository>(settingsRepository);
 
   injector.registerSingleton<NetworkTracksCollectionsService>(NetworkTracksCollectionsServiceImpl(
       networkTracksCollectionsRepository: injector.get<NetworkTracksCollectionsRepository>(),
@@ -219,6 +225,13 @@ void _provideUseCases() {
       GetDownloadTracksSettings(downloadTracksSettingsRepository: injector.get<DownloadTracksSettingsRepository>()));
   injector.registerFactory<SaveDownloadTracksSettings>(() =>
       SaveDownloadTracksSettings(downloadTracksSettingsRepository: injector.get<DownloadTracksSettingsRepository>()));
+
+  injector.registerFactory<GetLanguage>(
+      () => GetLanguage(languageSettingsRepository: injector.get<LanguageSettingsRepository>()));
+  injector.registerFactory<GetAvailableLanguages>(
+      () => GetAvailableLanguages(languageSettingsRepository: injector.get<LanguageSettingsRepository>()));
+  injector.registerFactory<SaveLanguage>(
+      () => SaveLanguage(languageSettingsRepository: injector.get<LanguageSettingsRepository>()));
 }
 
 void _provideBlocs() {
@@ -274,4 +287,9 @@ void _provideBlocs() {
   injector.registerFactory<DownloadTracksSettingsBloc>(() => DownloadTracksSettingsBloc(
       getDownloadTracksSettings: injector.get<GetDownloadTracksSettings>(),
       saveDownloadTracksSetting: injector.get<SaveDownloadTracksSettings>()));
+
+  injector.registerFactory<LanguageSettingBloc>(() => LanguageSettingBloc(
+      getLanguage: injector.get<GetLanguage>(),
+      saveLanguage: injector.get<SaveLanguage>(),
+      getAvailableLanguages: injector.get<GetAvailableLanguages>()));
 }

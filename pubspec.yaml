@@ -7,7 +7,6 @@ version: 1.0.0+1
 environment:
   sdk: '>=3.1.4 <4.0.0'
 
-
 dependencies:
   flutter:
     sdk: flutter
@@ -33,10 +32,14 @@ dependencies:
   draggable_scrollbar: ^0.1.0
   modal_bottom_sheet: 3.0.0-pre
   awesome_notifications_core: ^0.8.1
-  awesome_notifications: ^0.8.3
+  awesome_notifications: ^0.8.2
   file_picker: ^6.1.1
   device_info_plus: ^9.1.1
   permission_handler: ^11.1.0
+  intl: ^0.18.1
+  flutter_localizations:
+        sdk: flutter
+  dropdown_button2: ^2.3.9
 
 dev_dependencies:
   flutter_test:
@@ -44,7 +47,6 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   auto_route_generator: ^7.3.2
   build_runner: ^2.4.6
-
 
 flutter:
 
@@ -79,3 +81,5 @@ flutter:
           weight: 700
         - asset: resources/fonts/OpenSans-ExtraBold.ttf
           weight: 800
+flutter_intl: 
+  enabled: true

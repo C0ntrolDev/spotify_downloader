@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/features/presentation/home/view/home_screen.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 @RoutePage()
 class AboutAppScreen extends StatelessWidget {
@@ -35,7 +36,7 @@ class AboutAppScreen extends StatelessWidget {
                 Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child: Text(
-                      'О приложении',
+                      S.of(context).aboutApp,
                       style: theme.textTheme.titleSmall,
                     )),
               ],
@@ -56,7 +57,7 @@ class AboutAppScreen extends StatelessWidget {
                       Align(
                           alignment: Alignment.bottomLeft,
                           child: Text(
-                            'Разработано',
+                            S.of(context).developed,
                             style: theme.textTheme.bodyLarge,
                           )),
                       Container(
@@ -74,7 +75,7 @@ class AboutAppScreen extends StatelessWidget {
                           Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              'Благодарности',
+                              S.of(context).specialThanks,
                               style: theme.textTheme.bodyLarge,
                             ),
                           ),

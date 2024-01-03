@@ -9,6 +9,7 @@ import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_status_tile/cubit/download_track_info_status_tile_cubit.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_tile.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 class DownloadTrackInfoStatusTile extends StatefulWidget {
   const DownloadTrackInfoStatusTile({super.key, required this.trackWithLoadingObserver});
@@ -42,14 +43,14 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
         switch (state) {
           case DownloadTrackInfoStatusTileDeffault():
             return DownloadTrackInfoTile(
-                title: 'Трек не загружен',
+                title: S.of(context).theTrackIsNotLoaded,
                 iconWidget: SvgPicture.asset('resources/images/svg/track_tile/download_icon.svg',
                     height: 23,
                     width: 23,
                     colorFilter: const ColorFilter.mode(onSurfacePrimaryColor, BlendMode.srcIn)));
           case DownloadTrackInfoStatusTileLoading():
             return DownloadTrackInfoTile(
-              title: 'Трек загружается: ${state.percent != null ? formatDouble(state.percent!) : '...'}%',
+              title: S.of(context).theTrackIsLoading(state.percent != null ? formatDouble(state.percent!) : '...'),
               iconWidget: Container(
                 padding: const EdgeInsets.all(0),
                 height: 23,
@@ -70,13 +71,14 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
 
           case DownloadTrackInfoStatusTileLoaded():
             return DownloadTrackInfoTile(
-                title: 'Трек загружен',
+                title: S.of(context).theTrackIsLoaded,
                 iconWidget: SvgPicture.asset('resources/images/svg/track_tile/downloaded_icon.svg',
                     height: 23, width: 23, colorFilter: const ColorFilter.mode(primaryColor, BlendMode.srcIn)));
           case DownloadTrackInfoStatusTileFailure():
             return DownloadTrackInfoTile(
                 title:
-                    'Ошибка загрузки: ${state.failure is NetworkFailure ? 'отсутствует соединение' : state.failure?.message ?? '...'}',
+                    S.of(context).downloadError(state.failure is NetworkFailure ? S.of(context).noConnection : state.failure?.message ?? '...'),
+                    
                 iconWidget: SvgPicture.asset('resources/images/svg/track_tile/error_icon.svg',
                     height: 23, width: 23, colorFilter: const ColorFilter.mode(errorPrimaryColor, BlendMode.srcIn)));
         }

@@ -19,6 +19,7 @@ import 'package:spotify_downloader/features/presentation/download_tracks_collect
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/network_failure_splash.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/view/track_tile.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile_placeholder.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 import 'dart:math' as math;
 
 import '../widgets/tracks_collection_manage_bar.dart';
@@ -335,9 +336,9 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
 
   void _onFatalFailure(Failure? failure) {
     if (failure is NotFoundFailure) {
-      showBigTextSnackBar('По данному url не было ничего найдено', context, const Duration(seconds: 3));
+      showBigTextSnackBar(S.of(context).nothingWasFoundAtThisUrl, context, const Duration(seconds: 3));
     } else if (failure is NotAuthorizedFailure) {
-      showBigTextSnackBar('Для доступа необходимо авторизоваться', context, const Duration(seconds: 3));
+      showBigTextSnackBar(S.of(context).toAccessYouNeedToLogIn, context, const Duration(seconds: 3));
     } else {
       showSmallTextSnackBar(failure.toString(), context, const Duration(seconds: 3));
     }

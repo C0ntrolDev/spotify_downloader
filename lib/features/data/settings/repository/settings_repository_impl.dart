@@ -5,9 +5,10 @@ import 'package:spotify_downloader/features/data/settings/models/app_settings.da
 import 'package:spotify_downloader/features/domain/settings/enitities/download_tracks_settings.dart';
 import 'package:spotify_downloader/features/domain/settings/enitities/save_mode.dart';
 import 'package:spotify_downloader/features/domain/settings/repository/download_tracks_settings_repository.dart';
+import 'package:spotify_downloader/features/domain/settings/repository/language_settings_repository.dart';
 
-class SettingsRepository implements DownloadTracksSettingsRepository {
-  SettingsRepository({required SettingsDataSource settingsDataSource}) : _settingsDataSource = settingsDataSource;
+class SettingsRepositoryImpl implements DownloadTracksSettingsRepository, LanguageSettingsRepository {
+  SettingsRepositoryImpl({required SettingsDataSource settingsDataSource}) : _settingsDataSource = settingsDataSource;
 
   final SettingsDataSource _settingsDataSource;
   AppSettings? _currentSettings;
@@ -30,11 +31,38 @@ class SettingsRepository implements DownloadTracksSettingsRepository {
       return Result.notSuccessful(getSettingsResult.failure);
     }
 
-    final newSettings = AppSettings(savePath: downloadTracksSettings.savePath, saveMode: downloadTracksSettings.saveMode.index);
-    
+    final newSettings = AppSettings(
+        savePath: downloadTracksSettings.savePath,
+        saveMode: downloadTracksSettings.saveMode.index,
+        language: getSettingsResult.result!.language);
+
     _currentSettings = newSettings;
     await _settingsDataSource.saveSettings(newSettings);
-        
+
+    return const Result.isSuccessful(null);
+  }
+
+  @override
+  Future<Result<Failure, String>> getLanguage() async {
+    final getSettingsResult = await _getSettings();
+    if (!getSettingsResult.isSuccessful) {
+      return Result.notSuccessful(getSettingsResult.failure);
+    }
+
+    return Result.isSuccessful(getSettingsResult.result!.language);
+  }
+
+  @override
+  Future<Result<Failure, void>> saveLanguage(String language) async {
+    final getSettingsResult = await _getSettings();
+    if (!getSettingsResult.isSuccessful) {
+      return Result.notSuccessful(getSettingsResult.failure);
+    }
+
+    _settingsDataSource.saveSettings(AppSettings(
+        savePath: getSettingsResult.result!.savePath,
+        saveMode: getSettingsResult.result!.saveMode,
+        language: language));
     return const Result.isSuccessful(null);
   }
 
@@ -53,5 +81,10 @@ class SettingsRepository implements DownloadTracksSettingsRepository {
     }
 
     return Result.isSuccessful(_currentSettings);
+  }
+
+  @override
+  Future<Result<Failure, List<String>>> getAvailableLanguage() async {
+    return const Result.isSuccessful(['en', 'ru']);
   }
 }

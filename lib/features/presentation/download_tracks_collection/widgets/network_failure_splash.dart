@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 class NetworkFailureSplash extends StatelessWidget {
   const NetworkFailureSplash({super.key, required this.onRetryAgainButtonClicked});
@@ -14,14 +15,14 @@ class NetworkFailureSplash extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'С соединением что-то не так',
+          S.of(context).theresSomethingWrongWithConnection,
           style: theme.textTheme.titleLarge,
         ),
         TextButton(
             style: TextButton.styleFrom(foregroundColor: primaryColor),
             onPressed: onRetryAgainButtonClicked,
             child: Text(
-              'Попробовать снова',
+              S.of(context).tryAgain,
               style: theme.textTheme.bodyMedium?.copyWith(color: primaryColor),
             ))
       ],

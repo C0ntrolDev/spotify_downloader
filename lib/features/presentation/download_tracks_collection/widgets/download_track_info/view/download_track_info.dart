@@ -12,6 +12,7 @@ import 'package:spotify_downloader/features/domain/tracks/services/entities/trac
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/bloc/download_track_info_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_status_tile/view/download_track_info_status_tile.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_tile.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 void showDownloadTrackInfoBottomSheet(BuildContext context, TrackWithLoadingObserver trackWithLoadingObserver) {
   showModalBottomSheet(
@@ -124,21 +125,21 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                 const Divider(color: onSurfaceSecondaryColor, height: 20),
                 DownloadTrackInfoStatusTile(trackWithLoadingObserver: state.trackWithLoadingObserver),
                 DownloadTrackInfoTile(
-                    title: 'Ссылка на источник',
+                    title: S.of(context).linkToTheSource,
                     iconWidget: SvgPicture.asset('resources/images/svg/download_track_info/reference_icon.svg',
                         height: 23,
                         width: 23,
                         colorFilter: const ColorFilter.mode(onSurfaceSecondaryColor, BlendMode.srcIn)),
                     onTap: () async {
                       if (state.trackWithLoadingObserver.track.youtubeUrl != null) {
-                        showSnackBar('Url скопирован!', context);
+                        showSnackBar(S.of(context).urlCopied, context);
                         await Clipboard.setData(ClipboardData(text: state.trackWithLoadingObserver.track.youtubeUrl!));
                       } else {
-                        showSnackBar('Url не выбран', context);
+                        showSnackBar(S.of(context).urlNotSelected, context);
                       }
                     }),
                 DownloadTrackInfoTile(
-                  title: 'Изменить источник',
+                  title: S.of(context).changeTheSource,
                   iconWidget: SvgPicture.asset('resources/images/svg/download_track_info/edit_icon.svg',
                       height: 23,
                       width: 23,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/search_text_field.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 class TracksCollectionManageBar extends StatelessWidget {
   final void Function(String newQuery) _onFilterQueryChanged;
@@ -24,7 +25,7 @@ class TracksCollectionManageBar extends StatelessWidget {
             onChanged: _onFilterQueryChanged,
             height: 35,
             cornerRadius: 10,
-            hintText: 'Поиск по названию',
+            hintText: S.of(context).searchByName,
             textStyle: theme.textTheme.bodySmall?.copyWith(color: onPrimaryColor),
             hintStyle: theme.textTheme.bodySmall?.copyWith(color: onSearchFieldColor),
           ),
@@ -38,7 +39,7 @@ class TracksCollectionManageBar extends StatelessWidget {
             style: ButtonStyle(
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))),
-            child: Text('Скачать все', style: theme.textTheme.bodySmall!.copyWith(color: onPrimaryColor)),
+            child: Text(S.of(context).downloadAll, style: theme.textTheme.bodySmall!.copyWith(color: onPrimaryColor)),
           ),
         )
       ],

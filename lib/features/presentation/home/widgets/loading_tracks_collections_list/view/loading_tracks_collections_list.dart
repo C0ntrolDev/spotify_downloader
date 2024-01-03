@@ -6,6 +6,7 @@ import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/bloc/loading_tracks_collections_list_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/widgets/loading_tracks_collection_tile/view/loading_tracks_collection_tile.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 class LoadingTracksCollectionsList extends StatefulWidget {
   const LoadingTracksCollectionsList({super.key});
@@ -58,14 +59,15 @@ class _LoadingTracksCollectionsListState extends State<LoadingTracksCollectionsL
 
               if (blocState is LoadingTracksCollectionsListFailure) {
                 return Text(
-                    'Ошибка загрузки активных треков: ${blocState.failure?.message.toString() ?? 'the message isn\'t specified'}',
+                    S.of(context).errorOccurredWhileLoadingActiveDownloads(
+                        blocState.failure?.message.toString() ?? 'the message isn\'t specified'),
                     style: theme.textTheme.labelLarge?.copyWith(color: onBackgroundSecondaryColor));
               }
 
               if (blocState is LoadingTracksCollectionsListLoaded) {
                 if (currentList.isEmpty) {
                   return Center(
-                    child: Text('Ничего не загружается   ^_^',
+                    child: Text(S.of(context).tracksDontLoad,
                         style: theme.textTheme.labelLarge?.copyWith(color: onBackgroundSecondaryColor)),
                   );
                 }
