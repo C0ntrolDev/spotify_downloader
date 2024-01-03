@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/notifications/notifications.dart';
 import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notification/bloc/tracks_collections_loading_notifications_bloc.dart';
@@ -46,7 +45,6 @@ class TracksCollectionsLoadingNotificationsSender {
               title: 'Идет загрузка треков',
               body: 'Всего: ${info.totalTracks} | Загружено: ${info.loadedTracks} | Ошибка: ${info.failuredTracks} | $progress%',
               summary: '^_^',
-              backgroundColor: primaryColor,
               notificationLayout: NotificationLayout.ProgressBar,
               progress: progress));
     } else {
@@ -58,7 +56,6 @@ class TracksCollectionsLoadingNotificationsSender {
               title: 'Все треки загружены',
               body: 'Загружено: ${info.loadedTracks} | Ошибка: ${info.failuredTracks}',
               summary: '^_^',
-              backgroundColor: primaryColor,
               notificationLayout: NotificationLayout.Default));
     }
   }

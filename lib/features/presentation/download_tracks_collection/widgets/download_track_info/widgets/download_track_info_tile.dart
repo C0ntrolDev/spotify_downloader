@@ -34,9 +34,12 @@ class _DownloadTrackInfoTileState extends State<DownloadTrackInfoTile> {
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.only(left: 15),
-              child: Text(
-                widget.title,
-                style: theme.textTheme.bodyMedium?.copyWith(color: onSurfacePrimaryColor),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  widget.title,
+                  style: theme.textTheme.bodyMedium?.copyWith(color: onSurfacePrimaryColor),
+                ),
               ),
             ))
           ],

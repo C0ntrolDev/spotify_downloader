@@ -160,7 +160,8 @@ class DownloadAudioFromYoutubeDataSource {
       if (await videoFile.exists()) {
         await videoFile.delete();
       }
-
+      
+      await videoFile.create();
       final videoFileStream = videoFile.openWrite();
 
       late final StreamSubscription<List<int>> downloadStreamListener;

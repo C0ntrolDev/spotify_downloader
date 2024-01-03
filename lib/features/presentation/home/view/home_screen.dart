@@ -1,13 +1,14 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/entities/history_tracks_collection.dart';
+import 'package:spotify_downloader/features/presentation/home/widgets/liked_tracks_tile.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/view/loading_tracks_collections_list.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/search_text_field.dart';
-import '../widgets/liked_tracks_tile.dart';
 
 const homePageHorizontalPadding = 15.0;
 
@@ -101,10 +102,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             theme: theme,
                             title: 'Любимые треки',
                             onTapped: () {
-                              AutoRouter.of(context).push(DownloadTracksCollectionRouteWithHistoryTracksCollection(
-                                  historyTracksCollection: HistoryTracksCollection.likedTracks));
+                               AutoRouter.of(context).push(DownloadTracksCollectionRouteWithHistoryTracksCollection(
+                                   historyTracksCollection: HistoryTracksCollection.likedTracks));
                             },
-                            image: const NetworkImage(
+                            image: const CachedNetworkImageProvider(
                               'https://misc.scdn.co/liked-songs/liked-songs-300.png',
                             ),
                           ),

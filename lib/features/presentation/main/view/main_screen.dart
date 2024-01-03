@@ -4,6 +4,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
+import 'package:spotify_downloader/core/di/injector.dart';
+import 'package:spotify_downloader/core/util/permissions/Permissions_manager.dart';
+import 'package:spotify_downloader/features/presentation/permissions_dialog/view/permissions_dialog.dart';
 
 @RoutePage()
 class MainScreen extends StatefulWidget {
@@ -14,6 +17,19 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> with AutoRouteAwareStateMixin {
+  final PermissionsManager _permissionsManager = injector.get<PermissionsManager>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future(() async {
+        if (!(await _permissionsManager.isPermissionsGranted()) && context.mounted) {
+          showPermissonsDialog(context, _permissionsManager.requestPermissions);
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
