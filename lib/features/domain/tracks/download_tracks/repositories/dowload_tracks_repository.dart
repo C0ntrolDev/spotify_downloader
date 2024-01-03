@@ -8,6 +8,6 @@ import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.
 
 abstract class DownloadTracksRepository {
   Future<Result<Failure, LoadingTrackObserver>> dowloadTrack(TrackWithLazyYoutubeUrl lazyTrack, String savePath);
-  Result<Failure, void> cancelTrackLoading(Track track);
-  Future<Result<Failure, LoadingTrackObserver?>> getLoadingTrackObserver(Track track);
+  Result<Failure, void> cancelTrackLoading(Track track, String savePat);
+  Future<Result<Failure, LoadingTrackObserver?>> getLoadingTrackObserver(Track track, String savePath);
 }

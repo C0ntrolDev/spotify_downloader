@@ -1,17 +1,17 @@
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
 import 'package:spotify_downloader/core/util/use_case/use_case.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/services/download_tracks_service/download_tracks_service.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
-import 'package:spotify_downloader/features/domain/tracks/download_tracks/repositories/dowload_tracks_repository.dart';
 
 class CancelTrackLoading implements UseCase<Failure, void, Track> {
-  CancelTrackLoading({required DownloadTracksRepository dowloadTracksRepository})
-      : _dowloadTracksRepository = dowloadTracksRepository;
+  CancelTrackLoading({required DownloadTracksService dowloadTracksService})
+      : _dowloadTracksService = dowloadTracksService;
 
-  final DownloadTracksRepository _dowloadTracksRepository;
+  final DownloadTracksService _dowloadTracksService;
 
   @override
   Future<Result<Failure, void>> call(Track track) async {
-    return _dowloadTracksRepository.cancelTrackLoading(track);
+    return _dowloadTracksService.cancelTrackLoading(track);
   }
 }

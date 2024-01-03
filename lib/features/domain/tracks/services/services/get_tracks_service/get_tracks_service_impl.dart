@@ -13,7 +13,8 @@ import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/entities/local_tracks_collection_group.dart';
 import 'package:spotify_downloader/features/domain/tracks/local_tracks/repositories/local_tracks_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/entities/tracks_getting_ended_status.dart';
-import 'package:spotify_downloader/features/domain/tracks/services/services/converters/tracks_collection_type_to_local_tracks_collection_type_converter.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/services/tools/save_path_generator.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/services/tools/tracks_collection_type_to_local_tracks_collection_type_converter.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/services/get_tracks_service/get_tracks_service.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/repositories/dowload_tracks_repository.dart';
@@ -44,6 +45,7 @@ class GetTracksServiceImpl implements GetTracksService {
 
   final TracksCollectionTypeToLocalTracksCollectionTypeConverter _collectionTypeConverter =
       TracksCollectionTypeToLocalTracksCollectionTypeConverter();
+  final SavePathGenerator _savePathGenerator = SavePathGenerator();
 
   @override
   Future<Result<Failure, TracksWithLoadingObserverGettingObserver>> getTracksWithLoadingObserversFromTracksColleciton(
@@ -99,10 +101,12 @@ class GetTracksServiceImpl implements GetTracksService {
   }
 
   Future<TrackWithLoadingObserver> _findAllInfoAboutTrack(Track track) async {
-    final getloadingTrackObserverResult = await _downloadTracksRepository.getLoadingTrackObserver(track);
-
     final getDownloadTracksSettings = await _downloadTracksSettingsRepository.getDownloadTracksSettings();
     if (getDownloadTracksSettings.isSuccessful) {
+      final trackSavePath = _savePathGenerator.generateSavePath(track, getDownloadTracksSettings.result!);
+      final getloadingTrackObserverResult =
+          await _downloadTracksRepository.getLoadingTrackObserver(track, trackSavePath);
+
       final localTrackResult = await _localTracksRepository.getLocalTrack(
           getDownloadTracksSettings.result!.saveMode == SaveMode.folderForTracksCollection
               ? LocalTracksCollection(
@@ -120,9 +124,11 @@ class GetTracksServiceImpl implements GetTracksService {
           track.youtubeUrl = localTrack.youtubeUrl;
         }
       }
+
+      return TrackWithLoadingObserver(track: track, loadingObserver: getloadingTrackObserverResult.result);
     }
 
-    return TrackWithLoadingObserver(track: track, loadingObserver: getloadingTrackObserverResult.result);
+    return TrackWithLoadingObserver(track: track, loadingObserver: null);
   }
 
   Future<bool> _checkLocalTrackToExistence(LocalTrack localTrack) async {

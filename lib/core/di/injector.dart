@@ -57,7 +57,7 @@ import 'package:spotify_downloader/features/domain/tracks_collections/history_tr
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/use_cases/add_tracks_collection_to_history.dart';
 import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/use_cases/get_ordered_history.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/repositories/dowload_tracks_repository.dart';
-import 'package:spotify_downloader/features/domain/tracks/download_tracks/use_cases/cancel_track_loading.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/use_cases/cancel_track_loading.dart';
 import 'package:spotify_downloader/features/domain/tracks/network_tracks/repositories/network_tracks_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/repositories/search_videos_by_track_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
@@ -193,7 +193,7 @@ void _provideUseCases() {
   injector.registerFactory<GetVideoByUrl>(
       () => GetVideoByUrl(searchVideosByTrackRepository: injector.get<SearchVideosByTrackRepository>()));
   injector.registerFactory<CancelTrackLoading>(
-      () => CancelTrackLoading(dowloadTracksRepository: injector.get<DownloadTracksRepository>()));
+      () => CancelTrackLoading(dowloadTracksService: injector.get<DownloadTracksService>()));
   injector.registerFactory<DownloadTrack>(
       () => DownloadTrack(downloadTracksService: injector.get<DownloadTracksService>()));
   injector.registerFactory<DownloadTracksRange>(

@@ -1,9 +1,6 @@
-import 'package:path/path.dart' as p;
-
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
-import 'package:spotify_downloader/core/util/util_methods.dart';
 import 'package:spotify_downloader/features/domain/settings/enitities/save_mode.dart';
 import 'package:spotify_downloader/features/domain/settings/repository/download_tracks_settings_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
@@ -19,7 +16,8 @@ import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading
 import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/repositories/search_videos_by_track_repository.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/entities/tracks_with_loading_observer_getting_observer.dart';
-import 'package:spotify_downloader/features/domain/tracks/services/services/converters/tracks_collection_type_to_local_tracks_collection_type_converter.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/services/tools/save_path_generator.dart';
+import 'package:spotify_downloader/features/domain/tracks/services/services/tools/tracks_collection_type_to_local_tracks_collection_type_converter.dart';
 import 'package:spotify_downloader/features/domain/tracks/services/services/download_tracks_service/download_tracks_service.dart';
 import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 
@@ -44,6 +42,7 @@ class DownloadTracksServiceImpl implements DownloadTracksService {
 
   final TracksCollectionTypeToLocalTracksCollectionTypeConverter _collectionTypeConverter =
       TracksCollectionTypeToLocalTracksCollectionTypeConverter();
+  final SavePathGenerator _savePathGenerator = SavePathGenerator();
 
   @override
   Future<Result<Failure, void>> downloadTracksFromGettingObserver(
@@ -82,14 +81,7 @@ class DownloadTracksServiceImpl implements DownloadTracksService {
       return Result.notSuccessful(getDownloadTracksSettings.failure);
     }
 
-    late final String trackSavePath;
-    if (getDownloadTracksSettings.result!.saveMode == SaveMode.folderForTracksCollection) {
-      trackSavePath =
-          p.join(getDownloadTracksSettings.result!.savePath, formatStringToFileFormat(track.parentCollection.name));
-    } else {
-      trackSavePath = p.join(getDownloadTracksSettings.result!.savePath, '_AllTracks');
-    }
-
+    final String trackSavePath = _savePathGenerator.generateSavePath(track, getDownloadTracksSettings.result!);
     final resultTrackObsever = await _dowloadTracksRepository.dowloadTrack(
         TrackWithLazyYoutubeUrl(
             track: track,
@@ -124,5 +116,16 @@ class DownloadTracksServiceImpl implements DownloadTracksService {
     _observeTracksLoadingRepository.observeLoadingTrack(serviceTrackObserver, track);
 
     return resultTrackObsever;
+  }
+
+  @override
+  Future<Result<Failure, void>> cancelTrackLoading(Track track) async {
+    final getDownloadTracksSettings = await _downloadTracksSettingsRepository.getDownloadTracksSettings();
+    if (!getDownloadTracksSettings.isSuccessful) {
+      return Result.notSuccessful(getDownloadTracksSettings.failure);
+    }
+
+    final trackSavePath = _savePathGenerator.generateSavePath(track, getDownloadTracksSettings.result!);
+    return _dowloadTracksRepository.cancelTrackLoading(track, trackSavePath);
   }
 }

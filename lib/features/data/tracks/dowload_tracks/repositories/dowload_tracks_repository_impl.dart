@@ -30,9 +30,10 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
     final loadingTrackId = LoadingTrackId(
         parentSpotifyId: lazyTrack.track.parentCollection.spotifyId,
         parentType: lazyTrack.track.parentCollection.type,
-        spotifyId: lazyTrack.track.spotifyId);
+        spotifyId: lazyTrack.track.spotifyId,
+        savePath: savePath);
 
-    final alreadyLoadingTrackObserver = (await getLoadingTrackObserver(lazyTrack.track)).result;
+    final alreadyLoadingTrackObserver = (await getLoadingTrackObserver(lazyTrack.track, savePath)).result;
     if (alreadyLoadingTrackObserver != null) {
       return Result.isSuccessful(alreadyLoadingTrackObserver);
     }
@@ -41,8 +42,7 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
     final trackInfo = WaitingInLoadingQueueTrackInfo(
         loadingTrackId: loadingTrackId,
         trackWithLazyYoutubeUrl: lazyTrack,
-        trackLoadingNotifier: trackLoadingNotifier,
-        savePath: savePath);
+        trackLoadingNotifier: trackLoadingNotifier,);
 
     if (_loadingTracks.length < _sameTimeloadingTracksLimit) {
       _startTrackLoading(trackInfo);
@@ -54,11 +54,12 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
   }
 
   @override
-  Result<Failure, void> cancelTrackLoading(Track track) {
+  Result<Failure, void> cancelTrackLoading(Track track, String savePath) {
     final loadingTrackId = LoadingTrackId(
         parentSpotifyId: track.parentCollection.spotifyId,
         parentType: track.parentCollection.type,
-        spotifyId: track.spotifyId);
+        spotifyId: track.spotifyId,
+        savePath: savePath);
 
     final foundLoadingTrack = _loadingTracks.where((e) => e.loadingTrackId == loadingTrackId).firstOrNull;
     if (foundLoadingTrack != null && foundLoadingTrack.audioLoadingStream != null) {
@@ -80,11 +81,12 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
   }
 
   @override
-  Future<Result<Failure, LoadingTrackObserver?>> getLoadingTrackObserver(Track track) async {
+  Future<Result<Failure, LoadingTrackObserver?>> getLoadingTrackObserver(Track track, String savePat) async {
     final loadingTrackId = LoadingTrackId(
         parentSpotifyId: track.parentCollection.spotifyId,
         parentType: track.parentCollection.type,
-        spotifyId: track.spotifyId);
+        spotifyId: track.spotifyId,
+        savePath: savePat);
 
     final queueLoadingTrack = _loadingTracksQueue.where((e) => e.loadingTrackId == loadingTrackId).firstOrNull;
     if (queueLoadingTrack != null) {
@@ -144,7 +146,7 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
     final loadingStream = await _dowloadAudioFromYoutubeDataSource.dowloadAudioFromYoutube(
         DownloadAudioFromYoutubeArgs(
             youtubeUrl: trackYoutubeUrlResult.result!,
-            saveDirectoryPath: trackInfo.savePath,
+            saveDirectoryPath: trackInfo.loadingTrackId.savePath,
             audioMetadata: _trackToAudioMetadataConverter.convert(trackInfo.trackWithLazyYoutubeUrl.track)));
 
     loadingStream.onEnded = (result) => _onLoadingStreamEnded(result, trackInfo.trackLoadingNotifier);

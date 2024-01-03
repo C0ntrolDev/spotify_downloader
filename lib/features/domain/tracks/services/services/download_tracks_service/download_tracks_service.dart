@@ -12,4 +12,6 @@ abstract class DownloadTracksService {
 
   Future<Result<Failure, void>> downloadTracksFromGettingObserver(
       TracksWithLoadingObserverGettingObserver tracksWithLoadingObserverGettingObserver);
+  
+  Future<Result<Failure , void>> cancelTrackLoading(Track track);
 }
