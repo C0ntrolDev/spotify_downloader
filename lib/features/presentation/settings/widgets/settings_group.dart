@@ -20,7 +20,8 @@ class _SettingsGroupState extends State<SettingsGroup> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
+          Container(
+            alignment: Alignment.topLeft,
             padding: const EdgeInsets.only(bottom: 20),
             child: Text(
               widget.header,

@@ -15,6 +15,12 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    AboutAppRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const AboutAppScreen(),
+      );
+    },
     ChangeSourceVideoRoute.name: (routeData) {
       final args = routeData.argsAs<ChangeSourceVideoRouteArgs>();
       return AutoRoutePage<String?>(
@@ -71,6 +77,20 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
   };
+}
+
+/// generated route for
+/// [AboutAppScreen]
+class AboutAppRoute extends PageRouteInfo<void> {
+  const AboutAppRoute({List<PageRouteInfo>? children})
+      : super(
+          AboutAppRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AboutAppRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for

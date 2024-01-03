@@ -1,9 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:spotify_downloader/core/app/colors/colors.dart';
+import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/features/presentation/home/view/home_screen.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/view/auth_settings.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/download_tracks_settings/view/download_tracks_settings_editor.dart';
+import 'package:spotify_downloader/features/presentation/settings/widgets/settings_group.dart';
 
 @RoutePage()
 class SettingsScreen extends StatefulWidget {
@@ -49,13 +53,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
         ),
-        const Expanded(
+        Expanded(
             child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.only(left: homePageHorizontalPadding, right: homePageHorizontalPadding, top: 10),
+            padding: const EdgeInsets.only(left: homePageHorizontalPadding, right: homePageHorizontalPadding, top: 10),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              AuthSettings(),
-              DownloadTracksSettingsEditor()
+              const AuthSettings(),
+              const DownloadTracksSettingsEditor(),
+              SettingsGroup(header: 'Иное', settings: [
+                SizedBox(
+                  height: 40,
+                  child: InkWell(
+                    splashFactory: NoSplash.splashFactory,
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: () {
+                      AutoRouter.of(context).push(const AboutAppRoute());
+                    },
+                    child: const Row(
+                      children: [
+                        Expanded(
+                          child: Text('О приложении'),
+                        ),
+                        Icon(
+                          Icons.info_outline_rounded,
+                          color: onBackgroundSecondaryColor,
+                          size: 30,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ])
             ]),
           ),
         ))
