@@ -1,7 +1,8 @@
 # flutter pub run flutter_launcher_icons
 flutter_launcher_icons:
   image_path: "resources/images/app_icons/main_icon.png"
-
+  adaptive_icon_background: "#1cd761"
+  adaptive_icon_foreground: "resources/images/app_icons/main_icon.png"
   adaptive_icon_monochrome: "resources/images/app_icons/monochrome_icon.png"
   min_sdk_android: 21
 
