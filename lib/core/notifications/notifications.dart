@@ -13,7 +13,7 @@ Future<void> initAwesomeNotifications() async {
             channelKey: 'main_channel',
             channelName: 'Main notifications',
             channelDescription: ']',
-            defaultColor: Colors.red,
+            defaultColor: primaryColor,
             ledColor: Colors.white)
       ],
       channelGroups: [NotificationChannelGroup(channelGroupKey: 'main_channel_group', channelGroupName: 'Main group')],
