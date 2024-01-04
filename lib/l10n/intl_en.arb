@@ -51,7 +51,7 @@
   "other": "Other",
   "tracksAreBeingLoaded": "Tracks are being loaded",
   "allTracksAreLoaded": "All tracks are loaded",
-  "tracksAreBeingLoadedBody": "All: {total} | Loaded: {loaded} | Failured: {failure} | {percent}%",
+  "tracksAreBeingLoadedBody": "Total: {total} | Loaded: {loaded} | Failured: {failure} | {percent}%",
   "allTracksAreLoadedBody": "Loaded: {loaded} | Failured: {failured}",
   "developed": "Developed",
   "language": "Language"

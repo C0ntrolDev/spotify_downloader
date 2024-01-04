@@ -570,11 +570,11 @@ class S {
     );
   }
 
-  /// `All: {total} | Loaded: {loaded} | Failured: {failure} | {percent}%`
+  /// `Total: {total} | Loaded: {loaded} | Failured: {failure} | {percent}%`
   String tracksAreBeingLoadedBody(
       Object total, Object loaded, Object failure, Object percent) {
     return Intl.message(
-      'All: $total | Loaded: $loaded | Failured: $failure | $percent%',
+      'Total: $total | Loaded: $loaded | Failured: $failure | $percent%',
       name: 'tracksAreBeingLoadedBody',
       desc: '',
       args: [total, loaded, failure, percent],

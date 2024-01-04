@@ -37,7 +37,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m6(percent) => "Track is loading: ${percent}%";
 
   static String m7(total, loaded, failure, percent) =>
-      "All: ${total} | Loaded: ${loaded} | Failured: ${failure} | ${percent}%";
+      "Total: ${total} | Loaded: ${loaded} | Failured: ${failure} | ${percent}%";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
