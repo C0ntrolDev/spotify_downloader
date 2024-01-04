@@ -6,14 +6,14 @@ const String mainChannelKey = 'main_channel';
 
 Future<void> initAwesomeNotifications() async {
   await AwesomeNotifications().initialize(
-      null,
+      'resource://drawable/monochrome_icon',
       [
         NotificationChannel(
             channelGroupKey: 'main_channel_group',
             channelKey: 'main_channel',
             channelName: 'Main notifications',
             channelDescription: ']',
-            defaultColor: primaryColor,
+            defaultColor: Colors.red,
             ledColor: Colors.white)
       ],
       channelGroups: [NotificationChannelGroup(channelGroupKey: 'main_channel_group', channelGroupName: 'Main group')],

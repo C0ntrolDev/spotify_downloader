@@ -7,7 +7,7 @@ import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_tracks_collection_status.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/repository/loading_tracks_collections_observer.dart';
 import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/use_cases/get_loading_tracks_collections_observer.dart';
-import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notification/bloc_entities/tracks_collections_loading_info.dart';
+import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notifications/bloc_entities/tracks_collections_loading_info.dart';
 
 part 'tracks_collections_loading_notifications_event.dart';
 part 'tracks_collections_loading_notifications_state.dart';

@@ -91,7 +91,7 @@ import 'package:spotify_downloader/features/presentation/settings/widgets/auth_s
 import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/client_auth/client_auth_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/download_tracks_settings/bloc/download_tracks_settings_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/language_setting/bloc/language_setting_bloc.dart';
-import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notification/bloc/tracks_collections_loading_notifications_bloc.dart';
+import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notifications/bloc/tracks_collections_loading_notifications_bloc.dart';
 
 final injector = GetIt.instance;
 

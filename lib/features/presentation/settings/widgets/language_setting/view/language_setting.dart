@@ -71,9 +71,9 @@ class _LanguageSettingState extends State<LanguageSetting> {
 
                       return null;
                     }),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    height: 40,
-                    width: 140,
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    height: 40, 
+                    width: 120,
                   ),
                   menuItemStyleData: MenuItemStyleData(
                     overlayColor: MaterialStateProperty.resolveWith((state) {
@@ -83,8 +83,8 @@ class _LanguageSettingState extends State<LanguageSetting> {
 
                       return null;
                     }),
-                    height: 30,
-                  ),
+                    height: 40,
+                  )
                 ),
               ),
             ],
