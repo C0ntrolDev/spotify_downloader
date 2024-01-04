@@ -35,11 +35,7 @@ class SettingsRepositoryImpl implements DownloadTracksSettingsRepository, Langua
         savePath: downloadTracksSettings.savePath,
         saveMode: downloadTracksSettings.saveMode.index,
         language: getSettingsResult.result!.language);
-
-    _currentSettings = newSettings;
-    await _settingsDataSource.saveSettings(newSettings);
-
-    return const Result.isSuccessful(null);
+    return _saveSettings(newSettings);
   }
 
   @override
@@ -59,11 +55,11 @@ class SettingsRepositoryImpl implements DownloadTracksSettingsRepository, Langua
       return Result.notSuccessful(getSettingsResult.failure);
     }
 
-    _settingsDataSource.saveSettings(AppSettings(
+    final newSettings = AppSettings(
         savePath: getSettingsResult.result!.savePath,
         saveMode: getSettingsResult.result!.saveMode,
-        language: language));
-    return const Result.isSuccessful(null);
+        language: language);
+    return _saveSettings(newSettings);
   }
 
   Future<Result<Failure, AppSettings>> _getSettings() async {
@@ -81,6 +77,12 @@ class SettingsRepositoryImpl implements DownloadTracksSettingsRepository, Langua
     }
 
     return Result.isSuccessful(_currentSettings);
+  }
+
+  Future<Result<Failure, void>> _saveSettings(AppSettings newSettings) async {
+    _currentSettings = newSettings;
+    await _settingsDataSource.saveSettings(newSettings);
+    return const Result.isSuccessful(null);
   }
 
   @override
