@@ -350,10 +350,10 @@ class S {
     );
   }
 
-  /// `Main`
+  /// `Home`
   String get main {
     return Intl.message(
-      'Main',
+      'Home',
       name: 'main',
       desc: '',
       args: [],

@@ -81,7 +81,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Link to the source"),
         "logIn": MessageLookupByLibrary.simpleMessage("Log in"),
         "logOut": MessageLookupByLibrary.simpleMessage("Log out"),
-        "main": MessageLookupByLibrary.simpleMessage("Main"),
+        "main": MessageLookupByLibrary.simpleMessage("Home"),
         "nMillions": m3,
         "nThousands": m4,
         "nView": m5,
