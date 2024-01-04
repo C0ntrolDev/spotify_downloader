@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter/material.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/notifications/notifications.dart';
@@ -46,7 +45,6 @@ class TracksCollectionsLoadingNotificationsSender {
               channelKey: mainChannelKey,
               actionType: ActionType.Default,
               title: S.current.tracksAreBeingLoaded,
-              color: Colors.black,
               backgroundColor: primaryColor,
               body: S.current
                   .tracksAreBeingLoadedBody(info.totalTracks, info.loadedTracks, info.failuredTracks, progress),
@@ -56,11 +54,12 @@ class TracksCollectionsLoadingNotificationsSender {
     } else {
       AwesomeNotifications().createNotification(
           content: NotificationContent(
+              icon: 'resource://drawable/monochrome_icon',
+              largeIcon: 'resource://drawable/monochrome_icon',
               id: messageId,
               channelKey: mainChannelKey,
               actionType: ActionType.Default,
               title: S.current.allTracksAreLoaded,
-              color: Colors.black,
               backgroundColor: primaryColor,
               body: S.current.allTracksAreLoadedBody(info.loadedTracks, info.failuredTracks),
               summary: '^_^',
