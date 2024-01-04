@@ -40,8 +40,6 @@ dependencies:
   flutter_localizations:
         sdk: flutter
   dropdown_button2: ^2.3.9
-  flutter_launcher_icons: ^0.13.1
-  flutter_native_splash: ^2.3.9
 
 dev_dependencies:
   flutter_test:

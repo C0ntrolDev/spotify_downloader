@@ -54,8 +54,6 @@ class TracksCollectionsLoadingNotificationsSender {
     } else {
       AwesomeNotifications().createNotification(
           content: NotificationContent(
-              icon: 'resource://drawable/monochrome_icon',
-              largeIcon: 'resource://drawable/monochrome_icon',
               id: messageId,
               channelKey: mainChannelKey,
               actionType: ActionType.Default,
