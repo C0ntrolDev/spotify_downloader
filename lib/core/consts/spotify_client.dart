@@ -1,2 +1,3 @@
-const clientId = '6bbc592f2e4f4030b827563640609dbc';
-const clientSecret = '3b1a82e64eb44bcda2a80afc879ed6a8';
+const deffaultClientId = 'e6187f63ef044f3cb72b5cb6707b66a9';
+const deffaultClientSecret = '2dd4ff57587e4029938bcef3ec258b34';
+const clientScopes = ['playlist-read-private', 'user-library-read', 'user-read-email', 'user-read-private'];

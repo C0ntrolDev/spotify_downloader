@@ -3,15 +3,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
+import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
+import 'package:spotify_downloader/core/di/injector.dart';
+import 'package:spotify_downloader/core/util/permissions/Permissions_manager.dart';
+import 'package:spotify_downloader/features/presentation/permissions_dialog/view/permissions_dialog.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 @RoutePage()
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> with AutoRouteAwareStateMixin {
+  final PermissionsManager _permissionsManager = injector.get<PermissionsManager>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future(() async {
+        if (!(await _permissionsManager.isPermissionsGranted()) && context.mounted) {
+          showPermissonsDialog(context, _permissionsManager.requestPermissions);
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return AutoTabsRouter(
         routes: const [HomeRoute(), HistoryRoute()],
+        navigatorObservers: () => [AutoRouteObserver()],
         builder: (context, child) {
           final tabsRouter = AutoTabsRouter.of(context);
           return Scaffold(
@@ -36,46 +61,49 @@ class MainScreen extends StatelessWidget {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: BottomNavigationBar(
-                            enableFeedback: false,
-                            selectedFontSize: 10,
-                            unselectedFontSize: 10,
-                            selectedItemColor: onBackgroundPrimaryColor,
-                            unselectedItemColor: onBackgroundSecondaryColor,
-                            elevation: 0,
-                            backgroundColor: Colors.transparent,
-                            currentIndex: tabsRouter.activeIndex,
-                            onTap: (index) => tabsRouter.setActiveIndex(index),
-                            items: [
-                              BottomNavigationBarItem(
-                                  icon: SvgPicture.asset(
-                                    'resources/images/svg/bottom_bar/home_icon.svg',
-                                    height: 25,
-                                    width: 25,
-                                    colorFilter: const ColorFilter.mode(onBackgroundSecondaryColor, BlendMode.srcIn),
-                                  ),
-                                  activeIcon: SvgPicture.asset(
-                                    'resources/images/svg/bottom_bar/home_icon_active.svg',
-                                    height: 25,
-                                    width: 25,
-                                    colorFilter: const ColorFilter.mode(onBackgroundPrimaryColor, BlendMode.srcIn),
-                                  ),
-                                  label: 'Главная'),
-                              BottomNavigationBarItem(
-                                  icon: SvgPicture.asset(
-                                    'resources/images/svg/bottom_bar/history_icon.svg',
-                                    height: 25,
-                                    width: 25,
-                                    colorFilter: const ColorFilter.mode(onBackgroundSecondaryColor, BlendMode.srcIn),
-                                  ),
-                                  activeIcon: SvgPicture.asset(
-                                    'resources/images/svg/bottom_bar/history_icon_active.svg',
-                                    height: 25,
-                                    width: 25,
-                                    colorFilter: const ColorFilter.mode(onBackgroundPrimaryColor, BlendMode.srcIn),
-                                  ),
-                                  label: 'История'),
-                            ]),
+                        child: SizedBox(
+                          height: bottomNavigationBarHeight,
+                          child: BottomNavigationBar(
+                              enableFeedback: false,
+                              selectedFontSize: 10,
+                              unselectedFontSize: 10,
+                              selectedItemColor: onBackgroundPrimaryColor,
+                              unselectedItemColor: onBackgroundSecondaryColor,
+                              elevation: 0,
+                              backgroundColor: Colors.transparent,
+                              currentIndex: tabsRouter.activeIndex,
+                              onTap: (index) => tabsRouter.setActiveIndex(index),
+                              items: [
+                                BottomNavigationBarItem(
+                                    icon: SvgPicture.asset(
+                                      'resources/images/svg/bottom_bar/home_icon.svg',
+                                      height: 25,
+                                      width: 25,
+                                      colorFilter: const ColorFilter.mode(onBackgroundSecondaryColor, BlendMode.srcIn),
+                                    ),
+                                    activeIcon: SvgPicture.asset(
+                                      'resources/images/svg/bottom_bar/home_icon_active.svg',
+                                      height: 25,
+                                      width: 25,
+                                      colorFilter: const ColorFilter.mode(onBackgroundPrimaryColor, BlendMode.srcIn),
+                                    ),
+                                    label: S.of(context).main),
+                                BottomNavigationBarItem(
+                                    icon: SvgPicture.asset(
+                                      'resources/images/svg/bottom_bar/history_icon.svg',
+                                      height: 25,
+                                      width: 25,
+                                      colorFilter: const ColorFilter.mode(onBackgroundSecondaryColor, BlendMode.srcIn),
+                                    ),
+                                    activeIcon: SvgPicture.asset(
+                                      'resources/images/svg/bottom_bar/history_icon_active.svg',
+                                      height: 25,
+                                      width: 25,
+                                      colorFilter: const ColorFilter.mode(onBackgroundPrimaryColor, BlendMode.srcIn),
+                                    ),
+                                    label: S.of(context).history),
+                              ]),
+                        ),
                       ),
                     ),
                   ),

@@ -17,6 +17,29 @@ final mainTheme = ThemeData(
           return onBackgroundSecondaryColor;
         }
       })),
+  switchTheme: SwitchThemeData(
+    trackColor: MaterialStateProperty.resolveWith((states) {
+      if (!states.contains(MaterialState.selected)) {
+        return onBackgroundSecondaryColor;
+      } else {
+        return null;
+      }
+    }),
+    thumbColor: MaterialStateProperty.resolveWith((states) {
+      if (!states.contains(MaterialState.selected)) {
+        return onBackgroundThirdRateColor;
+      } else {
+        return null;
+      }
+    }),
+    trackOutlineColor: MaterialStateProperty.resolveWith((states) {
+      if (!states.contains(MaterialState.selected)) {
+        return onBackgroundThirdRateColor;
+      } else {
+        return Colors.transparent;
+      }
+    }),
+  ),
   scaffoldBackgroundColor: backgroundColor,
   pageTransitionsTheme: const PageTransitionsTheme(builders: {
     TargetPlatform.android: CupertinoPageTransitionsBuilder(),
@@ -42,6 +65,7 @@ final mainTheme = ThemeData(
       titleLarge: _titleLarge,
       titleMedium: _titleMedium,
       titleSmall: _titleSmall,
+      bodyLarge: _bodyLarge,
       bodyMedium: _bodyMedium,
       bodySmall: _bodySmall,
       labelLarge: _labelLarge,
@@ -51,3 +75,34 @@ final mainTheme = ThemeData(
     selectionHandleColor: primaryColor,
   ),
 );
+
+void showBigTextSnackBar(String message, BuildContext context, [Duration duration = const Duration(seconds: 2)]) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    content: Column(
+      children: [
+        Text(
+          message,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(overflow: TextOverflow.visible),
+        ),
+      ],
+    ),
+    duration: duration,
+  ));
+}
+
+void showSmallTextSnackBar(String message, BuildContext context, [Duration duration = const Duration(seconds: 2)]) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+    content: Column(
+      children: [
+        Text(
+          message,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(overflow: TextOverflow.visible),
+        ),
+      ],
+    ),
+    duration: duration,
+  ));
+}

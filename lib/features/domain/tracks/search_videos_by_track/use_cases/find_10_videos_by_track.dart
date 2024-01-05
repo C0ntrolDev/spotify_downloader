@@ -13,6 +13,6 @@ class Find10VideosByTrack implements UseCase<Failure, List<Video>, Track> {
 
   @override
   Future<Result<Failure, List<Video>>> call(Track track) {
-    return _searchVideosByTrackRepository.find10VideosByTrack(track);
+    return _searchVideosByTrackRepository.findVideosByTrack(track, 10);
   }
 }

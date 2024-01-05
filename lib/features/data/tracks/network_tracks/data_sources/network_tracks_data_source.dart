@@ -1,35 +1,27 @@
-import 'dart:io';
-import 'package:http/http.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/failures/failures.dart';
 import 'package:spotify_downloader/core/util/isolate_pool/isolate_pool.dart';
 import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/core/util/util_methods.dart';
 import 'package:spotify_downloader/features/data/tracks/network_tracks/models/get_tracks_args.dart';
 import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tracks_dto_getting_ended_status.dart';
 import 'package:spotify_downloader/features/data/tracks/network_tracks/models/tracks_getting_stream.dart';
 
 class NetworkTracksDataSource {
-  NetworkTracksDataSource({required String clientId, required String clientSecret})
-      : _clientId = clientId,
-        _clientSecret = clientSecret;
-
   Future<void> init() async {
     _isolatePool = await IsolatePool.create();
   }
 
-  final String _clientId;
-  final String _clientSecret;
-
   late final IsolatePool _isolatePool;
 
   Future<TracksGettingStream> getTracksFromPlaylist(GetTracksArgs args) {
-    return _runTracksGettingFunctionInIsolate(() {
+    return _runTracksGettingFunctionInIsolate((isolateOnCredentialsRefreshed) {
       final tracksGettingStream = TracksGettingStream();
 
       Future(() async {
-        final tracksPagesResult = await _handleExceptions<Pages<Track>>(() async {
-          final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
+        final tracksPagesResult = await handleSpotifyClientExceptions<Pages<Track>>(() async {
+          final spotify = await SpotifyApi.asyncFromCredentials(args.spotifyApiRequest.spotifyApiCredentials,
+              onCredentialsRefreshed: isolateOnCredentialsRefreshed);
           final trackPages = spotify.playlists.getTracksByPlaylistId(args.spotifyId);
           return Result.isSuccessful(trackPages);
         });
@@ -48,16 +40,17 @@ class NetworkTracksDataSource {
       });
 
       return tracksGettingStream;
-    });
+    }, args.spotifyApiRequest.onCredentialsRefreshed);
   }
 
   Future<TracksGettingStream> getTracksFromAlbum(GetTracksArgs args) {
-    return _runTracksGettingFunctionInIsolate(() {
+    return _runTracksGettingFunctionInIsolate((isolateOnCredentialsRefreshed) {
       final tracksGettingStream = TracksGettingStream();
 
       Future(() async {
-        final tracksPagesResult = await _handleExceptions<Pages<TrackSimple>>(() async {
-          final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
+        final tracksPagesResult = await handleSpotifyClientExceptions<Pages<TrackSimple>>(() async {
+          final spotify = await SpotifyApi.asyncFromCredentials(args.spotifyApiRequest.spotifyApiCredentials,
+              onCredentialsRefreshed: isolateOnCredentialsRefreshed);
           final trackPages = spotify.albums.tracks(args.spotifyId);
           return Result.isSuccessful(trackPages);
         });
@@ -66,8 +59,9 @@ class NetworkTracksDataSource {
           tracksGettingStream.onEnded?.call(Result.notSuccessful(tracksPagesResult.failure));
         }
 
-        final albumResult = await _handleExceptions<Album>(() async {
-          final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
+        final albumResult = await handleSpotifyClientExceptions<Album>(() async {
+          final spotify = await SpotifyApi.asyncFromCredentials(args.spotifyApiRequest.spotifyApiCredentials,
+              onCredentialsRefreshed: isolateOnCredentialsRefreshed);
           final album = await spotify.albums.get(args.spotifyId);
           return Result.isSuccessful(album);
         });
@@ -86,7 +80,7 @@ class NetworkTracksDataSource {
       });
 
       return tracksGettingStream;
-    });
+    }, args.spotifyApiRequest.onCredentialsRefreshed);
   }
 
   Track _trackSimpleToTrack(TrackSimple trackSimple, Album album) {
@@ -98,12 +92,44 @@ class NetworkTracksDataSource {
     return track;
   }
 
+  Future<TracksGettingStream> getLikedTracks(GetTracksArgs args) {
+    return _runTracksGettingFunctionInIsolate((isolateOnCredentialsRefreshed) {
+      final tracksGettingStream = TracksGettingStream();
+
+      Future(() async {
+        final tracksPagesResult = await handleSpotifyClientExceptions<Pages<TrackSaved>>(() async {
+          final spotify = await SpotifyApi.asyncFromCredentials(args.spotifyApiRequest.spotifyApiCredentials,
+              onCredentialsRefreshed: isolateOnCredentialsRefreshed);
+          final trackPages = spotify.tracks.me.saved;
+          return Result.isSuccessful(trackPages);
+        });
+
+        if (tracksPagesResult.isSuccessful) {
+          _getTracksFromPages(
+              getPageTracks: (limit, offset) async {
+                final page = await tracksPagesResult.result!.getPage(limit, offset);
+                return page.items
+                    ?.where((savedTrack) => savedTrack.track != null)
+                    .map((savedTrack) => savedTrack.track!);
+              },
+              tracksGettingStream: tracksGettingStream,
+              args: args);
+        } else {
+          tracksGettingStream.onEnded?.call(Result.notSuccessful(tracksPagesResult.failure));
+        }
+      });
+
+      return tracksGettingStream;
+    }, args.spotifyApiRequest.onCredentialsRefreshed);
+  }
+
   TracksGettingStream getTrackBySpotifyId(GetTracksArgs args) {
     final tracksGettingStream = TracksGettingStream();
 
     Future(() async {
-      final result = await _handleExceptions<Track>(() async {
-        final spotify = await SpotifyApi.asyncFromCredentials(SpotifyApiCredentials(_clientId, _clientSecret));
+      final result = await handleSpotifyClientExceptions<Track>(() async {
+        final spotify = await SpotifyApi.asyncFromCredentials(args.spotifyApiRequest.spotifyApiCredentials,
+            onCredentialsRefreshed: args.spotifyApiRequest.onCredentialsRefreshed);
         final track = await spotify.tracks.get(args.spotifyId);
         return Result.isSuccessful(track);
       });
@@ -120,21 +146,29 @@ class NetworkTracksDataSource {
     return tracksGettingStream;
   }
 
-  Future<TracksGettingStream> _runTracksGettingFunctionInIsolate(TracksGettingStream Function() function) async {
+  Future<TracksGettingStream> _runTracksGettingFunctionInIsolate(
+      TracksGettingStream Function(void Function(SpotifyApiCredentials)? onCredentialsRefreshed) function,
+      [void Function(SpotifyApiCredentials)? onCredentialsRefreshed]) async {
     final tracksGettingStream = TracksGettingStream();
 
     final cancellableStream = await _isolatePool.add((sendPort, params, token) async {
-      final isolateTracksGettingStream = function.call();
+      final isolateTracksGettingStream = function.call((newCredentials) => sendPort.send(newCredentials));
       isolateTracksGettingStream.onPartGot = (part) => sendPort.send(part);
       isolateTracksGettingStream.onEnded = (result) => sendPort.send(result);
     }, null);
     cancellableStream.stream.listen((message) {
       if (message is List<Track>) {
         tracksGettingStream.onPartGot?.call(message);
+        return;
       }
 
       if (message is Result<Failure, TracksDtoGettingEndedStatus>) {
         tracksGettingStream.onEnded?.call(message);
+        return;
+      }
+
+      if (message is SpotifyApiCredentials) {
+        onCredentialsRefreshed?.call(message);
       }
     });
 
@@ -156,7 +190,7 @@ class NetworkTracksDataSource {
           return;
         }
 
-        final newTracksResult = await _handleExceptions<Iterable<Track>?>(() async {
+        final newTracksResult = await handleSpotifyClientExceptions<Iterable<Track>?>(() async {
           final responseTracks = await getPageTracks.call(50, i * 50 + args.offset);
           return Result.isSuccessful(responseTracks);
         });
@@ -177,7 +211,7 @@ class NetworkTracksDataSource {
         callbackTracks.addAll(newTracks);
 
         if (callbackTracks.length >= (isFirstCallbackInvoked ? args.callbackLength : args.firstCallbackLength)) {
-          if (isFirstCallbackInvoked == false) {
+          if (!isFirstCallbackInvoked) {
             isFirstCallbackInvoked = true;
           }
 
@@ -189,23 +223,5 @@ class NetworkTracksDataSource {
 
       tracksGettingStream.onEnded?.call(const Result.isSuccessful(TracksDtoGettingEndedStatus.loaded));
     });
-  }
-
-  Future<Result<Failure, T>> _handleExceptions<T>(Future<Result<Failure, T>> Function() function) async {
-    try {
-      final result = await function();
-      return result;
-    } on SpotifyException catch (e) {
-      if (e.status == 404) {
-        return Result.notSuccessful(NotFoundFailure(message: e));
-      }
-      return Result.notSuccessful(Failure(message: e));
-    } on ClientException catch (e) {
-      return Result.notSuccessful(NetworkFailure(message: e));
-    } on SocketException catch (e) {
-      return Result.notSuccessful(NetworkFailure(message: e));
-    } catch (e) {
-      return Result.notSuccessful(Failure(message: e));
-    }
   }
 }

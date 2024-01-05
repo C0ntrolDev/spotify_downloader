@@ -7,7 +7,6 @@ version: 1.0.0+1
 environment:
   sdk: '>=3.1.4 <4.0.0'
 
-
 dependencies:
   flutter:
     sdk: flutter
@@ -25,13 +24,22 @@ dependencies:
   palette_generator: ^0.3.3+3
   quiver: ^3.2.1
   ffmpeg_kit_flutter_full: ^6.0.3
-  youtube_explode_dart: ^2.0.2
+  youtube_explode_dart: ^2.0.4
   metadata_god: ^0.5.2
   cached_network_image: ^3.3.0
   path: ^1.8.3
-  shimmer: ^3.0.0
   connectivity_plus: ^5.0.2
   draggable_scrollbar: ^0.1.0
+  modal_bottom_sheet: 3.0.0-pre
+  awesome_notifications_core: ^0.8.1
+  awesome_notifications: ^0.8.2
+  file_picker: ^6.1.1
+  device_info_plus: ^9.1.1
+  permission_handler: ^11.1.0
+  intl: ^0.18.1
+  flutter_localizations:
+        sdk: flutter
+  dropdown_button2: ^2.3.9
 
 dev_dependencies:
   flutter_test:
@@ -40,40 +48,28 @@ dev_dependencies:
   auto_route_generator: ^7.3.2
   build_runner: ^2.4.6
 
-
 flutter:
 
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - resources/images/svg/bottom_bar/history_icon_active.svg
     - resources/images/svg/bottom_bar/history_icon.svg
     - resources/images/svg/bottom_bar/home_icon_active.svg
     - resources/images/svg/bottom_bar/home_icon.svg
-    - resources/images/svg/download_icon.svg
-    - resources/images/svg/error_icon.svg
-    - resources/images/svg/downloaded_icon.svg
+    - resources/images/svg/track_tile/cancel_icon.svg
+    - resources/images/svg/track_tile/reload_icon.svg
+    - resources/images/svg/track_tile/download_icon.svg
+    - resources/images/svg/track_tile/error_icon.svg
+    - resources/images/svg/track_tile/downloaded_icon.svg
+    - resources/images/svg/track_tile/more_info.svg
+    - resources/images/svg/download_track_info/reference_icon.svg
+    - resources/images/svg/download_track_info/edit_icon.svg
     - resources/images/svg/settings_icon.svg
     - resources/images/svg/search_icon.svg
-    - resources/images/svg/more_info.svg
     - resources/images/svg/back_icon.svg
-    - resources/images/another/liked_tracks.jpg
     - resources/images/another/loading_track_collection_image.png
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
 
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware
-
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/assets-and-images/#from-packages
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
   fonts:
     - family: OpenSans
       fonts:
@@ -85,5 +81,5 @@ flutter:
           weight: 700
         - asset: resources/fonts/OpenSans-ExtraBold.ttf
           weight: 800
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+flutter_intl: 
+  enabled: true

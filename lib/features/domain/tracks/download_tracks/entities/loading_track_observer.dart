@@ -1,31 +1,43 @@
+import 'dart:async';
+
 import 'package:spotify_downloader/core/util/failures/failure.dart';
 import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
-import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
 
 class LoadingTrackObserver {
-  LoadingTrackObserver({required this.track, this.status = LoadingTrackStatus.waitInLoadingQueue});
+  LoadingTrackObserver(
+      {required this.startLoadingStream,
+      required this.loadingPercentChangedStream,
+      required this.loadedStream,
+      required this.loadingCancelledStream,
+      required this.loadingFailureStream,
+      required LoadingTrackStatus Function() getLoadingTrackStatus})
+      : _getLoadingTrackStatus = getLoadingTrackStatus {
 
-  Function()? onStartLoading;
-  void Function(double percent)? onLoadingPercentChanged;
+    startLoadingStream.listen((youtubeUrl) => _youtubeUrl = youtubeUrl);
+    loadingPercentChangedStream.listen((percent) => _loadingPercent = percent);
+    loadedStream.listen((savePath) => _resultSavePath = savePath);
+    loadingFailureStream.listen((failure) => _failure = failure);
+  }
 
-  void Function(String savePath)? _onLoaded;
-  set onLoaded(void Function(String savePath)? value) => _onLoaded = value;
-  void Function(String savePath)? get onLoaded => (savePath) {
-    statusObject = savePath;
-    _onLoaded?.call(savePath);
-  };
+  final Stream<String> startLoadingStream;
+  final Stream<double?> loadingPercentChangedStream;
+  final Stream<String> loadedStream;
+  final Stream<void> loadingCancelledStream;
+  final Stream<Failure?> loadingFailureStream;
 
-  void Function()? onLoadingCancelled;
+  final LoadingTrackStatus Function() _getLoadingTrackStatus;
+  LoadingTrackStatus get status => _getLoadingTrackStatus.call();
 
-  void Function(Failure failure)? _onFailure;
-  set onFailure(void Function(Failure failure)? value) => _onFailure = value;
-  void Function(Failure failure)? get onFailure => (failure) {
-    statusObject = failure;
-    _onFailure?.call(failure);
-  };
+  String? _youtubeUrl;
+  String? get youtubeUrl => _youtubeUrl;
 
-  LoadingTrackStatus status;
-  Object? statusObject;
 
-  final Track track;
+  double? _loadingPercent;
+  double? get loadingPercent => _loadingPercent;
+
+  String? _resultSavePath;
+  String? get resultSavePath => _resultSavePath;
+
+  Failure? _failure;
+  Failure? get failure => _failure;
 }

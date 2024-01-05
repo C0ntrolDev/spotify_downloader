@@ -5,6 +5,6 @@ import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.
 
 abstract class SearchVideosByTrackRepository {
   Future<Result<Failure, Video?>> findVideoByTrack(Track track);
-  Future<Result<Failure, List<Video>>> find10VideosByTrack(Track track);
+  Future<Result<Failure, List<Video>>> findVideosByTrack(Track track, int count);
   Future<Result<Failure, Video>> getVideoByUrl(String url);
 }

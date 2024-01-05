@@ -11,3 +11,19 @@ final class NetworkFailure extends Failure {
 final class ConverterFailure extends Failure {
   const ConverterFailure({super.message = 'converter failure'});
 }
+
+final class AuthFailure extends Failure {
+  AuthFailure({super.message = 'auth failure'});
+}
+
+final class InvalidClientCredentialsFailure extends Failure {
+  InvalidClientCredentialsFailure({super.message = 'invalid auth credentials failure'});
+}
+
+final class InvalidAccountCredentialsFailure extends Failure {
+  InvalidAccountCredentialsFailure({super.message = 'invalid refresh token failure'});
+}
+
+final class NotAuthorizedFailure extends Failure {
+  NotAuthorizedFailure({super.message = 'User not authorized'});
+}

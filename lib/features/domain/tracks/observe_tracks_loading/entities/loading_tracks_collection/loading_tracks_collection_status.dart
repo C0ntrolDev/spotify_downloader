@@ -1,0 +1,4 @@
+enum LoadingTracksCollectionStatus {
+  loading,
+  loaded
+}

@@ -11,27 +11,11 @@ final class TrackTitleDownloadTrack extends TrackTileEvent {}
 
 final class TrackTileCancelTrackLoading extends TrackTileEvent {}
 
-final class TrackTileLoadingPercentChanged extends TrackTileEvent {
-  const TrackTileLoadingPercentChanged({this.loadingPercent});
-  final double? loadingPercent;
+final class TrackTileLoadingObserverChanged extends TrackTileEvent {
+  const TrackTileLoadingObserverChanged(this.loadingTrackObserver);
+
+  final LoadingTrackObserver? loadingTrackObserver;
 
   @override
-  List<Object?> get props => [loadingPercent];
-}
-
-final class TrackTileSetToDeffaultState extends TrackTileEvent {}
-
-final class TrackTileTrackLoaded extends TrackTileEvent {
-  const TrackTileTrackLoaded(this.savePath);
-
-  final String? savePath;
-
-  @override
-  List<Object?> get props => [savePath];
-}
-
-final class TrackTileTrackLoadingFailure extends TrackTileEvent {
-  const TrackTileTrackLoadingFailure(this.failure);
-
-  final Failure? failure;
+  List<Object?> get props => [loadingTrackObserver];
 }
