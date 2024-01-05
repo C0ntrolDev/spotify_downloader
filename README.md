@@ -4,18 +4,18 @@ Spotify Downloader is an application that allows you to download your favorite p
 
 ## Screenshots
 
-<img src="https://github.com/C0ntrolDev/spotify_downloader/github_images/main_screen.jpg" width="300" /> <img src="https://github.com/C0ntrolDev/spotify_downloader/github_images/playlist_screen.jpg" width="300" /> <img src="https://github.com/C0ntrolDev/spotify_downloader/github_images/chnage_source_screen.jpg" width="300" />
+<img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/main_screen.jpg" width="300" /> <img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/playlist_screen.jpg" width="300" /> <img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/change_source_screen.jpg" width="300" />
 
 
 ## How to download
 
 You can download this apk if you don't know what kind of architecture you have.
-- [spotify_downloader.apk]()
+- [spotify_downloader.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.0.0/spotify_downloader.apk)
 
 If you know what architecture you have, then download one of the apk listed below.
-- [spotify_downloader_armeabi-v7a.apk]()
-- [spotify_downloader_arm64-v8a.apk]()
-- [spotify_downloader_x86_64.apk]()
+- [spotify_downloader_armeabi-v7a.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.0.0/spotify_downloader_armeabi-v7a.apk)
+- [spotify_downloader_arm64-v8a.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.0.0/spotify_donwloader_arm64-v8a.apk)
+- [spotify_downloader_x86_64.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.0.0/spotify_downloader_x86_64.apk)
 
 ## How to use
 
