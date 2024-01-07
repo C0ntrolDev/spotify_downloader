@@ -54,5 +54,7 @@
   "tracksAreBeingLoadedBody": "Всего: {total} | Загружено: {loaded} | Ошибка: {failure} | {percent}%",
   "allTracksAreLoadedBody": "Загружено: {loaded} | Ошибка: {failured}",
   "developed": "Разработано",
-  "language": "Язык"
+  "language": "Язык",
+  "youCanCloseTheAppAndTheDownloadWillContinue": "Вы можете закрыть приложение и загрузка продолжится !",
+  "youCanDeleteThisMessage": "(вы можете удалить это сообщение)"
 }
