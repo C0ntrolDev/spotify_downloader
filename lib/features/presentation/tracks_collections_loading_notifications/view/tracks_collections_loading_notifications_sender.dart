@@ -49,6 +49,7 @@ class TracksCollectionsLoadingNotificationsSender {
               body: S.current
                   .tracksAreBeingLoadedBody(info.totalTracks, info.loadedTracks, info.failuredTracks, progress),
               summary: '^_^',
+              locked: true,
               notificationLayout: NotificationLayout.ProgressBar,
               progress: progress));
     } else {

@@ -1,7 +1,8 @@
 import 'package:get_it/get_it.dart';
 import 'package:spotify_downloader/core/db/local_db.dart';
 import 'package:spotify_downloader/core/db/local_db_impl.dart';
-import 'package:spotify_downloader/core/util/permissions/Permissions_manager.dart';
+import 'package:spotify_downloader/core/permissions/permissions_manager.dart';
+import 'package:spotify_downloader/core/permissions/requiring_permission_services_initializer.dart';
 import 'package:spotify_downloader/features/data/auth/local_auth/data_source/local_auth_data_source.dart';
 import 'package:spotify_downloader/features/data/auth/local_auth/repository/local_auth_repository_impl.dart';
 import 'package:spotify_downloader/features/data/auth/network_auth/data_source/network_auth_data_source.dart';
@@ -107,6 +108,8 @@ Future<void> _initCore() async {
   injector.registerSingleton<LocalDb>(LocalDbImpl());
   await injector.get<LocalDb>().initDb();
   injector.registerSingleton<PermissionsManager>(PermissionsManager());
+  injector.registerSingleton<RequiringPermissionServicesInitializer>(
+      RequiringPermissionServicesInitializer(permissionsManager: injector.get<PermissionsManager>()));
 }
 
 Future<void> _provideDataSources() async {
