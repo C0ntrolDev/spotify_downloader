@@ -14,7 +14,7 @@ You can download this apk if you don't know what kind of architecture you have.
 
 If you know what architecture you have, then download one of the apk listed below.
 - [spotify_downloader_armeabi-v7a.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.0.1/spotify_downloader_armeabi-v7a.apk)
-- [spotify_downloader_arm64-v8a.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.0.1/spotify_donwloader_arm64-v8a.apk)
+- [spotify_downloader_arm64-v8a.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.0.1/spotify_downloader_arm64-v8a.apk)
 - [spotify_downloader_x86_64.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.0.1/spotify_downloader_x86_64.apk)
 
 ## How to use
