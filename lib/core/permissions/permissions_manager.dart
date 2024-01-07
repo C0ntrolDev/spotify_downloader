@@ -48,10 +48,10 @@ class PermissionsManager {
   }
 
   List<Permission> _getPermissionsForAndroid13AndAbove() {
-    return [Permission.manageExternalStorage, Permission.notification, Permission.ignoreBatteryOptimizations];
+    return [Permission.manageExternalStorage, Permission.ignoreBatteryOptimizations, Permission.notification];
   }
 
   List<Permission> _getPermissionsForAndroid12AndEarlier() {
-    return [Permission.storage, Permission.notification];
+    return [Permission.storage, Permission.ignoreBatteryOptimizations, Permission.notification];
   }
 }
