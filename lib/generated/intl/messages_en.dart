@@ -124,6 +124,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "urlNotSelected":
             MessageLookupByLibrary.simpleMessage("Url not selected"),
         "youAreNotLoggedInToYourAccount": MessageLookupByLibrary.simpleMessage(
-            "You are not logged in to your account")
+            "You are not logged in to your account"),
+        "youCanCloseTheAppAndTheDownloadWillContinue":
+            MessageLookupByLibrary.simpleMessage(
+                "You can close the app and the download will continue !"),
+        "youCanDeleteThisMessage": MessageLookupByLibrary.simpleMessage(
+            "(you can delete this message)")
       };
 }

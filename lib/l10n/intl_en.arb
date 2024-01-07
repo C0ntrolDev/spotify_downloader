@@ -54,5 +54,7 @@
   "tracksAreBeingLoadedBody": "Total: {total} | Loaded: {loaded} | Failured: {failure} | {percent}%",
   "allTracksAreLoadedBody": "Loaded: {loaded} | Failured: {failured}",
   "developed": "Developed",
-  "language": "Language"
+  "language": "Language",
+  "youCanCloseTheAppAndTheDownloadWillContinue": "You can close the app and the download will continue !",
+  "youCanDeleteThisMessage": "(you can delete this message)"
 }

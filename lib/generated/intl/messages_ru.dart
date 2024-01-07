@@ -125,6 +125,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "urlCopied": MessageLookupByLibrary.simpleMessage("Url скопирован!"),
         "urlNotSelected": MessageLookupByLibrary.simpleMessage("Url не выбран"),
         "youAreNotLoggedInToYourAccount":
-            MessageLookupByLibrary.simpleMessage("Вы не вошли в аккаунт")
+            MessageLookupByLibrary.simpleMessage("Вы не вошли в аккаунт"),
+        "youCanCloseTheAppAndTheDownloadWillContinue":
+            MessageLookupByLibrary.simpleMessage(
+                "Вы можете закрыть приложение и загрузка продолжится !"),
+        "youCanDeleteThisMessage": MessageLookupByLibrary.simpleMessage(
+            "(вы можете удалить это сообщение)")
       };
 }

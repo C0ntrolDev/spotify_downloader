@@ -5,7 +5,8 @@ import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
-import 'package:spotify_downloader/core/util/permissions/Permissions_manager.dart';
+import 'package:spotify_downloader/core/permissions/permissions_manager.dart';
+import 'package:spotify_downloader/core/permissions/requiring_permission_services_initializer.dart';
 import 'package:spotify_downloader/features/presentation/permissions_dialog/view/permissions_dialog.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
@@ -19,6 +20,8 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> with AutoRouteAwareStateMixin {
   final PermissionsManager _permissionsManager = injector.get<PermissionsManager>();
+  final RequiringPermissionServicesInitializer _requiringPermissionServicesInitializer =
+      injector.get<RequiringPermissionServicesInitializer>();
 
   @override
   void initState() {
@@ -26,7 +29,11 @@ class _MainScreenState extends State<MainScreen> with AutoRouteAwareStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future(() async {
         if (!(await _permissionsManager.isPermissionsGranted()) && context.mounted) {
-          showPermissonsDialog(context, _permissionsManager.requestPermissions);
+          showPermissonsDialog(context, () async {
+            final isPermissionsGranted = await _permissionsManager.requestPermissions();
+            await _requiringPermissionServicesInitializer.initialize();
+            return isPermissionsGranted;
+          });
         }
       });
     });

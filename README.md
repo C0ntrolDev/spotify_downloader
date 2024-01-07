@@ -41,7 +41,7 @@ __After logging in, you can download your favorite tracks, as well as playlists 
 
 ## About app
 - Supported platforms: Android
-- Background download: not supported
+- Background download: supported
 
 ## For developers
 1. Developed on Flutter

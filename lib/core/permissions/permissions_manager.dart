@@ -15,7 +15,11 @@ class PermissionsManager {
       await permission.request();
     }
 
-    return isPermissionsGranted();
+    return await isPermissionsGranted();
+  }
+
+  Future<bool> isNotificationsPermissionGranted() {
+    return Permission.notification.isGranted;
   }
 
   Future<bool> isPermissionsGranted() async {
@@ -44,10 +48,10 @@ class PermissionsManager {
   }
 
   List<Permission> _getPermissionsForAndroid13AndAbove() {
-    return [Permission.manageExternalStorage, Permission.notification];
+    return [Permission.manageExternalStorage, Permission.ignoreBatteryOptimizations, Permission.notification];
   }
 
   List<Permission> _getPermissionsForAndroid12AndEarlier() {
-    return [Permission.storage, Permission.notification];
+    return [Permission.storage, Permission.ignoreBatteryOptimizations, Permission.notification];
   }
 }

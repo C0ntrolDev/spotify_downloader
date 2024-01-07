@@ -610,6 +610,26 @@ class S {
       args: [],
     );
   }
+
+  /// `You can close the app and the download will continue !`
+  String get youCanCloseTheAppAndTheDownloadWillContinue {
+    return Intl.message(
+      'You can close the app and the download will continue !',
+      name: 'youCanCloseTheAppAndTheDownloadWillContinue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `(you can delete this message)`
+  String get youCanDeleteThisMessage {
+    return Intl.message(
+      '(you can delete this message)',
+      name: 'youCanDeleteThisMessage',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
