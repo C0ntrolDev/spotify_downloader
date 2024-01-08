@@ -2,7 +2,7 @@ name: spotify_downloader
 description: A new Flutter project.
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 1.0.2+1
 
 environment:
   sdk: '>=3.1.4 <4.0.0'
