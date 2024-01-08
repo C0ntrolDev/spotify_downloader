@@ -22,42 +22,28 @@ class LocalTracksDataSource {
 
   Future<void> removeLocalTrackFromStorage(LocalTrackDto localTrackDto) async {
     final database = _localDb.getDb();
-    await database.rawDelete('''
-      DELETE dt
-      FROM downloadTracks dt
-      JOIN downloadTracksCollections dtc ON dtc.spotifyId = dt.downloadTracksCollection_spotifyId
-                                    AND dtc.type = dt.downloadTracksCollection_type
-      JOIN downloadTracksCollectionsGroups dtcg ON dtcg.directoryPath = dtc.downloadTracksCollectionsGroups_directoryPath
-      WHERE dt.spotifyId = ? 
-      AND dtc.spotifyId = ?
-      AND dtc.type = ?       
-      AND dtcg.directoryPath = ?;
-    ''', [
-      localTrackDto.spotifyId,
+    await database.delete('downloadTracks', where: '''downloadTracksCollection_spotifyId = ?
+        AND downloadTracksCollection_type = ?
+        AND downloadTracksCollectionGroup_directoryPath = ?
+        AND spotifyId = ?''', whereArgs: [
       localTrackDto.tracksCollection.spotifyId,
       localTrackDto.tracksCollection.type.index,
-      localTrackDto.tracksCollection.group.directoryPath
+      localTrackDto.tracksCollection.group.directoryPath,
+      localTrackDto.spotifyId,
     ]);
   }
 
   Future<LocalTrackDto?> getLocalTrackFromStorage(
       LocalTracksCollectionDto localTracksCollectionDto, String spotifyId) async {
     final database = _localDb.getDb();
-    final rawLocalTracks = await database.rawQuery('''
-      SELECT dt.*, dtcg.directoryPath AS group_directoryPath
-      FROM downloadTracks dt
-      JOIN downloadTracksCollections dtc ON dtc.spotifyId = dt.downloadTracksCollection_spotifyId
-                                    AND dtc.type = dt.downloadTracksCollection_type
-      JOIN downloadTracksCollectionsGroups dtcg ON dtcg.directoryPath = dtc.downloadTracksCollectionsGroups_directoryPath
-      WHERE dt.spotifyId = ? 
-      AND dtc.spotifyId = ?
-      AND dtc.type = ? 
-      AND dtcg.directoryPath = ?
-    ''', [
-      spotifyId,
+    final rawLocalTracks = await database.query('downloadTracks', where: '''downloadTracksCollection_spotifyId = ?
+        AND downloadTracksCollection_type = ?
+        AND downloadTracksCollectionGroup_directoryPath = ?
+        AND spotifyId = ?''', whereArgs: [
       localTracksCollectionDto.spotifyId,
       localTracksCollectionDto.type.index,
-      localTracksCollectionDto.group.directoryPath
+      localTracksCollectionDto.group.directoryPath,
+      spotifyId
     ]);
     return rawLocalTracks.map((rawLocalTrack) => _localTrackDtoFromMap(rawLocalTrack)).firstOrNull;
   }
@@ -66,6 +52,7 @@ class LocalTracksDataSource {
     return {
       'downloadTracksCollection_spotifyId': localTrackDto.tracksCollection.spotifyId,
       'downloadTracksCollection_type': localTrackDto.tracksCollection.type.index,
+      'downloadTracksCollectionGroup_directoryPath': localTrackDto.tracksCollection.group.directoryPath,
       'spotifyId': localTrackDto.spotifyId,
       'youtubeUrl': localTrackDto.youtubeUrl,
       'savePath': localTrackDto.savePath
@@ -76,7 +63,7 @@ class LocalTracksDataSource {
     return {
       'spotifyId': localTracksCollectionDto.spotifyId,
       'type': localTracksCollectionDto.type.index,
-      'downloadTracksCollectionsGroups_directoryPath': localTracksCollectionDto.group.directoryPath
+      'downloadTracksCollectionsGroup_directoryPath': localTracksCollectionDto.group.directoryPath
     };
   }
 
@@ -90,8 +77,7 @@ class LocalTracksDataSource {
       tracksCollection: LocalTracksCollectionDto(
           spotifyId: map['downloadTracksCollection_spotifyId'],
           type: LocalTracksCollectionDtoType.values[map['downloadTracksCollection_type'] as int],
-          group: LocalTracksCollectionsGroupDto(
-            directoryPath: map['group_directoryPath'])),
+          group: LocalTracksCollectionsGroupDto(directoryPath: map['downloadTracksCollectionGroup_directoryPath'])),
       spotifyId: map['spotifyId'],
       youtubeUrl: map['youtubeUrl'],
       savePath: map['savePath'],

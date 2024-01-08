@@ -4,7 +4,8 @@
                  android:label="Spotify Downloader"
                  android:icon="@mipmap/ic_launcher"
                  android:roundIcon="@mipmap/ic_launcher_round"
-                 android:requestLegacyExternalStorage="true">
+                 android:requestLegacyExternalStorage="true"
+                 android:largeHeap="true">
         <activity android:name=".MainActivity"
                   android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
                   android:exported="true"
