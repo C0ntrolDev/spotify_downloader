@@ -1,7 +1,7 @@
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/failures/failures.dart';
-import 'package:spotify_downloader/core/util/result/cancellable_result.dart';
-import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/core/utils/failures/failures.dart';
+import 'package:spotify_downloader/core/utils/result/cancellable_result.dart';
+import 'package:spotify_downloader/core/utils/result/result.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/dowload_tracks/data_sources/dowload_audio_from_youtube_data_source.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/dowload_tracks/models/dowload_audio_from_youtube_args.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/dowload_tracks/repositories/converters/track_to_audio_metadata_converter.dart';

@@ -1,4 +1,4 @@
-import 'package:spotify_downloader/core/util/converters/simple_converters/value_converter.dart';
+import 'package:spotify_downloader/core/utils/converters/simple_converters/value_converter.dart';
 import 'package:spotify_downloader/features/data_domain/shared/data/spotify_api_request.dart';
 import 'package:spotify_downloader/features/data_domain/shared/data/converters/spotify_credentials_converter.dart';
 import 'package:spotify_downloader/features/data_domain/shared/domain/spotify_repository_request.dart';

@@ -1,5 +1,5 @@
 import 'package:spotify/spotify.dart' as dto;
-import 'package:spotify_downloader/core/util/converters/converter_with_parameter.dart';
+import 'package:spotify_downloader/core/utils/converters/converter_with_parameter.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/domain/shared/entities/tracks_collection.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/domain/shared/entities/album.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/domain/shared/entities/track.dart' as entity;

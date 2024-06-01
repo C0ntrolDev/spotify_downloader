@@ -1,6 +1,6 @@
 import 'dart:math';
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/result/cancellable_result.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/core/utils/result/cancellable_result.dart';
 
 class AudioLoadingStream {
   AudioLoadingStream(

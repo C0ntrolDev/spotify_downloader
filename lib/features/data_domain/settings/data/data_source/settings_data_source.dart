@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:spotify_downloader/core/consts/local_paths.dart';
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/core/utils/result/result.dart';
 import 'package:spotify_downloader/features/data_domain/settings/data/models/app_settings.dart';
 
 class SettingsDataSource {

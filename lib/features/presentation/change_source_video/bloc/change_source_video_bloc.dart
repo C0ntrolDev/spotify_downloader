@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/failures/failures.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/core/utils/failures/failures.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/domain/search_videos_by_track/entities/video.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/domain/search_videos_by_track/use_cases/find_10_videos_by_track.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/domain/search_videos_by_track/use_cases/get_video_by_url.dart';

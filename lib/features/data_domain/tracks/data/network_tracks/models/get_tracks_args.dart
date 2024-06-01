@@ -1,5 +1,5 @@
 import 'package:spotify/spotify.dart';
-import 'package:spotify_downloader/core/util/cancellation_token/cancellation_token.dart';
+import 'package:spotify_downloader/core/utils/cancellation_token/cancellation_token.dart';
 import 'package:spotify_downloader/features/data_domain/shared/data/spotify_api_request.dart';
 
 class GetTracksArgs {

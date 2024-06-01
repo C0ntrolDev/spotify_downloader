@@ -1,5 +1,5 @@
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/core/utils/result/result.dart';
 import 'package:spotify_downloader/features/data_domain/shared/data/converters/spotify_requests_converter.dart';
 import 'package:spotify_downloader/features/data_domain/spotify_profile/data/data_source/spotify_profile_data_source.dart';
 import 'package:spotify_downloader/features/data_domain/shared/domain/spotify_repository_request.dart';

@@ -1,5 +1,5 @@
-import 'package:spotify_downloader/core/util/cancellation_token/cancellation_token_source.dart';
-import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/core/utils/cancellation_token/cancellation_token_source.dart';
+import 'package:spotify_downloader/core/utils/result/result.dart';
 import 'package:spotify_downloader/features/data_domain/shared/data/converters/spotify_requests_converter.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/network_tracks/data_sources/network_tracks_data_source.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/network_tracks/models/get_tracks_args.dart';

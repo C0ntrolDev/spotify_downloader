@@ -1,5 +1,5 @@
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/core/utils/result/result.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/search_videos_by_track/data_sources/search_video_on_youtube_data_source.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/search_videos_by_track/repositories/converters/video_dto_to_video_converter.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/domain/search_videos_by_track/entities/video.dart';

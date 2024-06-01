@@ -1,4 +1,4 @@
-import 'package:spotify_downloader/core/util/converters/simple_converters/value_converter.dart';
+import 'package:spotify_downloader/core/utils/converters/simple_converters/value_converter.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/domain/local_tracks/entities/local_tracks_collection_type.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/domain/shared/entities/tracks_collection_type.dart';
 

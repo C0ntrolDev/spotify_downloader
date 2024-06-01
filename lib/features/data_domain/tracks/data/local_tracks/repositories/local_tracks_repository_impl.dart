@@ -1,5 +1,5 @@
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/core/utils/result/result.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/local_tracks/data_sources/local_tracks_data_source.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/local_tracks/repositories/converters/local_track_dto_to_local_track_converter.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/local_tracks/repositories/converters/local_tracks_collection_dto_to_local_tracks_collection_converter.dart';

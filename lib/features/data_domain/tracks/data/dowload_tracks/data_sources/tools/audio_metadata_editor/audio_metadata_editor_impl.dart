@@ -2,9 +2,9 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:metadata_god/metadata_god.dart';
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/failures/failures.dart';
-import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/core/utils/failures/failures.dart';
+import 'package:spotify_downloader/core/utils/result/result.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/dowload_tracks/data_sources/tools/audio_metadata_editor/audio_metadata_editor.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/dowload_tracks/models/metadata/audio_metadata.dart';
 import 'package:http/http.dart' as http;

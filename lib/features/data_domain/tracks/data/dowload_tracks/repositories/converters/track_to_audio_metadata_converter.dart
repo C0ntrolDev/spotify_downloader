@@ -1,5 +1,5 @@
-import 'package:spotify_downloader/core/util/converters/simple_converters/value_converter.dart';
-import 'package:spotify_downloader/core/util/util_methods.dart';
+import 'package:spotify_downloader/core/utils/converters/simple_converters/value_converter.dart';
+import 'package:spotify_downloader/core/utils/util_methods.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/dowload_tracks/models/metadata/album_metadata.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/dowload_tracks/models/metadata/audio_metadata.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/domain/shared/entities/track.dart';

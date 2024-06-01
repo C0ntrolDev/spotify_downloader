@@ -1,4 +1,4 @@
-import 'package:spotify_downloader/core/util/util_methods.dart';
+import 'package:spotify_downloader/core/utils/util_methods.dart';
 import 'package:spotify_downloader/features/data_domain/settings/domain/enitities/enitities.dart';
 
 import 'package:spotify_downloader/features/data_domain/tracks/domain/shared/entities/track.dart';

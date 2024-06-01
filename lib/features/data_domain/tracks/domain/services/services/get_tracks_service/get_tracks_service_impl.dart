@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/result/result.dart';
-import 'package:spotify_downloader/features/data_domain/auth/domain/local_auth/repositories/local_full_auth_repository.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/core/utils/result/result.dart';
+import 'package:spotify_downloader/features/data_domain/auth/local_auth/domain/repositories/local_full_auth_repository.dart';
 import 'package:spotify_downloader/features/data_domain/settings/domain/enitities/save_mode.dart';
 import 'package:spotify_downloader/features/data_domain/settings/domain/repository/download_tracks_settings_repository.dart';
 

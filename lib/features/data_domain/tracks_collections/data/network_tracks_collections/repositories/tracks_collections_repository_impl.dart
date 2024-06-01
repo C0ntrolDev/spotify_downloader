@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/failures/failures.dart';
-import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/core/utils/failures/failures.dart';
+import 'package:spotify_downloader/core/utils/result/result.dart';
 import 'package:spotify_downloader/features/data_domain/shared/data/converters/spotify_requests_converter.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/data/network_tracks_collections/data_source/network_tracks_collections_data_source.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/data/network_tracks_collections/repositories/converters/album_dto_to_tracks_collection_converter.dart';

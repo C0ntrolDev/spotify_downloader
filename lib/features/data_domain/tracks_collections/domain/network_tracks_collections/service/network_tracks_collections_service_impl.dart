@@ -1,6 +1,6 @@
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/result/result.dart';
-import 'package:spotify_downloader/features/data_domain/auth/domain/local_auth/repositories/local_full_auth_repository.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/core/utils/result/result.dart';
+import 'package:spotify_downloader/features/data_domain/auth/local_auth/domain/repositories/local_full_auth_repository.dart';
 import 'package:spotify_downloader/features/data_domain/shared/domain/spotify_repository_request.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/domain/shared/entities/tracks_collection.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/domain/shared/entities/tracks_collection_type.dart';

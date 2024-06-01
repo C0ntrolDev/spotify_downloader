@@ -1,4 +1,4 @@
-import 'package:spotify_downloader/features/data_domain/auth/domain/shared/full_credentials.dart';
+import 'package:spotify_downloader/features/data_domain/auth/shared/full_credentials.dart';
 
 class SpotifyRepositoryRequest {
   SpotifyRepositoryRequest({

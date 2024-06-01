@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:http/http.dart';
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/failures/failures.dart';
-import 'package:spotify_downloader/core/util/isolate_pool/isolate_pool.dart';
-import 'package:spotify_downloader/core/util/result/result.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/core/utils/failures/failures.dart';
+import 'package:spotify_downloader/core/utils/isolate_pool/isolate_pool.dart';
+import 'package:spotify_downloader/core/utils/result/result.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class SearchVideoOnYoutubeDataSource {

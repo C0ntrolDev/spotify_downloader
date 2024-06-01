@@ -1,8 +1,8 @@
 import 'package:spotify/spotify.dart';
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/isolate_pool/isolate_pool.dart';
-import 'package:spotify_downloader/core/util/result/result.dart';
-import 'package:spotify_downloader/core/util/util_methods.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/core/utils/isolate_pool/isolate_pool.dart';
+import 'package:spotify_downloader/core/utils/result/result.dart';
+import 'package:spotify_downloader/core/utils/util_methods.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/network_tracks/models/get_tracks_args.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/network_tracks/models/tracks_dto_getting_ended_status.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/network_tracks/models/tracks_getting_stream.dart';

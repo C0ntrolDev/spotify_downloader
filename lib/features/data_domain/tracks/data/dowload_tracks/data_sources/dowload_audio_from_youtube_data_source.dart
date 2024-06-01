@@ -5,14 +5,14 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:http/http.dart';
 import 'package:path/path.dart' as p;
-import 'package:spotify_downloader/core/util/cancellation_token/cancellation_token.dart';
-import 'package:spotify_downloader/core/util/cancellation_token/cancellation_token_source.dart';
-import 'package:spotify_downloader/core/util/isolate_pool/isolate_pool.dart';
-import 'package:spotify_downloader/core/util/result/cancellable_result.dart';
+import 'package:spotify_downloader/core/utils/cancellation_token/cancellation_token.dart';
+import 'package:spotify_downloader/core/utils/cancellation_token/cancellation_token_source.dart';
+import 'package:spotify_downloader/core/utils/isolate_pool/isolate_pool.dart';
+import 'package:spotify_downloader/core/utils/result/cancellable_result.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/failures/failures.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/core/utils/failures/failures.dart';
 
 import 'package:spotify_downloader/features/data_domain/tracks/data/dowload_tracks/data_sources/tools/audio_metadata_editor/audio_metadata_editor.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/data/dowload_tracks/data_sources/tools/file_to_mp3_converter/file_to_mp3_converter.dart';
