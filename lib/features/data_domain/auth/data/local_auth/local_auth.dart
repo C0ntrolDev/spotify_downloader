@@ -1,3 +1,3 @@
-export 'data_source/data_source.dart';
-export 'models/models.dart';
-export 'repository/repository.dart';
+export 'data_source/local_auth_data_source.dart';
+export 'models/local_auth_credentials.dart';
+export 'repository/local_auth_repository_impl.dart';
