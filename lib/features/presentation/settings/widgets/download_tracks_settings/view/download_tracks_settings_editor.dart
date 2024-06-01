@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
-import 'package:spotify_downloader/features/domain/settings/enitities/save_mode.dart';
+import 'package:spotify_downloader/features/data_domain/settings/domain/enitities/save_mode.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/download_tracks_settings/bloc/download_tracks_settings_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/setting_with_text_field.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/settings_group.dart';

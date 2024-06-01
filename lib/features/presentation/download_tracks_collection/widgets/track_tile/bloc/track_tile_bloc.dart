@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_observer.dart';
-import 'package:spotify_downloader/features/domain/tracks/download_tracks/entities/loading_track_status.dart';
-import 'package:spotify_downloader/features/domain/tracks/services/use_cases/cancel_track_loading.dart';
-import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
-import 'package:spotify_downloader/features/domain/tracks/services/use_cases/download_track.dart';
-import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/domain/download_tracks/entities/loading_track_observer.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/domain/download_tracks/entities/loading_track_status.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/domain/services/use_cases/cancel_track_loading.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/domain/services/entities/track_with_loading_observer.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/domain/services/use_cases/download_track.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/domain/shared/entities/track.dart';
 
 part 'track_tile_event.dart';
 part 'track_tile_state.dart';

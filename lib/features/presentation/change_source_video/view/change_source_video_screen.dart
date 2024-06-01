@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
-import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/domain/shared/entities/track.dart';
 import 'package:spotify_downloader/features/presentation/change_source_video/bloc/change_source_video_bloc.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
