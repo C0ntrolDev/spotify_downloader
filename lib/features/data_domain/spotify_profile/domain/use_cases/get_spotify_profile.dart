@@ -1,9 +1,5 @@
-import 'package:spotify_downloader/core/utils/failures/failure.dart';
-import 'package:spotify_downloader/core/utils/result/result.dart';
-import 'package:spotify_downloader/core/utils/use_case/use_case.dart';
-
-import 'package:spotify_downloader/features/data_domain/spotify_profile/domain/entities/spotify_profile.dart';
-import 'package:spotify_downloader/features/data_domain/spotify_profile/domain/service/spotify_profile_service.dart';
+import 'package:spotify_downloader/core/utils/utils.dart';
+import 'package:spotify_downloader/features/data_domain/spotify_profile/domain/domain.dart';
 
 class GetSpotifyProfile implements UseCase<Failure, SpotifyProfile, void> {
   GetSpotifyProfile({required SpotifyProfileService spotifyProfileService})

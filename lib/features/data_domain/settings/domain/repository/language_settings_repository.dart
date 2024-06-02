@@ -1,5 +1,4 @@
-import 'package:spotify_downloader/core/utils/failures/failure.dart';
-import 'package:spotify_downloader/core/utils/result/result.dart';
+import 'package:spotify_downloader/core/utils/utils.dart';
 
 abstract class LanguageSettingsRepository {
   Future<Result<Failure, String>> getLanguage();

@@ -1,8 +1,6 @@
-import 'package:spotify_downloader/core/utils/failures/failure.dart';
-import 'package:spotify_downloader/core/utils/result/result.dart';
-import 'package:spotify_downloader/core/utils/use_case/use_case.dart';
-import 'package:spotify_downloader/features/data_domain/settings/domain/enitities/download_tracks_settings.dart';
-import 'package:spotify_downloader/features/data_domain/settings/domain/repository/download_tracks_settings_repository.dart';
+import 'package:spotify_downloader/core/utils/utils.dart';
+import 'package:spotify_downloader/features/data_domain/settings/domain/domain.dart';
+
 class GetDownloadTracksSettings implements UseCase<Failure, DownloadTracksSettings, void> {
   GetDownloadTracksSettings({required DownloadTracksSettingsRepository downloadTracksSettingsRepository})
       : _downloadTracksSettingsRepository = downloadTracksSettingsRepository;

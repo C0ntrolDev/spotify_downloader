@@ -1,7 +1,5 @@
-import 'package:spotify_downloader/core/utils/failures/failure.dart';
-import 'package:spotify_downloader/core/utils/result/result.dart';
-import 'package:spotify_downloader/core/utils/use_case/use_case.dart';
-import 'package:spotify_downloader/features/data_domain/settings/domain/repository/language_settings_repository.dart';
+import 'package:spotify_downloader/core/utils/utils.dart';
+import 'package:spotify_downloader/features/data_domain/settings/domain/domain.dart';
 
 class GetLanguage implements UseCase<Failure, String, void> {
   GetLanguage({required LanguageSettingsRepository languageSettingsRepository})

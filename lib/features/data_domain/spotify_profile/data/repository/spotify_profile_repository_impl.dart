@@ -1,10 +1,7 @@
-import 'package:spotify_downloader/core/utils/failures/failure.dart';
-import 'package:spotify_downloader/core/utils/result/result.dart';
+import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/shared/data/converters/spotify_requests_converter.dart';
-import 'package:spotify_downloader/features/data_domain/spotify_profile/data/data_source/spotify_profile_data_source.dart';
 import 'package:spotify_downloader/features/data_domain/shared/domain/spotify_repository_request.dart';
-import 'package:spotify_downloader/features/data_domain/spotify_profile/domain/entities/spotify_profile.dart';
-import 'package:spotify_downloader/features/data_domain/spotify_profile/domain/repository/spotify_profile_repostitory.dart';
+import 'package:spotify_downloader/features/data_domain/spotify_profile/spotify_profile.dart';
 
 class SpotifyProfileRepositoryImpl implements SpotifyProfileRepository {
   SpotifyProfileRepositoryImpl({required SpotifyProfileDataSource dataSource}) : _dataSource = dataSource;

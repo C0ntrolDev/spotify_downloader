@@ -1,11 +1,5 @@
-import 'package:spotify_downloader/core/utils/failures/failure.dart';
-import 'package:spotify_downloader/core/utils/result/result.dart';
-import 'package:spotify_downloader/features/data_domain/settings/data/data_source/settings_data_source.dart';
-import 'package:spotify_downloader/features/data_domain/settings/data/models/app_settings.dart';
-import 'package:spotify_downloader/features/data_domain/settings/domain/enitities/download_tracks_settings.dart';
-import 'package:spotify_downloader/features/data_domain/settings/domain/enitities/save_mode.dart';
-import 'package:spotify_downloader/features/data_domain/settings/domain/repository/download_tracks_settings_repository.dart';
-import 'package:spotify_downloader/features/data_domain/settings/domain/repository/language_settings_repository.dart';
+import 'package:spotify_downloader/core/utils/utils.dart';
+import 'package:spotify_downloader/features/data_domain/settings/settings.dart';
 
 class SettingsRepositoryImpl implements DownloadTracksSettingsRepository, LanguageSettingsRepository {
   SettingsRepositoryImpl({required SettingsDataSource settingsDataSource}) : _settingsDataSource = settingsDataSource;

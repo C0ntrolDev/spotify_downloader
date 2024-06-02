@@ -1,7 +1,7 @@
 import 'package:spotify/spotify.dart';
 import 'package:spotify_downloader/core/consts/spotify_client.dart';
-import 'package:spotify_downloader/core/utils/converters/simple_converters/value_converter.dart';
-import 'package:spotify_downloader/features/data_domain/auth/shared/full_credentials.dart';
+import 'package:spotify_downloader/core/utils/utils.dart';
+import 'package:spotify_downloader/features/data_domain/auth/shared/shared.dart';
 
 class SpotifyCredentialsConverter
     implements ValueConverter<SpotifyApiCredentials, FullCredentials> {
