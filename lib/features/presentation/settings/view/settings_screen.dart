@@ -4,10 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/features/presentation/home/view/home_screen.dart';
-import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/view/auth_settings.dart';
-import 'package:spotify_downloader/features/presentation/settings/widgets/download_tracks_settings/view/download_tracks_settings_editor.dart';
-import 'package:spotify_downloader/features/presentation/settings/widgets/language_setting/view/language_setting.dart';
-import 'package:spotify_downloader/features/presentation/settings/widgets/settings_group.dart';
+import 'package:spotify_downloader/features/presentation/settings/widgets/widgets.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
 @RoutePage()

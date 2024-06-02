@@ -1,7 +1,6 @@
-import 'package:spotify_downloader/core/utils/failures/failure.dart';
-import 'package:spotify_downloader/core/utils/result/result.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection.dart';
-import 'package:spotify_downloader/features/data_domain/tracks_collections/network_tracks_collections/domain/use_cases/get_tracks_collection_by_url.dart';
+import 'package:spotify_downloader/core/utils/utils.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/domain.dart';
+import 'package:spotify_downloader/features/data_domain/tracks_collections/network_tracks_collections/domain/domain.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/base/get_tracks_collection_bloc.dart';
 
 class GetTracksCollectionByUrlBloc extends GetTracksCollectionBloc {

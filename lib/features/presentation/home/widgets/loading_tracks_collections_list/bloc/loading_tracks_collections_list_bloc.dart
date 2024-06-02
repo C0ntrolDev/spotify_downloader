@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_downloader/core/utils/failures/failure.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/observe_tracks_loading/domain/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/observe_tracks_loading/domain/entities/loading_tracks_collection/loading_tracks_collection_status.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/observe_tracks_loading/domain/use_cases/get_loading_tracks_collections_observer.dart';
+import 'package:spotify_downloader/core/utils/utils.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/observe_tracks_loading/domain/domain.dart';
+
 
 part 'loading_tracks_collections_list_event.dart';
 part 'loading_tracks_collections_list_state.dart';

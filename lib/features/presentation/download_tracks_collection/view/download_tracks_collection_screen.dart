@@ -6,23 +6,13 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
-import 'package:spotify_downloader/core/utils/failures/failure.dart';
-import 'package:spotify_downloader/core/utils/failures/failures.dart';
-import 'package:spotify_downloader/core/utils/util_methods.dart';
+import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/domain/entities/history_tracks_collection.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/filter_tracks/filter_tracks_bloc.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_and_download_tracks/get_and_download_tracks_bloc.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/base/get_tracks_collection_bloc.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_history_bloc.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_url_bloc.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/gradient_app_bar_with_opacity.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/network_failure_splash.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/view/track_tile.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile_placeholder.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/blocs.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/widgets.dart';
+
 import 'package:spotify_downloader/generated/l10n.dart';
 import 'dart:math' as math;
-
-import '../widgets/tracks_collection_manage_bar.dart';
 
 abstract class DownloadTracksCollectionScreen extends StatefulWidget {
   final String? url;

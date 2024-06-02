@@ -3,18 +3,12 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_downloader/core/utils/failures/failure.dart';
-import 'package:spotify_downloader/core/utils/failures/failures.dart';
-import 'package:spotify_downloader/core/utils/result/result.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/domain/entities/loading_track_status.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/network_tracks/domain/entities/tracks_getting_ended_status.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/services/entities/track_with_loading_observer.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/services/entities/tracks_with_loading_observer_getting_observer.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/services/use_cases/download_tracks_from_getting_observer.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/services/use_cases/download_tracks_range.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/services/use_cases/get_tracks_with_loading_observer_from_tracks_collection.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/services/use_cases/get_tracks_with_loading_observer_from_tracks_collection_with_offset.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection.dart';
+import 'package:spotify_downloader/core/utils/utils.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/domain/domain.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/network_tracks/domain/domain.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/services/services.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/domain.dart';
+
 
 part 'get_and_download_tracks_event.dart';
 part 'get_and_download_tracks_state.dart';
