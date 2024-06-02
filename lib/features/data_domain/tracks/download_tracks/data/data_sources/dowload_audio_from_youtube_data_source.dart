@@ -10,7 +10,6 @@ import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/d
 import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/data/data_sources/tools/tools.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-
 class DownloadAudioFromYoutubeDataSource {
   DownloadAudioFromYoutubeDataSource(
       {required AudioMetadataEditor audioMetadataEditor, required FileToMp3Converter fileToMp3Converter})
@@ -152,7 +151,7 @@ class DownloadAudioFromYoutubeDataSource {
       if (await videoFile.exists()) {
         await videoFile.delete();
       }
-      
+
       await videoFile.create();
       final videoFileStream = videoFile.openWrite();
 
@@ -191,12 +190,11 @@ class DownloadAudioFromYoutubeDataSource {
 
       Failure failure = const Failure(message: '');
 
-      Connectivity()
-          .onConnectivityChanged
-          .firstWhere((result) => result == ConnectivityResult.none || result == ConnectivityResult.other)
-          .then((value) {
-        if (!failureCompleter.isCompleted) {
-          failureCompleter.complete(const NetworkFailure());
+      var connectivitySubscription = Connectivity().onConnectivityChanged.listen((result) async {
+        if(result == ConnectivityResult.none || result == ConnectivityResult.other) {
+          if (!failureCompleter.isCompleted) {
+            failureCompleter.complete(const NetworkFailure());
+          }
         }
       });
 
@@ -211,6 +209,8 @@ class DownloadAudioFromYoutubeDataSource {
       await videoFileStream.flush();
       await videoFileStream.close();
       yt.close();
+
+      await connectivitySubscription.cancel();
 
       if (failureCompleter.isCompleted) {
         return CancellableResult.notSuccessful(failure);

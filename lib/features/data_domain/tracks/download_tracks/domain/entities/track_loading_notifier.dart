@@ -37,9 +37,10 @@ class TrackLoadingNotifier {
   }
 
   void loaded(String savePath) {
-    if (_status == LoadingTrackStatus.loading || _status == LoadingTrackStatus.loadingCancelled) {
+    if (_status == LoadingTrackStatus.loading) {
       _status = LoadingTrackStatus.loaded;
       _loadedStreamController.add(savePath);
+      _closeAllStreams();
     }
   }
 
@@ -47,6 +48,7 @@ class TrackLoadingNotifier {
     if (_status == LoadingTrackStatus.loading || _status == LoadingTrackStatus.waitInLoadingQueue) {
       _status = LoadingTrackStatus.loadingCancelled;
       _loadingCancelledStreamController.add(null);
+      _closeAllStreams();
     }
   }
 
@@ -56,6 +58,15 @@ class TrackLoadingNotifier {
         _status == LoadingTrackStatus.loadingCancelled) {
       _status = LoadingTrackStatus.failure;
       _loadingFailureStreamController.add(failure);
+      _closeAllStreams();
     }
+  }
+
+  Future<void> _closeAllStreams() async {
+    await _startLoadingStreamController.close();
+    await _loadingPercentChangedStreamController.close();
+    await _loadedStreamController.close();
+    await _loadingCancelledStreamController.close();
+    await _loadingFailureStreamController.close();
   }
 }

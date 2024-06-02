@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_downloader/core/utils/failures/failure.dart';
 import 'package:spotify_downloader/core/utils/failures/failures.dart';
 import 'package:spotify_downloader/features/data_domain/auth/local_auth/domain/use_cases/clear_user_credentials.dart';
 import 'package:spotify_downloader/features/data_domain/auth/service/use_cases/authorize_user.dart';
