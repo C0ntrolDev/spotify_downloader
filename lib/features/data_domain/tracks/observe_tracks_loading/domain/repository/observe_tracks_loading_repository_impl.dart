@@ -24,7 +24,7 @@ class ObserveTracksLoadingRepositoryImpl implements ObserveTracksLoadingReposito
   }
 
   @override
-  void observeLoadingTrack(LoadingTrackObserver loadingTrack, Track track) {
+  void observeLoadingTrack(LoadingTrackObserver loadingTrackObserver, Track track) {
     final loadingTracksCollectionId = LoadingTracksCollectionId(
         spotifyId: track.parentCollection.spotifyId, tracksCollectionType: track.parentCollection.type);
 
@@ -37,6 +37,6 @@ class ObserveTracksLoadingRepositoryImpl implements ObserveTracksLoadingReposito
     }
 
     loadingCollection.controller
-        .addLoadingTrack(LoadingTrackObserverWithId(loadingTrackObserver: loadingTrack, spotifyId: track.spotifyId));
+        .observeLoadingTrack(loadingTrackObserver, track);
   }
 }
