@@ -77,7 +77,7 @@ class _TrackTileState extends State<TrackTile> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 20),
+          padding: const EdgeInsets.only(left: 20, right: 5),
           child: Row(
             children: [
               Container(
@@ -119,7 +119,6 @@ class _TrackTileState extends State<TrackTile> {
               Container(
                 alignment: Alignment.center,
                 width: 50,
-                padding: const EdgeInsets.only(right: 10),
                 child: BlocBuilder<TrackTileBloc, TrackTileState>(
                   bloc: _trackTileBloc,
                   builder: (context, state) {
@@ -178,24 +177,21 @@ class _TrackTileState extends State<TrackTile> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 10),
-          child: BlocBuilder<TrackTileBloc, TrackTileState>(
-            bloc: _trackTileBloc,
-            builder: (context, state) {
-              return SizedBox(
-                  width: 30,
-                  height: 50,
-                  child: IconButton(
-                      onPressed: () {
-                        showDownloadTrackInfoBottomSheet(context, state.trackWithLoadingObserver);
-                      },
-                      icon: SvgPicture.asset(
-                        'resources/images/svg/track_tile/more_info.svg',
-                        fit: BoxFit.fitHeight,
-                      )));
-            },
-          ),
+        BlocBuilder<TrackTileBloc, TrackTileState>(
+          bloc: _trackTileBloc,
+          builder: (context, state) {
+            return SizedBox(
+                width: 30,
+                height: 50,
+                child: IconButton(
+                    onPressed: () {
+                      showDownloadTrackInfoBottomSheet(context, state.trackWithLoadingObserver);
+                    },
+                    icon: SvgPicture.asset(
+                      'resources/images/svg/track_tile/more_info.svg',
+                      fit: BoxFit.fitHeight,
+                    )));
+          },
         )
       ],
     );

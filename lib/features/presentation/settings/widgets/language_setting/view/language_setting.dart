@@ -64,6 +64,7 @@ class _LanguageSettingState extends State<LanguageSetting> {
                           BoxDecoration(color: surfaceColor, borderRadius: BorderRadius.all(Radius.circular(5))),
                       elevation: 0),
                   buttonStyleData: ButtonStyleData(
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
                     overlayColor: MaterialStateProperty.resolveWith((state) {
                       if (state.contains(MaterialState.pressed)) {
                         return onSurfaceSplashColor;

@@ -14,7 +14,7 @@ class LoadingTracksCollectionController {
         getLoadingStatus: () => _loadingStatus);
   }
 
-  final Map<String, LoadingTrackStatus> _loadingEndedTracks = Map();
+  final Map<String, LoadingTrackStatus> _loadingEndedTracks = {};
   final List<LoadingTrackObserverSubscriptionWithId> _loadingTracks = List.empty(growable: true);
 
   late final LoadingTracksCollectionObserver _observer;

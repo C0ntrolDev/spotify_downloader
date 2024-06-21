@@ -2,7 +2,7 @@ name: spotify_downloader
 description: A new Flutter project.
 publish_to: 'none'
 
-version: 1.0.2+1
+version: 1.1.0+1
 
 environment:
   sdk: '>=3.1.4 <4.0.0'
@@ -29,7 +29,6 @@ dependencies:
   cached_network_image: ^3.3.0
   path: ^1.8.3
   connectivity_plus: ^5.0.2
-  draggable_scrollbar: ^0.1.0
   modal_bottom_sheet: 3.0.0-pre
   awesome_notifications_core: ^0.8.1
   awesome_notifications: ^0.8.2
@@ -41,6 +40,7 @@ dependencies:
         sdk: flutter
   dropdown_button2: ^2.3.9
   flutter_background: ^1.2.0
+  flexible_scrollbar: ^0.1.3
 
 dev_dependencies:
   flutter_test:

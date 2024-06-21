@@ -10,6 +10,7 @@ final mainTheme = ThemeData(
       thumbVisibility: const MaterialStatePropertyAll(true),
       radius: const Radius.circular(10),
       crossAxisMargin: 5,
+      mainAxisMargin: 5,
       thumbColor: MaterialStateProperty.resolveWith((states) {
         if (states.contains(MaterialState.dragged)) {
           return primaryColor;

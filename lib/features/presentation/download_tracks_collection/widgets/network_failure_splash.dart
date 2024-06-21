@@ -17,6 +17,8 @@ class NetworkFailureSplash extends StatelessWidget {
         Text(
           S.of(context).theresSomethingWrongWithConnection,
           style: theme.textTheme.titleLarge,
+          maxLines: 2,
+          textAlign: TextAlign.center,
         ),
         TextButton(
             style: TextButton.styleFrom(foregroundColor: primaryColor),

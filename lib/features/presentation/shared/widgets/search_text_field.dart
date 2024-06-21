@@ -73,28 +73,39 @@ class _SearchTextFieldState extends State<SearchTextField> {
             onPressed: () => widget.onSubmitted?.call(textEditingController.text),
             icon: SvgPicture.asset(
               'resources/images/svg/search_icon.svg',
+              colorFilter: const ColorFilter.mode(onPrimaryColor, BlendMode.srcIn),
             ),
           ),
           Expanded(
             child: Align(
-              child: TextField(
-                controller: textEditingController,
-                focusNode: textInputFocusNode,
-                scrollController: scrollController,
-                onSubmitted: widget.onSubmitted,
-                onChanged: widget.onChanged,
-                style: widget.textStyle ?? widget.theme.textTheme.bodyMedium?.copyWith(color: onPrimaryColor),
-                decoration: InputDecoration(
-                    focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
-                    disabledBorder:
-                        const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
-                    enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
-                    border: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                    hintText: widget.hintText,
-                    hintStyle: widget.hintStyle ?? widget.theme.textTheme.bodyMedium?.copyWith(color: onSearchFieldColor)),
-              ),
-            ),
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    colorScheme: Theme.of(context).colorScheme.copyWith(
+                      surface: surfaceColor,
+                      onSurface: onSurfacePrimaryColor
+                    )
+                  ),
+                  child: TextField(
+                      controller: textEditingController,
+                      focusNode: textInputFocusNode,
+                      scrollController: scrollController,
+                      onSubmitted: widget.onSubmitted,
+                      onChanged: widget.onChanged,
+                      style: widget.textStyle ?? widget.theme.textTheme.bodyMedium?.copyWith(color: onPrimaryColor),
+                      decoration: InputDecoration(
+                          focusedBorder:
+                              const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                          disabledBorder:
+                              const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                          enabledBorder:
+                              const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                          border: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                          hintText: widget.hintText,
+                          hintStyle: widget.hintStyle ??
+                              widget.theme.textTheme.bodyMedium?.copyWith(color: searchFieldHintColor, fontWeight: FontWeight.w700)),
+                  ),
+                ))
           ),
         ],
       ),

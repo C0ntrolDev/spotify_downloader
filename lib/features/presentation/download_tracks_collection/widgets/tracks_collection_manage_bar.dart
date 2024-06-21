@@ -24,10 +24,10 @@ class TracksCollectionManageBar extends StatelessWidget {
             theme: theme,
             onChanged: _onFilterQueryChanged,
             height: 35,
-            cornerRadius: 10,
+            cornerRadius: 5,
             hintText: S.of(context).searchByName,
             textStyle: theme.textTheme.bodySmall?.copyWith(color: onPrimaryColor),
-            hintStyle: theme.textTheme.bodySmall?.copyWith(color: onSearchFieldColor),
+            hintStyle: theme.textTheme.bodySmall?.copyWith(color: searchFieldHintColor, fontWeight: FontWeight.w700),
           ),
         ),
         Container(
@@ -38,8 +38,8 @@ class TracksCollectionManageBar extends StatelessWidget {
             onPressed: _onAllDownloadButtonClicked,
             style: ButtonStyle(
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))),
-            child: Text(S.of(context).downloadAll, style: theme.textTheme.bodySmall!.copyWith(color: onPrimaryColor)),
+                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
+            child: Text(S.of(context).downloadAll, style: theme.textTheme.bodySmall!.copyWith(color: onPrimaryColor, fontWeight: FontWeight.w700)),
           ),
         )
       ],

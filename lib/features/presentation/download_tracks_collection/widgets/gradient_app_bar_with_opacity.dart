@@ -10,11 +10,11 @@ class GradientAppBarWithOpacity extends StatelessWidget {
       required this.firstColor,
       required this.secondaryColor,
       this.opacity = 0,
-      this.height,
+      this.height = 55,
       this.iconSize = 35})
       : isAppBarVisible = true;
 
-  const GradientAppBarWithOpacity.invisible({super.key, this.height, this.iconSize = 35})
+  const GradientAppBarWithOpacity.invisible({super.key, this.height = 55, this.iconSize = 35})
       : isAppBarVisible = false,
         opacity = 0,
         title = '',
@@ -26,13 +26,13 @@ class GradientAppBarWithOpacity extends StatelessWidget {
   final Color? firstColor;
   final Color? secondaryColor;
   final double opacity;
-  final double? height;
+  final double height;
   final double iconSize;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height ?? 55 + MediaQuery.of(context).viewPadding.top,
+      height: height + MediaQuery.of(context).viewPadding.top,
       child: Stack(
         children: [
           Builder(
@@ -45,7 +45,7 @@ class GradientAppBarWithOpacity extends StatelessWidget {
                     decoration: BoxDecoration(
                         gradient: LinearGradient(colors: [
                       firstColor ?? Colors.transparent,
-                      getIntermediateColor(firstColor ?? Colors.transparent, secondaryColor ?? Colors.transparent, 0.5)
+                      getIntermediateColor(firstColor ?? Colors.transparent, secondaryColor ?? Colors.transparent, 0.7)
                     ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
                   ),
                 );
@@ -68,13 +68,12 @@ class GradientAppBarWithOpacity extends StatelessWidget {
                       height: iconSize,
                       width: iconSize,
                     )),
-                Padding(
-                  padding: const EdgeInsets.only(left: 30),
-                  child: Opacity(
-                    opacity: opacity,
-                    child: Builder(builder: (context) {
-                      return Center(child: Text(title, style: Theme.of(context).textTheme.titleSmall));
-                    }),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Opacity(
+                        opacity: opacity,
+                        child: Center(child: Text(title, style: Theme.of(context).textTheme.titleSmall))),
                   ),
                 ),
               ],

@@ -122,7 +122,7 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                         )),
                       ],
                     )),
-                const Divider(color: onSurfaceSecondaryColor, height: 20),
+                const Divider(color: onSurfaceSecondaryColor, height: 20, thickness: 0.3),
                 DownloadTrackInfoStatusTile(trackWithLoadingObserver: state.trackWithLoadingObserver),
                 DownloadTrackInfoTile(
                     title: S.of(context).linkToTheSource,

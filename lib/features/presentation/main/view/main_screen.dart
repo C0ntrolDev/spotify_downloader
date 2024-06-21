@@ -58,7 +58,7 @@ class _MainScreenState extends State<MainScreen> with AutoRouteAwareStateMixin {
                     alignment: Alignment.bottomCenter,
                     decoration: const BoxDecoration(
                         gradient: LinearGradient(
-                            colors: [Color.fromARGB(0, 0, 0, 0), Color.fromARGB(150, 0, 0, 0)],
+                            colors: [Color.fromARGB(0, 0, 0, 0), Color.fromARGB(200, 0, 0, 0)],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter)),
                     child: Theme(
