@@ -6,9 +6,9 @@ import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
 class SpotifyDownloaderApp extends StatefulWidget {
-  const SpotifyDownloaderApp({super.key, required this.locale});
+  const SpotifyDownloaderApp({super.key, this.locale});
 
-  final String locale;
+  final String? locale;
 
   static void setLanguage(BuildContext context, String newLanguage) async {
     final state = context.findAncestorStateOfType<_SpotifyDownloaderAppState>();
@@ -25,7 +25,9 @@ class _SpotifyDownloaderAppState extends State<SpotifyDownloaderApp> {
 
   @override
   void initState() {
-    _language = widget.locale;
+    if (widget.locale != null) {
+      _language = widget.locale!;
+    }
     super.initState();
   }
 

@@ -1,8 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
@@ -173,7 +171,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                       hideThumbWhenOutOfOffset: true,
                                       thumbBuilder: (context, isDragging) {
                                         return Padding(
-                                          padding: const EdgeInsets.only(right: 10),
+                                          padding: const EdgeInsets.only(left: 5, right: 7),
                                           child: Container(
                                               height: 50,
                                               width: 5,

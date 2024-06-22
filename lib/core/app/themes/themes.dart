@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 
 part 'text_themes.dart';
@@ -76,6 +77,15 @@ final mainTheme = ThemeData(
     selectionHandleColor: primaryColor,
   ),
 );
+
+void initTheme() {
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle.light.copyWith(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+    ),
+  );
+}
 
 void showBigTextSnackBar(String message, BuildContext context, [Duration duration = const Duration(seconds: 2)]) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(

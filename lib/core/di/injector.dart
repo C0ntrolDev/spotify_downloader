@@ -53,6 +53,7 @@ Future<void> _initCore() async {
   injector.registerSingleton<PermissionsManager>(PermissionsManager());
   injector.registerSingleton<RequiringPermissionServicesInitializer>(
       RequiringPermissionServicesInitializer(permissionsManager: injector.get<PermissionsManager>()));
+  await injector.get<RequiringPermissionServicesInitializer>().initialize();
 }
 
 Future<void> _provideDataSources() async {
