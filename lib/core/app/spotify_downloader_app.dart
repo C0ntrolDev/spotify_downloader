@@ -25,10 +25,12 @@ class _SpotifyDownloaderAppState extends State<SpotifyDownloaderApp> {
 
   @override
   void initState() {
+    super.initState();
+    
     if (widget.locale != null) {
       _language = widget.locale!;
     }
-    super.initState();
+    initTheme();
   }
 
   @override

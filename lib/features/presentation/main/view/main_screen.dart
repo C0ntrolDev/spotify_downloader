@@ -31,7 +31,7 @@ class _MainScreenState extends State<MainScreen> with AutoRouteAwareStateMixin {
         if (!(await _permissionsManager.isPermissionsGranted()) && context.mounted) {
           showPermissonsDialog(context, () async {
             final isPermissionsGranted = await _permissionsManager.requestPermissions();
-            await _requiringPermissionServicesInitializer.initialize();
+            await _requiringPermissionServicesInitializer.init();
             return isPermissionsGranted;
           });
         }

@@ -12,7 +12,7 @@ class RequiringPermissionServicesInitializer {
   bool _isNotificationsInitialized = false;
   bool _isBackgroundInitialized = false;
 
-  Future<void> initialize() async {
+  Future<void> init() async {
     if (!_isNotificationsInitialized && await permissionsManager.isNotificationsPermissionGranted()) {
       _isNotificationsInitialized = true;
 
