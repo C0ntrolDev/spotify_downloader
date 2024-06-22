@@ -73,7 +73,7 @@ class GradientAppBarWithOpacity extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: Opacity(
                         opacity: opacity,
-                        child: Center(child: Text(title, style: Theme.of(context).textTheme.titleSmall))),
+                        child: Text(title, style: Theme.of(context).textTheme.titleSmall)),
                   ),
                 ),
               ],

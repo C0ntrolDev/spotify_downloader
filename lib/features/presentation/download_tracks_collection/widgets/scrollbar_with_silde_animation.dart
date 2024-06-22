@@ -1,46 +1,64 @@
+import 'dart:math';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 class ScrollbarWithSlideAnimation extends StatefulWidget {
   final Widget Function(BuildContext context, bool isDragging)? thumbBuilder;
+  final EdgeInsets thumbMargin;
   final ScrollController? controller;
   final Widget child;
   final double? scrollBarHeight;
 
+  final double? minScrollOffset;
+  final double? maxScrollOfssetFromEnd;
+
+  final bool hideThumbWhenOutOfOffset;
+
   final Curve animationCurve;
   final Duration animationDuration;
-
   final Duration durationBeforeHide;
 
-  const ScrollbarWithSlideAnimation({
-    super.key,
-    required this.child,
-    this.thumbBuilder,
-    this.controller,
-    this.scrollBarHeight,
-    this.animationCurve = Curves.easeInOut,
-    this.animationDuration = const Duration(milliseconds: 500),
-    this.durationBeforeHide  = const Duration(seconds: 1)
-  });
+  const ScrollbarWithSlideAnimation(
+      {super.key,
+      required this.child,
+      this.thumbBuilder,
+      this.controller,
+      this.scrollBarHeight,
+      this.animationCurve = Curves.easeInOut,
+      this.animationDuration = const Duration(milliseconds: 500),
+      this.thumbMargin = const EdgeInsets.all(0),
+      this.durationBeforeHide = const Duration(seconds: 1),
+      this.minScrollOffset,
+      this.maxScrollOfssetFromEnd,
+      this.hideThumbWhenOutOfOffset = false});
 
   @override
   ScrollbarWithSlideAnimationState createState() => ScrollbarWithSlideAnimationState();
 }
 
-class ScrollbarWithSlideAnimationState extends State<ScrollbarWithSlideAnimation>
-    with SingleTickerProviderStateMixin {
+class ScrollbarWithSlideAnimationState extends State<ScrollbarWithSlideAnimation> with SingleTickerProviderStateMixin {
   late final Widget Function(BuildContext context, bool isDragging) _thumbBuilder;
   ScrollController? _scrollController;
 
   double _thumbOffset = 0;
   double thumbHeight = 0;
-  double get _scrollBarHeight => widget.scrollBarHeight ?? context.size!.height;
+  double get _scrollBarHeight => (widget.scrollBarHeight ?? context.size!.height) - widget.thumbMargin.vertical;
+  double get _maxThumbOffset => _scrollBarHeight - thumbHeight;
 
   late final AnimationController _animationController;
   late final Animation<Offset> _animationOffset;
 
   bool _isThumbShown = false;
   bool _isDragging = false;
+
+  bool _isOutOfOffsetScroll = true;
+
+  double get minScrollOffset => widget.minScrollOffset ?? 0;
+  double get maxScrollOffsetFromEnd => widget.maxScrollOfssetFromEnd ?? 0;
+
+  Timer? plannedHidding;
 
   @override
   void initState() {
@@ -92,19 +110,42 @@ class ScrollbarWithSlideAnimationState extends State<ScrollbarWithSlideAnimation
   }
 
   void _onScroll() {
+    final scrollOffset = _scrollController!.offset - minScrollOffset;
+    final totalScrollOffset = _scrollController!.position.maxScrollExtent - maxScrollOffsetFromEnd - minScrollOffset;
+    _thumbOffset = (scrollOffset / totalScrollOffset * _maxThumbOffset);
+    if (_thumbOffset < 0 || _thumbOffset > _maxThumbOffset || totalScrollOffset < 0) {
+      if (!_isOutOfOffsetScroll) {
+        _isOutOfOffsetScroll = true;
+        if (widget.hideThumbWhenOutOfOffset) {
+          _hideThumb();
+        }
+      }
+    } else {
+      if (_isOutOfOffsetScroll) {
+        _isOutOfOffsetScroll = false;
+        if (widget.hideThumbWhenOutOfOffset) {
+          _showThumb();
+        }
+      }
+    }
+
     setState(() {
-      _thumbOffset =
-          _scrollController!.offset / _scrollController!.position.maxScrollExtent * (_scrollBarHeight - thumbHeight);
+      _thumbOffset = _thumbOffset.clamp(0, _maxThumbOffset);
     });
   }
 
   void _onScrollStatusChanged() {
-    if (_scrollController!.position.isScrollingNotifier.value && !_isThumbShown) {
+    if (_scrollController!.position.isScrollingNotifier.value && !_isThumbShown && !_isOutOfOffsetScroll) {
+      plannedHidding?.cancel();
+      plannedHidding = null;
       _showThumb();
       return;
     }
 
     if (_thumbShouldHide()) {
+      plannedHidding?.cancel();
+      plannedHidding = null;
+
       _schedulePossibleThumbHidding();
     }
   }
@@ -114,15 +155,21 @@ class ScrollbarWithSlideAnimationState extends State<ScrollbarWithSlideAnimation
     _isThumbShown = true;
   }
 
-  bool _thumbShouldHide() => !_scrollController!.position.isScrollingNotifier.value && _isThumbShown && !_isDragging;
+  bool _thumbShouldHide() =>
+      _isOutOfOffsetScroll ||
+      (!_scrollController!.position.isScrollingNotifier.value && _isThumbShown && !_isDragging);
 
   void _schedulePossibleThumbHidding() {
-    Future.delayed(widget.durationBeforeHide, () {
+    plannedHidding = Timer(widget.durationBeforeHide, () {
       if (_thumbShouldHide()) {
-        _animationController.reverse();
-        _isThumbShown = false;
+        _hideThumb();
       }
     });
+  }
+
+  void _hideThumb() {
+    _animationController.reverse();
+    _isThumbShown = false;
   }
 
   @override
@@ -134,7 +181,8 @@ class ScrollbarWithSlideAnimationState extends State<ScrollbarWithSlideAnimation
             right: 0,
             top: _thumbOffset,
             bottom: 0,
-            child: Align(
+            child: Container(
+                padding: widget.thumbMargin,
                 alignment: Alignment.topCenter,
                 child: SlideTransition(
                   position: _animationOffset,
@@ -170,11 +218,10 @@ class ScrollbarWithSlideAnimationState extends State<ScrollbarWithSlideAnimation
   }
 
   double _calculateOffset(DragUpdateDetails details, ScrollController controller) {
-    double listHeightToScreenHeightRatio = controller.position.maxScrollExtent / _scrollBarHeight;
-    double newOffset = controller.offset + details.primaryDelta! * listHeightToScreenHeightRatio;
-    newOffset =
-        newOffset.clamp(_scrollController!.position.minScrollExtent, _scrollController!.position.maxScrollExtent);
-
+    final maxScrollOffset = _scrollController!.position.maxScrollExtent - maxScrollOffsetFromEnd;
+    final scrollDelta = details.primaryDelta! / _scrollBarHeight;
+    final oldOffset = max(minScrollOffset, controller.offset);
+    double newOffset = (oldOffset + scrollDelta * maxScrollOffset).clamp(minScrollOffset, maxScrollOffset);
     return newOffset;
   }
 }

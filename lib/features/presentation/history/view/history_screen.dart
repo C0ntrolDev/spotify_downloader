@@ -83,7 +83,7 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
                                     ),
                                     Expanded(
                                       child: Padding(
-                                        padding: const EdgeInsets.only(left: 10),
+                                        padding: const EdgeInsets.symmetric(horizontal: 10),
                                         child: Text(
                                           historyTracksCollection.name,
                                           style: theme.textTheme.bodyMedium,
