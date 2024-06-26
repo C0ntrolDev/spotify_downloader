@@ -24,7 +24,7 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
         responseList: responseList,
         cancellationToken: cancellationTokenSource.token,
         offset: args.offset,
-        firstCallbackLength: 200,
+        firstCallbackLength: 50,
         callbackLength: 50);
 
     final TracksGettingStream tracksGettingStream;

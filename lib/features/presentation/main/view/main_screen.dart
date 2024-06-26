@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
-import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/permissions/permissions_manager.dart';
 import 'package:spotify_downloader/core/permissions/requiring_permission_services_initializer.dart';
@@ -68,49 +67,46 @@ class _MainScreenState extends State<MainScreen> with AutoRouteAwareStateMixin {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: SizedBox(
-                          height: bottomNavigationBarHeight,
-                          child: BottomNavigationBar(
-                              enableFeedback: false,
-                              selectedFontSize: 10,
-                              unselectedFontSize: 10,
-                              selectedItemColor: onBackgroundPrimaryColor,
-                              unselectedItemColor: onBackgroundSecondaryColor,
-                              elevation: 0,
-                              backgroundColor: Colors.transparent,
-                              currentIndex: tabsRouter.activeIndex,
-                              onTap: (index) => tabsRouter.setActiveIndex(index),
-                              items: [
-                                BottomNavigationBarItem(
-                                    icon: SvgPicture.asset(
-                                      'resources/images/svg/bottom_bar/home_icon.svg',
-                                      height: 25,
-                                      width: 25,
-                                      colorFilter: const ColorFilter.mode(onBackgroundSecondaryColor, BlendMode.srcIn),
-                                    ),
-                                    activeIcon: SvgPicture.asset(
-                                      'resources/images/svg/bottom_bar/home_icon_active.svg',
-                                      height: 25,
-                                      width: 25,
-                                      colorFilter: const ColorFilter.mode(onBackgroundPrimaryColor, BlendMode.srcIn),
-                                    ),
-                                    label: S.of(context).main),
-                                BottomNavigationBarItem(
-                                    icon: SvgPicture.asset(
-                                      'resources/images/svg/bottom_bar/history_icon.svg',
-                                      height: 25,
-                                      width: 25,
-                                      colorFilter: const ColorFilter.mode(onBackgroundSecondaryColor, BlendMode.srcIn),
-                                    ),
-                                    activeIcon: SvgPicture.asset(
-                                      'resources/images/svg/bottom_bar/history_icon_active.svg',
-                                      height: 25,
-                                      width: 25,
-                                      colorFilter: const ColorFilter.mode(onBackgroundPrimaryColor, BlendMode.srcIn),
-                                    ),
-                                    label: S.of(context).history),
-                              ]),
-                        ),
+                        child: BottomNavigationBar(
+                            enableFeedback: false,
+                            selectedFontSize: 10,
+                            unselectedFontSize: 10,
+                            selectedItemColor: onBackgroundPrimaryColor,
+                            unselectedItemColor: onBackgroundSecondaryColor,
+                            elevation: 0,
+                            backgroundColor: Colors.transparent,
+                            currentIndex: tabsRouter.activeIndex,
+                            onTap: (index) => tabsRouter.setActiveIndex(index),
+                            items: [
+                              BottomNavigationBarItem(
+                                  icon: SvgPicture.asset(
+                                    'resources/images/svg/bottom_bar/home_icon.svg',
+                                    height: 25,
+                                    width: 25,
+                                    colorFilter: const ColorFilter.mode(onBackgroundSecondaryColor, BlendMode.srcIn),
+                                  ),
+                                  activeIcon: SvgPicture.asset(
+                                    'resources/images/svg/bottom_bar/home_icon_active.svg',
+                                    height: 25,
+                                    width: 25,
+                                    colorFilter: const ColorFilter.mode(onBackgroundPrimaryColor, BlendMode.srcIn),
+                                  ),
+                                  label: S.of(context).main),
+                              BottomNavigationBarItem(
+                                  icon: SvgPicture.asset(
+                                    'resources/images/svg/bottom_bar/history_icon.svg',
+                                    height: 25,
+                                    width: 25,
+                                    colorFilter: const ColorFilter.mode(onBackgroundSecondaryColor, BlendMode.srcIn),
+                                  ),
+                                  activeIcon: SvgPicture.asset(
+                                    'resources/images/svg/bottom_bar/history_icon_active.svg',
+                                    height: 25,
+                                    width: 25,
+                                    colorFilter: const ColorFilter.mode(onBackgroundPrimaryColor, BlendMode.srcIn),
+                                  ),
+                                  label: S.of(context).history),
+                            ]),
                       ),
                     ),
                   ),

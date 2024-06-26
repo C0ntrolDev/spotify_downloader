@@ -20,10 +20,7 @@ import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/ent
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/history_tracks_collections.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/network_tracks_collections/network_tracks_collections.dart';
 import 'package:spotify_downloader/features/presentation/change_source_video/bloc/change_source_video_bloc.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/filter_tracks/filter_tracks_bloc.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_and_download_tracks/get_and_download_tracks_bloc.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_history_bloc.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/get_tracks_collection_by_url_bloc.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/blocs.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/bloc/download_track_info_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_status_tile/cubit/download_track_info_status_tile_cubit.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/bloc/track_tile_bloc.dart';
@@ -35,7 +32,6 @@ import 'package:spotify_downloader/features/presentation/settings/widgets/auth_s
 import 'package:spotify_downloader/features/presentation/settings/widgets/download_tracks_settings/bloc/download_tracks_settings_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/language_setting/bloc/language_setting_bloc.dart';
 import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notifications/bloc/tracks_collections_loading_notifications_bloc.dart';
-
 
 final injector = GetIt.instance;
 
@@ -49,7 +45,7 @@ Future<void> initInjector() async {
 }
 
 Future<void> _initLateCore() async {
-    await injector.get<RequiringPermissionServicesInitializer>().init();
+  await injector.get<RequiringPermissionServicesInitializer>().init();
 }
 
 Future<void> _initCore() async {
@@ -202,11 +198,14 @@ void _provideBlocs() {
           addTracksCollectionToHistory: injector.get<AddTracksCollectionToHistory>(),
           getTracksCollection: injector.get<GetTracksCollectionByTypeAndSpotifyId>(),
           historyTracksCollection: historyCollection));
-  injector.registerFactory<GetAndDownloadTracksBloc>(() => GetAndDownloadTracksBloc(
-      downloadTracksRange: injector.get<DownloadTracksRange>(),
-      downloadTracksFromGettingObserver: injector.get<DownloadTracksFromGettingObserver>(),
+  injector.registerFactory<GetTracksBloc>(() => GetTracksBloc(
       getTracksFromTracksCollection: injector.get<GetTracksWithLoadingObserverFromTracksCollection>(),
       getTracksWithOffset: injector.get<GetTracksWithLoadingObserverFromTracksCollectionWithOffset>()));
+
+  injector.registerFactory<DownloadTracksCubit>(() => DownloadTracksCubit(
+      downloadTracksRange: injector.get<DownloadTracksRange>(),
+      downloadTracksFromGettingObserver: injector.get<DownloadTracksFromGettingObserver>(),
+      downloadTrack: injector.get<DownloadTrack>()));
   injector.registerFactory<FilterTracksBloc>(() => FilterTracksBloc());
 
   injector.registerFactoryParam<TrackTileBloc, TrackWithLoadingObserver, void>((trackwithLoadingObserver, _) =>

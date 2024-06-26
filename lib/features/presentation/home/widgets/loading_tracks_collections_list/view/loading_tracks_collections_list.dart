@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
-import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/observe_tracks_loading/domain/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/bloc/loading_tracks_collections_list_bloc.dart';
@@ -51,7 +50,6 @@ class _LoadingTracksCollectionsListState extends State<LoadingTracksCollectionsL
 
               if (blocState is LoadingTracksCollectionsListInitial) {
                 return Container(
-                  height: constrains.maxHeight - bottomNavigationBarHeight,
                   alignment: Alignment.center,
                   child: const CircularProgressIndicator(),
                 );

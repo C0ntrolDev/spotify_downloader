@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
-import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/presentation/history/bloc/history_bloc.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
@@ -75,6 +74,8 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
                                     CachedNetworkImage(
                                       width: 70,
                                       height: 70,
+                                      fit: BoxFit.fitWidth,
+                                      memCacheWidth: (70 * MediaQuery.of(context).devicePixelRatio).round(),
                                       imageUrl: historyTracksCollection.imageUrl ?? '',
                                       placeholder: (context, imageUrl) =>
                                           Image.asset('resources/images/another/loading_track_collection_image.png'),
@@ -99,9 +100,6 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
                                 ),
                               );
                             }),
-                        SliverToBoxAdapter(
-                          child: Container(height: bottomNavigationBarHeight),
-                        )
                       ],
                     ),
                   );

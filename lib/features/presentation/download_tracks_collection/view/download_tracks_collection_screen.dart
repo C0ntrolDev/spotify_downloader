@@ -43,8 +43,9 @@ class DownloadTracksCollectionScreenWithHistoryTracksCollection extends Download
 class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectionScreen>
     with SingleTickerProviderStateMixin {
   late final GetTracksCollectionBloc _getTracksCollectionBloc;
-  final GetAndDownloadTracksBloc _getAndDownloadTracksBloc = injector.get<GetAndDownloadTracksBloc>();
+  final GetTracksBloc _getTracksBloc = injector.get<GetTracksBloc>();
   final FilterTracksBloc _filterTracksBloc = injector.get<FilterTracksBloc>();
+  final DownloadTracksCubit _downloadTracksCubit = injector.get<DownloadTracksCubit>();
 
   final GlobalKey _headerKey = GlobalKey();
   double? _headerHeight;
@@ -71,7 +72,6 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
 
   @override
   void dispose() {
-    _getAndDownloadTracksBloc.close();
     _getTracksCollectionBloc.close();
     _filterTracksBloc.close();
 
@@ -92,10 +92,11 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
         ((_headerHeight ?? 0) - appBarHeightWithViewPadding);
     final headerShowingPercent = 1 - headerHiddenPercent;
 
-    final double newAppBarOpacity = ((headerShowingPercent - _appBarStartShowingPercent) / (1 - headerShowingPercent)).clamp(0, 1);
+    final double newAppBarOpacity =
+        ((headerShowingPercent - _appBarStartShowingPercent) / (1 - headerShowingPercent)).clamp(0, 1);
 
     if (newAppBarOpacity != _appBarOpacity) {
-        _appBarOpacity = newAppBarOpacity;
+      _appBarOpacity = newAppBarOpacity;
     }
   }
 
@@ -108,7 +109,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
           listener: (context, state) {
             if (state is GetTracksCollectionLoaded) {
               _generateAppBarColor(state.tracksCollection.bigImageUrl);
-              _getAndDownloadTracksBloc.add(GetAndDownloadTracksGetTracks(tracksCollection: state.tracksCollection));
+              _getTracksBloc.add(GetTracksGetTracks(tracksCollection: state.tracksCollection));
             }
 
             if (state is GetTracksCollectionFailure) {
@@ -117,16 +118,18 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
             }
           },
         ),
-        BlocListener<GetAndDownloadTracksBloc, GetAndDownloadTracksState>(
-          bloc: _getAndDownloadTracksBloc,
+        BlocListener<GetTracksBloc, GetTracksState>(
+          bloc: _getTracksBloc,
           listener: (context, state) {
-            if (state is GetAndDownloadTracksFailure) {
+            if (state is GetTracksFailure) {
               _onFatalFailure(state.failure);
             }
 
-            if (state is GetAndDownloadTracksTracksGot) {
+            if (state is GetTracksTracksGot) {
               _filterTracksBloc.add(FilterTracksChangeSource(newSource: state.tracksWithLoadingObservers));
             }
+
+            _updateDownloadTracksCubit(state);
           },
         )
       ],
@@ -136,23 +139,17 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
             BlocBuilder<GetTracksCollectionBloc, GetTracksCollectionState>(
               bloc: _getTracksCollectionBloc,
               builder: (context, getTracksCollectionState) {
-                if (getTracksCollectionState is GetTracksCollectionNetworkFailure) {
-                  return NetworkFailureSplash(
-                      onRetryAgainButtonClicked: () => _getTracksCollectionBloc.add(GetTracksCollectionLoad()));
-                }
-
                 if (getTracksCollectionState is GetTracksCollectionLoaded) {
-                  return BlocBuilder<GetAndDownloadTracksBloc, GetAndDownloadTracksState>(
-                    bloc: _getAndDownloadTracksBloc,
+                  return BlocBuilder<GetTracksBloc, GetTracksState>(
+                    bloc: _getTracksBloc,
                     builder: (context, getTracksState) {
-                      if (getTracksState is GetAndDownloadTracksBeforePartGotNetworkFailure) {
+                      if (getTracksState is GetTracksBeforePartGotNetworkFailure) {
                         return NetworkFailureSplash(
-                            onRetryAgainButtonClicked: () => _getAndDownloadTracksBloc.add(
-                                GetAndDownloadTracksGetTracks(
-                                    tracksCollection: getTracksCollectionState.tracksCollection)));
+                            onRetryAgainButtonClicked: () => _getTracksBloc
+                                .add(GetTracksGetTracks(tracksCollection: getTracksCollectionState.tracksCollection)));
                       }
 
-                      if (getTracksState is GetAndDownloadTracksTracksGot) {
+                      if (getTracksState is GetTracksTracksGot) {
                         return Stack(children: [
                           Container(
                               alignment: AlignmentDirectional.topCenter,
@@ -208,17 +205,18 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                           bottom: 0,
                                                           width: constraints.maxWidth,
                                                           child: DownloadTracksCollectionHeader(
-                                                              key: _headerKey,
-                                                              backgroundGradientColor: _appBarColor,
-                                                              title: getTracksCollectionState.tracksCollection.name,
-                                                              imageUrl: getTracksCollectionState
-                                                                      .tracksCollection.bigImageUrl ??
-                                                                  '',
-                                                              onFilterQueryChanged: _onFilterQueryChanged,
-                                                              onAllDownloadButtonClicked: () =>
-                                                                  _onAllDownloadButtonClicked(
-                                                                      filterTracksState: _filterTracksBloc.state,
-                                                                      getAndDownloadTracksState: getTracksState))),
+                                                            key: _headerKey,
+                                                            backgroundGradientColor: _appBarColor,
+                                                            title: getTracksCollectionState.tracksCollection.name,
+                                                            imageUrl: getTracksCollectionState
+                                                                    .tracksCollection.bigImageUrl ??
+                                                                '',
+                                                            onFilterQueryChanged: _onFilterQueryChanged,
+                                                            onAllDownloadButtonClicked: () =>
+                                                                _onAllDownloadButtonClicked(
+                                                                    filterTracksState: _filterTracksBloc.state,
+                                                                    getTracksState: getTracksState),
+                                                          ))
                                                     ],
                                                   );
                                                 }),
@@ -230,7 +228,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
 
                                               final filteredTracks = state.filteredTracks;
                                               final isTracksPlaceholdersDisplayed =
-                                                  getTracksState is! GetAndDownloadTracksAllGot &&
+                                                  getTracksState is! GetTracksAllGot &&
                                                       state.isFilterQueryEmpty &&
                                                       getTracksCollectionState.tracksCollection.tracksCount != null;
 
@@ -260,8 +258,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                       ),
                                                       Builder(
                                                         builder: (buildContext) {
-                                                          if (getTracksState
-                                                              is GetAndDownloadTracksAfterPartGotNetworkFailure) {
+                                                          if (getTracksState is GetTracksAfterPartGotNetworkFailure) {
                                                             return Positioned.fill(
                                                               child: IgnorePointer(
                                                                 child: Container(
@@ -286,6 +283,11 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                         ]);
                       }
 
+                      if (getTracksCollectionState is GetTracksCollectionNetworkFailure) {
+                        return NetworkFailureSplash(
+                            onRetryAgainButtonClicked: () => _getTracksCollectionBloc.add(GetTracksCollectionLoad()));
+                      }
+
                       return const Center(child: CircularProgressIndicator());
                     },
                   );
@@ -297,11 +299,11 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
             BlocBuilder<GetTracksCollectionBloc, GetTracksCollectionState>(
               bloc: _getTracksCollectionBloc,
               builder: (context, getTracksCollectionState) {
-                return BlocBuilder<GetAndDownloadTracksBloc, GetAndDownloadTracksState>(
-                  bloc: _getAndDownloadTracksBloc,
+                return BlocBuilder<GetTracksBloc, GetTracksState>(
+                  bloc: _getTracksBloc,
                   builder: (context, getTracksState) {
                     if (getTracksCollectionState is GetTracksCollectionLoaded &&
-                        getTracksState is GetAndDownloadTracksTracksGot) {
+                        getTracksState is GetTracksTracksGot) {
                       return GradientAppBarWithOpacity.visible(
                         height: _appBarHeight,
                         firstColor: _appBarColor,
@@ -333,16 +335,15 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
   void _onFilterQueryChanged(newQuery) => _filterTracksBloc.add(FilterTracksChangeFilterQuery(newQuery: newQuery));
 
   void _onAllDownloadButtonClicked(
-      {required FilterTracksState filterTracksState, required GetAndDownloadTracksState getAndDownloadTracksState}) {
+      {required FilterTracksState filterTracksState, required GetTracksState getTracksState}) {
     if (filterTracksState is! FilterTracksChanged) {
       return;
     }
 
-    if (!filterTracksState.isFilterQueryEmpty || getAndDownloadTracksState is GetAndDownloadTracksAllGot) {
-      _getAndDownloadTracksBloc
-          .add(GetAndDownloadTracksDownloadTracksRange(tracksRange: filterTracksState.filteredTracks));
+    if (!filterTracksState.isFilterQueryEmpty || getTracksState is GetTracksAllGot) {
+      _downloadTracksCubit.downloadTracksRange(filterTracksState.filteredTracks);
     } else {
-      _getAndDownloadTracksBloc.add(GetAndDownloadTracksDownloadAllTracks());
+      _downloadTracksCubit.downloadAllTracks();
     }
   }
 
@@ -376,5 +377,29 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
     }
 
     AutoRouter.of(context).pop();
+  }
+
+  void _updateDownloadTracksCubit(GetTracksState state) {
+    if (state is GetTracksTracksGettingStarted) {
+      _downloadTracksCubit.setIsAllTracksGot(false);
+      _downloadTracksCubit.setGettingObserver(state.observer);
+    }
+
+    if (state is GetTracksTracksGettingCountinued) {
+      _downloadTracksCubit.setGettingObserver(state.observer);
+    }
+
+    if (state is GetTracksAfterPartGotNetworkFailure || state is GetTracksBeforePartGotNetworkFailure) {
+      _downloadTracksCubit.setGettingObserver(null);
+    }
+
+    if (state is GetTracksTracksGot) {
+      _downloadTracksCubit.setTracksList(state.tracksWithLoadingObservers);
+    }
+
+    if (state is GetTracksAllGot) {
+      _downloadTracksCubit.setIsAllTracksGot(true);
+      _downloadTracksCubit.setGettingObserver(null);
+    }
   }
 }
