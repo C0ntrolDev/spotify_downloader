@@ -56,5 +56,6 @@
   "developed": "Developed",
   "language": "Language",
   "youCanCloseTheAppAndTheDownloadWillContinue": "You can close the app and the download will continue!",
-  "youCanDeleteThisMessage": "(you can delete this message)"
+  "youCanDeleteThisMessage": "(you can delete this message)",
+  "errorCopied": "Error copied!"
 }

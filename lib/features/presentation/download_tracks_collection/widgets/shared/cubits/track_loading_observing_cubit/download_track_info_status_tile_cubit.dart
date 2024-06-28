@@ -3,18 +3,20 @@ import 'dart:async';
 import 'package:async/async.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/download_tracks.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/services/entities/entities.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/domain/entities/loading_track_observer.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/domain/entities/loading_track_status.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/services/entities/track_with_loading_observer.dart';
 
-part 'track_tile_state.dart';
+part 'download_track_info_status_tile_state.dart';
 
-class TrackTileCubit extends Cubit<TrackTileState> {
+class TrackLoadingObservingCubit extends Cubit<TrackLoadingObservingState> {
   TrackWithLoadingObserver? _trackWithLoadingObserver;
 
   StreamSubscription? _loadingObserverSubscription;
   StreamSubscription? _loadingObserverChangedSubscription;
 
-  TrackTileCubit() : super(TrackTileDeffault());
+  TrackLoadingObservingCubit() : super(const TrackLoadingObservingDeffault());
 
   Future<void> changeTrackWithLoadingObserver(TrackWithLoadingObserver trackWithLoadingObserver) async {
     _trackWithLoadingObserver = trackWithLoadingObserver;
@@ -54,31 +56,31 @@ class TrackTileCubit extends Cubit<TrackTileState> {
     final status = _trackWithLoadingObserver!.loadingObserver?.status;
     if (status == null) {
       if (_trackWithLoadingObserver!.track.isLoaded) {
-        emit(TrackTileLoaded());
+        emit(const TrackLoadingObservingLoaded());
       } else {
-        emit(TrackTileDeffault());
+        emit(const TrackLoadingObservingDeffault());
       }
 
       return;
     }
 
     if (status == LoadingTrackStatus.loading || status == LoadingTrackStatus.waitInLoadingQueue) {
-      emit(TrackTileLoading(percent: _trackWithLoadingObserver!.loadingObserver!.loadingPercent));
+      emit(TrackLoadingObservingLoading(percent: _trackWithLoadingObserver!.loadingObserver!.loadingPercent));
       return;
     }
 
     if (status == LoadingTrackStatus.failure) {
-      emit(TrackTileFailure());
+      emit(TrackLoadingObservingFailure(failure: _trackWithLoadingObserver!.loadingObserver!.failure));
       return;
     }
 
     if (status == LoadingTrackStatus.loadingCancelled) {
-      emit(TrackTileDeffault());
+      emit(const TrackLoadingObservingDeffault());
       return;
     }
 
     if (status == LoadingTrackStatus.loaded) {
-      emit(TrackTileLoaded());
+      emit(const TrackLoadingObservingLoaded());
     }
   }
 }

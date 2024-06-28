@@ -37,7 +37,7 @@ class _DownloadTrackInfoTileState extends State<DownloadTrackInfoTile> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Text(
-                  widget.title,
+                  widget.title.replaceAll("\n", ""),
                   style: theme.textTheme.bodyMedium?.copyWith(color: onSurfacePrimaryColor),
                 ),
               ),

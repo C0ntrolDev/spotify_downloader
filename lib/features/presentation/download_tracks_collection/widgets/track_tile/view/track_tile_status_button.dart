@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/entities/entities.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/cubit/track_tile_cubit.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/shared/cubits/track_loading_observing_cubit/download_track_info_status_tile_cubit.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/strange_optimized_circular_progress_indicator.dart';
 
 class TrackTileStatusButton extends StatefulWidget {
@@ -20,18 +20,18 @@ class TrackTileStatusButton extends StatefulWidget {
 }
 
 class _TrackTileStatusButtonState extends State<TrackTileStatusButton> {
-  final _trackTileCubit = injector.get<TrackTileCubit>();
+  final _trackLoadingObservingCubit = injector.get<TrackLoadingObservingCubit>();
 
   @override
   void initState() {
-    _trackTileCubit.changeTrackWithLoadingObserver(widget.trackWithLoadingObserver);
+    _trackLoadingObservingCubit.changeTrackWithLoadingObserver(widget.trackWithLoadingObserver);
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant TrackTileStatusButton oldWidget) {
     if (oldWidget.trackWithLoadingObserver != widget.trackWithLoadingObserver) {
-      _trackTileCubit.changeTrackWithLoadingObserver(widget.trackWithLoadingObserver);
+      _trackLoadingObservingCubit.changeTrackWithLoadingObserver(widget.trackWithLoadingObserver);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -49,10 +49,10 @@ class _TrackTileStatusButtonState extends State<TrackTileStatusButton> {
                 alignment: Alignment.center,
                 width: 50,
                 padding: const EdgeInsets.only(right: 10),
-                child: BlocBuilder<TrackTileCubit, TrackTileState>(
-                  bloc: _trackTileCubit,
+                child: BlocBuilder<TrackLoadingObservingCubit, TrackLoadingObservingState>(
+                  bloc: _trackLoadingObservingCubit,
                   builder: (context, state) {
-                    if (state is TrackTileLoading) {
+                    if (state is TrackLoadingObservingLoading) {
                       return GestureDetector(
                         onTap: () {
                           widget.onCancelButtonClicked?.call();
@@ -65,7 +65,7 @@ class _TrackTileStatusButtonState extends State<TrackTileStatusButton> {
                       );
                     }
 
-                    if (state is TrackTileFailure) {
+                    if (state is TrackLoadingObservingFailure) {
                       return GestureDetector(
                         onTap: () {},
                         child: SvgPicture.asset(
@@ -83,10 +83,10 @@ class _TrackTileStatusButtonState extends State<TrackTileStatusButton> {
               Container(
                 alignment: Alignment.center,
                 width: 50,
-                child: BlocBuilder<TrackTileCubit, TrackTileState>(
-                  bloc: _trackTileCubit,
+                child: BlocBuilder<TrackLoadingObservingCubit, TrackLoadingObservingState>(
+                  bloc: _trackLoadingObservingCubit,
                   builder: (context, state) {
-                    if (state is TrackTileDeffault) {
+                    if (state is TrackLoadingObservingDeffault) {
                       return GestureDetector(
                           onTap: () {
                             widget.onDownloadButtonClicked?.call();
@@ -95,7 +95,7 @@ class _TrackTileStatusButtonState extends State<TrackTileStatusButton> {
                               height: 35, width: 35));
                     }
 
-                    if (state is TrackTileLoading) {
+                    if (state is TrackLoadingObservingLoading) {
                       if (state.percent == null) {
                         return Container(
                             padding: const EdgeInsets.all(0),
@@ -123,7 +123,7 @@ class _TrackTileStatusButtonState extends State<TrackTileStatusButton> {
                       );
                     }
 
-                    if (state is TrackTileLoaded) {
+                    if (state is TrackLoadingObservingLoaded) {
                       return SvgPicture.asset(
                         'resources/images/svg/track_tile/downloaded_icon.svg',
                         height: 35,
@@ -131,7 +131,7 @@ class _TrackTileStatusButtonState extends State<TrackTileStatusButton> {
                       );
                     }
 
-                    if (state is TrackTileFailure) {
+                    if (state is TrackLoadingObservingFailure) {
                       return GestureDetector(
                         onTap: () => widget.onDownloadButtonClicked?.call(),
                         child: SvgPicture.asset(

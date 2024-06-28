@@ -28,6 +28,8 @@ class _MainScreenState extends State<MainScreen> with AutoRouteAwareStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future(() async {
         if (!(await _permissionsManager.isPermissionsGranted()) && context.mounted) {
+          //idk i checked it in previous line
+          // ignore: use_build_context_synchronously
           showPermissonsDialog(context, () async {
             final isPermissionsGranted = await _permissionsManager.requestPermissions();
             await _requiringPermissionServicesInitializer.init();

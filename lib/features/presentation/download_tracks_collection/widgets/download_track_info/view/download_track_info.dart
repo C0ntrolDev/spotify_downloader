@@ -2,23 +2,29 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/entities/track_with_loading_observer.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/bloc/download_track_info_bloc.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/cubit/download_track_info_cubit.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_status_tile/view/download_track_info_status_tile.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_tile.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
 void showDownloadTrackInfoBottomSheet(BuildContext context, TrackWithLoadingObserver trackWithLoadingObserver) {
-  showModalBottomSheet(
+  showMaterialModalBottomSheet(
       elevation: 0,
       backgroundColor: surfaceColor,
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25.0),
+        ),
+      ),
+      bounce: true,
       builder: (buildContext) {
         return DownloadTrackInfo(
           trackWithLoadingObserver: trackWithLoadingObserver,
@@ -36,27 +42,20 @@ class DownloadTrackInfo extends StatefulWidget {
 }
 
 class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
-  late final DownloadTrackInfoBloc _downloadTrackInfoBloc;
-
-  @override
-  void initState() {
-    super.initState();
-    _downloadTrackInfoBloc = injector.get<DownloadTrackInfoBloc>(param1: widget.trackWithLoadingObserver);
-  }
+  late final DownloadTrackInfoCubit _downloadTrackInfoCubit = injector.get<DownloadTrackInfoCubit>();
 
   @override
   Widget build(BuildContext context) {
+    final track = widget.trackWithLoadingObserver.track;
+
     final theme = Theme.of(context);
-    return SizedBox(
-      height: 290,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: BlocBuilder<DownloadTrackInfoBloc, DownloadTrackInfoState>(
-            bloc: _downloadTrackInfoBloc,
-            builder: (context, state) {
-              return Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.start, children: [
+
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.start, children: [
                 Container(
                   padding: const EdgeInsets.only(top: 15, bottom: 20),
                   child: Container(
@@ -73,7 +72,9 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                         CachedNetworkImage(
                           width: 50,
                           height: 50,
-                          imageUrl: state.trackWithLoadingObserver.track.album?.imageUrl ?? '',
+                          fit: BoxFit.fitWidth,
+                          memCacheWidth: (50 * MediaQuery.of(context).devicePixelRatio).round(),
+                          imageUrl: track.album?.imageUrl ?? '',
                           placeholder: (context, imageUrl) =>
                               Image.asset('resources/images/another/loading_track_collection_image.png'),
                           errorWidget: (context, imageUrl, _) =>
@@ -86,7 +87,7 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                state.trackWithLoadingObserver.track.name,
+                                track.name,
                                 style: theme.textTheme.bodyMedium,
                               ),
                               LayoutBuilder(builder: (context, constrains) {
@@ -94,7 +95,7 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                                   Container(
                                     constraints: BoxConstraints(maxWidth: constrains.maxWidth / 2),
                                     child: Text(
-                                      state.trackWithLoadingObserver.track.artists?.join(', ') ?? '',
+                                      track.artists?.join(', ') ?? '',
                                       style: theme.textTheme.labelLarge?.copyWith(color: onSurfaceSecondaryColor),
                                     ),
                                   ),
@@ -111,7 +112,7 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                                   ),
                                   Expanded(
                                     child: Text(
-                                      state.trackWithLoadingObserver.track.album?.name ?? '',
+                                      track.album?.name ?? '',
                                       style: theme.textTheme.labelLarge?.copyWith(color: onSurfaceSecondaryColor),
                                     ),
                                   ),
@@ -123,7 +124,7 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                       ],
                     )),
                 const Divider(color: onSurfaceSecondaryColor, height: 20, thickness: 0.3),
-                DownloadTrackInfoStatusTile(trackWithLoadingObserver: state.trackWithLoadingObserver),
+                DownloadTrackInfoStatusTile(trackWithLoadingObserver: widget.trackWithLoadingObserver),
                 DownloadTrackInfoTile(
                     title: S.of(context).linkToTheSource,
                     iconWidget: SvgPicture.asset('resources/images/svg/download_track_info/reference_icon.svg',
@@ -131,9 +132,9 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                         width: 23,
                         colorFilter: const ColorFilter.mode(onSurfaceSecondaryColor, BlendMode.srcIn)),
                     onTap: () async {
-                      if (state.trackWithLoadingObserver.track.youtubeUrl != null) {
+                      if (track.youtubeUrl != null) {
                         showSnackBar(S.of(context).urlCopied, context);
-                        await Clipboard.setData(ClipboardData(text: state.trackWithLoadingObserver.track.youtubeUrl!));
+                        await Clipboard.setData(ClipboardData(text: track.youtubeUrl!));
                       } else {
                         showSnackBar(S.of(context).urlNotSelected, context);
                       }
@@ -145,18 +146,24 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                       width: 23,
                       colorFilter: const ColorFilter.mode(onSurfaceSecondaryColor, BlendMode.srcIn)),
                   onTap: () async {
-                    final changedUrl = await AutoRouter.of(context)
-                        .push<String?>(ChangeSourceVideoRoute(track: state.trackWithLoadingObserver.track));
+                    final changedUrl =
+                        await AutoRouter.of(context).push<String?>(ChangeSourceVideoRoute(track: track));
                     if (changedUrl != null) {
-                      _downloadTrackInfoBloc.add(DownloadTrackInfoChangeYoutubeUrl(youtubeUrl: changedUrl));
+                      _downloadTrackInfoCubit.changeTrackYoutubeUrl(
+                          trackWithLoadingObserver: widget.trackWithLoadingObserver, newYoutubeUrl: changedUrl);
                     }
                   },
-                ),
-              ]);
-            },
+                )
+              ])),
+        ),
+        const Positioned.fill(
+          child: IgnorePointer(
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 

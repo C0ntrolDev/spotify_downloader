@@ -66,6 +66,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("What you want to download?"),
         "downloadLikedTracks":
             MessageLookupByLibrary.simpleMessage("Download Liked Tracks"),
+        "errorCopied": MessageLookupByLibrary.simpleMessage("Error copied!"),
         "errorOccurredWhileLoadingActiveDownloads": m2,
         "grant": MessageLookupByLibrary.simpleMessage("Grant"),
         "grantPermissions":

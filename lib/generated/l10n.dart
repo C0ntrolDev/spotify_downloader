@@ -630,6 +630,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Error copied!`
+  String get errorCopied {
+    return Intl.message(
+      'Error copied!',
+      name: 'errorCopied',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

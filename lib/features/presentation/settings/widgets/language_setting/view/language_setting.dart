@@ -65,8 +65,8 @@ class _LanguageSettingState extends State<LanguageSetting> {
                       elevation: 0),
                   buttonStyleData: ButtonStyleData(
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
-                    overlayColor: MaterialStateProperty.resolveWith((state) {
-                      if (state.contains(MaterialState.pressed)) {
+                    overlayColor: WidgetStateProperty.resolveWith((state) {
+                      if (state.contains(WidgetState.pressed)) {
                         return onSurfaceSplashColor;
                       }
 
@@ -77,8 +77,8 @@ class _LanguageSettingState extends State<LanguageSetting> {
                     width: 120,
                   ),
                   menuItemStyleData: MenuItemStyleData(
-                    overlayColor: MaterialStateProperty.resolveWith((state) {
-                      if (state.contains(MaterialState.pressed)) {
+                    overlayColor: WidgetStateProperty.resolveWith((state) {
+                      if (state.contains(WidgetState.pressed)) {
                         return onSurfaceSplashColor;
                       }
 

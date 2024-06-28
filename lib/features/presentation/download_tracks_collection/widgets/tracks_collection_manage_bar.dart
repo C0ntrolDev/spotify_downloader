@@ -37,7 +37,7 @@ class TracksCollectionManageBar extends StatelessWidget {
           child: ElevatedButton(
             onPressed: _onAllDownloadButtonClicked,
             style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
             child: Text(S.of(context).downloadAll, style: theme.textTheme.bodySmall!.copyWith(color: onPrimaryColor, fontWeight: FontWeight.w700)),
           ),

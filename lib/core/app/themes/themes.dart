@@ -8,34 +8,34 @@ final mainTheme = ThemeData(
   cardTheme: const CardTheme(color: surfaceColor),
   scrollbarTheme: ScrollbarThemeData(
       interactive: true,
-      thumbVisibility: const MaterialStatePropertyAll(true),
+      thumbVisibility: const WidgetStatePropertyAll(true),
       radius: const Radius.circular(10),
       crossAxisMargin: 5,
       mainAxisMargin: 5,
-      thumbColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.dragged)) {
+      thumbColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.dragged)) {
           return primaryColor;
         } else {
           return onBackgroundSecondaryColor;
         }
       })),
   switchTheme: SwitchThemeData(
-    trackColor: MaterialStateProperty.resolveWith((states) {
-      if (!states.contains(MaterialState.selected)) {
+    trackColor: WidgetStateProperty.resolveWith((states) {
+      if (!states.contains(WidgetState.selected)) {
         return onBackgroundSecondaryColor;
       } else {
         return null;
       }
     }),
-    thumbColor: MaterialStateProperty.resolveWith((states) {
-      if (!states.contains(MaterialState.selected)) {
+    thumbColor: WidgetStateProperty.resolveWith((states) {
+      if (!states.contains(WidgetState.selected)) {
         return onBackgroundThirdRateColor;
       } else {
         return null;
       }
     }),
-    trackOutlineColor: MaterialStateProperty.resolveWith((states) {
-      if (!states.contains(MaterialState.selected)) {
+    trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+      if (!states.contains(WidgetState.selected)) {
         return onBackgroundThirdRateColor;
       } else {
         return Colors.transparent;
@@ -60,9 +60,9 @@ final mainTheme = ThemeData(
   colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
   elevatedButtonTheme: const ElevatedButtonThemeData(
       style: ButtonStyle(
-          backgroundColor: MaterialStatePropertyAll(primaryColor),
-          textStyle: MaterialStatePropertyAll(TextStyle()),
-          foregroundColor: MaterialStatePropertyAll(onPrimaryColor))),
+          backgroundColor: WidgetStatePropertyAll(primaryColor),
+          textStyle: WidgetStatePropertyAll(TextStyle()),
+          foregroundColor: WidgetStatePropertyAll(onPrimaryColor))),
   textTheme: const TextTheme(
       titleLarge: _titleLarge,
       titleMedium: _titleMedium,

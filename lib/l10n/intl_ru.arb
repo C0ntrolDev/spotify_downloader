@@ -56,5 +56,6 @@
   "developed": "Разработано",
   "language": "Язык",
   "youCanCloseTheAppAndTheDownloadWillContinue": "Вы можете закрыть приложение и загрузка продолжится !",
-  "youCanDeleteThisMessage": "(вы можете удалить это сообщение)"
+  "youCanDeleteThisMessage": "(вы можете удалить это сообщение)",
+  "errorCopied": "Ошибка скопирована!"
 }
