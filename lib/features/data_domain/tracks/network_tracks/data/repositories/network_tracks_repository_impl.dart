@@ -17,12 +17,10 @@ class NetworkTracksRepositoryImpl implements NetworkTracksRepository {
   @override
   Future<TracksGettingObserver> getTracksFromTracksCollection(GetTracksFromTracksCollectionArgs args) async {
     final responseList = List<dto.Track>.empty(growable: true);
-    final cancellationTokenSource = CancellationTokenSource();
     final getTracksArgs = GetTracksArgs(
         spotifyApiRequest: _spotifyRequestsConverter.convert(args.spotifyRepositoryRequest),
         spotifyId: args.tracksCollection.spotifyId,
         responseList: responseList,
-        cancellationToken: cancellationTokenSource.token,
         offset: args.offset,
         firstCallbackLength: 50,
         callbackLength: 50);

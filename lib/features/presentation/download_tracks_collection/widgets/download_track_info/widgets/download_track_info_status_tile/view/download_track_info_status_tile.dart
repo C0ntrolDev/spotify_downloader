@@ -9,6 +9,7 @@ import 'package:spotify_downloader/core/utils/failures/failures.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_status_tile/cubit/download_track_info_status_tile_cubit.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_tile.dart';
+import 'package:spotify_downloader/features/presentation/shared/widgets/strange_optimized_circular_progress_indicator.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
 class DownloadTrackInfoStatusTile extends StatefulWidget {
@@ -55,17 +56,16 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
                 padding: const EdgeInsets.all(0),
                 height: 23,
                 width: 23,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  color: primaryColor,
-                  value: (() {
-                    if (state.percent != null) {
-                      return state.percent! / 100;
-                    }
+                child: Builder(builder: (context) {
+                  if (state.percent == null) {
+                    return const StrangeOptimizedCircularProgressIndicator(
+                      strokeWidth: 3,
+                      color: primaryColor,
+                    );
+                  }
 
-                    return null;
-                  }).call(),
-                ),
+                  return CircularProgressIndicator(strokeWidth: 3, color: primaryColor, value: state.percent! / 100);
+                }),
               ),
             );
 
@@ -76,9 +76,8 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
                     height: 23, width: 23, colorFilter: const ColorFilter.mode(primaryColor, BlendMode.srcIn)));
           case DownloadTrackInfoStatusTileFailure():
             return DownloadTrackInfoTile(
-                title:
-                    S.of(context).downloadError(state.failure is NetworkFailure ? S.of(context).noConnection : state.failure?.message ?? '...'),
-                    
+                title: S.of(context).downloadError(
+                    state.failure is NetworkFailure ? S.of(context).noConnection : state.failure?.message ?? '...'),
                 iconWidget: SvgPicture.asset('resources/images/svg/track_tile/error_icon.svg',
                     height: 23, width: 23, colorFilter: const ColorFilter.mode(errorPrimaryColor, BlendMode.srcIn)));
         }

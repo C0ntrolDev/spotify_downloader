@@ -181,11 +181,6 @@ class NetworkTracksDataSource {
 
     Future(() async {
       for (var i = 0;; i++) {
-        if (args.cancellationToken?.isCancelled ?? false) {
-          tracksGettingStream.onEnded?.call(const Result.isSuccessful(TracksDtoGettingEndedStatus.cancelled));
-          return;
-        }
-
         final newTracksResult = await handleSpotifyClientExceptions<Iterable<Track>?>(() async {
           final responseTracks = await getPageTracks.call(50, i * 50 + args.offset);
           return Result.isSuccessful(responseTracks);

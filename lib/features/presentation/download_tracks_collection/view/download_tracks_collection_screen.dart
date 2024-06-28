@@ -9,6 +9,7 @@ import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/domain/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/blocs.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/view/download_track_info.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/widgets.dart';
 
 import 'package:spotify_downloader/generated/l10n.dart';
@@ -139,6 +140,11 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
             BlocBuilder<GetTracksCollectionBloc, GetTracksCollectionState>(
               bloc: _getTracksCollectionBloc,
               builder: (context, getTracksCollectionState) {
+                if (getTracksCollectionState is GetTracksCollectionNetworkFailure) {
+                  return NetworkFailureSplash(
+                      onRetryAgainButtonClicked: () => _getTracksCollectionBloc.add(GetTracksCollectionLoad()));
+                }
+
                 if (getTracksCollectionState is GetTracksCollectionLoaded) {
                   return BlocBuilder<GetTracksBloc, GetTracksState>(
                     bloc: _getTracksBloc,
@@ -249,7 +255,13 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                           if (index < (state.filteredTracks.length)) {
                                                             return TrackTile(
                                                               trackWithLoadingObserver: filteredTracks[index],
-                                                              key: ObjectKey(filteredTracks[index]),
+                                                              onDownloadButtonClicked: () => _downloadTracksCubit
+                                                                  .downloadTrack(filteredTracks[index]),
+                                                              onCancelButtonClicked: () => _downloadTracksCubit
+                                                                  .cancelTrackLoading(filteredTracks[index]),
+                                                              onMoreInfoClicked: () =>
+                                                                  showDownloadTrackInfoBottomSheet(
+                                                                      context, filteredTracks[index]),
                                                             );
                                                           }
 

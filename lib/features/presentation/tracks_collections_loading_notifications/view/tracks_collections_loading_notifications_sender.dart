@@ -37,22 +37,12 @@ class TracksCollectionsLoadingNotificationsSender {
   }
 
   void _sendNotification(TracksCollectionsLoadingInfo info) {
-    int progress = min(((info.totalTracks - info.loadingTracks) / info.totalTracks * 100).floor(), 100);
-    if (info.loadingTracks != 0) {
-      AwesomeNotifications().createNotification(
-          content: NotificationContent(
-              id: messageId,
-              channelKey: mainChannelKey,
-              actionType: ActionType.Default,
-              title: S.current.tracksAreBeingLoaded,
-              backgroundColor: primaryColor,
-              body: S.current
-                  .tracksAreBeingLoadedBody(info.totalTracks, info.loadedTracks, info.failuredTracks, progress),
-              summary: '^_^',
-              locked: true,
-              notificationLayout: NotificationLayout.ProgressBar,
-              progress: progress));
-    } else {
+    if (info.totalTracks == 0) {
+      AwesomeNotifications().cancel(messageId);
+      return;
+    }
+
+    if (info.loadingTracks == 0) {
       AwesomeNotifications().createNotification(
           content: NotificationContent(
               id: messageId,
@@ -62,8 +52,27 @@ class TracksCollectionsLoadingNotificationsSender {
               backgroundColor: primaryColor,
               body: S.current.allTracksAreLoadedBody(info.loadedTracks, info.failuredTracks),
               summary: '^_^',
-              notificationLayout: NotificationLayout.Default));
+              notificationLayout: NotificationLayout.Default,
+              autoDismissible: false));
+      return;
     }
+
+    int progress = min(((info.totalTracks - info.loadingTracks) / info.totalTracks * 100).floor(), 100);
+
+    AwesomeNotifications().createNotification(
+        content: NotificationContent(
+            id: messageId,
+            channelKey: mainChannelKey,
+            actionType: ActionType.SilentAction,
+            title: S.current.tracksAreBeingLoaded,
+            backgroundColor: primaryColor,
+            body:
+                S.current.tracksAreBeingLoadedBody(info.totalTracks, info.loadedTracks, info.failuredTracks, progress),
+            summary: '^_^',
+            autoDismissible: false,
+            notificationLayout: NotificationLayout.ProgressBar,
+            progress: progress == 0 ? null : progress));
+
   }
 
   void _startDelayedUpdate() {

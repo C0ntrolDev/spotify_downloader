@@ -5,6 +5,7 @@ class CancellationToken {
 
   CancellationTokenSource source;
   bool get isCancelled => source.isCancelled;
+  Stream get cancelationStream => source.cancellationStream;
 
   @override
   int get hashCode => source.hashCode;

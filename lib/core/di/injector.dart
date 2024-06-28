@@ -23,7 +23,7 @@ import 'package:spotify_downloader/features/presentation/change_source_video/blo
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/blocs.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/bloc/download_track_info_bloc.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_status_tile/cubit/download_track_info_status_tile_cubit.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/bloc/track_tile_bloc.dart';
+import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/track_tile/cubit/track_tile_cubit.dart';
 import 'package:spotify_downloader/features/presentation/history/bloc/history_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/bloc/loading_tracks_collections_list_bloc.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/widgets/loading_tracks_collection_tile/cubit/loading_tracks_collection_tile_cubit.dart';
@@ -205,14 +205,11 @@ void _provideBlocs() {
   injector.registerFactory<DownloadTracksCubit>(() => DownloadTracksCubit(
       downloadTracksRange: injector.get<DownloadTracksRange>(),
       downloadTracksFromGettingObserver: injector.get<DownloadTracksFromGettingObserver>(),
-      downloadTrack: injector.get<DownloadTrack>()));
+      downloadTrack: injector.get<DownloadTrack>(),
+      cancelTrackLoading: injector.get<CancelTrackLoading>()));
   injector.registerFactory<FilterTracksBloc>(() => FilterTracksBloc());
 
-  injector.registerFactoryParam<TrackTileBloc, TrackWithLoadingObserver, void>((trackwithLoadingObserver, _) =>
-      TrackTileBloc(
-          trackWithLoadingObserver: trackwithLoadingObserver,
-          downloadTrack: injector.get<DownloadTrack>(),
-          cancelTrackLoading: injector.get<CancelTrackLoading>()));
+  injector.registerFactory<TrackTileCubit>(() => TrackTileCubit());
   injector.registerFactoryParam<DownloadTrackInfoBloc, TrackWithLoadingObserver, void>((trackwithLoadingObserver, _) =>
       DownloadTrackInfoBloc(
           trackWithLoadingObserver: trackwithLoadingObserver, cancelTrackLoading: injector.get<CancelTrackLoading>()));

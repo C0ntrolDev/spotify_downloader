@@ -64,7 +64,8 @@ class TracksCollectionsLoadingNotificationsBloc
     }
   }
 
-  FutureOr<void> _onUpdate(event, emit) {
+  Future<void> _onUpdate(TracksCollectionsLoadingNotificationsUpdate event,
+      Emitter<TracksCollectionsLoadingNotificationsState> emit) async {
     List<String> loadingTracksCollectionsNames = List.empty(growable: true);
     int totalTracks = 0;
     int loadingTracks = 0;

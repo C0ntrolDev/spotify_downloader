@@ -9,6 +9,7 @@ class DownloadTracksCubit extends Cubit<DownloadTracksState> {
   final DownloadTracksRange _downloadTracksRange;
   final DownloadTracksFromGettingObserver _downloadTracksFromGettingObserver;
   final DownloadTrack _downloadTrack;
+  final CancelTrackLoading _cancelTrackLoading;
 
   TracksWithLoadingObserverGettingObserver? _gettingObserver;
   List<TrackWithLoadingObserver>? _trackList;
@@ -17,10 +18,12 @@ class DownloadTracksCubit extends Cubit<DownloadTracksState> {
   DownloadTracksCubit(
       {required DownloadTracksRange downloadTracksRange,
       required DownloadTracksFromGettingObserver downloadTracksFromGettingObserver,
-      required DownloadTrack downloadTrack})
+      required DownloadTrack downloadTrack,
+      required CancelTrackLoading cancelTrackLoading})
       : _downloadTracksRange = downloadTracksRange,
         _downloadTracksFromGettingObserver = downloadTracksFromGettingObserver,
         _downloadTrack = downloadTrack,
+        _cancelTrackLoading = cancelTrackLoading,
         super(DownloadTracksInitial());
 
   Future<void> downloadAllTracks() async {
@@ -57,6 +60,14 @@ class DownloadTracksCubit extends Cubit<DownloadTracksState> {
     }
 
     trackWithLoadingObserver.loadingObserver = downloadTrackResult.result;
+  }
+
+  Future<void> cancelTrackLoading(TrackWithLoadingObserver trackWithLoadingObserver) async {
+    final canceltrackLoading = await _cancelTrackLoading.call(trackWithLoadingObserver.track);
+    if (!canceltrackLoading.isSuccessful) {
+      emit(DownloadTracksFailure(failure: canceltrackLoading.failure));
+      return;
+    }
   }
 
   void setGettingObserver(TracksWithLoadingObserverGettingObserver? gettingObserver) {
