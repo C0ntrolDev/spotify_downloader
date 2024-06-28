@@ -214,6 +214,8 @@ class DownloadAudioFromYoutubeDataSource {
       final videoFileSize = downloadStreamInfo.size.totalBytes;
       int loadedBytesCount = 0;
 
+      double previousSendedPercent = 0;
+
       final cancellationTokenCompleter = Completer<Void?>();
       final failureCompleter = Completer<Failure>();
 
@@ -234,7 +236,12 @@ class DownloadAudioFromYoutubeDataSource {
         }
 
         loadedBytesCount += chunk.length;
-        sendPort.send((loadedBytesCount / videoFileSize) * 90);
+
+        final percent = (loadedBytesCount / videoFileSize) * 90;
+        if (percent - previousSendedPercent >= 2 || percent > 90 - 1) {
+          sendPort.send(percent);
+          previousSendedPercent = percent;
+        }
       })
         ..onError((e) {
           if (!failureCompleter.isCompleted) {
@@ -271,25 +278,24 @@ class DownloadAudioFromYoutubeDataSource {
 
   Future<CancellableResult> _handleDownloadStream(
       CancellableStream downloadVideoStream, Function(double) setLoadingPercent) async {
-      final downloadVideoCompleter = Completer<CancellableResult>();
+    final downloadVideoCompleter = Completer<CancellableResult>();
 
-      final downloadVideoStreamSub = downloadVideoStream.stream.listen((event) {
-        if (event is double) {
-          setLoadingPercent(event);
-        }
+    final downloadVideoStreamSub = downloadVideoStream.stream.listen((event) {
+      if (event is double) {
+        setLoadingPercent(event);
+      }
 
-        if (event is CancellableResult) {
-          downloadVideoCompleter.complete(event);
-        }
-      });
+      if (event is CancellableResult) {
+        downloadVideoCompleter.complete(event);
+      }
+    });
 
-      final result = await downloadVideoCompleter.future;
-      downloadVideoStreamSub.cancel();
-      return result;
-
+    final result = await downloadVideoCompleter.future;
+    downloadVideoStreamSub.cancel();
+    return result;
   }
 
-    Future<void> _convertFileToMp3(String rawPath, String audioPath) async {
+  Future<void> _convertFileToMp3(String rawPath, String audioPath) async {
     final audioFile = File(audioPath);
     if (await audioFile.exists()) {
       await audioFile.delete();
