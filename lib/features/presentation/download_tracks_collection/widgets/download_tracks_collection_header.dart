@@ -35,19 +35,28 @@ class DownloadTracksCollectionHeader extends StatelessWidget {
             child: Column(children: [
               Builder(builder: (context) {
                 return Center(
-                    child: CachedNetworkImage(
-                  width: MediaQuery.of(context).size.width * 0.6,
-                  height: MediaQuery.of(context).size.width * 0.6,
-                  fit: BoxFit.contain,
-                  imageUrl: imageUrl,
-                  placeholder: (context, imageUrl) =>
-                      Image.asset('resources/images/another/loading_track_collection_image.png'),
-                  errorWidget: (context, imageUrl, _) =>
-                      Image.asset('resources/images/another/loading_track_collection_image.png'),
+                    child: Container(
+                  decoration: BoxDecoration(boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      spreadRadius: 7,
+                      blurRadius: 13,
+                    )
+                  ]),
+                  child: CachedNetworkImage(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    height: MediaQuery.of(context).size.width * 0.6,
+                    fit: BoxFit.contain,
+                    imageUrl: imageUrl,
+                    placeholder: (context, imageUrl) =>
+                        Image.asset('resources/images/another/loading_track_collection_image.png'),
+                    errorWidget: (context, imageUrl, _) =>
+                        Image.asset('resources/images/another/loading_track_collection_image.png'),
+                  ),
                 ));
               }),
               Padding(
-                padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
+                padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
                 child: Text(
                   title,
                   style: theme.textTheme.titleLarge,

@@ -5,7 +5,7 @@ const onBackgroundPrimaryColor = Color.fromARGB(255, 255, 255, 255);
 const onBackgroundSecondaryColor = Color.fromARGB(255, 153, 153, 153);
 const onBackgroundThirdRateColor = Color.fromARGB(255, 110, 110, 110);
 
-const surfaceColor = Color.fromARGB(255, 42, 42, 42);
+const surfaceColor = Color.fromARGB(255, 36, 36, 36);
 const onSurfacePrimaryColor = Color.fromARGB(255, 255, 255, 255);
 const onSurfaceSecondaryColor = Color.fromARGB(255, 153, 153, 153);
 const onSurfaceSplashColor = Color.fromARGB(60, 153, 153, 153);

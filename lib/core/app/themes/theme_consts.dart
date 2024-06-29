@@ -1,0 +1,1 @@
+const backIconSize = 25.0;

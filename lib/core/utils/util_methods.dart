@@ -49,3 +49,11 @@ Future<Result<Failure, T>> handleSpotifyClientExceptions<T>(Future<Result<Failur
 
     return formattedString;
   }
+
+  double normalize(double value, double min, double max) {
+    if (min >= max) {
+      throw ArgumentError('Min must be less than max');
+    }
+
+    return (value - min) / (max - min);
+  }

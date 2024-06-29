@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/features/presentation/home/view/home_screen.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
@@ -30,8 +31,8 @@ class AboutAppScreen extends StatelessWidget {
                     },
                     icon: SvgPicture.asset(
                       'resources/images/svg/back_icon.svg',
-                      height: 35,
-                      width: 35,
+                      height: backIconSize,
+                      width: backIconSize,
                     )),
                 Padding(
                     padding: const EdgeInsets.only(left: 10),

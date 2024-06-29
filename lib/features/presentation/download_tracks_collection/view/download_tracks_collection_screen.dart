@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -11,11 +13,9 @@ import 'package:spotify_downloader/features/data_domain/tracks_collections/histo
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/blocs.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/view/download_track_info.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/widgets.dart';
+import 'package:spotify_downloader/features/presentation/shared/widgets/strange_optimized_circular_progress_indicator.dart';
 
 import 'package:spotify_downloader/generated/l10n.dart';
-
-import '../custom_sliver_persistent_header_delegate.dart';
-import '../widgets/download_tracks_collection_header.dart';
 
 abstract class DownloadTracksCollectionScreen extends StatefulWidget {
   final String? url;
@@ -50,12 +50,23 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
 
   final GlobalKey _headerKey = GlobalKey();
   double? _headerHeight;
-  double? _dynamicHeaderHeight;
+
+  final ScrollController _scrollController = ScrollController();
+
+  Color _backgroundGradientColor = const Color.fromARGB(255, 101, 101, 101);
 
   final double _appBarHeight = 55;
-  final double _appBarStartShowingPercent = 0.5;
-  Color _appBarColor = const Color.fromARGB(255, 101, 101, 101);
-  double _appBarOpacity = 0;
+  final double _appBarStartShowingPercent = 0.4;
+  final double _appBarEndShowingPercent = 0.7;
+
+  double _appBarOpacityField = 0;
+  double get _appBarOpacity => _appBarOpacityField;
+  set _appBarOpacity(double newValue) {
+    _appBarOpacityField = newValue;
+    _appBarOpacityChangedController.add(newValue);
+  }
+
+  final StreamController<double> _appBarOpacityChangedController = StreamController();
 
   double get appBarHeightWithViewPadding => _appBarHeight + (MediaQuery.maybeOf(context)?.viewPadding.top ?? 0);
 
@@ -64,6 +75,8 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
     super.initState();
     _initTracksCollectionBloc();
     _getTracksCollectionBloc.add(GetTracksCollectionLoad());
+
+    _scrollController.addListener(_onScroll);
   }
 
   @override
@@ -75,6 +88,8 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
   void dispose() {
     _getTracksCollectionBloc.close();
     _filterTracksBloc.close();
+
+    _scrollController.removeListener(_onScroll);
 
     super.dispose();
   }
@@ -88,13 +103,17 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
     }
   }
 
-  void _updateAppBarOpacity() {
-    final headerHiddenPercent = ((_dynamicHeaderHeight ?? 0) - appBarHeightWithViewPadding) /
-        ((_headerHeight ?? 0) - appBarHeightWithViewPadding);
-    final headerShowingPercent = 1 - headerHiddenPercent;
+  void _onScroll() {
+    if (_scrollController.offset <= (_headerHeight ?? 0)) {
+      _updateAppBarOpacity(_scrollController.offset);
+    }
+  }
 
-    final double newAppBarOpacity =
-        ((headerShowingPercent - _appBarStartShowingPercent) / (1 - headerShowingPercent)).clamp(0, 1);
+  void _updateAppBarOpacity(double hiddenPartOfHeader) {
+    if (_headerHeight == null) return;
+
+    final double hiddenPercent = (hiddenPartOfHeader / (_headerHeight! - appBarHeightWithViewPadding)).clamp(0, 1);
+    double newAppBarOpacity = normalize(hiddenPercent, _appBarStartShowingPercent, _appBarEndShowingPercent).clamp(0, 1);
 
     if (newAppBarOpacity != _appBarOpacity) {
       _appBarOpacity = newAppBarOpacity;
@@ -140,15 +159,15 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
             BlocBuilder<GetTracksCollectionBloc, GetTracksCollectionState>(
               bloc: _getTracksCollectionBloc,
               builder: (context, getTracksCollectionState) {
-                if (getTracksCollectionState is GetTracksCollectionNetworkFailure) {
-                  return NetworkFailureSplash(
-                      onRetryAgainButtonClicked: () => _getTracksCollectionBloc.add(GetTracksCollectionLoad()));
-                }
+                return BlocBuilder<GetTracksBloc, GetTracksState>(
+                  bloc: _getTracksBloc,
+                  builder: (context, getTracksState) {
+                    if (getTracksCollectionState is GetTracksCollectionNetworkFailure) {
+                      return NetworkFailureSplash(
+                          onRetryAgainButtonClicked: () => _getTracksCollectionBloc.add(GetTracksCollectionLoad()));
+                    }
 
-                if (getTracksCollectionState is GetTracksCollectionLoaded) {
-                  return BlocBuilder<GetTracksBloc, GetTracksState>(
-                    bloc: _getTracksBloc,
-                    builder: (context, getTracksState) {
+                    if (getTracksCollectionState is GetTracksCollectionLoaded) {
                       if (getTracksState is GetTracksBeforePartGotNetworkFailure) {
                         return NetworkFailureSplash(
                             onRetryAgainButtonClicked: () => _getTracksBloc
@@ -164,7 +183,8 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                     overScroll.disallowIndicator();
                                     return false;
                                   },
-                                  child: ScrollbarWithSlideAnimation(
+                                  child: CustomScrollbar(
+                                      controller: _scrollController,
                                       animationCurve: Curves.easeInOut,
                                       animationDuration: const Duration(milliseconds: 300),
                                       durationBeforeHide: const Duration(seconds: 2),
@@ -184,49 +204,27 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                         );
                                       },
                                       child: CustomScrollView(
+                                        controller: _scrollController,
                                         slivers: [
-                                          SliverPersistentHeader(
-                                              pinned: true,
-                                              delegate: CustomSliverPersistentHeaderDelegate(
-                                                maxHeight: _headerHeight ?? appBarHeightWithViewPadding,
-                                                minHeight: appBarHeightWithViewPadding,
-                                                onHeightCalculated: (height) {
-                                                  if (_dynamicHeaderHeight != height) {
-                                                    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                                                      setState(() {
-                                                        _dynamicHeaderHeight = height;
-                                                        _updateAppBarOpacity();
-                                                      });
-                                                    });
-                                                  }
-                                                },
-                                                child: LayoutBuilder(builder: (context, constraints) {
-                                                  if (_headerHeight == null) {
-                                                    _planDynamicHeaderHeightUpdate();
-                                                  }
+                                          SliverToBoxAdapter(
+                                            child: Builder(builder: (context) {
+                                              if (_headerHeight == null) {
+                                                SchedulerBinding.instance
+                                                    .addPostFrameCallback((_) => updateHeaderHeight());
+                                              }
 
-                                                  return Stack(
-                                                    children: [
-                                                      Positioned(
-                                                          bottom: 0,
-                                                          width: constraints.maxWidth,
-                                                          child: DownloadTracksCollectionHeader(
-                                                            key: _headerKey,
-                                                            backgroundGradientColor: _appBarColor,
-                                                            title: getTracksCollectionState.tracksCollection.name,
-                                                            imageUrl: getTracksCollectionState
-                                                                    .tracksCollection.bigImageUrl ??
-                                                                '',
-                                                            onFilterQueryChanged: _onFilterQueryChanged,
-                                                            onAllDownloadButtonClicked: () =>
-                                                                _onAllDownloadButtonClicked(
-                                                                    filterTracksState: _filterTracksBloc.state,
-                                                                    getTracksState: getTracksState),
-                                                          ))
-                                                    ],
-                                                  );
-                                                }),
-                                              )),
+                                              return DownloadTracksCollectionHeader(
+                                                key: _headerKey,
+                                                backgroundGradientColor: _backgroundGradientColor,
+                                                title: getTracksCollectionState.tracksCollection.name,
+                                                imageUrl: getTracksCollectionState.tracksCollection.bigImageUrl ?? '',
+                                                onFilterQueryChanged: _onFilterQueryChanged,
+                                                onAllDownloadButtonClicked: () => _onAllDownloadButtonClicked(
+                                                    filterTracksState: _filterTracksBloc.state,
+                                                    getTracksState: getTracksState),
+                                              );
+                                            }),
+                                          ),
                                           BlocBuilder<FilterTracksBloc, FilterTracksState>(
                                             bloc: _filterTracksBloc,
                                             builder: (context, state) {
@@ -294,18 +292,12 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                       ))))
                         ]);
                       }
+                    }
 
-                      if (getTracksCollectionState is GetTracksCollectionNetworkFailure) {
-                        return NetworkFailureSplash(
-                            onRetryAgainButtonClicked: () => _getTracksCollectionBloc.add(GetTracksCollectionLoad()));
-                      }
-
-                      return const Center(child: CircularProgressIndicator());
-                    },
-                  );
-                }
-
-                return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                        child: SizedBox(height: 41, width: 41, child: StrangeOptimizedCircularProgressIndicator()));
+                  },
+                );
               },
             ),
             BlocBuilder<GetTracksCollectionBloc, GetTracksCollectionState>(
@@ -314,18 +306,23 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                 return BlocBuilder<GetTracksBloc, GetTracksState>(
                   bloc: _getTracksBloc,
                   builder: (context, getTracksState) {
-                    if (getTracksCollectionState is GetTracksCollectionLoaded &&
-                        getTracksState is GetTracksTracksGot) {
-                      return GradientAppBarWithOpacity.visible(
-                        height: _appBarHeight,
-                        firstColor: _appBarColor,
-                        secondaryColor: backgroundColor,
-                        title: getTracksCollectionState.tracksCollection.name,
-                        opacity: _appBarOpacity,
-                      );
-                    }
+                    return StreamBuilder<double>(
+                        initialData: 0,
+                        stream: _appBarOpacityChangedController.stream,
+                        builder: (context, newOpacity) {
+                          if (getTracksCollectionState is GetTracksCollectionLoaded &&
+                              getTracksState is GetTracksTracksGot) {
+                            return GradientAppBarWithOpacity.visible(
+                              height: _appBarHeight,
+                              firstColor: _backgroundGradientColor,
+                              secondaryColor: backgroundColor,
+                              title: getTracksCollectionState.tracksCollection.name,
+                              opacity: newOpacity.data ?? 0,
+                            );
+                          }
 
-                    return GradientAppBarWithOpacity.invisible(height: _appBarHeight);
+                          return GradientAppBarWithOpacity.invisible(height: _appBarHeight);
+                        });
                   },
                 );
               },
@@ -336,11 +333,9 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
     );
   }
 
-  void _planDynamicHeaderHeightUpdate() {
-    SchedulerBinding.instance.addPostFrameCallback((duration) {
-      setState(() {
-        _headerHeight = (_headerKey.currentContext!.findRenderObject() as RenderBox).size.height;
-      });
+  void updateHeaderHeight() {
+    setState(() {
+      _headerHeight = (_headerKey.currentContext!.findRenderObject() as RenderBox).size.height;
     });
   }
 
@@ -364,18 +359,21 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
       Future(() async {
         final generator = await PaletteGenerator.fromImageProvider(NetworkImage(imageUrl));
 
-        final imageColor = generator.mutedColor?.color ?? generator.dominantColor?.color;
-        if (imageColor != null) {
-          _appBarColor = getIntermediateColor(imageColor, backgroundColor, 0.2);
-        }
+        final imageColor = generator.vibrantColor?.color ?? generator.mutedColor?.color;
+        if (imageColor == null) return;
+
+        final mutedImageColor = getIntermediateColor(imageColor, const Color.fromARGB(255, 127, 127, 127), 0.1);
+
         try {
-          setState(() {});
+          setState(() {
+            _backgroundGradientColor = mutedImageColor;
+          });
         } catch (e) {
           //if widget disposed
         }
       });
     } else {
-      _appBarColor = backgroundColor;
+      _backgroundGradientColor = backgroundColor;
     }
   }
 

@@ -19,6 +19,7 @@ final mainTheme = ThemeData(
           return onBackgroundSecondaryColor;
         }
       })),
+  progressIndicatorTheme: const ProgressIndicatorThemeData(color: primaryColor),
   switchTheme: SwitchThemeData(
     trackColor: WidgetStateProperty.resolveWith((states) {
       if (!states.contains(WidgetState.selected)) {

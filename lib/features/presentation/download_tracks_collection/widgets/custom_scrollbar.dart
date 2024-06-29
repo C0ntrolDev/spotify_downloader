@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-class ScrollbarWithSlideAnimation extends StatefulWidget {
+class CustomScrollbar extends StatefulWidget {
   final Widget Function(BuildContext context, bool isDragging)? thumbBuilder;
   final EdgeInsets thumbMargin;
   final ScrollController? controller;
@@ -20,7 +20,7 @@ class ScrollbarWithSlideAnimation extends StatefulWidget {
   final Duration animationDuration;
   final Duration durationBeforeHide;
 
-  const ScrollbarWithSlideAnimation(
+  const CustomScrollbar(
       {super.key,
       required this.child,
       this.thumbBuilder,
@@ -35,10 +35,10 @@ class ScrollbarWithSlideAnimation extends StatefulWidget {
       this.hideThumbWhenOutOfOffset = false});
 
   @override
-  ScrollbarWithSlideAnimationState createState() => ScrollbarWithSlideAnimationState();
+  CustomScrollbarState createState() => CustomScrollbarState();
 }
 
-class ScrollbarWithSlideAnimationState extends State<ScrollbarWithSlideAnimation> with SingleTickerProviderStateMixin {
+class CustomScrollbarState extends State<CustomScrollbar> with SingleTickerProviderStateMixin {
   late final Widget Function(BuildContext context, bool isDragging) _thumbBuilder;
   ScrollController? _scrollController;
 

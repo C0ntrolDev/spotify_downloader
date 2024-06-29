@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/utils/util_methods.dart';
 
 class GradientAppBarWithOpacity extends StatelessWidget {
@@ -11,20 +12,20 @@ class GradientAppBarWithOpacity extends StatelessWidget {
       required this.secondaryColor,
       this.opacity = 0,
       this.height = 55,
-      this.iconSize = 35})
+      this.iconSize = backIconSize})
       : isAppBarVisible = true;
 
-  const GradientAppBarWithOpacity.invisible({super.key, this.height = 55, this.iconSize = 35})
+  const GradientAppBarWithOpacity.invisible({super.key, this.height = 55, this.iconSize = backIconSize})
       : isAppBarVisible = false,
         opacity = 0,
         title = '',
-        firstColor = null,
-        secondaryColor = null;
+        firstColor = Colors.transparent,
+        secondaryColor = Colors.transparent;
 
   final bool isAppBarVisible;
   final String title;
-  final Color? firstColor;
-  final Color? secondaryColor;
+  final Color firstColor;
+  final Color secondaryColor;
   final double opacity;
   final double height;
   final double iconSize;
@@ -38,14 +39,15 @@ class GradientAppBarWithOpacity extends StatelessWidget {
           Builder(
             builder: (context) {
               if (isAppBarVisible) {
+                
                 return Opacity(
                   opacity: opacity,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 700),
                     decoration: BoxDecoration(
                         gradient: LinearGradient(colors: [
-                      firstColor ?? Colors.transparent,
-                      getIntermediateColor(firstColor ?? Colors.transparent, secondaryColor ?? Colors.transparent, 0.7)
+                      getIntermediateColor(firstColor, secondaryColor, 0.4),
+                      getIntermediateColor(firstColor, secondaryColor, 0.6)
                     ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
                   ),
                 );

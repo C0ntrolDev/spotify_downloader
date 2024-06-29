@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/utils/failures/failures.dart';
@@ -64,11 +63,10 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
                 if (state.percent == null) {
                   return const StrangeOptimizedCircularProgressIndicator(
                     strokeWidth: 3,
-                    color: primaryColor,
                   );
                 }
 
-                return CircularProgressIndicator(strokeWidth: 3, color: primaryColor, value: state.percent! / 100);
+                return CircularProgressIndicator(strokeWidth: 3, value: state.percent! / 100);
               }),
             ),
           );

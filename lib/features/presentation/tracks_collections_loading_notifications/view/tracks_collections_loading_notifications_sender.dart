@@ -63,7 +63,7 @@ class TracksCollectionsLoadingNotificationsSender {
         content: NotificationContent(
             id: messageId,
             channelKey: mainChannelKey,
-            actionType: ActionType.SilentAction,
+            actionType: ActionType.Default,
             title: S.current.tracksAreBeingLoaded,
             backgroundColor: primaryColor,
             body:

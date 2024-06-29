@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/entities/entities.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/shared/cubits/track_loading_observing_cubit/download_track_info_status_tile_cubit.dart';
@@ -102,7 +101,7 @@ class _TrackTileStatusButtonState extends State<TrackTileStatusButton> {
                             height: 32,
                             width: 32,
                             child:
-                                const StrangeOptimizedCircularProgressIndicator(strokeWidth: 4, color: primaryColor));
+                                const StrangeOptimizedCircularProgressIndicator(strokeWidth: 4));
                       }
 
                       return Container(
@@ -111,14 +110,7 @@ class _TrackTileStatusButtonState extends State<TrackTileStatusButton> {
                         width: 32,
                         child: CircularProgressIndicator(
                           strokeWidth: 4,
-                          color: primaryColor,
-                          value: (() {
-                            if (state.percent != null) {
-                              return state.percent! / 100;
-                            }
-
-                            return null;
-                          }).call(),
+                          value: state.percent! / 100
                         ),
                       );
                     }
