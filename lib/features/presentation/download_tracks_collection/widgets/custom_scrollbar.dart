@@ -138,7 +138,7 @@ class CustomScrollbarState extends State<CustomScrollbar> with SingleTickerProvi
   void _updatePrototypeHeight() {
     if (widget.isFixedScroll) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
-        _prototypeHeight = (_prototypeItemKey?.currentContext?.findRenderObject() as RenderBox?)?.size.height;
+        _prototypeHeight = (_prototypeItemKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
       });
     }
   }
@@ -304,7 +304,8 @@ class CustomScrollbarState extends State<CustomScrollbar> with SingleTickerProvi
   double _addDragDeltaToOffset({required double oldOffset, required double dragDelta}) {
     final absoluteDelta = dragDelta / _scrollBarHeight;
     oldOffset = max(_minScrollOffset, oldOffset);
-    double newOffset = (oldOffset + absoluteDelta * _maxScrollOffset!).clamp(_minScrollOffset, _maxScrollOffset!);
+    double newOffset = (oldOffset + (absoluteDelta * (_maxScrollOffset! - _minScrollOffset)))
+        .clamp(_minScrollOffset, _maxScrollOffset!);
     return newOffset;
   }
 }
