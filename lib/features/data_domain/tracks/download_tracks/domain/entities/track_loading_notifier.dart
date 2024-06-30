@@ -10,6 +10,8 @@ class TrackLoadingNotifier {
   final StreamController<String> _loadedStreamController = StreamController<String>();
   final StreamController<void> _loadingCancelledStreamController = StreamController<void>();
   final StreamController<Failure?> _loadingFailureStreamController = StreamController<Failure?>();
+  final StreamController<LoadingTrackStatus> _loadingTrackStatusStreamController =
+      StreamController<LoadingTrackStatus>();
 
   LoadingTrackObserver? _loadingTrackObserver;
   LoadingTrackObserver get loadingTrackObserver => _loadingTrackObserver ??= LoadingTrackObserver(
@@ -18,9 +20,15 @@ class TrackLoadingNotifier {
       loadedStream: _loadedStreamController.stream.asBroadcastStream(),
       loadingCancelledStream: _loadingCancelledStreamController.stream.asBroadcastStream(),
       loadingFailureStream: _loadingFailureStreamController.stream.asBroadcastStream(),
+      loadingTrackStatusStream: _loadingTrackStatusStreamController.stream.asBroadcastStream(),
       getLoadingTrackStatus: () => _status);
 
-  LoadingTrackStatus _status = LoadingTrackStatus.waitInLoadingQueue;
+  LoadingTrackStatus _statusField = LoadingTrackStatus.waitInLoadingQueue;
+  LoadingTrackStatus get _status => _statusField;
+  set _status(LoadingTrackStatus newStatus) {
+    _statusField = newStatus;
+    _loadingTrackStatusStreamController.add(newStatus);
+  }
 
   void startLoading(String youtubeUrl) {
     if (_status == LoadingTrackStatus.waitInLoadingQueue) {

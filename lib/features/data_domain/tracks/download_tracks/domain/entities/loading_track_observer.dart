@@ -10,9 +10,9 @@ class LoadingTrackObserver {
       required this.loadedStream,
       required this.loadingCancelledStream,
       required this.loadingFailureStream,
+      required this.loadingTrackStatusStream,
       required LoadingTrackStatus Function() getLoadingTrackStatus})
       : _getLoadingTrackStatus = getLoadingTrackStatus {
-
     startLoadingStream.listen((youtubeUrl) => _youtubeUrl = youtubeUrl);
     loadingPercentChangedStream.listen((percent) => _loadingPercent = percent);
     loadedStream.listen((savePath) => _resultSavePath = savePath);
@@ -27,10 +27,10 @@ class LoadingTrackObserver {
 
   final LoadingTrackStatus Function() _getLoadingTrackStatus;
   LoadingTrackStatus get status => _getLoadingTrackStatus.call();
+  final Stream<LoadingTrackStatus> loadingTrackStatusStream;
 
   String? _youtubeUrl;
   String? get youtubeUrl => _youtubeUrl;
-
 
   double? _loadingPercent;
   double? get loadingPercent => _loadingPercent;

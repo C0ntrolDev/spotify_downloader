@@ -56,8 +56,8 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
   Color _backgroundGradientColor = const Color.fromARGB(255, 101, 101, 101);
 
   final double _appBarHeight = 55;
-  final double _appBarStartShowingPercent = 0.4;
-  final double _appBarEndShowingPercent = 0.7;
+  final double _appBarStartShowingPercent = 0.6;
+  final double _appBarEndShowingPercent = 0.9;
 
   double _appBarOpacityField = 0;
   double get _appBarOpacity => _appBarOpacityField;
@@ -113,7 +113,8 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
     if (_headerHeight == null) return;
 
     final double hiddenPercent = (hiddenPartOfHeader / (_headerHeight! - appBarHeightWithViewPadding)).clamp(0, 1);
-    double newAppBarOpacity = normalize(hiddenPercent, _appBarStartShowingPercent, _appBarEndShowingPercent).clamp(0, 1);
+    double newAppBarOpacity =
+        normalize(hiddenPercent, _appBarStartShowingPercent, _appBarEndShowingPercent).clamp(0, 1);
 
     if (newAppBarOpacity != _appBarOpacity) {
       _appBarOpacity = newAppBarOpacity;
@@ -183,7 +184,10 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                     overScroll.disallowIndicator();
                                     return false;
                                   },
-                                  child: CustomScrollbar(
+                                  child: CustomScrollbar.fixedScroll(
+                                      prototypeItem: const Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+                                          child: TrackTilePlaceholder()),
                                       controller: _scrollController,
                                       animationCurve: Curves.easeInOut,
                                       animationDuration: const Duration(milliseconds: 300),
@@ -208,10 +212,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                         slivers: [
                                           SliverToBoxAdapter(
                                             child: Builder(builder: (context) {
-                                              if (_headerHeight == null) {
-                                                SchedulerBinding.instance
-                                                    .addPostFrameCallback((_) => updateHeaderHeight());
-                                              }
+                                              sheduleHeaderHeightUpdate();
 
                                               return DownloadTracksCollectionHeader(
                                                 key: _headerKey,
@@ -333,9 +334,14 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
     );
   }
 
-  void updateHeaderHeight() {
-    setState(() {
-      _headerHeight = (_headerKey.currentContext!.findRenderObject() as RenderBox).size.height;
+  void sheduleHeaderHeightUpdate() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      var newHeaderHeight = (_headerKey.currentContext!.findRenderObject() as RenderBox).size.height;
+      if (_headerHeight != newHeaderHeight) {
+        setState(() {
+          _headerHeight = newHeaderHeight;
+        });
+      }
     });
   }
 

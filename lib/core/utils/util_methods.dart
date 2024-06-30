@@ -39,21 +39,28 @@ Future<Result<Failure, T>> handleSpotifyClientExceptions<T>(Future<Result<Failur
   }
 }
 
-  String? formatStringToFileFormat(String? string) {
-    final forbiddenChars = ['/', '\\', ':', '*', '?', '<', '>', '|'];
+String? formatStringToFileFormat(String? string) {
+  final forbiddenChars = ['/', '\\', ':', '*', '?', '<', '>', '|'];
 
-    String? formattedString = string;
-    for (var char in forbiddenChars) {
-      formattedString = formattedString?.replaceAll(char, '');
-    }
-
-    return formattedString;
+  String? formattedString = string;
+  for (var char in forbiddenChars) {
+    formattedString = formattedString?.replaceAll(char, '');
   }
 
-  double normalize(double value, double min, double max) {
-    if (min >= max) {
-      throw ArgumentError('Min must be less than max');
-    }
+  return formattedString;
+}
 
-    return (value - min) / (max - min);
+double normalize(double value, double min, double max) {
+  if (min >= max) {
+    throw ArgumentError('Min must be less than max');
   }
+
+  return (value - min) / (max - min);
+}
+
+double closest(double value, double num1, double num2) {
+  double diff1 = (value - num1).abs();
+  double diff2 = (value - num2).abs();
+
+  return (diff1 < diff2) ? num1 : num2;
+}

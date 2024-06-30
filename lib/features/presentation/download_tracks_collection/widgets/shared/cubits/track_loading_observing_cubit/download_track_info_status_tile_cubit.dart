@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:async/async.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/utils/failures/failure.dart';
@@ -31,7 +30,7 @@ class TrackLoadingObservingCubit extends Cubit<TrackLoadingObservingState> {
   void _onLoadingObserverChanged(LoadingTrackObserver? newLoadingObserver) {
     _unsubscribeFromLoadingObserver();
     _subscribeToLoadingObserver(newLoadingObserver);
-    _onLoadingObserverEvent();
+    _onLoadingTrackStatusChanged();
   }
 
   void _unsubscribeFromLoadingObserver() {
@@ -41,16 +40,11 @@ class TrackLoadingObservingCubit extends Cubit<TrackLoadingObservingState> {
 
   void _subscribeToLoadingObserver(LoadingTrackObserver? loadingTrackObserver) {
     if (loadingTrackObserver == null) return;
-    _loadingObserverSubscription = StreamGroup.merge([
-      loadingTrackObserver.startLoadingStream,
-      loadingTrackObserver.loadingPercentChangedStream,
-      loadingTrackObserver.loadedStream,
-      loadingTrackObserver.loadingFailureStream,
-      loadingTrackObserver.loadingCancelledStream
-    ]).listen((event) => _onLoadingObserverEvent());
+    _loadingObserverSubscription =
+        loadingTrackObserver.loadingTrackStatusStream.listen((event) => _onLoadingTrackStatusChanged());
   }
 
-  void _onLoadingObserverEvent() {
+  void _onLoadingTrackStatusChanged() {
     if (_trackWithLoadingObserver == null) return;
 
     final status = _trackWithLoadingObserver!.loadingObserver?.status;

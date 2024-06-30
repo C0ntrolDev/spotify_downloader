@@ -41,13 +41,13 @@ class GradientAppBarWithOpacity extends StatelessWidget {
               if (isAppBarVisible) {
                 
                 return Opacity(
-                  opacity: opacity,
+                  opacity: normalize(opacity, 0, 0.5).clamp(0, 1),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 700),
                     decoration: BoxDecoration(
                         gradient: LinearGradient(colors: [
-                      getIntermediateColor(firstColor, secondaryColor, 0.4),
-                      getIntermediateColor(firstColor, secondaryColor, 0.6)
+                      getIntermediateColor(firstColor, secondaryColor, 0.5),
+                      getIntermediateColor(firstColor, secondaryColor, 0.7)
                     ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
                   ),
                 );
@@ -74,7 +74,7 @@ class GradientAppBarWithOpacity extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: Opacity(
-                        opacity: opacity,
+                        opacity: normalize(opacity, 0.5, 1).clamp(0, 1), 
                         child: Text(title, style: Theme.of(context).textTheme.titleSmall)),
                   ),
                 ),

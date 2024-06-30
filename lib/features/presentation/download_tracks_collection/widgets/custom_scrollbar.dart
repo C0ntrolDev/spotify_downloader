@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:spotify_downloader/core/utils/utils.dart';
 
 class CustomScrollbar extends StatefulWidget {
   final Widget Function(BuildContext context, bool isDragging)? thumbBuilder;
@@ -20,6 +21,10 @@ class CustomScrollbar extends StatefulWidget {
   final Duration animationDuration;
   final Duration durationBeforeHide;
 
+  final bool isFixedScroll;
+  final Widget? _prototypeItem;
+  Widget? get prototypeItem => _prototypeItem;
+
   const CustomScrollbar(
       {super.key,
       required this.child,
@@ -32,7 +37,26 @@ class CustomScrollbar extends StatefulWidget {
       this.durationBeforeHide = const Duration(seconds: 1),
       this.minScrollOffset,
       this.maxScrollOfssetFromEnd,
-      this.hideThumbWhenOutOfOffset = false});
+      this.hideThumbWhenOutOfOffset = false})
+      : isFixedScroll = false,
+        _prototypeItem = null;
+
+  const CustomScrollbar.fixedScroll(
+      {super.key,
+      required this.child,
+      this.thumbBuilder,
+      this.controller,
+      this.scrollBarHeight,
+      this.animationCurve = Curves.easeInOut,
+      this.animationDuration = const Duration(milliseconds: 500),
+      this.thumbMargin = const EdgeInsets.all(0),
+      this.durationBeforeHide = const Duration(seconds: 1),
+      this.minScrollOffset,
+      this.maxScrollOfssetFromEnd,
+      this.hideThumbWhenOutOfOffset = false,
+      required Widget prototypeItem})
+      : _prototypeItem = prototypeItem,
+        isFixedScroll = true;
 
   @override
   CustomScrollbarState createState() => CustomScrollbarState();
@@ -55,10 +79,17 @@ class CustomScrollbarState extends State<CustomScrollbar> with SingleTickerProvi
 
   bool _isOutOfOffsetScroll = true;
 
-  double get minScrollOffset => widget.minScrollOffset ?? 0;
-  double get maxScrollOffsetFromEnd => widget.maxScrollOfssetFromEnd ?? 0;
+  double get _minScrollOffset => widget.minScrollOffset ?? 0;
+  double get _maxScrollOffsetFromEnd => widget.maxScrollOfssetFromEnd ?? 0;
+  double? get _maxScrollOffset =>
+      _scrollController != null ? _scrollController!.position.maxScrollExtent - _maxScrollOffsetFromEnd : null;
 
-  Timer? plannedHidding;
+  Timer? _plannedHidding;
+
+  final GlobalKey _prototypeItemKey = GlobalKey();
+  double? _prototypeHeight;
+
+  double _scrollBarOffset = 0;
 
   @override
   void initState() {
@@ -78,9 +109,38 @@ class CustomScrollbarState extends State<CustomScrollbar> with SingleTickerProvi
       curve: widget.animationCurve,
     ));
 
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    _updateScrollController();
+    _updatePrototypeHeight();
+  }
+
+  @override
+  void didUpdateWidget(CustomScrollbar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _updateScrollController();
+    _updatePrototypeHeight();
+  }
+
+  void _updateScrollController() {
+    if (_scrollController != null) {
+      _scrollController!.removeListener(_onScroll);
+      _scrollController!.position.isScrollingNotifier.removeListener(_onScrollStatusChanged);
+    }
+
+    _scrollController = widget.controller ?? PrimaryScrollController.of(context);
+    _scrollController!.addListener(_onScroll);
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       _scrollController!.position.isScrollingNotifier.addListener(_onScrollStatusChanged);
     });
+  }
+
+  void _updatePrototypeHeight() {
+    if (widget.isFixedScroll) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _prototypeHeight = (_prototypeItemKey?.currentContext?.findRenderObject() as RenderBox?)?.size.height;
+      });
+    }
   }
 
   Widget _createDeffaultThumb(BuildContext context, bool isDragging) {
@@ -89,16 +149,6 @@ class CustomScrollbarState extends State<CustomScrollbar> with SingleTickerProvi
 
   @override
   void didChangeDependencies() {
-    if (_scrollController == null) {
-      _scrollController = widget.controller ?? PrimaryScrollController.of(context);
-      _scrollController!.addListener(_onScroll);
-    } else if (widget.controller == null) {
-      _scrollController!.removeListener(_onScroll);
-      _scrollController = PrimaryScrollController.of(context);
-      _scrollController!.addListener(_onScroll);
-      _scrollController!.position.isScrollingNotifier.addListener(_onScrollStatusChanged);
-    }
-
     super.didChangeDependencies();
   }
 
@@ -110,9 +160,16 @@ class CustomScrollbarState extends State<CustomScrollbar> with SingleTickerProvi
   }
 
   void _onScroll() {
-    final scrollOffset = _scrollController!.offset - minScrollOffset;
-    final totalScrollOffset = _scrollController!.position.maxScrollExtent - maxScrollOffsetFromEnd - minScrollOffset;
-    _thumbOffset = (scrollOffset / totalScrollOffset * _maxThumbOffset);
+    if (!_isDragging) {
+      _scrollBarOffset = _scrollController!.offset;
+      _updateThumbOffset();
+    }
+  }
+
+  void _updateThumbOffset() {
+    var thumbScrollOffset = _scrollBarOffset - _minScrollOffset;
+    final totalScrollOffset = _scrollController!.position.maxScrollExtent - _maxScrollOffsetFromEnd - _minScrollOffset;
+    _thumbOffset = (thumbScrollOffset / totalScrollOffset * _maxThumbOffset);
     if (_thumbOffset < 0 || _thumbOffset > _maxThumbOffset || totalScrollOffset < 0) {
       if (!_isOutOfOffsetScroll) {
         _isOutOfOffsetScroll = true;
@@ -136,15 +193,15 @@ class CustomScrollbarState extends State<CustomScrollbar> with SingleTickerProvi
 
   void _onScrollStatusChanged() {
     if (_scrollController!.position.isScrollingNotifier.value && !_isThumbShown && !_isOutOfOffsetScroll) {
-      plannedHidding?.cancel();
-      plannedHidding = null;
+      _plannedHidding?.cancel();
+      _plannedHidding = null;
       _showThumb();
       return;
     }
 
     if (_thumbShouldHide()) {
-      plannedHidding?.cancel();
-      plannedHidding = null;
+      _plannedHidding?.cancel();
+      _plannedHidding = null;
 
       _schedulePossibleThumbHidding();
     }
@@ -160,7 +217,7 @@ class CustomScrollbarState extends State<CustomScrollbar> with SingleTickerProvi
       (!_scrollController!.position.isScrollingNotifier.value && _isThumbShown && !_isDragging);
 
   void _schedulePossibleThumbHidding() {
-    plannedHidding = Timer(widget.durationBeforeHide, () {
+    _plannedHidding = Timer(widget.durationBeforeHide, () {
       if (_thumbShouldHide()) {
         _hideThumb();
       }
@@ -207,21 +264,47 @@ class CustomScrollbarState extends State<CustomScrollbar> with SingleTickerProvi
 
                             return _thumbBuilder(context, _isDragging);
                           }))),
-                )))
+                ))),
+        Visibility(
+          visible: false,
+          maintainSize: true,
+          maintainAnimation: true,
+          maintainState: true,
+          child: IntrinsicWidth(
+            child: IntrinsicHeight(
+              child: Container(
+                key: _prototypeItemKey,
+                child: widget.prototypeItem ?? Container(),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
 
-  void _onThumbDragged(details) {
-    final newOffset = _calculateOffset(details, _scrollController!);
-    _scrollController!.jumpTo(newOffset);
+  void _onThumbDragged(DragUpdateDetails details) {
+    final newOffset = _addDragDeltaToOffset(oldOffset: _scrollBarOffset, dragDelta: details.primaryDelta!);
+    _scrollBarOffset = newOffset;
+    _updateThumbOffset();
+
+    if (widget.isFixedScroll && _prototypeHeight != null) {
+      final closestTopItemOffset = newOffset ~/ _prototypeHeight! * _prototypeHeight!;
+      final closestBottomItemOffset = (newOffset ~/ _prototypeHeight! + 1) * _prototypeHeight!;
+
+      final newScrollControllerOffset =
+          closest(newOffset, closestTopItemOffset, closestBottomItemOffset).clamp(_minScrollOffset, _maxScrollOffset!);
+
+      _scrollController!.jumpTo(newScrollControllerOffset);
+    } else {
+      _scrollController!.jumpTo(newOffset);
+    }
   }
 
-  double _calculateOffset(DragUpdateDetails details, ScrollController controller) {
-    final maxScrollOffset = _scrollController!.position.maxScrollExtent - maxScrollOffsetFromEnd;
-    final scrollDelta = details.primaryDelta! / _scrollBarHeight;
-    final oldOffset = max(minScrollOffset, controller.offset);
-    double newOffset = (oldOffset + scrollDelta * maxScrollOffset).clamp(minScrollOffset, maxScrollOffset);
+  double _addDragDeltaToOffset({required double oldOffset, required double dragDelta}) {
+    final absoluteDelta = dragDelta / _scrollBarHeight;
+    oldOffset = max(_minScrollOffset, oldOffset);
+    double newOffset = (oldOffset + absoluteDelta * _maxScrollOffset!).clamp(_minScrollOffset, _maxScrollOffset!);
     return newOffset;
   }
 }
