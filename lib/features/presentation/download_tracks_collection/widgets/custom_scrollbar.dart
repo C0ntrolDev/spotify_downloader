@@ -302,7 +302,7 @@ class CustomScrollbarState extends State<CustomScrollbar> with SingleTickerProvi
   }
 
   double _addDragDeltaToOffset({required double oldOffset, required double dragDelta}) {
-    final absoluteDelta = dragDelta / _scrollBarHeight;
+    final absoluteDelta = dragDelta / _maxThumbOffset;
     oldOffset = max(_minScrollOffset, oldOffset);
     double newOffset = (oldOffset + (absoluteDelta * (_maxScrollOffset! - _minScrollOffset)))
         .clamp(_minScrollOffset, _maxScrollOffset!);

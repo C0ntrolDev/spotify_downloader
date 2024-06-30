@@ -144,6 +144,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
           listener: (context, state) {
             if (state is GetTracksFailure) {
               _onFatalFailure(state.failure);
+              return;
             }
 
             if (state is GetTracksTracksGot) {
@@ -152,7 +153,14 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
 
             _updateDownloadTracksCubit(state);
           },
-        )
+        ),
+        BlocListener<DownloadTracksCubit, DownloadTracksState>(
+            bloc: _downloadTracksCubit,
+            listener: (context, state) {
+              if (state is DownloadTracksFailure) {
+                showSmallTextSnackBar(state.failure.toString(), context);
+              }
+            })
       ],
       child: Scaffold(
         body: Stack(
