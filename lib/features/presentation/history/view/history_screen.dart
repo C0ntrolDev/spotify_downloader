@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
+import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/presentation/history/bloc/history_bloc.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
@@ -39,7 +40,7 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
         padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 20),
         child: Column(children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
+            padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
             height: 50,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -69,7 +70,7 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
                                       .then((value) => _historyBloc.add(HistoryBlocLoadHistory()));
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: horizontalPadding),
                                   child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                                     CachedNetworkImage(
                                       width: 70,

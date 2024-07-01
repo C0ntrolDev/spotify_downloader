@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
+import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 
 class DownloadTrackInfoTile extends StatefulWidget {
   const DownloadTrackInfoTile({
@@ -27,7 +28,7 @@ class _DownloadTrackInfoTileState extends State<DownloadTrackInfoTile> {
       highlightColor: onSurfaceHighlightColor,
       onTap: widget.onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: horizontalPadding),
         child: Row(
           children: [
             widget.iconWidget ?? Container(),

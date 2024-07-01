@@ -1,11 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/permissions/permissions_manager.dart';
 import 'package:spotify_downloader/core/permissions/requiring_permission_services_initializer.dart';
+import 'package:spotify_downloader/features/presentation/main/widgets/custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:spotify_downloader/features/presentation/permissions_dialog/view/permissions_dialog.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
@@ -54,63 +54,45 @@ class _MainScreenState extends State<MainScreen> with AutoRouteAwareStateMixin {
                 child,
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: Container(
-                    height: 70,
-                    alignment: Alignment.bottomCenter,
-                    decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Color.fromARGB(0, 0, 0, 0), Color.fromARGB(200, 0, 0, 0)],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter)),
-                    child: Theme(
-                      data: ThemeData(
-                        splashFactory: NoSplash.splashFactory,
-                        highlightColor: const Color.fromARGB(0, 0, 0, 0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                        alignment: Alignment.bottomCenter,
+                        decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: [Color.fromARGB(0, 0, 0, 0), Color.fromARGB(230, 0, 0, 0)],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter)),
+                        child: Theme(
+                          data: ThemeData(
+                            splashFactory: NoSplash.splashFactory,
+                            highlightColor: const Color.fromARGB(0, 0, 0, 0),
+                          ),
+                          child: CustomNavigationBar(
+                              iconSize: const Size(25, 25),
+                              labelFontSize: 10,
+                              selectedItemColor: onBackgroundPrimaryColor,
+                              unselectedItemColor: onBackgroundSecondaryColor,
+                              selectingItemColor: onBackgroundThirdRateColor,
+                              selectingSize: 0.9,
+                              animationDuration: const Duration(milliseconds: 50),
+                              currentIndex: tabsRouter.activeIndex,
+                              onTap: (index) => tabsRouter.setActiveIndex(index),
+                              items: [
+                                CustomNavigationBarItem(
+                                    svgIconPath: 'resources/images/svg/bottom_bar/home_icon.svg',
+                                    svgActiveIconPath: 'resources/images/svg/bottom_bar/home_icon_active.svg',
+                                    label: S.of(context).main),
+                                CustomNavigationBarItem(
+                                    svgIconPath: 'resources/images/svg/bottom_bar/history_icon.svg',
+                                    svgActiveIconPath: 'resources/images/svg/bottom_bar/history_icon_active.svg',
+                                    label: S.of(context).history),
+                              ]),
+                        ),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: BottomNavigationBar(
-                            enableFeedback: false,
-                            selectedFontSize: 10,
-                            unselectedFontSize: 10,
-                            selectedItemColor: onBackgroundPrimaryColor,
-                            unselectedItemColor: onBackgroundSecondaryColor,
-                            elevation: 0,
-                            backgroundColor: Colors.transparent,
-                            currentIndex: tabsRouter.activeIndex,
-                            onTap: (index) => tabsRouter.setActiveIndex(index),
-                            items: [
-                              BottomNavigationBarItem(
-                                  icon: SvgPicture.asset(
-                                    'resources/images/svg/bottom_bar/home_icon.svg',
-                                    height: 25,
-                                    width: 25,
-                                    colorFilter: const ColorFilter.mode(onBackgroundSecondaryColor, BlendMode.srcIn),
-                                  ),
-                                  activeIcon: SvgPicture.asset(
-                                    'resources/images/svg/bottom_bar/home_icon_active.svg',
-                                    height: 25,
-                                    width: 25,
-                                    colorFilter: const ColorFilter.mode(onBackgroundPrimaryColor, BlendMode.srcIn),
-                                  ),
-                                  label: S.of(context).main),
-                              BottomNavigationBarItem(
-                                  icon: SvgPicture.asset(
-                                    'resources/images/svg/bottom_bar/history_icon.svg',
-                                    height: 25,
-                                    width: 25,
-                                    colorFilter: const ColorFilter.mode(onBackgroundSecondaryColor, BlendMode.srcIn),
-                                  ),
-                                  activeIcon: SvgPicture.asset(
-                                    'resources/images/svg/bottom_bar/history_icon_active.svg',
-                                    height: 25,
-                                    width: 25,
-                                    colorFilter: const ColorFilter.mode(onBackgroundPrimaryColor, BlendMode.srcIn),
-                                  ),
-                                  label: S.of(context).history),
-                            ]),
-                      ),
-                    ),
+                    ],
                   ),
                 ),
               ],

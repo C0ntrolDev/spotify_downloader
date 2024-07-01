@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
+import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/domain/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/liked_tracks_tile.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/view/loading_tracks_collections_list.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/search_text_field.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
-
-const homePageHorizontalPadding = 15.0;
 
 @RoutePage()
 class HomeScreen extends StatefulWidget {
@@ -39,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 20),
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: homePageHorizontalPadding),
+            padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: Column(
               children: [
                 SizedBox(
@@ -126,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: homePageHorizontalPadding),
+                      padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
                       child: Text(S.of(context).activeDownloads, style: theme.textTheme.titleMedium),
                     ),
                     Expanded(

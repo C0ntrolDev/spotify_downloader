@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -215,90 +216,93 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                   borderRadius: BorderRadius.circular(2.5))),
                                         );
                                       },
-                                      child: CustomScrollView(
-                                        controller: _scrollController,
-                                        slivers: [
-                                          SliverToBoxAdapter(
-                                            child: Builder(builder: (context) {
-                                              sheduleHeaderHeightUpdate();
-
-                                              return DownloadTracksCollectionHeader(
+                                      child: Builder(builder: (context) {
+                                        return Builder(builder: (context) {
+                                          scheduleHeaderHeightUpdate();
+                                          return CustomScrollView(
+                                            controller: _scrollController,
+                                            slivers: [
+                                              DownloadTracksCollectionHeader(
                                                 key: _headerKey,
                                                 backgroundGradientColor: _backgroundGradientColor,
-                                                title: getTracksCollectionState.tracksCollection.name,
                                                 imageUrl: getTracksCollectionState.tracksCollection.bigImageUrl ?? '',
+                                                title: getTracksCollectionState.tracksCollection.name,
                                                 onFilterQueryChanged: _onFilterQueryChanged,
-                                                onAllDownloadButtonClicked: () => _onAllDownloadButtonClicked(
+                                                onDownloadAllButtonClicked: () => _onAllDownloadButtonClicked(
                                                     filterTracksState: _filterTracksBloc.state,
                                                     getTracksState: getTracksState),
-                                              );
-                                            }),
-                                          ),
-                                          BlocBuilder<FilterTracksBloc, FilterTracksState>(
-                                            bloc: _filterTracksBloc,
-                                            builder: (context, state) {
-                                              if (state is! FilterTracksChanged) return const SliverToBoxAdapter();
+                                              ),
+                                              BlocBuilder<FilterTracksBloc, FilterTracksState>(
+                                                bloc: _filterTracksBloc,
+                                                builder: (context, state) {
+                                                  if (state is! FilterTracksChanged) return const SliverToBoxAdapter();
 
-                                              final filteredTracks = state.filteredTracks;
-                                              final isTracksPlaceholdersDisplayed =
-                                                  getTracksState is! GetTracksAllGot &&
+                                                  final filteredTracks = state.filteredTracks;
+                                                  final isTracksPlaceholdersDisplayed = getTracksState
+                                                          is! GetTracksAllGot &&
                                                       state.isFilterQueryEmpty &&
                                                       getTracksCollectionState.tracksCollection.tracksCount != null;
 
-                                              return SliverPrototypeExtentList.builder(
-                                                itemCount: isTracksPlaceholdersDisplayed
-                                                    ? getTracksCollectionState.tracksCollection.tracksCount
-                                                    : filteredTracks.length,
-                                                prototypeItem: const Padding(
-                                                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
-                                                    child: TrackTilePlaceholder()),
-                                                itemBuilder: (context, index) {
-                                                  return Stack(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
-                                                        child: Builder(builder: (buildContext) {
-                                                          if (index < (state.filteredTracks.length)) {
-                                                            return TrackTile(
-                                                              trackWithLoadingObserver: filteredTracks[index],
-                                                              onDownloadButtonClicked: () => _downloadTracksCubit
-                                                                  .downloadTrack(filteredTracks[index]),
-                                                              onCancelButtonClicked: () => _downloadTracksCubit
-                                                                  .cancelTrackLoading(filteredTracks[index]),
-                                                              onMoreInfoClicked: () =>
-                                                                  showDownloadTrackInfoBottomSheet(
-                                                                      context, filteredTracks[index]),
-                                                            );
-                                                          }
+                                                  return SliverPadding(
+                                                    padding: const EdgeInsets.only(top: 20),
+                                                    sliver: SliverPrototypeExtentList.builder(
+                                                      itemCount: isTracksPlaceholdersDisplayed
+                                                          ? getTracksCollectionState.tracksCollection.tracksCount
+                                                          : filteredTracks.length,
+                                                      prototypeItem: const Padding(
+                                                          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+                                                          child: TrackTilePlaceholder()),
+                                                      itemBuilder: (context, index) {
+                                                        return Stack(
+                                                          children: [
+                                                            Padding(
+                                                              padding: const EdgeInsets.symmetric(
+                                                                  horizontal: 15, vertical: 7.5),
+                                                              child: Builder(builder: (buildContext) {
+                                                                if (index < (state.filteredTracks.length)) {
+                                                                  return TrackTile(
+                                                                    trackWithLoadingObserver: filteredTracks[index],
+                                                                    onDownloadButtonClicked: () => _downloadTracksCubit
+                                                                        .downloadTrack(filteredTracks[index]),
+                                                                    onCancelButtonClicked: () => _downloadTracksCubit
+                                                                        .cancelTrackLoading(filteredTracks[index]),
+                                                                    onMoreInfoClicked: () =>
+                                                                        showDownloadTrackInfoBottomSheet(
+                                                                            context, filteredTracks[index]),
+                                                                  );
+                                                                }
 
-                                                          return const TrackTilePlaceholder();
-                                                        }),
-                                                      ),
-                                                      Builder(
-                                                        builder: (buildContext) {
-                                                          if (getTracksState is GetTracksAfterPartGotNetworkFailure) {
-                                                            return Positioned.fill(
-                                                              child: IgnorePointer(
-                                                                child: Container(
-                                                                  color: const Color.fromARGB(50, 0, 0, 0),
-                                                                  height: 10,
-                                                                ),
-                                                              ),
-                                                            );
-                                                          }
+                                                                return const TrackTilePlaceholder();
+                                                              }),
+                                                            ),
+                                                            Builder(
+                                                              builder: (buildContext) {
+                                                                if (getTracksState
+                                                                    is GetTracksAfterPartGotNetworkFailure) {
+                                                                  return Positioned.fill(
+                                                                    child: IgnorePointer(
+                                                                      child: Container(
+                                                                        color: const Color.fromARGB(50, 0, 0, 0),
+                                                                        height: 10,
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                }
 
-                                                          return Container();
-                                                        },
-                                                      )
-                                                    ],
+                                                                return Container();
+                                                              },
+                                                            )
+                                                          ],
+                                                        );
+                                                      },
+                                                    ),
                                                   );
                                                 },
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ))))
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                      }))))
                         ]);
                       }
                     }
@@ -342,9 +346,9 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
     );
   }
 
-  void sheduleHeaderHeightUpdate() {
+  void scheduleHeaderHeightUpdate() {
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      var newHeaderHeight = (_headerKey.currentContext!.findRenderObject() as RenderBox).size.height;
+      var newHeaderHeight = (_headerKey.currentContext!.findRenderObject() as RenderSliver).geometry?.scrollExtent;
       if (_headerHeight != newHeaderHeight) {
         setState(() {
           _headerHeight = newHeaderHeight;
@@ -353,7 +357,8 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
     });
   }
 
-  void _onFilterQueryChanged(newQuery) => _filterTracksBloc.add(FilterTracksChangeFilterQuery(newQuery: newQuery));
+  void _onFilterQueryChanged(String newQuery) =>
+      _filterTracksBloc.add(FilterTracksChangeFilterQuery(newQuery: newQuery));
 
   void _onAllDownloadButtonClicked(
       {required FilterTracksState filterTracksState, required GetTracksState getTracksState}) {

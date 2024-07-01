@@ -100,7 +100,7 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
                                   .add(ChangeSourceVideoChangeSelectedVideo(selectedVideo: video)),
                               child: Container(
                                   color: isVideoSelected ? onSurfaceHighlightColor : Colors.transparent,
-                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: horizontalPadding),
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [

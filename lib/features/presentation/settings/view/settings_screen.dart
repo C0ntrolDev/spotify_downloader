@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
-import 'package:spotify_downloader/features/presentation/home/view/home_screen.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/widgets.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
@@ -56,7 +55,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         Expanded(
             child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(left: homePageHorizontalPadding, right: homePageHorizontalPadding, top: 10),
+            padding: const EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 10),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               const AuthSettings(),
               const DownloadTracksSettingsEditor(),
