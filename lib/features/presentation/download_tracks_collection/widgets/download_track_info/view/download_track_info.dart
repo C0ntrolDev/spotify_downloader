@@ -13,6 +13,7 @@ import 'package:spotify_downloader/features/data_domain/tracks/services/entities
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/cubit/download_track_info_cubit.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_status_tile/view/download_track_info_status_tile.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_tile.dart';
+import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
 void showDownloadTrackInfoBottomSheet(BuildContext context, TrackWithLoadingObserver trackWithLoadingObserver) {
@@ -154,7 +155,8 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                           trackWithLoadingObserver: widget.trackWithLoadingObserver, newYoutubeUrl: changedUrl);
                     }
                   },
-                )
+                ),
+                const CustomBottomNavigationBarListViewExpander()
               ])),
         ),
         const Positioned.fill(

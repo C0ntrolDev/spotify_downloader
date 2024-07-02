@@ -48,7 +48,7 @@ class DownloadTracksCollectionHeader extends StatelessWidget {
                 padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 20),
                 child: LayoutBuilder(builder: (context, constraints) {
                   final minImageSize =
-                      min(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height) * 0.3;
+                      min(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height) * 0.2;
                   final imageSize = max(minImageSize, constraints.maxHeight);
 
                   double opacity;

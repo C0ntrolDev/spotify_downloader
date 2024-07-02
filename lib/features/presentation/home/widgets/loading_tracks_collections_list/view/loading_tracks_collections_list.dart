@@ -30,51 +30,50 @@ class _LoadingTracksCollectionsListState extends State<LoadingTracksCollectionsL
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocListener<LoadingTracksCollectionsListBloc, LoadingTracksCollectionsListState>(
+    return BlocConsumer<LoadingTracksCollectionsListBloc, LoadingTracksCollectionsListState>(
         bloc: _bloc,
         listener: (context, state) {
           if (state is LoadingTracksCollectionsListLoaded) {
-            _updateCurrentList(state.loadingCollectionsObservers);
+            setState(() {
+              _updateCurrentList(state.loadingCollectionsObservers);
+            });
           }
-          setState(() {});
         },
-        child: Stack(
-          children: [
-            AnimatedList(
-                key: animatedListKey,
-                padding: const EdgeInsets.all(0),
-                initialItemCount: currentList.length,
-                itemBuilder: (context, index, animate) => _buildAnimatedTile(context, currentList[index], animate)),
-            LayoutBuilder(builder: (context, constrains) {
-              final blocState = _bloc.state;
+        builder: (context, state) {
+          if (state is LoadingTracksCollectionsListLoaded) {
+            if (currentList.isNotEmpty) {
+              return SliverAnimatedList(
+                  key: animatedListKey,
+                  initialItemCount: currentList.length,
+                  itemBuilder: (context, index, animate) => _buildAnimatedTile(context, currentList[index], animate));
+            }
 
-              if (blocState is LoadingTracksCollectionsListInitial) {
-                return Container(
-                  alignment: Alignment.center,
-                  child: const CircularProgressIndicator(),
-                );
-              }
+            return SliverToBoxAdapter(
+              child: Text(S.of(context).tracksDontLoad,
+                  style: theme.textTheme.labelLarge?.copyWith(color: onBackgroundSecondaryColor)),
+            );
+          }
 
-              if (blocState is LoadingTracksCollectionsListFailure) {
-                return Text(
-                    S.of(context).errorOccurredWhileLoadingActiveDownloads(
-                        blocState.failure?.message.toString() ?? 'the message isn\'t specified'),
-                    style: theme.textTheme.labelLarge?.copyWith(color: onBackgroundSecondaryColor));
-              }
+          if (state is LoadingTracksCollectionsListInitial) {
+            return SliverToBoxAdapter(
+              child: Container(
+                alignment: Alignment.center,
+                child: const CircularProgressIndicator(),
+              ),
+            );
+          }
 
-              if (blocState is LoadingTracksCollectionsListLoaded) {
-                if (currentList.isEmpty) {
-                  return Center(
-                    child: Text(S.of(context).tracksDontLoad,
-                        style: theme.textTheme.labelLarge?.copyWith(color: onBackgroundSecondaryColor)),
-                  );
-                }
-              }
+          if (state is LoadingTracksCollectionsListFailure) {
+            return SliverToBoxAdapter(
+              child: Text(
+                  S.of(context).errorOccurredWhileLoadingActiveDownloads(
+                      state.failure?.message.toString() ?? 'the message isn\'t specified'),
+                  style: theme.textTheme.labelLarge?.copyWith(color: onBackgroundSecondaryColor)),
+            );
+          }
 
-              return Container();
-            }),
-          ],
-        ));
+          return const SliverToBoxAdapter();
+        });
   }
 
   void _updateCurrentList(List<LoadingTracksCollectionObserver> newList) {
@@ -86,14 +85,14 @@ class _LoadingTracksCollectionsListState extends State<LoadingTracksCollectionsL
         .toList();
 
     for (var removedItem in itemsToRemove) {
-      animatedListKey.currentState!.removeItem(currentList.indexOf(removedItem),
+      animatedListKey.currentState?.removeItem(currentList.indexOf(removedItem),
           (context, animation) => _buildAnimatedTile(context, removedItem, animation));
       currentList.remove(removedItem);
     }
 
     for (var newItem in itemsToAdd) {
       currentList.add(newItem);
-      animatedListKey.currentState!.insertItem(currentList.length - 1);
+      animatedListKey.currentState?.insertItem(currentList.length - 1);
     }
   }
 

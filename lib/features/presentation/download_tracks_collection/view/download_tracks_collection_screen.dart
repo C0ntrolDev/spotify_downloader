@@ -7,6 +7,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
+import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
@@ -14,7 +15,8 @@ import 'package:spotify_downloader/features/data_domain/tracks_collections/histo
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/blocs.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/view/download_track_info.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/widgets.dart';
-import 'package:spotify_downloader/features/presentation/shared/widgets/strange_optimized_circular_progress_indicator.dart';
+import 'package:spotify_downloader/features/presentation/main/widgets/custom_bottom_navigation_bar/custom_bottom_navigation_bar.dart';
+import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
 
 import 'package:spotify_downloader/generated/l10n.dart';
 
@@ -56,7 +58,6 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
 
   Color _backgroundGradientColor = const Color.fromARGB(255, 101, 101, 101);
 
-  final double _appBarHeight = 55;
   final double _appBarStartShowingPercent = 0.6;
   final double _appBarEndShowingPercent = 0.9;
 
@@ -69,7 +70,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
 
   final StreamController<double> _appBarOpacityChangedController = StreamController();
 
-  double get appBarHeightWithViewPadding => _appBarHeight + (MediaQuery.maybeOf(context)?.viewPadding.top ?? 0);
+  double get appBarHeightWithViewPadding => appBarHeight + (MediaQuery.maybeOf(context)?.viewPadding.top ?? 0);
 
   @override
   void initState() {
@@ -201,7 +202,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                       animationCurve: Curves.easeInOut,
                                       animationDuration: const Duration(milliseconds: 300),
                                       durationBeforeHide: const Duration(seconds: 2),
-                                      thumbMargin: EdgeInsets.only(top: appBarHeightWithViewPadding + 10, bottom: 10),
+                                      thumbMargin: EdgeInsets.only(top: appBarHeightWithViewPadding + 10, bottom: 10 + (CustomBottomNavigationBarAcessor.of(context).height ?? 0)),
                                       minScrollOffset:
                                           (_headerHeight ?? appBarHeightWithViewPadding) - appBarHeightWithViewPadding,
                                       hideThumbWhenOutOfOffset: true,
@@ -228,7 +229,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                 imageUrl: getTracksCollectionState.tracksCollection.bigImageUrl ?? '',
                                                 title: getTracksCollectionState.tracksCollection.name,
                                                 onFilterQueryChanged: _onFilterQueryChanged,
-                                                onDownloadAllButtonClicked: () => _onAllDownloadButtonClicked(
+                                                onDownloadAllButtonClicked: () => _onDownloadAllButtonClicked(
                                                     filterTracksState: _filterTracksBloc.state,
                                                     getTracksState: getTracksState),
                                               ),
@@ -299,6 +300,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                   );
                                                 },
                                               ),
+                                              const SliverToBoxAdapter(child: CustomBottomNavigationBarListViewExpander())
                                             ],
                                           );
                                         });
@@ -326,7 +328,6 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                           if (getTracksCollectionState is GetTracksCollectionLoaded &&
                               getTracksState is GetTracksTracksGot) {
                             return GradientAppBarWithOpacity.visible(
-                              height: _appBarHeight,
                               firstColor: _backgroundGradientColor,
                               secondaryColor: backgroundColor,
                               title: getTracksCollectionState.tracksCollection.name,
@@ -334,7 +335,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                             );
                           }
 
-                          return GradientAppBarWithOpacity.invisible(height: _appBarHeight);
+                          return const GradientAppBarWithOpacity.invisible();
                         });
                   },
                 );
@@ -360,7 +361,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
   void _onFilterQueryChanged(String newQuery) =>
       _filterTracksBloc.add(FilterTracksChangeFilterQuery(newQuery: newQuery));
 
-  void _onAllDownloadButtonClicked(
+  void _onDownloadAllButtonClicked(
       {required FilterTracksState filterTracksState, required GetTracksState getTracksState}) {
     if (filterTracksState is! FilterTracksChanged) {
       return;

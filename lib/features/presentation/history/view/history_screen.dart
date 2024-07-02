@@ -7,6 +7,7 @@ import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/presentation/history/bloc/history_bloc.dart';
+import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
 @RoutePage()
@@ -21,12 +22,8 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
   final HistoryBloc _historyBloc = injector.get<HistoryBloc>();
 
   @override
-  void didInitTabRoute(TabPageRoute? previousRoute) {
-    _historyBloc.add(HistoryBlocLoadHistory());
-  }
-
-  @override
-  void didChangeTabRoute(TabPageRoute previousRoute) {
+  void initState() {
+    super.initState();
     _historyBloc.add(HistoryBlocLoadHistory());
   }
 
@@ -37,84 +34,80 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 20),
-        child: Column(children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
-            height: 50,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [Text(S.of(context).searchHistory, style: theme.textTheme.titleLarge)],
+        padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
+              child: CustomMainAppBar(title: S.of(context).searchHistory),
             ),
-          ),
-          Expanded(
-            child: BlocBuilder<HistoryBloc, HistoryState>(
-              bloc: _historyBloc,
-              builder: (context, state) {
-                if (state is HistoryBlocLoaded) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: CustomScrollView(
-                      slivers: [
-                        SliverList.builder(
-                            itemCount: state.historyTracksCollections.length,
-                            itemBuilder: (context, index) {
-                              final historyTracksCollection = state.historyTracksCollections[index];
-                              return InkWell(
-                                splashColor: onSurfaceSplashColor,
-                                highlightColor: onSurfaceHighlightColor,
-                                onTap: () async {
-                                  AutoRouter.of(context)
-                                      .push(DownloadTracksCollectionRouteWithHistoryTracksCollection(
-                                          historyTracksCollection: historyTracksCollection))
-                                      .then((value) => _historyBloc.add(HistoryBlocLoadHistory()));
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: horizontalPadding),
-                                  child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                                    CachedNetworkImage(
-                                      width: 70,
-                                      height: 70,
-                                      fit: BoxFit.fitWidth,
-                                      memCacheWidth: (70 * MediaQuery.of(context).devicePixelRatio).round(),
-                                      imageUrl: historyTracksCollection.imageUrl ?? '',
-                                      placeholder: (context, imageUrl) =>
-                                          Image.asset('resources/images/another/loading_track_collection_image.png'),
-                                      errorWidget: (context, imageUrl, _) =>
-                                          Image.asset('resources/images/another/loading_track_collection_image.png'),
-                                    ),
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                                        child: Text(
-                                          historyTracksCollection.name,
-                                          style: theme.textTheme.bodyMedium,
-                                        ),
+            Expanded(
+              child: CustomScrollView(slivers: [
+                BlocBuilder<HistoryBloc, HistoryState>(
+                  bloc: _historyBloc,
+                  builder: (context, state) {
+                    if (state is HistoryBlocLoaded) {
+                      return SliverList.builder(
+                          itemCount: state.historyTracksCollections.length,
+                          itemBuilder: (context, index) {
+                            final historyTracksCollection = state.historyTracksCollections[index];
+                            return InkWell(
+                              splashColor: onSurfaceSplashColor,
+                              highlightColor: onSurfaceHighlightColor,
+                              onTap: () async {
+                                AutoRouter.of(context)
+                                    .push(DownloadTracksCollectionRouteWithHistoryTracksCollection(
+                                        historyTracksCollection: historyTracksCollection))
+                                    .then((value) => _historyBloc.add(HistoryBlocLoadHistory()));
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: horizontalPadding),
+                                child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                  CachedNetworkImage(
+                                    width: 70,
+                                    height: 70,
+                                    fit: BoxFit.fitWidth,
+                                    memCacheWidth: (70 * MediaQuery.of(context).devicePixelRatio).round(),
+                                    imageUrl: historyTracksCollection.imageUrl ?? '',
+                                    placeholder: (context, imageUrl) =>
+                                        Image.asset('resources/images/another/loading_track_collection_image.png'),
+                                    errorWidget: (context, imageUrl, _) =>
+                                        Image.asset('resources/images/another/loading_track_collection_image.png'),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                                      child: Text(
+                                        historyTracksCollection.name,
+                                        style: theme.textTheme.bodyMedium,
                                       ),
                                     ),
-                                    Container(
-                                      alignment: Alignment.centerRight,
-                                      child: const Icon(Icons.arrow_forward_ios_rounded,
-                                          color: onBackgroundSecondaryColor, size: 27),
-                                    )
-                                  ]),
-                                ),
-                              );
-                            }),
-                      ],
-                    ),
-                  );
-                }
+                                  ),
+                                  Container(
+                                    alignment: Alignment.centerRight,
+                                    child: const Icon(Icons.arrow_forward_ios_rounded,
+                                        color: onBackgroundSecondaryColor, size: 27),
+                                  )
+                                ]),
+                              ),
+                            );
+                          });
+                    }
 
-                if (state is HistoryBlocLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+                    if (state is HistoryBlocLoading) {
+                      return const SliverFillRemaining(child: Center(child: CircularProgressIndicator()));
+                    }
 
-                return Container();
-              },
+                    return Container();
+                  },
+                ),
+                const SliverToBoxAdapter(
+                  child: CustomBottomNavigationBarListViewExpander(),
+                )
+              ]),
             ),
-          )
-        ]),
+          ],
+        ),
       ),
     );
   }

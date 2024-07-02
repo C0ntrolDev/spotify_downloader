@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:spotify_downloader/features/presentation/main/widgets/custom_navigation_bar/custom_navigation_bar_item.dart';
+import 'package:spotify_downloader/features/presentation/main/widgets/custom_bottom_navigation_bar/custom_bottom_navigation_bar_item.dart';
 
-import 'custom_navigation_bar_item_tile.dart';
+import 'custom_bottom_navigation_bar_item_tile.dart';
 
-class CustomNavigationBar extends StatelessWidget {
-  final List<CustomNavigationBarItem> items;
+class CustomBottomNavigationBar extends StatelessWidget {
+  final List<CustomBottomNavigationBarItem> items;
   final Size iconSize;
   final double labelFontSize;
   final double selectingSize;
@@ -15,7 +15,7 @@ class CustomNavigationBar extends StatelessWidget {
   final void Function(int index) onTap;
   final int currentIndex;
 
-  const CustomNavigationBar(
+  const CustomBottomNavigationBar(
       {super.key,
       required this.items,
       required this.iconSize,
@@ -40,7 +40,7 @@ class CustomNavigationBar extends StatelessWidget {
           i++;
 
           return Expanded(
-              child: CustomNavigationBarItemTile(
+              child: CustomBottomNavigationBarItemTile(
             item: item,
             iconSize: iconSize,
             labelFontSize: labelFontSize,

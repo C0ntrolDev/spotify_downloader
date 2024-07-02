@@ -118,3 +118,29 @@ void showSmallTextSnackBar(String message, BuildContext context, [Duration durat
     duration: duration,
   ));
 }
+
+class TransitionsBuildersExtension {
+  static const fadeInWithBackground = _fadeInWithBackground;
+
+  static Widget _fadeInWithBackground(
+      BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+    if (animation.status == AnimationStatus.reverse) {
+      return FadeTransition(
+          opacity: animation, child: Container(constraints: const BoxConstraints.expand(), color: backgroundColor));
+    } else {
+      return Container(
+        constraints: const BoxConstraints.expand(),
+        color: backgroundColor,
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    }
+  }
+}
+
+class ClampingScrollPhysicsBehavior extends ScrollBehavior {
+  const ClampingScrollPhysicsBehavior();
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const ClampingScrollPhysics();
+  }
+}

@@ -36,7 +36,7 @@ class DownloadTracksCollectionManageBar extends StatelessWidget {
             height: 35,
             padding: const EdgeInsets.only(left: 10),
             child: ElevatedButton(
-              onPressed: () => onDownloadAllButtonClicked,
+              onPressed: onDownloadAllButtonClicked,
               style: ButtonStyle(
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),

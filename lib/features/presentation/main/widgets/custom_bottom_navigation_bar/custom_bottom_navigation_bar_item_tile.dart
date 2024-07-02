@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:spotify_downloader/features/presentation/main/widgets/custom_navigation_bar/custom_navigation_bar_item.dart';
+import 'package:spotify_downloader/features/presentation/main/widgets/custom_bottom_navigation_bar/custom_bottom_navigation_bar_item.dart';
 
-class CustomNavigationBarItemTile extends StatefulWidget {
-  final CustomNavigationBarItem item;
+class CustomBottomNavigationBarItemTile extends StatefulWidget {
+  final CustomBottomNavigationBarItem item;
   final Size iconSize;
   final double labelFontSize;
   final double selectingSize;
@@ -14,7 +14,7 @@ class CustomNavigationBarItemTile extends StatefulWidget {
   final void Function() onTap;
   final bool isSelected;
 
-  const CustomNavigationBarItemTile(
+  const CustomBottomNavigationBarItemTile(
       {super.key,
       required this.iconSize,
       required this.labelFontSize,
@@ -28,11 +28,11 @@ class CustomNavigationBarItemTile extends StatefulWidget {
       required this.animationDuration});
 
   @override
-  State<CustomNavigationBarItemTile> createState() => _CustomNavigationBarItemTileState();
+  State<CustomBottomNavigationBarItemTile> createState() => _CustomBottomNavigationBarItemTileState();
 }
 
 
-class _CustomNavigationBarItemTileState extends State<CustomNavigationBarItemTile> with TickerProviderStateMixin {
+class _CustomBottomNavigationBarItemTileState extends State<CustomBottomNavigationBarItemTile> with TickerProviderStateMixin {
   late final AnimationController _colorAnimationController;
   late final AnimationController _sizeAnimationController;
 
@@ -52,7 +52,7 @@ class _CustomNavigationBarItemTileState extends State<CustomNavigationBarItemTil
   }
 
   @override
-  void didUpdateWidget(covariant CustomNavigationBarItemTile oldWidget) {
+  void didUpdateWidget(covariant CustomBottomNavigationBarItemTile oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.isSelected != widget.isSelected) {
       _updateAnimations();

@@ -11,11 +11,11 @@ class GradientAppBarWithOpacity extends StatelessWidget {
       required this.firstColor,
       required this.secondaryColor,
       this.opacity = 0,
-      this.height = 55,
+      this.height = appBarHeight,
       this.iconSize = backIconSize})
       : isAppBarVisible = true;
 
-  const GradientAppBarWithOpacity.invisible({super.key, this.height = 55, this.iconSize = backIconSize})
+  const GradientAppBarWithOpacity.invisible({super.key, this.height = appBarHeight, this.iconSize = backIconSize})
       : isAppBarVisible = false,
         opacity = 0,
         title = '',

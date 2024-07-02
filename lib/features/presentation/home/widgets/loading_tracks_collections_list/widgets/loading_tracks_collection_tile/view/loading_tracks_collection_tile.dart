@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
-import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/observe_tracks_loading/domain/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/domain/entities/history_tracks_collection.dart';
@@ -72,7 +71,7 @@ class _LoadingTracksCollectionTileState extends State<LoadingTracksCollectionTil
                     name: state.loadingTrackInfo.tracksCollection!.name)));
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 5),
+            padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
               children: [
                 CachedNetworkImage(

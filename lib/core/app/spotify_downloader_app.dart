@@ -26,7 +26,7 @@ class _SpotifyDownloaderAppState extends State<SpotifyDownloaderApp> {
   @override
   void initState() {
     super.initState();
-    
+
     if (widget.locale != null) {
       _language = widget.locale!;
     }
@@ -46,6 +46,10 @@ class _SpotifyDownloaderAppState extends State<SpotifyDownloaderApp> {
       supportedLocales: S.delegate.supportedLocales,
       routerConfig: _appRouter.config(navigatorObservers: () => [AutoRouteObserver()]),
       theme: mainTheme,
+      builder: (context, child) {
+        return ScrollConfiguration(
+            behavior: const ClampingScrollPhysicsBehavior().copyWith(overscroll: false), child: child!);
+      },
     );
   }
 
