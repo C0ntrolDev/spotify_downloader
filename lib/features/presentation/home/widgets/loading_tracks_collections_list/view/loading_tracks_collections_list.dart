@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/observe_tracks_loading/domain/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
-import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/bloc/loading_tracks_collections_list_bloc.dart';
+import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/cubit/loading_tracks_collections_list_cubit.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/widgets/loading_tracks_collection_tile/view/loading_tracks_collection_tile.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
@@ -15,14 +16,14 @@ class LoadingTracksCollectionsList extends StatefulWidget {
 }
 
 class _LoadingTracksCollectionsListState extends State<LoadingTracksCollectionsList> {
-  final LoadingTracksCollectionsListBloc _bloc = injector.get<LoadingTracksCollectionsListBloc>();
+  final LoadingTracksCollectionsListCubit _cubit = injector.get<LoadingTracksCollectionsListCubit>();
 
-  final GlobalKey<AnimatedListState> animatedListKey = GlobalKey();
+  final GlobalKey<SliverAnimatedListState> animatedListKey = GlobalKey();
   final List<LoadingTracksCollectionObserver> currentList = List.empty(growable: true);
 
   @override
   void initState() {
-    _bloc.add(LoadingTracksCollectionsListLoad());
+    _cubit.load();
     super.initState();
   }
 
@@ -30,50 +31,45 @@ class _LoadingTracksCollectionsListState extends State<LoadingTracksCollectionsL
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocConsumer<LoadingTracksCollectionsListBloc, LoadingTracksCollectionsListState>(
-        bloc: _bloc,
-        listener: (context, state) {
-          if (state is LoadingTracksCollectionsListLoaded) {
-            setState(() {
-              _updateCurrentList(state.loadingCollectionsObservers);
-            });
-          }
-        },
-        builder: (context, state) {
-          if (state is LoadingTracksCollectionsListLoaded) {
-            if (currentList.isNotEmpty) {
-              return SliverAnimatedList(
-                  key: animatedListKey,
-                  initialItemCount: currentList.length,
-                  itemBuilder: (context, index, animate) => _buildAnimatedTile(context, currentList[index], animate));
+    return BlocListener<LoadingTracksCollectionsListCubit, LoadingTracksCollectionsListState>(
+      bloc: _cubit,
+      listener: (context, state) {
+        if (state is LoadingTracksCollectionsListLoaded) {
+          _updateCurrentList(state.loadingCollectionsObservers);
+        }
+      },
+      child: SliverStack(children: [
+        SliverAnimatedList(
+            key: animatedListKey,
+            initialItemCount: currentList.length,
+            itemBuilder: (context, index, animate) => _buildAnimatedTile(context, currentList[index], animate)),
+        SliverToBoxAdapter(child: BlocBuilder<LoadingTracksCollectionsListCubit, LoadingTracksCollectionsListState>(
+          bloc: _cubit,
+          builder: (context, state) {
+            if (state is LoadingTracksCollectionsListLoaded && currentList.isEmpty) {
+              return Text(S.of(context).tracksDontLoad,
+                  style: theme.textTheme.labelLarge?.copyWith(color: onBackgroundSecondaryColor));
             }
 
-            return SliverToBoxAdapter(
-              child: Text(S.of(context).tracksDontLoad,
-                  style: theme.textTheme.labelLarge?.copyWith(color: onBackgroundSecondaryColor)),
-            );
-          }
-
-          if (state is LoadingTracksCollectionsListInitial) {
-            return SliverToBoxAdapter(
-              child: Container(
+            if (state is LoadingTracksCollectionsListInitial) {
+              return Container(
                 alignment: Alignment.center,
                 child: const CircularProgressIndicator(),
-              ),
-            );
-          }
+              );
+            }
 
-          if (state is LoadingTracksCollectionsListFailure) {
-            return SliverToBoxAdapter(
-              child: Text(
+            if (state is LoadingTracksCollectionsListFailure) {
+              return Text(
                   S.of(context).errorOccurredWhileLoadingActiveDownloads(
                       state.failure?.message.toString() ?? 'the message isn\'t specified'),
-                  style: theme.textTheme.labelLarge?.copyWith(color: onBackgroundSecondaryColor)),
-            );
-          }
+                  style: theme.textTheme.labelLarge?.copyWith(color: onBackgroundSecondaryColor));
+            }
 
-          return const SliverToBoxAdapter();
-        });
+            return Container();
+          },
+        ))
+      ]),
+    );
   }
 
   void _updateCurrentList(List<LoadingTracksCollectionObserver> newList) {
@@ -85,9 +81,10 @@ class _LoadingTracksCollectionsListState extends State<LoadingTracksCollectionsL
         .toList();
 
     for (var removedItem in itemsToRemove) {
-      animatedListKey.currentState?.removeItem(currentList.indexOf(removedItem),
+      final index = currentList.indexOf(removedItem);
+      currentList.removeAt(index);
+      animatedListKey.currentState?.removeItem(index,
           (context, animation) => _buildAnimatedTile(context, removedItem, animation));
-      currentList.remove(removedItem);
     }
 
     for (var newItem in itemsToAdd) {

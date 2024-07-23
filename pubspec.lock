@@ -981,6 +981,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.27.7"
+  scrollbar_ultima:
+    dependency: "direct main"
+    description:
+      name: scrollbar_ultima
+      sha256: "06550be76752230c63e1698b21454449774f5af3ef297b205b34a6afbd46f661"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   shelf:
     dependency: transitive
     description:
@@ -1331,5 +1339,5 @@ packages:
     source: hosted
     version: "2.0.4"
 sdks:
-  dart: ">=3.3.0 <3.11.0"
+  dart: ">=3.4.3 <3.11.0"
   flutter: ">=3.18.0-18.0.pre.54"

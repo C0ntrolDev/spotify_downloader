@@ -11,15 +11,17 @@ class ScrollableScreenWithCustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          CustomAppBar(title: title),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(padding: screenWithCustomAppBarPadding, child: body),
+      body: SafeArea(
+        child: Column(
+          children: [
+            CustomAppBar(title: title),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(padding: screenWithCustomAppBarPadding, child: body),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

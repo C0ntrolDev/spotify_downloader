@@ -1,4 +1,4 @@
-part of 'loading_tracks_collections_list_bloc.dart';
+part of 'loading_tracks_collections_list_cubit.dart';
 
 sealed class LoadingTracksCollectionsListState {
   const LoadingTracksCollectionsListState();
@@ -7,9 +7,9 @@ sealed class LoadingTracksCollectionsListState {
 final class LoadingTracksCollectionsListInitial extends LoadingTracksCollectionsListState {}
 
 final class LoadingTracksCollectionsListLoaded extends LoadingTracksCollectionsListState {
-  const LoadingTracksCollectionsListLoaded({required this.loadingCollectionsObservers});
-
   final List<LoadingTracksCollectionObserver> loadingCollectionsObservers;
+
+  const LoadingTracksCollectionsListLoaded({required this.loadingCollectionsObservers});
 }
 
 final class LoadingTracksCollectionsListFailure extends LoadingTracksCollectionsListState {

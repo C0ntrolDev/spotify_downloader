@@ -13,7 +13,6 @@ import 'package:spotify_downloader/features/presentation/home/widgets/loading_tr
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
-
 @RoutePage()
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -36,104 +35,105 @@ class _HomeScreenState extends State<HomeScreen> {
     final theme = Theme.of(context);
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        body: Padding(
-            padding: EdgeInsets.only(
-                top: MediaQuery.of(context).viewPadding.top, left: horizontalPadding, right: horizontalPadding),
-            child: Column(
-              children: [
-                CustomMainAppBar(
-                  title: 'SpotifyDownloader',
-                  icon: IconButton(
-                      onPressed: () {
-                        AutoRouter.of(context).push(const SettingsRoute());
-                      },
-                      icon: SvgPicture.asset(
-                        'resources/images/svg/settings_icon.svg',
-                        height: 27,
-                        width: 27,
-                      )),
-                ),
-                Expanded(
-                  child: CustomScrollView(
-                    slivers: [
-                      SliverPadding(
-                        padding: const EdgeInsets.only(top: 20),
-                        sliver: SliverToBoxAdapter(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(S.of(context).downloadFromLink, style: theme.textTheme.titleMedium),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: SearchTextField(
-                                  theme: theme,
-                                  height: 45,
-                                  iconPadding: const EdgeInsets.all(10),
-                                  hintText: S.of(context).downloadFromLinkTextFieldHintText,
-                                  controller: searchTextFieldController,
-                                  onSubmitted: (value) async {
-                                    if (isSearchRequestValid(value)) {
-                                      await AutoRouter.of(context)
-                                          .push(DownloadTracksCollectionRouteWithUrl(url: value));
-                                      searchTextFieldController.clear();
-                                    } else if (value != '') {
-                                      searchTextFieldController.clear();
-                                      showBigTextSnackBar(S.of(context).incorrectLink, context);
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SliverPadding(
-                        padding: const EdgeInsets.only(top: 40),
-                        sliver: SliverToBoxAdapter(
-                          child: Align(
-                            alignment: Alignment.topLeft,
+        body: SafeArea(
+          child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
+              child: Column(
+                children: [
+                  CustomMainAppBar(
+                    title: 'SpotifyDownloader',
+                    icon: IconButton(
+                        onPressed: () {
+                          AutoRouter.of(context).push(const SettingsRoute());
+                        },
+                        icon: SvgPicture.asset(
+                          'resources/images/svg/settings_icon.svg',
+                          height: 27,
+                          width: 27,
+                        )),
+                  ),
+                  Expanded(
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverPadding(
+                          padding: const EdgeInsets.only(top: 20),
+                          sliver: SliverToBoxAdapter(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(S.of(context).downloadLikedTracks, style: theme.textTheme.titleMedium),
+                                Text(S.of(context).downloadFromLink, style: theme.textTheme.titleMedium),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 10),
-                                  child: LikedTracksTile(
+                                  child: SearchTextField(
                                     theme: theme,
-                                    title: S.of(context).likedTracksTitle,
-                                    onTapped: () {
-                                      AutoRouter.of(context).push(
-                                          DownloadTracksCollectionRouteWithHistoryTracksCollection(
-                                              historyTracksCollection: HistoryTracksCollection.likedTracks));
+                                    height: 45,
+                                    iconPadding: const EdgeInsets.all(10),
+                                    hintText: S.of(context).downloadFromLinkTextFieldHintText,
+                                    controller: searchTextFieldController,
+                                    onSubmitted: (value) async {
+                                      if (isSearchRequestValid(value)) {
+                                        await AutoRouter.of(context)
+                                            .push(DownloadTracksCollectionRouteWithUrl(url: value));
+                                        searchTextFieldController.clear();
+                                      } else if (value != '') {
+                                        searchTextFieldController.clear();
+                                        showBigTextSnackBar(S.of(context).incorrectLink, context);
+                                      }
                                     },
-                                    image: const CachedNetworkImageProvider(
-                                      'https://misc.scdn.co/liked-songs/liked-songs-300.png',
-                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
                         ),
-                      ),
-                      SliverPadding(
-                        padding: const EdgeInsets.only(top: 40),
-                        sliver: MultiSliver(
-                          children: [
-                            SliverToBoxAdapter(
-                              child: Text(S.of(context).activeDownloads, style: theme.textTheme.titleMedium),
+                        SliverPadding(
+                          padding: const EdgeInsets.only(top: 40),
+                          sliver: SliverToBoxAdapter(
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(S.of(context).downloadLikedTracks, style: theme.textTheme.titleMedium),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: LikedTracksTile(
+                                      theme: theme,
+                                      title: S.of(context).likedTracksTitle,
+                                      onTap: () {
+                                        AutoRouter.of(context).push(
+                                            DownloadTracksCollectionRouteWithHistoryTracksCollection(
+                                                historyTracksCollection: HistoryTracksCollection.likedTracks));
+                                      },
+                                      image: const CachedNetworkImageProvider(
+                                        'https://misc.scdn.co/liked-songs/liked-songs-300.png',
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            const SliverPadding(
-                                padding: EdgeInsets.only(top: 10), sliver: LoadingTracksCollectionsList())
-                          ],
+                          ),
                         ),
-                      ),
-                      const SliverToBoxAdapter(child: CustomBottomNavigationBarListViewExpander())
-                    ],
+                        SliverPadding(
+                          padding: const EdgeInsets.only(top: 40),
+                          sliver: MultiSliver(
+                            children: [
+                              SliverToBoxAdapter(
+                                child: Text(S.of(context).activeDownloads, style: theme.textTheme.titleMedium),
+                              ),
+                              const SliverPadding(
+                                  padding: EdgeInsets.only(top: 10), sliver: LoadingTracksCollectionsList())
+                            ],
+                          ),
+                        ),
+                        const SliverToBoxAdapter(child: CustomBottomNavigationBarListViewExpander())
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            )));
+                ],
+              )),
+        ));
   }
 
   bool isSearchRequestValid(String request) {

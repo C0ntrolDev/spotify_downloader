@@ -40,98 +40,102 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
           if (didPop) return;
           popPage(context);
         },
-        child: Column(
-          children: [
-            CustomAppBar(
-              title: S.of(context).changeTheDownloadSource,
-            ),
-            Expanded(
-              child: BlocConsumer(
-                bloc: _changeSourceVideoBloc,
-                listener: (context, state) {
-                  if (state is ChangeSourceVideoFailure) {
-                    showSmallTextSnackBar(state.failure?.message.toString() ?? '', context);
-                  }
-                },
-                builder: (context, state) {
-                  if (state is ChangeSourceVideoLoaded) {
-                    return CustomScrollView(
-                      slivers: [
-                        SliverList.builder(
-                            itemCount: state.videos.length,
-                            itemBuilder: (context, index) {
-                              final video = state.videos[index];
-                              final isVideoSelected = video == state.selectedVideo;
-
-                              return InkWell(
-                                splashColor: onSurfaceSplashColor,
-                                highlightColor: onSurfaceHighlightColor,
-                                onTap: () => _changeSourceVideoBloc
-                                    .add(ChangeSourceVideoChangeSelectedVideo(selectedVideo: video)),
-                                child: Container(
-                                    color: isVideoSelected ? onSurfaceHighlightColor : Colors.transparent,
-                                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: horizontalPadding),
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Image.network(
-                                          video.thumbnailUrl,
-                                          height: 80,
-                                          width: 100,
-                                          fit: BoxFit.fitHeight,
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            padding: const EdgeInsets.only(left: 10),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  video.title,
-                                                  style: theme.textTheme.bodyMedium,
-                                                ),
-                                                Text(
-                                                  S.of(context).nView(formatViewsCount(video.viewsCount)),
-                                                  style: theme.textTheme.labelMedium
-                                                      ?.copyWith(color: onBackgroundSecondaryColor),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(top: 5),
-                                                  child: Text(
-                                                    video.author,
-                                                    style: theme.textTheme.bodyMedium
-                                                        ?.copyWith(color: onBackgroundSecondaryColor),
-                                                  ),
-                                                )
-                                              ],
+        child: SafeArea(
+          child: Scaffold(
+            body: Column(
+              children: [
+                CustomAppBar(
+                  title: S.of(context).changeTheDownloadSource,
+                ),
+                Expanded(
+                  child: BlocConsumer(
+                    bloc: _changeSourceVideoBloc,
+                    listener: (context, state) {
+                      if (state is ChangeSourceVideoFailure) {
+                        showSmallTextSnackBar(state.failure?.message.toString() ?? '', context);
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is ChangeSourceVideoLoaded) {
+                        return CustomScrollView(
+                          slivers: [
+                            SliverList.builder(
+                                itemCount: state.videos.length,
+                                itemBuilder: (context, index) {
+                                  final video = state.videos[index];
+                                  final isVideoSelected = video == state.selectedVideo;
+            
+                                  return InkWell(
+                                    splashColor: onSurfaceSplashColor,
+                                    highlightColor: onSurfaceHighlightColor,
+                                    onTap: () => _changeSourceVideoBloc
+                                        .add(ChangeSourceVideoChangeSelectedVideo(selectedVideo: video)),
+                                    child: Container(
+                                        color: isVideoSelected ? onSurfaceHighlightColor : Colors.transparent,
+                                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: horizontalPadding),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Image.network(
+                                              video.thumbnailUrl,
+                                              height: 80,
+                                              width: 100,
+                                              fit: BoxFit.fitHeight,
                                             ),
-                                          ),
-                                        )
-                                      ],
-                                    )),
-                              );
-                            }),
-                        const SliverToBoxAdapter(child: CustomBottomNavigationBarListViewExpander())
-                      ],
-                    );
-                  }
-
-                  if (state is ChangeSourceVideoNetworkFailure) {
-                    return NetworkFailureSplash(
-                        onRetryAgainButtonClicked: () => _changeSourceVideoBloc
-                            .add(ChangeSourceVideoLoad(selectedVideoUrl: widget.track.youtubeUrl)));
-                  }
-
-                  if (state is ChangeSourceVideoLoading) {
-                    return const Center(
-                        child: SizedBox(height: 41, width: 41, child: StrangeOptimizedCircularProgressIndicator()));
-                  }
-
-                  return Container();
-                },
-              ),
-            )
-          ],
+                                            Expanded(
+                                              child: Container(
+                                                padding: const EdgeInsets.only(left: 10),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      video.title,
+                                                      style: theme.textTheme.bodyMedium,
+                                                    ),
+                                                    Text(
+                                                      S.of(context).nView(formatViewsCount(video.viewsCount)),
+                                                      style: theme.textTheme.labelMedium
+                                                          ?.copyWith(color: onBackgroundSecondaryColor),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(top: 5),
+                                                      child: Text(
+                                                        video.author,
+                                                        style: theme.textTheme.bodyMedium
+                                                            ?.copyWith(color: onBackgroundSecondaryColor),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        )),
+                                  );
+                                }),
+                            const SliverToBoxAdapter(child: CustomBottomNavigationBarListViewExpander())
+                          ],
+                        );
+                      }
+            
+                      if (state is ChangeSourceVideoNetworkFailure) {
+                        return NetworkFailureSplash(
+                            onRetryAgainButtonClicked: () => _changeSourceVideoBloc
+                                .add(ChangeSourceVideoLoad(selectedVideoUrl: widget.track.youtubeUrl)));
+                      }
+            
+                      if (state is ChangeSourceVideoLoading) {
+                        return const Center(
+                            child: SizedBox(height: 41, width: 41, child: StrangeOptimizedCircularProgressIndicator()));
+                      }
+            
+                      return Container();
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
         ));
   }
 

@@ -33,13 +33,12 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top),
+      body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
-              child: CustomMainAppBar(title: S.of(context).searchHistory),
+            CustomMainAppBar(
+              title: S.of(context).searchHistory,
+              contentPadding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
             ),
             Expanded(
               child: CustomScrollView(slivers: [
@@ -51,9 +50,9 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
                           itemCount: state.historyTracksCollections.length,
                           itemBuilder: (context, index) {
                             final historyTracksCollection = state.historyTracksCollections[index];
-                            return InkWell(
-                              splashColor: onSurfaceSplashColor,
-                              highlightColor: onSurfaceHighlightColor,
+                            return TapAnimatedContainer(
+                              tappingMaskColor: backgroundColor.withOpacity(0.4),
+                              tappingScale: 0.99,
                               onTap: () async {
                                 AutoRouter.of(context)
                                     .push(DownloadTracksCollectionRouteWithHistoryTracksCollection(
