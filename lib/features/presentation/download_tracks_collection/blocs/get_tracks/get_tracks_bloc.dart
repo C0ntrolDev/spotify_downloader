@@ -149,7 +149,7 @@ class GetTracksBloc extends Bloc<GetTracksEvent, GetTracksState> {
     if (failure is NetworkFailure) {
       return _getNetworkFailureState();
     }
-    return GetTracksFailure(failure: failure);
+    return GetTracksFatalFailure(failure: failure);
   }
 
   GetTracksState _getNetworkFailureState() {

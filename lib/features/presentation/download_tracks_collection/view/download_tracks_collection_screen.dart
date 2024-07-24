@@ -16,7 +16,7 @@ import 'package:spotify_downloader/features/data_domain/tracks_collections/histo
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/blocs.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/view/download_track_info.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/widgets.dart';
-import 'package:spotify_downloader/features/presentation/main/widgets/custom_navigation_bar/custom_navigation_bar_acessor.dart';
+import 'package:spotify_downloader/features/presentation/main/widgets/orientated_navigation_bar/orientated_navigation_bar_acessor.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
 
 import 'package:spotify_downloader/generated/l10n.dart';
@@ -136,7 +136,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
               _getTracksBloc.add(GetTracksGetTracks(tracksCollection: state.tracksCollection));
             }
 
-            if (state is GetTracksCollectionFailure) {
+            if (state is GetTracksCollectionFatalFailure) {
               _onFatalFailure(state.failure);
               return;
             }
@@ -145,7 +145,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
         BlocListener<GetTracksBloc, GetTracksState>(
           bloc: _getTracksBloc,
           listener: (context, state) {
-            if (state is GetTracksFailure) {
+            if (state is GetTracksFatalFailure) {
               _onFatalFailure(state.failure);
               return;
             }
@@ -168,6 +168,8 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
       child: Scaffold(
         body: SafeArea(
           top: false,
+          left: false,
+          right: false,
           child: Stack(
             children: [
               BlocBuilder<GetTracksCollectionBloc, GetTracksCollectionState>(
@@ -207,35 +209,17 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                         durationBeforeHide: const Duration(seconds: 2),
                                         scrollbarPadding: EdgeInsets.only(
                                             top: appBarHeightWithViewPadding + 10,
-                                            bottom: 10 + (CustomNavigationBarAcessor.of(context).expandedHeight ?? 0)),
+                                            bottom: 10 + (OrientatedNavigationBarAcessor.maybeOf(context)?.expandedHeight ?? 0)),
                                         minScrollOffset: (_headerHeight ?? appBarHeightWithViewPadding) -
                                             appBarHeightWithViewPadding,
                                         hideThumbWhenOutOfOffset: true,
                                         dynamicThumbLength: false,
                                         alwaysShowThumb: false,
-                                        thumbBuilder: (context, animation, widgetStates) {
-                                          final animatedPosition = Tween<Offset>(
-                                            begin: const Offset(1, 0),
-                                            end: const Offset(0, 0)
-                                          ).animate(animation);
-                                          return SlideTransition(
-                                            position: animatedPosition,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(left: 5, right: 7),
-                                              child: Container(
-                                                  height: 50,
-                                                  width: 5,
-                                                  decoration: BoxDecoration(
-                                                      color: widgetStates.contains(WidgetState.dragged)
-                                                          ? primaryColor
-                                                          : onBackgroundSecondaryColor,
-                                                      borderRadius: BorderRadius.circular(2.5))),
-                                            ),
-                                          );
-                                        },
+                                        isFixedScroll: true,
+                                        thumbBuilder: _buildThumb,
                                         child: Builder(builder: (context) {
                                           return Builder(builder: (context) {
-                                            scheduleHeaderHeightUpdate();
+                                            _scheduleHeaderHeightUpdate();
                                             return CustomScrollView(
                                               controller: _scrollController,
                                               slivers: [
@@ -253,8 +237,9 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                 BlocBuilder<FilterTracksBloc, FilterTracksState>(
                                                   bloc: _filterTracksBloc,
                                                   builder: (context, state) {
-                                                    if (state is! FilterTracksChanged)
+                                                    if (state is! FilterTracksChanged) {
                                                       return const SliverToBoxAdapter();
+                                                    }
 
                                                     final filteredTracks = state.filteredTracks;
                                                     final isTracksPlaceholdersDisplayed = getTracksState
@@ -369,7 +354,22 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
     );
   }
 
-  void scheduleHeaderHeightUpdate() {
+  Widget _buildThumb(BuildContext context, Animation<double> animation, Set<WidgetState> widgetStates) {
+    final animatedPosition = Tween<Offset>(begin: const Offset(1, 0), end: const Offset(0, 0)).animate(animation);
+    return SlideTransition(
+        position: animatedPosition,
+        child: Container(
+            color: Colors.transparent,
+            padding: const EdgeInsets.only(left: 10, right: 7),
+            child: Container(
+                height: 50,
+                width: 5,
+                decoration: BoxDecoration(
+                    color: widgetStates.contains(WidgetState.dragged) ? primaryColor : onBackgroundSecondaryColor,
+                    borderRadius: BorderRadius.circular(2.5)))));
+  }
+
+  void _scheduleHeaderHeightUpdate() {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       var newHeaderHeight = (_headerKey.currentContext!.findRenderObject() as RenderSliver).geometry?.scrollExtent;
       if (_headerHeight != newHeaderHeight) {

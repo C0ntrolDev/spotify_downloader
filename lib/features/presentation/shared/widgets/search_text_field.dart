@@ -112,9 +112,3 @@ class _SearchTextFieldState extends State<SearchTextField> {
     );
   }
 }
-
-class CustomScrollController extends ScrollController {
-  @override
-  // TODO: implement positions
-  Iterable<ScrollPosition> get positions => super.positions;
-}

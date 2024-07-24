@@ -72,7 +72,8 @@ final mainTheme = ThemeData(
       bodyMedium: _bodyMedium,
       bodySmall: _bodySmall,
       labelLarge: _labelLarge,
-      labelMedium: _labelMedium),
+      labelMedium: _labelMedium,
+      labelSmall: _labelSmall),
   textSelectionTheme: const TextSelectionThemeData(
     cursorColor: primaryColor,
     selectionHandleColor: primaryColor,
@@ -86,7 +87,7 @@ void initTheme() {
       systemNavigationBarColor: Colors.transparent,
     ),
   );
-}
+} 
 
 void showBigTextSnackBar(String message, BuildContext context, [Duration duration = const Duration(seconds: 2)]) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(

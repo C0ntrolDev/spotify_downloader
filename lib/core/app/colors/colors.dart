@@ -23,3 +23,5 @@ const searchFieldHintColor = Color.fromARGB(255, 59, 59, 59);
 const dialogColor = Color.fromARGB(255, 59, 59, 59);
 
 const tilePlaceholderColor = Color.fromARGB(255, 59, 59, 59);
+
+const horizontalNavigationBarColor = Color.fromARGB(255, 30, 30, 30);

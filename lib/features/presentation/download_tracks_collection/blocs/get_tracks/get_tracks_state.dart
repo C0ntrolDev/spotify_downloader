@@ -52,8 +52,8 @@ final class GetTracksAfterPartGotNetworkFailure extends GetTracksTracksGot {
 
 final class GetTracksBeforePartGotNetworkFailure extends GetTracksState {}
 
-final class GetTracksFailure extends GetTracksState {
-  const GetTracksFailure({required this.failure});
+final class GetTracksFatalFailure extends GetTracksState {
+  const GetTracksFatalFailure({required this.failure});
 
   final Failure? failure;
 

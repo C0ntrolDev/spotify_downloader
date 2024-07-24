@@ -36,6 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(
+          left: false,
+          right: false,
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
               child: Column(
@@ -116,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         SliverPadding(
-                          padding: const EdgeInsets.only(top: 40),
+                          padding: const EdgeInsets.only(top: 40, bottom: 40),
                           sliver: MultiSliver(
                             children: [
                               SliverToBoxAdapter(

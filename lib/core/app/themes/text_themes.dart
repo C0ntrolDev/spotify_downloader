@@ -55,3 +55,10 @@ const _labelMedium = TextStyle(
     color: onBackgroundPrimaryColor,
     fontSize: 12,
     overflow: TextOverflow.ellipsis);
+
+const _labelSmall = TextStyle(
+    fontFamily: 'OpenSans',
+    fontWeight: FontWeight.w400,
+    color: onBackgroundPrimaryColor,
+    fontSize: 10,
+    overflow: TextOverflow.ellipsis);

@@ -34,6 +34,8 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
+        left: false,
+        right: false,
         child: Column(
           children: [
             CustomMainAppBar(

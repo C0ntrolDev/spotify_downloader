@@ -41,6 +41,8 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
           popPage(context);
         },
         child: SafeArea(
+          left: false,
+          right: false,
           child: Scaffold(
             body: Column(
               children: [
@@ -64,7 +66,7 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
                                 itemBuilder: (context, index) {
                                   final video = state.videos[index];
                                   final isVideoSelected = video == state.selectedVideo;
-            
+
                                   return InkWell(
                                     splashColor: onSurfaceSplashColor,
                                     highlightColor: onSurfaceHighlightColor,
@@ -72,7 +74,8 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
                                         .add(ChangeSourceVideoChangeSelectedVideo(selectedVideo: video)),
                                     child: Container(
                                         color: isVideoSelected ? onSurfaceHighlightColor : Colors.transparent,
-                                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: horizontalPadding),
+                                        padding:
+                                            const EdgeInsets.symmetric(vertical: 10, horizontal: horizontalPadding),
                                         child: Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
@@ -117,18 +120,19 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
                           ],
                         );
                       }
-            
+
                       if (state is ChangeSourceVideoNetworkFailure) {
                         return NetworkFailureSplash(
                             onRetryAgainButtonClicked: () => _changeSourceVideoBloc
                                 .add(ChangeSourceVideoLoad(selectedVideoUrl: widget.track.youtubeUrl)));
                       }
-            
+
                       if (state is ChangeSourceVideoLoading) {
                         return const Center(
-                            child: SizedBox(height: 41, width: 41, child: StrangeOptimizedCircularProgressIndicator()));
+                            child:
+                                SizedBox(height: 41, width: 41, child: StrangeOptimizedCircularProgressIndicator()));
                       }
-            
+
                       return Container();
                     },
                   ),

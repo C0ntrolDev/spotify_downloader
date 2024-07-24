@@ -12,6 +12,8 @@ class ScrollableScreenWithCustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
+        left: false,
+        right: false,
         child: Column(
           children: [
             CustomAppBar(title: title),

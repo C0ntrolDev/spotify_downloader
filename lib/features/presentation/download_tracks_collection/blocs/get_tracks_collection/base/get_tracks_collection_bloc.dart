@@ -38,7 +38,7 @@ abstract class GetTracksCollectionBloc extends Bloc<GetTracksCollectionEvent, Ge
       if (loadTracksCollectionResult.failure is NetworkFailure) {
         emit(GetTracksCollectionNetworkFailure());
       } else {
-        emit(GetTracksCollectionFailure(failure: loadTracksCollectionResult.failure));
+        emit(GetTracksCollectionFatalFailure(failure: loadTracksCollectionResult.failure));
       }
     }
     _isTracksCollectionLoading = false;
