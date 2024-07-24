@@ -28,7 +28,7 @@ class OrientatedNavigationBar extends StatefulWidget {
 }
 
 class _OrientatedNavigationBarState extends State<OrientatedNavigationBar> {
-  final GlobalKey _bottomNavigationBarKey = GlobalKey();
+  final GlobalKey _verticalNavigationBarKey = GlobalKey();
 
   double? _expandedHeight;
 
@@ -42,6 +42,7 @@ class _OrientatedNavigationBarState extends State<OrientatedNavigationBar> {
 
         if (orientation == Orientation.portrait) {
           final verticalNavigationBar = VerticalNavigationBar(
+              key: _verticalNavigationBarKey,
               theme: widget.verticalNavigationBarTheme,
               items: widget.items,
               onTap: widget.onTap,
@@ -49,17 +50,11 @@ class _OrientatedNavigationBarState extends State<OrientatedNavigationBar> {
 
           if (widget.expandBody) {
             return Stack(
-              children: [
-                child,
-                Align(alignment: Alignment.bottomCenter, child: verticalNavigationBar)
-              ],
+              children: [child, Align(alignment: Alignment.bottomCenter, child: verticalNavigationBar)],
             );
           } else {
             return Column(
-              children: [
-                child,
-                verticalNavigationBar
-              ],
+              children: [child, verticalNavigationBar],
             );
           }
         }
@@ -83,7 +78,7 @@ class _OrientatedNavigationBarState extends State<OrientatedNavigationBar> {
       double? newExpandedHeight;
 
       if (widget.expandBody) {
-        newExpandedHeight = (_bottomNavigationBarKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
+        newExpandedHeight = (_verticalNavigationBarKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
       } else {
         newExpandedHeight = null;
       }
