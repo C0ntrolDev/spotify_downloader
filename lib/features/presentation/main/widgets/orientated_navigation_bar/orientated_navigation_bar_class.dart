@@ -29,16 +29,18 @@ class OrientatedNavigationBar extends StatefulWidget {
 
 class _OrientatedNavigationBarState extends State<OrientatedNavigationBar> {
   final GlobalKey _verticalNavigationBarKey = GlobalKey();
+  final GlobalKey _childKey = GlobalKey();
 
   double? _expandedHeight;
 
   @override
   Widget build(BuildContext context) {
-    _scheduleExpandedHeightUpdate();
-
     return OrientationBuilder(
       builder: (BuildContext context, Orientation orientation) {
-        final child = OrientatedNavigationBarAcessor(expandedHeight: _expandedHeight, child: widget.child);
+        _scheduleExpandedHeightUpdate();
+
+        final child =
+            OrientatedNavigationBarAcessor(key: _childKey, expandedHeight: _expandedHeight, child: widget.child);
 
         if (orientation == Orientation.portrait) {
           final verticalNavigationBar = VerticalNavigationBar(

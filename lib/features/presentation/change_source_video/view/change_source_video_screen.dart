@@ -12,9 +12,10 @@ import 'package:spotify_downloader/generated/l10n.dart';
 
 @RoutePage<String?>()
 class ChangeSourceVideoScreen extends StatefulWidget {
-  const ChangeSourceVideoScreen({super.key, required this.track});
+  const ChangeSourceVideoScreen({super.key, required this.track, this.selectedYoutubeUrl});
 
   final Track track;
+  final String? selectedYoutubeUrl;
 
   @override
   State<ChangeSourceVideoScreen> createState() => _ChangeSourceVideoScreenState();
@@ -26,7 +27,7 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
   @override
   void initState() {
     _changeSourceVideoBloc = injector.get<ChangeSourceVideoBloc>(param1: widget.track);
-    _changeSourceVideoBloc.add(ChangeSourceVideoLoad(selectedVideoUrl: widget.track.youtubeUrl));
+    _changeSourceVideoBloc.add(ChangeSourceVideoLoad(selectedVideoUrl: widget.selectedYoutubeUrl));
     super.initState();
   }
 
@@ -124,7 +125,7 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
                       if (state is ChangeSourceVideoNetworkFailure) {
                         return NetworkFailureSplash(
                             onRetryAgainButtonClicked: () => _changeSourceVideoBloc
-                                .add(ChangeSourceVideoLoad(selectedVideoUrl: widget.track.youtubeUrl)));
+                                .add(ChangeSourceVideoLoad(selectedVideoUrl: widget.selectedYoutubeUrl)));
                       }
 
                       if (state is ChangeSourceVideoLoading) {
@@ -144,10 +145,12 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
   }
 
   void popPage(BuildContext context) {
-    if (_changeSourceVideoBloc.state is ChangeSourceVideoLoaded) {
-      Navigator.of(context).pop((_changeSourceVideoBloc.state as ChangeSourceVideoLoaded).selectedVideo?.url);
+    final blocState = _changeSourceVideoBloc.state;
+    if (blocState is ChangeSourceVideoLoaded && blocState.isVideoSelectedByUser) {
+      Navigator.of(context).pop(blocState.selectedVideo?.url);
       return;
     }
+    
     Navigator.of(context).pop(null);
   }
 

@@ -110,8 +110,15 @@ class GetTracksServiceImpl implements GetTracksService {
 
       if (localTrack != null) {
         if (await _checkLocalTrackToExistence(localTrack)) {
-          track.isLoaded = true;
-          track.youtubeUrl = localTrack.youtubeUrl;
+          track = Track(
+              spotifyId: track.spotifyId,
+              parentCollection: track.parentCollection,
+              name: track.name,
+              album: track.album,
+              artists: track.artists,
+              duration: track.duration,
+              isLoaded: true,
+              localYoutubeUrl: localTrack.youtubeUrl);
         }
       }
 

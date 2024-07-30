@@ -2,24 +2,25 @@ import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/ent
 import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/album.dart';
 
 class Track {
-  Track(
-      {required this.spotifyId,
-      required this.parentCollection,
-      this.isLoaded = false,
-      required this.name,
-      this.album,
-      this.youtubeUrl,
-      this.artists,
-      this.duration});
+  Track({
+    required this.spotifyId,
+    required this.parentCollection,
+    required this.name,
+    this.album,
+    this.artists,
+    this.duration,
+    this.localYoutubeUrl,
+    this.isLoaded = false,
+  });
 
   final String spotifyId;
   final String name;
   final TracksCollection parentCollection;
 
-  String? youtubeUrl;
-  bool isLoaded;
-
   final Album? album;
   final List<String>? artists;
   final Duration? duration;
+
+  final String? localYoutubeUrl;
+  final bool isLoaded;
 }

@@ -13,6 +13,7 @@ class DownloadTracksCubit extends Cubit<DownloadTracksState> {
 
   TracksWithLoadingObserverGettingObserver? _gettingObserver;
   List<TrackWithLoadingObserver>? _trackList;
+  final Map<TrackWithLoadingObserver, String> _preselectedTracksYouTubeUrls = {};
   bool _isAllTracksGot = false;
 
   DownloadTracksCubit(
@@ -24,13 +25,14 @@ class DownloadTracksCubit extends Cubit<DownloadTracksState> {
         _downloadTracksFromGettingObserver = downloadTracksFromGettingObserver,
         _downloadTrack = downloadTrack,
         _cancelTrackLoading = cancelTrackLoading,
-        super(DownloadTracksInitial());
+        super(const DownloadTracksDeffault(preselectedTracksYouTubeUrls: {}));
 
   Future<void> downloadAllTracks() async {
     if (_trackList != null && _trackList!.isNotEmpty) {
-      final downloadTracksRangeResult = await _downloadTracksRange.call(_trackList!);
+      final downloadTracksRangeResult = await _downloadTracksRange.call((_trackList!, _preselectedTracksYouTubeUrls));
       if (!downloadTracksRangeResult.isSuccessful) {
-        emit(DownloadTracksFailure(failure: downloadTracksRangeResult.failure));
+        emit(DownloadTracksFailure(
+            failure: downloadTracksRangeResult.failure, preselectedTracksYouTubeUrls: _preselectedTracksYouTubeUrls));
         return;
       }
     }
@@ -38,36 +40,50 @@ class DownloadTracksCubit extends Cubit<DownloadTracksState> {
     if (_gettingObserver != null && !_isAllTracksGot) {
       final downloadTracksFromGettingObserverResult = await _downloadTracksFromGettingObserver.call(_gettingObserver!);
       if (!downloadTracksFromGettingObserverResult.isSuccessful) {
-        emit(DownloadTracksFailure(failure: downloadTracksFromGettingObserverResult.failure));
+        emit(DownloadTracksFailure(
+            failure: downloadTracksFromGettingObserverResult.failure,
+            preselectedTracksYouTubeUrls: _preselectedTracksYouTubeUrls));
         return;
       }
     }
   }
 
   Future<void> downloadTracksRange(List<TrackWithLoadingObserver> tracksRange) async {
-    final downloadTracksRangeResult = await _downloadTracksRange.call(tracksRange);
+    final downloadTracksRangeResult = await _downloadTracksRange.call((tracksRange, _preselectedTracksYouTubeUrls));
     if (!downloadTracksRangeResult.isSuccessful) {
-      emit(DownloadTracksFailure(failure: downloadTracksRangeResult.failure));
+      emit(DownloadTracksFailure(
+          failure: downloadTracksRangeResult.failure, preselectedTracksYouTubeUrls: _preselectedTracksYouTubeUrls));
       return;
     }
   }
 
   Future<void> downloadTrack(TrackWithLoadingObserver trackWithLoadingObserver) async {
-    final downloadTrackResult = await _downloadTrack.call(trackWithLoadingObserver.track);
+    final downloadTrackResult =
+        await _downloadTrack.call((trackWithLoadingObserver, _preselectedTracksYouTubeUrls[trackWithLoadingObserver]));
     if (!downloadTrackResult.isSuccessful) {
-      emit(DownloadTracksFailure(failure: downloadTrackResult.failure));
+      emit(DownloadTracksFailure(
+          failure: downloadTrackResult.failure, preselectedTracksYouTubeUrls: _preselectedTracksYouTubeUrls));
       return;
     }
-
-    trackWithLoadingObserver.loadingObserver = downloadTrackResult.result;
   }
 
   Future<void> cancelTrackLoading(TrackWithLoadingObserver trackWithLoadingObserver) async {
-    final canceltrackLoading = await _cancelTrackLoading.call(trackWithLoadingObserver.track);
+    final canceltrackLoading = await _cancelTrackLoading.call(trackWithLoadingObserver);
     if (!canceltrackLoading.isSuccessful) {
-      emit(DownloadTracksFailure(failure: canceltrackLoading.failure));
+      emit(DownloadTracksFailure(
+          failure: canceltrackLoading.failure, preselectedTracksYouTubeUrls: _preselectedTracksYouTubeUrls));
       return;
     }
+  }
+
+  void changeTrackYoutubeUrl(TrackWithLoadingObserver trackWithLoadingObserver, String newYoutubeUrl) {
+    final oldUrl = _preselectedTracksYouTubeUrls[trackWithLoadingObserver];
+    if (oldUrl == newYoutubeUrl) return;
+
+    _preselectedTracksYouTubeUrls[trackWithLoadingObserver] = newYoutubeUrl;
+
+    cancelTrackLoading(trackWithLoadingObserver);
+    emit(DownloadTracksDeffault(preselectedTracksYouTubeUrls: _preselectedTracksYouTubeUrls));
   }
 
   void setGettingObserver(TracksWithLoadingObserverGettingObserver? gettingObserver) {

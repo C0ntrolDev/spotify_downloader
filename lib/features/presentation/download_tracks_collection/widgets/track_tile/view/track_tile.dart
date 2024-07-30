@@ -11,9 +11,11 @@ class TrackTile extends StatelessWidget {
       required this.trackWithLoadingObserver,
       this.onDownloadButtonClicked,
       this.onCancelButtonClicked,
-      this.onMoreInfoClicked});
+      this.onMoreInfoClicked,
+      required this.isLoadedIfLoadingObserverIsNull});
 
   final TrackWithLoadingObserver trackWithLoadingObserver;
+  final bool isLoadedIfLoadingObserverIsNull;
   final void Function()? onDownloadButtonClicked;
   final void Function()? onCancelButtonClicked;
   final void Function()? onMoreInfoClicked;
@@ -51,10 +53,10 @@ class TrackTile extends StatelessWidget {
         ),
       )),
       TrackTileStatusButton(
-        trackWithLoadingObserver: trackWithLoadingObserver,
-        onCancelButtonClicked: onCancelButtonClicked,
-        onDownloadButtonClicked: onDownloadButtonClicked
-      ),
+          isLoadedIfLoadingObserverIsNull: isLoadedIfLoadingObserverIsNull,
+          trackWithLoadingObserver: trackWithLoadingObserver,
+          onCancelButtonClicked: onCancelButtonClicked,
+          onDownloadButtonClicked: onDownloadButtonClicked),
       SizedBox(
           width: 30,
           height: 50,
@@ -69,4 +71,3 @@ class TrackTile extends StatelessWidget {
     ]);
   }
 }
-

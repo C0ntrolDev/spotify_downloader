@@ -27,7 +27,6 @@ class TrackDtoToTrackConverter implements ConverterWithParameter<entity.Track?, 
         spotifyId: dtoTrack.id!, 
         duration: dtoTrack.duration,
         name: dtoTrack.name ?? 'no_name', 
-        isLoaded: false, 
         parentCollection: parentCollection,
         artists: dtoTrack.artists?.map((a) => a.name!).toList(),
         album: Album(name: dtoTrack.album?.name, imageUrl: albumImageUrl));

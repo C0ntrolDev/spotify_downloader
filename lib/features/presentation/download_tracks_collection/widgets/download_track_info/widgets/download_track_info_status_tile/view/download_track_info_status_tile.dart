@@ -15,9 +15,11 @@ import 'package:spotify_downloader/features/presentation/shared/widgets/strange_
 import 'package:spotify_downloader/generated/l10n.dart';
 
 class DownloadTrackInfoStatusTile extends StatefulWidget {
-  const DownloadTrackInfoStatusTile({super.key, required this.trackWithLoadingObserver});
+  const DownloadTrackInfoStatusTile(
+      {super.key, required this.trackWithLoadingObserver, required this.isLoadedIfLoadingObserverIsNull});
 
   final TrackWithLoadingObserver trackWithLoadingObserver;
+  final bool isLoadedIfLoadingObserverIsNull;
 
   @override
   State<DownloadTrackInfoStatusTile> createState() => _DownloadTrackInfoStatusTileState();
@@ -29,13 +31,16 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
   @override
   void initState() {
     _trackLoadingObservingCubit.changeTrackWithLoadingObserver(widget.trackWithLoadingObserver);
+    _trackLoadingObservingCubit.changeIsLoadedIfLoadingObserverIsNull(widget.isLoadedIfLoadingObserverIsNull);
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant DownloadTrackInfoStatusTile oldWidget) {
-    if (oldWidget.trackWithLoadingObserver != widget.trackWithLoadingObserver) {
+    if (oldWidget.trackWithLoadingObserver != widget.trackWithLoadingObserver ||
+        oldWidget.isLoadedIfLoadingObserverIsNull != widget.isLoadedIfLoadingObserverIsNull) {
       _trackLoadingObservingCubit.changeTrackWithLoadingObserver(widget.trackWithLoadingObserver);
+      _trackLoadingObservingCubit.changeIsLoadedIfLoadingObserverIsNull(widget.isLoadedIfLoadingObserverIsNull);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -48,8 +53,8 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
         if (state is TrackLoadingObservingDeffault) {
           return DownloadTrackInfoTile(
               title: S.of(context).theTrackIsNotLoaded,
-              iconWidget: SvgPicture.asset('resources/images/svg/track_tile/download_icon.svg',
-                  height: 23, width: 23));
+              iconWidget:
+                  SvgPicture.asset('resources/images/svg/track_tile/download_icon.svg', height: 23, width: 23));
         }
 
         if (state is TrackLoadingObservingLoading) {
@@ -75,17 +80,15 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
         if (state is TrackLoadingObservingLoaded) {
           return DownloadTrackInfoTile(
               title: S.of(context).theTrackIsLoaded,
-              iconWidget: SvgPicture.asset('resources/images/svg/track_tile/downloaded_icon.svg',
-                  height: 23, width: 23));
+              iconWidget:
+                  SvgPicture.asset('resources/images/svg/track_tile/downloaded_icon.svg', height: 23, width: 23));
         }
 
         if (state is TrackLoadingObservingFailure) {
           return DownloadTrackInfoTile(
-              title: S.of(context).downloadError(state.failure is NetworkFailure
-                  ? S.of(context).noConnection
-                  : state.failure?.message ?? '...'),
-              iconWidget: SvgPicture.asset('resources/images/svg/track_tile/error_icon.svg',
-                  height: 23, width: 23),
+              title: S.of(context).downloadError(
+                  state.failure is NetworkFailure ? S.of(context).noConnection : state.failure?.message ?? '...'),
+              iconWidget: SvgPicture.asset('resources/images/svg/track_tile/error_icon.svg', height: 23, width: 23),
               onTap: () async {
                 if (state.failure != null) {
                   showSnackBar(S.of(context).errorCopied, context);

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/features/presentation/main/widgets/orientated_navigation_bar/orientated_navigation_bar.dart';
 
@@ -36,7 +35,8 @@ class HorizontalNavigationBar extends StatelessWidget {
       ));
     }
 
-    return Row(crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(width: MediaQuery.of(context).viewPadding.left, color: backgroundColor),
         Container(

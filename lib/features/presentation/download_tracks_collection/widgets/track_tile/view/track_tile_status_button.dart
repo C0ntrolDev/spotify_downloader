@@ -8,9 +8,14 @@ import 'package:spotify_downloader/features/presentation/shared/widgets/strange_
 
 class TrackTileStatusButton extends StatefulWidget {
   const TrackTileStatusButton(
-      {super.key, required this.trackWithLoadingObserver, this.onDownloadButtonClicked, this.onCancelButtonClicked});
+      {super.key,
+      required this.trackWithLoadingObserver,
+      this.onDownloadButtonClicked,
+      this.onCancelButtonClicked,
+      required this.isLoadedIfLoadingObserverIsNull});
 
   final TrackWithLoadingObserver trackWithLoadingObserver;
+  final bool isLoadedIfLoadingObserverIsNull;
   final void Function()? onDownloadButtonClicked;
   final void Function()? onCancelButtonClicked;
 
@@ -24,13 +29,16 @@ class _TrackTileStatusButtonState extends State<TrackTileStatusButton> {
   @override
   void initState() {
     _trackLoadingObservingCubit.changeTrackWithLoadingObserver(widget.trackWithLoadingObserver);
+    _trackLoadingObservingCubit.changeIsLoadedIfLoadingObserverIsNull(widget.isLoadedIfLoadingObserverIsNull);
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant TrackTileStatusButton oldWidget) {
-    if (oldWidget.trackWithLoadingObserver != widget.trackWithLoadingObserver) {
+    if (oldWidget.trackWithLoadingObserver != widget.trackWithLoadingObserver ||
+        oldWidget.isLoadedIfLoadingObserverIsNull != widget.isLoadedIfLoadingObserverIsNull) {
       _trackLoadingObservingCubit.changeTrackWithLoadingObserver(widget.trackWithLoadingObserver);
+      _trackLoadingObservingCubit.changeIsLoadedIfLoadingObserverIsNull(widget.isLoadedIfLoadingObserverIsNull);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -100,27 +108,20 @@ class _TrackTileStatusButtonState extends State<TrackTileStatusButton> {
                             padding: const EdgeInsets.all(0),
                             height: 32,
                             width: 32,
-                            child:
-                                const StrangeOptimizedCircularProgressIndicator(strokeWidth: 4));
+                            child: const StrangeOptimizedCircularProgressIndicator(strokeWidth: 4));
                       }
 
                       return Container(
                         padding: const EdgeInsets.all(0),
                         height: 32,
                         width: 32,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 4,
-                          value: state.percent! / 100
-                        ),
+                        child: CircularProgressIndicator(strokeWidth: 4, value: state.percent! / 100),
                       );
                     }
 
                     if (state is TrackLoadingObservingLoaded) {
-                      return SvgPicture.asset(
-                        'resources/images/svg/track_tile/downloaded_icon.svg',
-                        height: 35,
-                        width: 35
-                      );
+                      return SvgPicture.asset('resources/images/svg/track_tile/downloaded_icon.svg',
+                          height: 35, width: 35);
                     }
 
                     if (state is TrackLoadingObservingFailure) {

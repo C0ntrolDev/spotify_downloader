@@ -1,22 +1,22 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
-import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
-import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/entities/track_with_loading_observer.dart';
-import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/cubit/download_track_info_cubit.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_status_tile/view/download_track_info_status_tile.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_tile.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
-void showDownloadTrackInfoBottomSheet(BuildContext context, TrackWithLoadingObserver trackWithLoadingObserver) {
+void showDownloadTrackInfoBottomSheet(
+    {required BuildContext context,
+    required TrackWithLoadingObserver trackWithLoadingObserver,
+    required String? selectedYoutubeUrl,
+    required Future<String?> Function() onChangeYoutubeUrlClicked}) {
   showMaterialModalBottomSheet(
       elevation: 0,
       backgroundColor: surfaceColor,
@@ -29,27 +29,40 @@ void showDownloadTrackInfoBottomSheet(BuildContext context, TrackWithLoadingObse
       bounce: true,
       builder: (buildContext) {
         return DownloadTrackInfo(
-          trackWithLoadingObserver: trackWithLoadingObserver,
-        );
+            trackWithLoadingObserver: trackWithLoadingObserver,
+            onChangeYoutubeUrlClicked: onChangeYoutubeUrlClicked,
+            selectedYoutubeUrl: selectedYoutubeUrl);
       });
 }
 
 class DownloadTrackInfo extends StatefulWidget {
-  const DownloadTrackInfo({super.key, required this.trackWithLoadingObserver});
+  const DownloadTrackInfo(
+      {super.key,
+      required this.trackWithLoadingObserver,
+      required this.selectedYoutubeUrl,
+      required this.onChangeYoutubeUrlClicked});
 
   final TrackWithLoadingObserver trackWithLoadingObserver;
+  final String? selectedYoutubeUrl;
+  final Future<String?> Function() onChangeYoutubeUrlClicked;
 
   @override
   State<DownloadTrackInfo> createState() => _DownloadTrackInfoState();
 }
 
 class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
-  late final DownloadTrackInfoCubit _downloadTrackInfoCubit = injector.get<DownloadTrackInfoCubit>();
+  late String? selectedYoutubeUrl;
+
+  @override
+  void initState() {
+    super.initState();
+
+    selectedYoutubeUrl = widget.selectedYoutubeUrl;
+  }
 
   @override
   Widget build(BuildContext context) {
     final track = widget.trackWithLoadingObserver.track;
-
     final theme = Theme.of(context);
 
     return Stack(
@@ -126,7 +139,10 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                       ],
                     )),
                 const Divider(color: onSurfaceSecondaryColor, height: 20, thickness: 0.3),
-                DownloadTrackInfoStatusTile(trackWithLoadingObserver: widget.trackWithLoadingObserver),
+                DownloadTrackInfoStatusTile(
+                    trackWithLoadingObserver: widget.trackWithLoadingObserver,
+                    isLoadedIfLoadingObserverIsNull:
+                        selectedYoutubeUrl != null ? false : widget.trackWithLoadingObserver.track.isLoaded),
                 DownloadTrackInfoTile(
                     title: S.of(context).linkToTheSource,
                     iconWidget: SvgPicture.asset('resources/images/svg/download_track_info/reference_icon.svg',
@@ -134,28 +150,27 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                         width: 23,
                         colorFilter: const ColorFilter.mode(onSurfaceSecondaryColor, BlendMode.srcIn)),
                     onTap: () async {
-                      if (track.youtubeUrl != null) {
+                      if (selectedYoutubeUrl != null) {
                         showSnackBar(S.of(context).urlCopied, context);
-                        await Clipboard.setData(ClipboardData(text: track.youtubeUrl!));
+                        await Clipboard.setData(ClipboardData(text: selectedYoutubeUrl!));
                       } else {
                         showSnackBar(S.of(context).urlNotSelected, context);
                       }
                     }),
                 DownloadTrackInfoTile(
-                  title: S.of(context).changeTheSource,
-                  iconWidget: SvgPicture.asset('resources/images/svg/download_track_info/edit_icon.svg',
-                      height: 23,
-                      width: 23,
-                      colorFilter: const ColorFilter.mode(onSurfaceSecondaryColor, BlendMode.srcIn)),
-                  onTap: () async {
-                    final changedUrl =
-                        await AutoRouter.of(context).push<String?>(ChangeSourceVideoRoute(track: track));
-                    if (changedUrl != null) {
-                      _downloadTrackInfoCubit.changeTrackYoutubeUrl(
-                          trackWithLoadingObserver: widget.trackWithLoadingObserver, newYoutubeUrl: changedUrl);
-                    }
-                  },
-                ),
+                    title: S.of(context).changeTheSource,
+                    iconWidget: SvgPicture.asset('resources/images/svg/download_track_info/edit_icon.svg',
+                        height: 23,
+                        width: 23,
+                        colorFilter: const ColorFilter.mode(onSurfaceSecondaryColor, BlendMode.srcIn)),
+                    onTap: () async {
+                      final changedYoutubeUrl = await widget.onChangeYoutubeUrlClicked.call();
+                      if (changedYoutubeUrl != null) {
+                        setState(() {
+                          selectedYoutubeUrl = changedYoutubeUrl;
+                        });
+                      }
+                    }),
                 const CustomBottomNavigationBarListViewExpander()
               ])),
         ),

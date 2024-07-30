@@ -8,10 +8,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scrollbar_ultima/scrollbar_ultima.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
+import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/domain/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/blocs.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/view/download_track_info.dart';
@@ -178,145 +180,186 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                   return BlocBuilder<GetTracksBloc, GetTracksState>(
                     bloc: _getTracksBloc,
                     builder: (context, getTracksState) {
-                      if (getTracksCollectionState is GetTracksCollectionNetworkFailure) {
-                        return NetworkFailureSplash(
-                            onRetryAgainButtonClicked: () => _getTracksCollectionBloc.add(GetTracksCollectionLoad()));
-                      }
+                      return BlocBuilder<DownloadTracksCubit, DownloadTracksState>(
+                        bloc: _downloadTracksCubit,
+                        builder: (context, donwloadTracksState) {
+                          if (getTracksCollectionState is GetTracksCollectionNetworkFailure) {
+                            return NetworkFailureSplash(
+                                onRetryAgainButtonClicked: () =>
+                                    _getTracksCollectionBloc.add(GetTracksCollectionLoad()));
+                          }
 
-                      if (getTracksCollectionState is GetTracksCollectionLoaded) {
-                        if (getTracksState is GetTracksBeforePartGotNetworkFailure) {
-                          return NetworkFailureSplash(
-                              onRetryAgainButtonClicked: () => _getTracksBloc.add(
-                                  GetTracksGetTracks(tracksCollection: getTracksCollectionState.tracksCollection)));
-                        }
+                          if (getTracksCollectionState is GetTracksCollectionLoaded) {
+                            if (getTracksState is GetTracksBeforePartGotNetworkFailure) {
+                              return NetworkFailureSplash(
+                                  onRetryAgainButtonClicked: () => _getTracksBloc.add(GetTracksGetTracks(
+                                      tracksCollection: getTracksCollectionState.tracksCollection)));
+                            }
 
-                        if (getTracksState is GetTracksTracksGot) {
-                          return Stack(children: [
-                            Container(
-                                alignment: AlignmentDirectional.topCenter,
-                                child: NotificationListener<OverscrollIndicatorNotification>(
-                                    onNotification: (OverscrollIndicatorNotification overScroll) {
-                                      overScroll.disallowIndicator();
-                                      return false;
-                                    },
-                                    child: ScrollbarUltima(
-                                        prototypeItem: const Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
-                                            child: TrackTilePlaceholder()),
-                                        controller: _scrollController,
-                                        animationCurve: Curves.easeInOut,
-                                        animationDuration: const Duration(milliseconds: 300),
-                                        durationBeforeHide: const Duration(seconds: 2),
-                                        scrollbarPadding: EdgeInsets.only(
-                                            top: appBarHeightWithViewPadding + 10,
-                                            bottom: 10 + (OrientatedNavigationBarAcessor.maybeOf(context)?.expandedHeight ?? 0)),
-                                        minScrollOffset: (_headerHeight ?? appBarHeightWithViewPadding) -
-                                            appBarHeightWithViewPadding,
-                                        hideThumbWhenOutOfOffset: true,
-                                        dynamicThumbLength: false,
-                                        alwaysShowThumb: false,
-                                        isFixedScroll: true,
-                                        thumbBuilder: _buildThumb,
-                                        child: Builder(builder: (context) {
-                                          return Builder(builder: (context) {
-                                            _scheduleHeaderHeightUpdate();
-                                            return CustomScrollView(
-                                              controller: _scrollController,
-                                              slivers: [
-                                                DownloadTracksCollectionHeader(
-                                                  key: _headerKey,
-                                                  backgroundGradientColor: _backgroundGradientColor,
-                                                  imageUrl:
-                                                      getTracksCollectionState.tracksCollection.bigImageUrl ?? '',
-                                                  title: getTracksCollectionState.tracksCollection.name,
-                                                  onFilterQueryChanged: _onFilterQueryChanged,
-                                                  onDownloadAllButtonClicked: () => _onDownloadAllButtonClicked(
-                                                      filterTracksState: _filterTracksBloc.state,
-                                                      getTracksState: getTracksState),
-                                                ),
-                                                BlocBuilder<FilterTracksBloc, FilterTracksState>(
-                                                  bloc: _filterTracksBloc,
-                                                  builder: (context, state) {
-                                                    if (state is! FilterTracksChanged) {
-                                                      return const SliverToBoxAdapter();
-                                                    }
+                            if (getTracksState is GetTracksTracksGot) {
+                              return Stack(children: [
+                                Container(
+                                    alignment: AlignmentDirectional.topCenter,
+                                    child: NotificationListener<OverscrollIndicatorNotification>(
+                                        onNotification: (OverscrollIndicatorNotification overScroll) {
+                                          overScroll.disallowIndicator();
+                                          return false;
+                                        },
+                                        child: ScrollbarUltima(
+                                            prototypeItem: const Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+                                                child: TrackTilePlaceholder()),
+                                            controller: _scrollController,
+                                            animationCurve: Curves.easeInOut,
+                                            animationDuration: const Duration(milliseconds: 300),
+                                            durationBeforeHide: const Duration(seconds: 2),
+                                            scrollbarPadding: EdgeInsets.only(
+                                                top: appBarHeightWithViewPadding + 10,
+                                                bottom: 10 +
+                                                    (OrientatedNavigationBarAcessor.maybeOf(context)?.expandedHeight ??
+                                                        0)),
+                                            minScrollOffset: (_headerHeight ?? appBarHeightWithViewPadding) -
+                                                appBarHeightWithViewPadding,
+                                            hideThumbWhenOutOfOffset: true,
+                                            dynamicThumbLength: false,
+                                            alwaysShowThumb: false,
+                                            isFixedScroll: true,
+                                            thumbBuilder: _buildThumb,
+                                            child: Builder(builder: (context) {
+                                              return Builder(builder: (context) {
+                                                _scheduleHeaderHeightUpdate();
+                                                return CustomScrollView(
+                                                  controller: _scrollController,
+                                                  slivers: [
+                                                    DownloadTracksCollectionHeader(
+                                                      key: _headerKey,
+                                                      backgroundGradientColor: _backgroundGradientColor,
+                                                      imageUrl:
+                                                          getTracksCollectionState.tracksCollection.bigImageUrl ?? '',
+                                                      title: getTracksCollectionState.tracksCollection.name,
+                                                      onFilterQueryChanged: _onFilterQueryChanged,
+                                                      onDownloadAllButtonClicked: () => _onDownloadAllButtonClicked(
+                                                          filterTracksState: _filterTracksBloc.state,
+                                                          getTracksState: getTracksState),
+                                                    ),
+                                                    BlocBuilder<FilterTracksBloc, FilterTracksState>(
+                                                      bloc: _filterTracksBloc,
+                                                      builder: (context, state) {
+                                                        if (state is! FilterTracksChanged) {
+                                                          return const SliverToBoxAdapter();
+                                                        }
 
-                                                    final filteredTracks = state.filteredTracks;
-                                                    final isTracksPlaceholdersDisplayed = getTracksState
-                                                            is! GetTracksAllGot &&
-                                                        state.isFilterQueryEmpty &&
-                                                        getTracksCollectionState.tracksCollection.tracksCount != null;
+                                                        final filteredTracks = state.filteredTracks;
+                                                        final isTracksPlaceholdersDisplayed = getTracksState
+                                                                is! GetTracksAllGot &&
+                                                            state.isFilterQueryEmpty &&
+                                                            getTracksCollectionState.tracksCollection.tracksCount !=
+                                                                null;
 
-                                                    return SliverPadding(
-                                                      padding: const EdgeInsets.only(top: 20),
-                                                      sliver: SliverPrototypeExtentList.builder(
-                                                        itemCount: isTracksPlaceholdersDisplayed
-                                                            ? getTracksCollectionState.tracksCollection.tracksCount
-                                                            : filteredTracks.length,
-                                                        prototypeItem: const Padding(
-                                                            padding:
-                                                                EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
-                                                            child: TrackTilePlaceholder()),
-                                                        itemBuilder: (context, index) {
-                                                          return Stack(
-                                                            children: [
-                                                              Padding(
-                                                                padding: const EdgeInsets.symmetric(
+                                                        return SliverPadding(
+                                                          padding: const EdgeInsets.only(top: 20),
+                                                          sliver: SliverPrototypeExtentList.builder(
+                                                            itemCount: isTracksPlaceholdersDisplayed
+                                                                ? getTracksCollectionState.tracksCollection.tracksCount
+                                                                : filteredTracks.length,
+                                                            prototypeItem: const Padding(
+                                                                padding: EdgeInsets.symmetric(
                                                                     horizontal: 15, vertical: 7.5),
-                                                                child: Builder(builder: (buildContext) {
-                                                                  if (index < (state.filteredTracks.length)) {
-                                                                    return TrackTile(
-                                                                      trackWithLoadingObserver: filteredTracks[index],
-                                                                      onDownloadButtonClicked: () =>
-                                                                          _downloadTracksCubit
-                                                                              .downloadTrack(filteredTracks[index]),
-                                                                      onCancelButtonClicked: () => _downloadTracksCubit
-                                                                          .cancelTrackLoading(filteredTracks[index]),
-                                                                      onMoreInfoClicked: () =>
-                                                                          showDownloadTrackInfoBottomSheet(
-                                                                              context, filteredTracks[index]),
-                                                                    );
-                                                                  }
+                                                                child: TrackTilePlaceholder()),
+                                                            itemBuilder: (context, index) {
+                                                              return Stack(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.symmetric(
+                                                                        horizontal: 15, vertical: 7.5),
+                                                                    child: Builder(builder: (buildContext) {
+                                                                      if (index < (state.filteredTracks.length)) {
+                                                                        return TrackTile(
+                                                                          isLoadedIfLoadingObserverIsNull:
+                                                                              donwloadTracksState
+                                                                                              .preselectedTracksYouTubeUrls[
+                                                                                          filteredTracks[index]] !=
+                                                                                      null
+                                                                                  ? false
+                                                                                  : filteredTracks[index]
+                                                                                      .track
+                                                                                      .isLoaded,
+                                                                          trackWithLoadingObserver:
+                                                                              filteredTracks[index],
+                                                                          onDownloadButtonClicked: () =>
+                                                                              _downloadTracksCubit.downloadTrack(
+                                                                                  filteredTracks[index]),
+                                                                          onCancelButtonClicked: () =>
+                                                                              _downloadTracksCubit.cancelTrackLoading(
+                                                                                  filteredTracks[index]),
+                                                                          onMoreInfoClicked: () =>
+                                                                              showDownloadTrackInfoBottomSheet(
+                                                                                  selectedYoutubeUrl: donwloadTracksState
+                                                                                          .preselectedTracksYouTubeUrls[
+                                                                                      filteredTracks[index]],
+                                                                                  context: context,
+                                                                                  trackWithLoadingObserver:
+                                                                                      filteredTracks[index],
+                                                                                  onChangeYoutubeUrlClicked: () {
+                                                                                    final trackWithLoadingObserver =
+                                                                                        filteredTracks[index];
 
-                                                                  return const TrackTilePlaceholder();
-                                                                }),
-                                                              ),
-                                                              Builder(
-                                                                builder: (buildContext) {
-                                                                  if (getTracksState
-                                                                      is GetTracksAfterPartGotNetworkFailure) {
-                                                                    return Positioned.fill(
-                                                                      child: IgnorePointer(
-                                                                        child: Container(
-                                                                          color: const Color.fromARGB(50, 0, 0, 0),
-                                                                          height: 10,
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  }
+                                                                                    final selectedYoutubeUrl =
+                                                                                        donwloadTracksState
+                                                                                                    .preselectedTracksYouTubeUrls[
+                                                                                                trackWithLoadingObserver] ??
+                                                                                            trackWithLoadingObserver
+                                                                                                .track.localYoutubeUrl;
 
-                                                                  return Container();
-                                                                },
-                                                              )
-                                                            ],
-                                                          );
-                                                        },
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                                const SliverToBoxAdapter(
-                                                    child: CustomBottomNavigationBarListViewExpander())
-                                              ],
-                                            );
-                                          });
-                                        }))))
-                          ]);
-                        }
-                      }
+                                                                                    return _onChangeYoutubeUrlClicked(
+                                                                                        filteredTracks[index],
+                                                                                        selectedYoutubeUrl);
+                                                                                  }),
+                                                                        );
+                                                                      }
 
-                      return const Center(
-                          child: SizedBox(height: 41, width: 41, child: StrangeOptimizedCircularProgressIndicator()));
+                                                                      return const TrackTilePlaceholder();
+                                                                    }),
+                                                                  ),
+                                                                  Builder(
+                                                                    builder: (buildContext) {
+                                                                      if (getTracksState
+                                                                          is GetTracksAfterPartGotNetworkFailure) {
+                                                                        return Positioned.fill(
+                                                                          child: IgnorePointer(
+                                                                            child: Container(
+                                                                              color: const Color.fromARGB(50, 0, 0, 0),
+                                                                              height: 10,
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                      }
+
+                                                                      return Container();
+                                                                    },
+                                                                  )
+                                                                ],
+                                                              );
+                                                            },
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                                    const SliverToBoxAdapter(
+                                                        child: CustomBottomNavigationBarListViewExpander())
+                                                  ],
+                                                );
+                                              });
+                                            }))))
+                              ]);
+                            }
+                          }
+
+                          return const Center(
+                              child:
+                                  SizedBox(height: 41, width: 41, child: StrangeOptimizedCircularProgressIndicator()));
+                        },
+                      );
                     },
                   );
                 },
@@ -389,11 +432,22 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
       return;
     }
 
-    if (!filterTracksState.isFilterQueryEmpty || getTracksState is GetTracksAllGot) {
+    if (!filterTracksState.isFilterQueryEmpty) {
       _downloadTracksCubit.downloadTracksRange(filterTracksState.filteredTracks);
     } else {
       _downloadTracksCubit.downloadAllTracks();
     }
+  }
+
+  Future<String?> _onChangeYoutubeUrlClicked(
+      TrackWithLoadingObserver trackWithLoadingObserver, String? selectedYoutubeUrl) async {
+    final changedUrl = await AutoRouter.of(context).push<String?>(
+        ChangeSourceVideoRoute(track: trackWithLoadingObserver.track, selectedYoutubeUrl: selectedYoutubeUrl));
+    if (changedUrl != null) {
+      _downloadTracksCubit.changeTrackYoutubeUrl(trackWithLoadingObserver, changedUrl);
+    }
+
+    return changedUrl;
   }
 
   void _generateAppBarColor(String? imageUrl) {

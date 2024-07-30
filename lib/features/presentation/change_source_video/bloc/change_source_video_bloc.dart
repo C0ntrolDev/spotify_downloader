@@ -39,7 +39,7 @@ class ChangeSourceVideoBloc extends Bloc<ChangeSourceVideoEvent, ChangeSourceVid
             emitBasedOnFailure(getSelectedVideoResult.failure, emit);
           }
         }
-        emit(ChangeSourceVideoLoaded(videos: _videos, selectedVideo: _selectedVideo));
+        emit(ChangeSourceVideoLoaded(videos: _videos, selectedVideo: _selectedVideo, isVideoSelectedByUser: false));
       } else {
         emitBasedOnFailure(findVideosResult.failure, emit);
       }
@@ -47,7 +47,7 @@ class ChangeSourceVideoBloc extends Bloc<ChangeSourceVideoEvent, ChangeSourceVid
 
     on<ChangeSourceVideoChangeSelectedVideo>((event, emit) {
       _selectedVideo = event.selectedVideo;
-      emit(ChangeSourceVideoLoaded(videos: _videos, selectedVideo: _selectedVideo));
+      emit(ChangeSourceVideoLoaded(videos: _videos, selectedVideo: _selectedVideo, isVideoSelectedByUser: true));
     });
   }
 
