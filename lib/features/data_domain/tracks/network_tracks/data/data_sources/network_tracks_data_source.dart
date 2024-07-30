@@ -1,7 +1,7 @@
 import 'package:spotify/spotify.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/network_tracks/data/models/liked_track_dto.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/network_tracks/data/models/models.dart';
-
 
 class NetworkTracksDataSource {
   Future<void> init() async {
@@ -104,9 +104,30 @@ class NetworkTracksDataSource {
           _getTracksFromPages(
               getPageTracks: (limit, offset) async {
                 final page = await tracksPagesResult.result!.getPage(limit, offset);
-                return page.items
-                    ?.where((savedTrack) => savedTrack.track != null)
-                    .map((savedTrack) => savedTrack.track!);
+                return page.items?.where((savedTrack) => savedTrack.track != null).map((savedTrack) {
+                  final likedTrack = LikedTrackDto(addedAt: savedTrack.addedAt);
+
+                  likedTrack.album = savedTrack.track?.album;
+                  likedTrack.artists = savedTrack.track?.artists;
+                  likedTrack.availableMarkets = savedTrack.track?.availableMarkets;
+                  likedTrack.discNumber = savedTrack.track?.discNumber;
+                  likedTrack.durationMs = savedTrack.track?.durationMs;
+                  likedTrack.explicit = savedTrack.track?.explicit;
+                  likedTrack.externalIds = savedTrack.track?.externalIds;
+                  likedTrack.externalUrls = savedTrack.track?.externalUrls;
+                  likedTrack.href = savedTrack.track?.href;
+                  likedTrack.id = savedTrack.track?.id;
+                  likedTrack.isPlayable = savedTrack.track?.isPlayable;
+                  likedTrack.linkedFrom = savedTrack.track?.linkedFrom;
+                  likedTrack.name = savedTrack.track?.name;
+                  likedTrack.popularity = savedTrack.track?.popularity;
+                  likedTrack.previewUrl = savedTrack.track?.previewUrl;
+                  likedTrack.trackNumber = savedTrack.track?.trackNumber;
+                  likedTrack.type = savedTrack.track?.type;
+                  likedTrack.uri = savedTrack.track?.uri;
+
+                  return likedTrack;
+                });
               },
               tracksGettingStream: tracksGettingStream,
               args: args);
