@@ -16,6 +16,8 @@ class DownloadTracksCubit extends Cubit<DownloadTracksState> {
   final Map<TrackWithLoadingObserver, String> _preselectedTracksYouTubeUrls = {};
   bool _isAllTracksGot = false;
 
+  bool _isAllTracksDownloadStarted = false;
+
   DownloadTracksCubit(
       {required DownloadTracksRange downloadTracksRange,
       required DownloadTracksFromGettingObserver downloadTracksFromGettingObserver,
@@ -37,6 +39,8 @@ class DownloadTracksCubit extends Cubit<DownloadTracksState> {
       }
     }
 
+    _isAllTracksDownloadStarted = true;
+
     if (_gettingObserver != null && !_isAllTracksGot) {
       final downloadTracksFromGettingObserverResult = await _downloadTracksFromGettingObserver.call(_gettingObserver!);
       if (!downloadTracksFromGettingObserverResult.isSuccessful) {
@@ -54,6 +58,21 @@ class DownloadTracksCubit extends Cubit<DownloadTracksState> {
       emit(DownloadTracksFailure(
           failure: downloadTracksRangeResult.failure, preselectedTracksYouTubeUrls: _preselectedTracksYouTubeUrls));
       return;
+    }
+  }
+
+  Future<void> continueAllTracksDownloadIfNeed() async {
+    if (_isAllTracksDownloadStarted) {
+      if (_gettingObserver != null && !_isAllTracksGot) {
+        final downloadTracksFromGettingObserverResult =
+            await _downloadTracksFromGettingObserver.call(_gettingObserver!);
+        if (!downloadTracksFromGettingObserverResult.isSuccessful) {
+          emit(DownloadTracksFailure(
+              failure: downloadTracksFromGettingObserverResult.failure,
+              preselectedTracksYouTubeUrls: _preselectedTracksYouTubeUrls));
+          return;
+        }
+      }
     }
   }
 

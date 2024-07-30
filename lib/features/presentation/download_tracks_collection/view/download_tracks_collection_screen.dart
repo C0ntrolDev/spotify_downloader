@@ -493,6 +493,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
 
     if (state is GetTracksTracksGettingCountinued) {
       _downloadTracksCubit.setGettingObserver(state.observer);
+      _downloadTracksCubit.continueAllTracksDownloadIfNeed();
     }
 
     if (state is GetTracksAfterPartGotNetworkFailure || state is GetTracksBeforePartGotNetworkFailure) {
