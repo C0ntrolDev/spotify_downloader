@@ -59,7 +59,8 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
 
   final ScrollController _scrollController = ScrollController();
 
-  Color _backgroundGradientColor = const Color.fromARGB(255, 101, 101, 101);
+  static const _defaultBackgroundGradientColor = Color.fromARGB(255, 101, 101, 101);
+  Color _backgroundGradientColor = _defaultBackgroundGradientColor;
 
   final double _appBarStartShowingPercent = 0.6;
   final double _appBarEndShowingPercent = 0.9;
@@ -128,253 +129,219 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<GetTracksCollectionBloc, GetTracksCollectionState>(
-          bloc: _getTracksCollectionBloc,
-          listener: (context, state) {
-            if (state is GetTracksCollectionLoaded) {
-              _generateAppBarColor(state.tracksCollection.bigImageUrl);
-              _getTracksBloc.add(GetTracksGetTracks(tracksCollection: state.tracksCollection));
-            }
-
-            if (state is GetTracksCollectionFatalFailure) {
-              _onFatalFailure(state.failure);
-              return;
-            }
-          },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<GetTracksCollectionBloc>(
+          create: (context) => _getTracksCollectionBloc,
         ),
-        BlocListener<GetTracksBloc, GetTracksState>(
-          bloc: _getTracksBloc,
-          listener: (context, state) {
-            if (state is GetTracksFatalFailure) {
-              _onFatalFailure(state.failure);
-              return;
-            }
-
-            if (state is GetTracksTracksGot) {
-              _filterTracksBloc.add(FilterTracksChangeSource(newSource: state.tracksWithLoadingObservers));
-            }
-
-            _updateDownloadTracksCubit(state);
-          },
+        BlocProvider<GetTracksBloc>(
+          create: (BuildContext context) => _getTracksBloc,
         ),
-        BlocListener<DownloadTracksCubit, DownloadTracksState>(
-            bloc: _downloadTracksCubit,
-            listener: (context, state) {
-              if (state is DownloadTracksFailure) {
-                showSmallTextSnackBar(state.failure.toString(), context);
-              }
-            })
+        BlocProvider<FilterTracksBloc>(
+          create: (BuildContext context) => _filterTracksBloc,
+        ),
+        BlocProvider<DownloadTracksCubit>(
+          create: (BuildContext context) => _downloadTracksCubit,
+        ),
       ],
-      child: Scaffold(
-        body: SafeArea(
-          top: false,
-          left: false,
-          right: false,
-          child: Stack(
-            children: [
-              BlocBuilder<GetTracksCollectionBloc, GetTracksCollectionState>(
-                bloc: _getTracksCollectionBloc,
-                builder: (context, getTracksCollectionState) {
-                  return BlocBuilder<GetTracksBloc, GetTracksState>(
-                    bloc: _getTracksBloc,
-                    builder: (context, getTracksState) {
-                      return BlocBuilder<DownloadTracksCubit, DownloadTracksState>(
-                        bloc: _downloadTracksCubit,
-                        builder: (context, donwloadTracksState) {
-                          return BlocBuilder<FilterTracksBloc, FilterTracksDeffault>(
-                            bloc: _filterTracksBloc,
-                            builder: (context, filteredTracksState) {
-                              if (getTracksCollectionState is GetTracksCollectionNetworkFailure) {
-                                return NetworkFailureSplash(
-                                    onRetryAgainButtonClicked: () =>
-                                        _getTracksCollectionBloc.add(GetTracksCollectionLoad()));
-                              }
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<GetTracksCollectionBloc, GetTracksCollectionState>(
+            listener: (context, state) async {
+              if (state is GetTracksCollectionLoaded) {
+                _generateBackgroundGradientColor(state.tracksCollection.bigImageUrl);
+                _getTracksBloc.add(GetTracksGetTracks(tracksCollection: state.tracksCollection));
+              }
 
-                              if (getTracksCollectionState is GetTracksCollectionLoaded) {
-                                if (getTracksState is GetTracksBeforePartGotNetworkFailure) {
-                                  return NetworkFailureSplash(
-                                      onRetryAgainButtonClicked: () => _getTracksBloc.add(GetTracksGetTracks(
-                                          tracksCollection: getTracksCollectionState.tracksCollection)));
-                                }
+              if (state is GetTracksCollectionFatalFailure) {
+                _onFatalFailure(state.failure);
+                return;
+              }
+            },
+          ),
+          BlocListener<GetTracksBloc, GetTracksState>(
+            listener: (context, state) {
+              if (state is GetTracksFatalFailure) {
+                _onFatalFailure(state.failure);
+                return;
+              }
 
-                                if (getTracksState is GetTracksTracksGot) {
-                                  _scheduleHeaderHeightUpdate();
+              if (state is GetTracksTracksGot) {
+                _filterTracksBloc.add(FilterTracksChangeSource(newSource: state.tracksWithLoadingObservers));
+              }
 
-                                  final filteredTracks = filteredTracksState.filteredTracks;
-                                  final isTracksPlaceholdersDisplayed = getTracksState is! GetTracksAllGot &&
-                                      filteredTracksState.isFilterQueryEmpty &&
-                                      getTracksCollectionState.tracksCollection.tracksCount != null;
+              _updateDownloadTracksCubit(state);
+            },
+          ),
+          BlocListener<DownloadTracksCubit, DownloadTracksState>(listener: (context, state) {
+            if (state is DownloadTracksFailure) {
+              showSmallTextSnackBar(state.failure.toString(), context);
+            }
+          })
+        ],
+        child: Scaffold(
+          body: SafeArea(
+            top: false,
+            left: false,
+            right: false,
+            child: Stack(
+              children: [
+                Builder(
+                  builder: (context) {
+                    final getTracksCollectionState = context.watch<GetTracksCollectionBloc>().state;
+                    final getTracksState = context.watch<GetTracksBloc>().state;
+                    final filteredTracksState = context.watch<FilterTracksBloc>().state;
+                    final donwloadTracksState = context.watch<DownloadTracksCubit>().state;
 
-                                  return Stack(children: [
-                                    Container(
-                                        alignment: AlignmentDirectional.topCenter,
-                                        child: NotificationListener<OverscrollIndicatorNotification>(
-                                            onNotification: (OverscrollIndicatorNotification overScroll) {
-                                              overScroll.disallowIndicator();
-                                              return false;
-                                            },
-                                            child: TracksCollectionTypeDependScrollbar(
-                                                controller: _scrollController,
-                                                type: getTracksCollectionState.tracksCollection.type,
-                                                tracksWithLoadingObservers: getTracksState.tracksWithLoadingObservers,
-                                                prototypeItem: const Padding(
-                                                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
-                                                    child: TrackTilePlaceholder()),
-                                                scrollbarPadding: EdgeInsets.only(
-                                                    top: appBarHeightWithViewPadding + 10,
-                                                    bottom: 10 +
-                                                        (OrientatedNavigationBarAcessor.maybeOf(context)
-                                                                ?.expandedHeight ??
-                                                            0)),
-                                                minScrollOffset: (_headerHeight ?? appBarHeightWithViewPadding) -
-                                                    appBarHeightWithViewPadding,
-                                                child: CustomScrollView(
-                                                  controller: _scrollController,
-                                                  slivers: [
-                                                    DownloadTracksCollectionHeader(
-                                                      key: _headerKey,
-                                                      backgroundGradientColor: _backgroundGradientColor,
-                                                      imageUrl:
-                                                          getTracksCollectionState.tracksCollection.bigImageUrl ?? '',
-                                                      title: getTracksCollectionState.tracksCollection.name,
-                                                      onFilterQueryChanged: _onFilterQueryChanged,
-                                                      onDownloadAllButtonClicked: () => _onDownloadAllButtonClicked(
-                                                          filterTracksState: _filterTracksBloc.state,
-                                                          getTracksState: getTracksState),
-                                                    ),
-                                                    SliverPadding(
-                                                      padding: const EdgeInsets.only(top: 20),
-                                                      sliver: SliverPrototypeExtentList.builder(
-                                                        itemCount: isTracksPlaceholdersDisplayed
-                                                            ? getTracksCollectionState.tracksCollection.tracksCount
-                                                            : filteredTracks.length,
-                                                        prototypeItem: const Padding(
-                                                            padding:
-                                                                EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
-                                                            child: TrackTilePlaceholder()),
-                                                        itemBuilder: (context, index) {
-                                                          return Stack(
-                                                            children: [
-                                                              Padding(
-                                                                padding: const EdgeInsets.symmetric(
-                                                                    horizontal: 15, vertical: 7.5),
-                                                                child: Builder(builder: (buildContext) {
-                                                                  if (index <
-                                                                      (filteredTracksState.filteredTracks.length)) {
-                                                                    return TracksCollectionTypeDependTrackTile(
-                                                                      type: getTracksCollectionState.tracksCollection.type,
-                                                                      isLoadedIfLoadingObserverIsNull:
-                                                                          donwloadTracksState
-                                                                                          .preselectedTracksYouTubeUrls[
-                                                                                      filteredTracks[index]] !=
-                                                                                  null
-                                                                              ? false
-                                                                              : filteredTracks[index].track.isLoaded,
-                                                                      trackWithLoadingObserver: filteredTracks[index],
-                                                                      onDownloadButtonClicked: () =>
-                                                                          _downloadTracksCubit
-                                                                              .downloadTrack(filteredTracks[index]),
-                                                                      onCancelButtonClicked: () => _downloadTracksCubit
-                                                                          .cancelTrackLoading(filteredTracks[index]),
-                                                                      onMoreInfoClicked: () =>
-                                                                          showDownloadTrackInfoBottomSheet(
-                                                                              selectedYoutubeUrl: donwloadTracksState
-                                                                                      .preselectedTracksYouTubeUrls[
-                                                                                  filteredTracks[index]],
-                                                                              context: context,
-                                                                              trackWithLoadingObserver:
-                                                                                  filteredTracks[index],
-                                                                              onChangeYoutubeUrlClicked: () {
-                                                                                final trackWithLoadingObserver =
-                                                                                    filteredTracks[index];
+                    if (getTracksCollectionState is GetTracksCollectionNetworkFailure) {
+                      return NetworkFailureSplash(
+                          onRetryAgainButtonClicked: () => _getTracksCollectionBloc.add(GetTracksCollectionLoad()));
+                    }
 
-                                                                                final selectedYoutubeUrl =
-                                                                                    donwloadTracksState
-                                                                                                .preselectedTracksYouTubeUrls[
-                                                                                            trackWithLoadingObserver] ??
-                                                                                        trackWithLoadingObserver
-                                                                                            .track.localYoutubeUrl;
+                    if (getTracksCollectionState is! GetTracksCollectionLoaded) {
+                      return const Center(
+                          child: SizedBox(height: 41, width: 41, child: StrangeOptimizedCircularProgressIndicator()));
+                    }
 
-                                                                                return _onChangeYoutubeUrlClicked(
-                                                                                    filteredTracks[index],
-                                                                                    selectedYoutubeUrl);
-                                                                              }),
-                                                                    );
-                                                                  }
+                    if (getTracksState is GetTracksBeforePartGotNetworkFailure) {
+                      return NetworkFailureSplash(
+                          onRetryAgainButtonClicked: () => _getTracksBloc
+                              .add(GetTracksGetTracks(tracksCollection: getTracksCollectionState.tracksCollection)));
+                    }
 
-                                                                  return const TrackTilePlaceholder();
-                                                                }),
-                                                              ),
-                                                              Builder(
-                                                                builder: (buildContext) {
-                                                                  if (getTracksState
-                                                                      is GetTracksAfterPartGotNetworkFailure) {
-                                                                    return Positioned.fill(
-                                                                      child: IgnorePointer(
-                                                                        child: Container(
-                                                                          color: const Color.fromARGB(50, 0, 0, 0),
-                                                                          height: 10,
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  }
+                    if (getTracksState is! GetTracksTracksGot) {
+                      return const Center(
+                          child: SizedBox(height: 41, width: 41, child: StrangeOptimizedCircularProgressIndicator()));
+                    }
 
-                                                                  return Container();
-                                                                },
-                                                              )
-                                                            ],
-                                                          );
-                                                        },
-                                                      ),
-                                                    ),
-                                                    const SliverToBoxAdapter(
-                                                        child: CustomBottomNavigationBarListViewExpander())
-                                                  ],
-                                                ))))
-                                  ]);
-                                }
-                              }
+                    _scheduleHeaderHeightUpdate();
 
-                              return const Center(
-                                  child: SizedBox(
-                                      height: 41, width: 41, child: StrangeOptimizedCircularProgressIndicator()));
-                            },
-                          );
+                    final filteredTracks = filteredTracksState.filteredTracks;
+                    final isTracksPlaceholdersDisplayed = getTracksState is! GetTracksAllGot &&
+                        filteredTracksState.isFilterQueryEmpty &&
+                        getTracksCollectionState.tracksCollection.tracksCount != null;
+
+                    return NotificationListener<OverscrollIndicatorNotification>(
+                        onNotification: (OverscrollIndicatorNotification overScroll) {
+                          overScroll.disallowIndicator();
+                          return false;
                         },
-                      );
-                    },
-                  );
-                },
-              ),
-              BlocBuilder<GetTracksCollectionBloc, GetTracksCollectionState>(
-                bloc: _getTracksCollectionBloc,
-                builder: (context, getTracksCollectionState) {
-                  return BlocBuilder<GetTracksBloc, GetTracksState>(
-                    bloc: _getTracksBloc,
-                    builder: (context, getTracksState) {
-                      return StreamBuilder<double>(
-                          initialData: 0,
-                          stream: _appBarOpacityController.stream,
-                          builder: (context, newOpacity) {
-                            if (getTracksCollectionState is GetTracksCollectionLoaded &&
-                                getTracksState is GetTracksTracksGot) {
-                              return GradientAppBarWithOpacity.visible(
-                                firstColor: _backgroundGradientColor,
-                                secondaryColor: backgroundColor,
-                                title: getTracksCollectionState.tracksCollection.name,
-                                opacity: newOpacity.data ?? 0,
-                              );
-                            }
+                        child: TracksCollectionTypeDependScrollbar(
+                            controller: _scrollController,
+                            type: getTracksCollectionState.tracksCollection.type,
+                            getTrackWithLoadingObserverByIndex: (index) => filteredTracks[index],
+                            prototypeItem: const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+                                child: TrackTilePlaceholder()),
+                            scrollbarPadding: EdgeInsets.only(
+                                top: appBarHeightWithViewPadding + 10,
+                                bottom: 10 + (OrientatedNavigationBarAcessor.maybeOf(context)?.expandedHeight ?? 0)),
+                            minScrollOffset:
+                                (_headerHeight ?? appBarHeightWithViewPadding) - appBarHeightWithViewPadding,
+                            child: CustomScrollView(
+                              controller: _scrollController,
+                              slivers: [
+                                DownloadTracksCollectionHeader(
+                                  key: _headerKey,
+                                  backgroundGradientColor: _backgroundGradientColor,
+                                  imageUrl: getTracksCollectionState.tracksCollection.bigImageUrl ?? '',
+                                  title: getTracksCollectionState.tracksCollection.name,
+                                  onFilterQueryChanged: _onFilterQueryChanged,
+                                  onDownloadAllButtonClicked: () => _onDownloadAllButtonClicked(
+                                      filterTracksState: _filterTracksBloc.state, getTracksState: getTracksState),
+                                ),
+                                SliverPadding(
+                                  padding: const EdgeInsets.only(top: 20),
+                                  sliver: SliverPrototypeExtentList.builder(
+                                    itemCount: isTracksPlaceholdersDisplayed
+                                        ? getTracksCollectionState.tracksCollection.tracksCount
+                                        : filteredTracks.length,
+                                    prototypeItem: const Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+                                        child: TrackTilePlaceholder()),
+                                    itemBuilder: (context, index) {
+                                      return Stack(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+                                            child: Builder(builder: (buildContext) {
+                                              if (index >= filteredTracks.length) {
+                                                return const TrackTilePlaceholder();
+                                              }
 
-                            return const GradientAppBarWithOpacity.invisible();
-                          });
-                    },
-                  );
-                },
-              )
-            ],
+                                              final trackWithLoadingObserver = filteredTracks[index];
+                                              final preselectedYoutubeUrl = donwloadTracksState
+                                                  .preselectedTracksYouTubeUrls[trackWithLoadingObserver];
+
+                                              return TracksCollectionTypeDependTrackTile(
+                                                type: getTracksCollectionState.tracksCollection.type,
+                                                isLoadedIfLoadingObserverIsNull: preselectedYoutubeUrl != null
+                                                    ? false
+                                                    : trackWithLoadingObserver.track.isLoaded,
+                                                trackWithLoadingObserver: trackWithLoadingObserver,
+                                                onDownloadButtonClicked: () =>
+                                                    _downloadTracksCubit.downloadTrack(trackWithLoadingObserver),
+                                                onCancelButtonClicked: () =>
+                                                    _downloadTracksCubit.cancelTrackLoading(trackWithLoadingObserver),
+                                                onMoreInfoClicked: () => showDownloadTrackInfoBottomSheet(
+                                                    preselectedYoutubeUrl: preselectedYoutubeUrl,
+                                                    context: context,
+                                                    trackWithLoadingObserver: trackWithLoadingObserver,
+                                                    onChangeYoutubeUrlClicked: () {
+                                                      final oldYoutubeUrl = preselectedYoutubeUrl ??
+                                                          trackWithLoadingObserver.loadingObserver?.youtubeUrl ??
+                                                          trackWithLoadingObserver.track.localYoutubeUrl;
+
+                                                      return _onChangeYoutubeUrlClicked(
+                                                          filteredTracks[index], oldYoutubeUrl);
+                                                    }),
+                                              );
+                                            }),
+                                          ),
+                                          if (getTracksState is GetTracksAfterPartGotNetworkFailure)
+                                            Positioned.fill(
+                                              child: IgnorePointer(
+                                                child: Container(
+                                                  color: const Color.fromARGB(50, 0, 0, 0),
+                                                  height: 10,
+                                                ),
+                                              ),
+                                            )
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                                const SliverToBoxAdapter(child: CustomBottomNavigationBarListViewExpander())
+                              ],
+                            )));
+                  },
+                ),
+                Builder(
+                  builder: (context) {
+                    final getTracksCollectionState = context.watch<GetTracksCollectionBloc>().state;
+                    final getTracksState = context.watch<GetTracksBloc>().state;
+
+                    if (getTracksCollectionState is! GetTracksCollectionLoaded ||
+                        getTracksState is! GetTracksTracksGot) {
+                      return const GradientAppBarWithOpacity.invisible();
+                    }
+
+                    return StreamBuilder<double>(
+                        initialData: 0,
+                        stream: _appBarOpacityController.stream,
+                        builder: (context, newOpacity) {
+                          return GradientAppBarWithOpacity.visible(
+                            firstColor: _backgroundGradientColor,
+                            secondaryColor: backgroundColor,
+                            title: getTracksCollectionState.tracksCollection.name,
+                            opacity: newOpacity.data ?? 0,
+                          );
+                        });
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -405,9 +372,9 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
   }
 
   Future<String?> _onChangeYoutubeUrlClicked(
-      TrackWithLoadingObserver trackWithLoadingObserver, String? selectedYoutubeUrl) async {
-    final changedUrl = await AutoRouter.of(context).push<String?>(
-        ChangeSourceVideoRoute(track: trackWithLoadingObserver.track, selectedYoutubeUrl: selectedYoutubeUrl));
+      TrackWithLoadingObserver trackWithLoadingObserver, String? oldYoutubeUrl) async {
+    final changedUrl = await AutoRouter.of(context)
+        .push<String?>(ChangeSourceVideoRoute(track: trackWithLoadingObserver.track, oldYoutubeUrl: oldYoutubeUrl));
     if (changedUrl != null) {
       _downloadTracksCubit.changeTrackYoutubeUrl(trackWithLoadingObserver, changedUrl);
     }
@@ -415,26 +382,23 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
     return changedUrl;
   }
 
-  void _generateAppBarColor(String? imageUrl) {
+  Future<void> _generateBackgroundGradientColor(String? imageUrl) async {
+    Color newBackgroundGradientColor;
     if (imageUrl != null) {
-      Future(() async {
-        final generator = await PaletteGenerator.fromImageProvider(NetworkImage(imageUrl));
+      final generator = await PaletteGenerator.fromImageProvider(NetworkImage(imageUrl));
+      final imageColor = generator.vibrantColor?.color ?? generator.mutedColor?.color;
+      if (imageColor == null) return;
+      final mutedImageColor = getIntermediateColor(imageColor, const Color.fromARGB(255, 127, 127, 127), 0.1);
 
-        final imageColor = generator.vibrantColor?.color ?? generator.mutedColor?.color;
-        if (imageColor == null) return;
-
-        final mutedImageColor = getIntermediateColor(imageColor, const Color.fromARGB(255, 127, 127, 127), 0.1);
-
-        try {
-          setState(() {
-            _backgroundGradientColor = mutedImageColor;
-          });
-        } catch (e) {
-          //if widget disposed
-        }
-      });
+      newBackgroundGradientColor = mutedImageColor;
     } else {
-      _backgroundGradientColor = backgroundColor;
+      newBackgroundGradientColor = _defaultBackgroundGradientColor;
+    }
+
+    if (_backgroundGradientColor != newBackgroundGradientColor) {
+      setState(() {
+        _backgroundGradientColor = newBackgroundGradientColor;
+      });
     }
   }
 

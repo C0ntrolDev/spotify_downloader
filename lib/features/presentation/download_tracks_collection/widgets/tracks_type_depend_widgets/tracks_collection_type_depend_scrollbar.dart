@@ -10,15 +10,15 @@ class TracksCollectionTypeDependScrollbar extends StatelessWidget {
   const TracksCollectionTypeDependScrollbar(
       {super.key,
       required this.type,
-      required this.tracksWithLoadingObservers,
       required this.child,
       required this.prototypeItem,
       required this.controller,
       required this.scrollbarPadding,
-      required this.minScrollOffset});
+      required this.minScrollOffset,
+      required this.getTrackWithLoadingObserverByIndex});
 
   final TracksCollectionType type;
-  final List<TrackWithLoadingObserver> tracksWithLoadingObservers;
+  final TrackWithLoadingObserver? Function(int index) getTrackWithLoadingObserverByIndex;
   final Widget child;
 
   final Widget prototypeItem;
@@ -45,32 +45,31 @@ class TracksCollectionTypeDependScrollbar extends StatelessWidget {
           backgroundColor: surfaceColor,
           arrowsColor: onSurfaceSecondaryColor,
           labelSidePadding: 70,
-          labelBehaviour: LabelBehaviour.showOnlyWhileDragging,
+          labelBehaviour: LabelBehaviour.showOnlyWhileAndAfterDragging,
           labelContentBuilder: (offset, precalculatedIndex) {
-            if (precalculatedIndex == null ||
-                precalculatedIndex < 0 ||
-                precalculatedIndex > tracksWithLoadingObservers.length - 1 ||
-                tracksWithLoadingObservers[precalculatedIndex].track is! LikedTrack) {
-              return Container();
-            }
+            String labelText = "";
 
-            final addedAt = (tracksWithLoadingObservers[precalculatedIndex].track as LikedTrack).addedAt;
-            if (addedAt == null) {
-              return Container();
-            }
+            if (precalculatedIndex != null) {
+              final trackWithLoadingObserver = getTrackWithLoadingObserverByIndex.call(precalculatedIndex);
 
-            final labelText = DateFormat("MMM yyyy").format(addedAt).toUpperCase();
-            if (labelText.isEmpty) {
-              return Container();
+              if (trackWithLoadingObserver != null) {
+                final addedAt = (trackWithLoadingObserver.track as LikedTrack).addedAt;
+
+                if (addedAt != null) {
+                  labelText = DateFormat("MMM yyyy").format(addedAt).toUpperCase();
+                }
+              }
             }
-              
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Center(
-                  child: Text(
-                labelText,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
+                  child: Container(
+                constraints: const BoxConstraints(minWidth: 50),
+                child: Text(
+                  labelText,
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
+                ),
               )),
             );
           },

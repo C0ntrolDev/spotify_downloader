@@ -28,7 +28,7 @@ abstract class _$AppRouter extends RootStackRouter {
         child: ChangeSourceVideoScreen(
           key: args.key,
           track: args.track,
-          selectedYoutubeUrl: args.selectedYoutubeUrl,
+          oldYoutubeUrl: args.selectedYoutubeUrl,
         ),
       );
     },
@@ -100,14 +100,14 @@ class ChangeSourceVideoRoute extends PageRouteInfo<ChangeSourceVideoRouteArgs> {
   ChangeSourceVideoRoute({
     Key? key,
     required Track track,
-    String? selectedYoutubeUrl,
+    String? oldYoutubeUrl,
     List<PageRouteInfo>? children,
   }) : super(
           ChangeSourceVideoRoute.name,
           args: ChangeSourceVideoRouteArgs(
             key: key,
             track: track,
-            selectedYoutubeUrl: selectedYoutubeUrl,
+            selectedYoutubeUrl: oldYoutubeUrl,
           ),
           initialChildren: children,
         );

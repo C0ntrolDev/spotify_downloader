@@ -12,10 +12,10 @@ import 'package:spotify_downloader/generated/l10n.dart';
 
 @RoutePage<String?>()
 class ChangeSourceVideoScreen extends StatefulWidget {
-  const ChangeSourceVideoScreen({super.key, required this.track, this.selectedYoutubeUrl});
+  const ChangeSourceVideoScreen({super.key, required this.track, this.oldYoutubeUrl});
 
   final Track track;
-  final String? selectedYoutubeUrl;
+  final String? oldYoutubeUrl;
 
   @override
   State<ChangeSourceVideoScreen> createState() => _ChangeSourceVideoScreenState();
@@ -27,7 +27,7 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
   @override
   void initState() {
     _changeSourceVideoBloc = injector.get<ChangeSourceVideoBloc>(param1: widget.track);
-    _changeSourceVideoBloc.add(ChangeSourceVideoLoad(selectedVideoUrl: widget.selectedYoutubeUrl));
+    _changeSourceVideoBloc.add(ChangeSourceVideoLoad(selectedVideoUrl: widget.oldYoutubeUrl));
     super.initState();
   }
 
@@ -125,7 +125,7 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
                       if (state is ChangeSourceVideoNetworkFailure) {
                         return NetworkFailureSplash(
                             onRetryAgainButtonClicked: () => _changeSourceVideoBloc
-                                .add(ChangeSourceVideoLoad(selectedVideoUrl: widget.selectedYoutubeUrl)));
+                                .add(ChangeSourceVideoLoad(selectedVideoUrl: widget.oldYoutubeUrl)));
                       }
 
                       if (state is ChangeSourceVideoLoading) {

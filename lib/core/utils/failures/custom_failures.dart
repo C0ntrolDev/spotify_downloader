@@ -27,3 +27,7 @@ final class InvalidAccountCredentialsFailure extends Failure {
 final class NotAuthorizedFailure extends Failure {
   NotAuthorizedFailure({super.message = 'User not authorized'});
 }
+
+final class ForbiddenFailure extends Failure {
+  ForbiddenFailure({super.message = 'Access Forbidden'});
+}

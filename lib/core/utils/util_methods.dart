@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
@@ -22,9 +23,12 @@ Future<Result<Failure, T>> handleSpotifyClientExceptions<T>(Future<Result<Failur
     if (e.status == 404) {
       return Result.notSuccessful(NotFoundFailure(message: e));
     }
-
     if (e.status == 401) {
       return Result.notSuccessful(NotAuthorizedFailure(message: e));
+    }
+
+    if (e.status == 403) {
+      return Result.notSuccessful(ForbiddenFailure(message: e));
     }
 
     return Result.notSuccessful(Failure(message: e));

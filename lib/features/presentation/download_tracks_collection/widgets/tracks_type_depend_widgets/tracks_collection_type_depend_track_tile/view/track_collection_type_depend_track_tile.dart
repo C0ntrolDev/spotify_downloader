@@ -29,7 +29,7 @@ class TracksCollectionTypeDependTrackTile extends StatelessWidget {
 
     return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
       Builder(builder: (context) {
-        if (type == TracksCollectionType.album) {
+        if (type == TracksCollectionType.album || type == TracksCollectionType.track) {
           return Container();
         }
 

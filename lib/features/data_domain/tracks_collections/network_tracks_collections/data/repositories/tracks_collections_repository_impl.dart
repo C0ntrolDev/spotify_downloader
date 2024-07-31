@@ -51,7 +51,13 @@ class NetworkTracksCollectionsRepositoryImpl implements NetworkTracksCollections
           return Result.notSuccessful(trackResult.failure);
         }
       case TracksCollectionType.likedTracks:
-        return Result.isSuccessful(TracksCollection.likedTracks);
+        final likedTracksCountResult =
+            await _dataSource.getLikedTracksCount(_spotifyRequestsConverter.convert(spotifyRepositoryRequest));
+        if (likedTracksCountResult.isSuccessful) {
+          return Result.isSuccessful(TracksCollection.likedTracks(likedTracksCountResult.result!));
+        } else {
+          return Result.notSuccessful(likedTracksCountResult.failure);
+        }
     }
   }
 
