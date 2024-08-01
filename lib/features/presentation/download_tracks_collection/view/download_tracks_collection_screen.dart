@@ -229,7 +229,13 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                         child: TracksCollectionTypeDependScrollbar(
                             controller: _scrollController,
                             type: getTracksCollectionState.tracksCollection.type,
-                            getTrackWithLoadingObserverByIndex: (index) => filteredTracks[index],
+                            getTrackWithLoadingObserverByIndex: (index) {
+                              if (index < 0 || index >= filteredTracks.length) {
+                                return null;
+                              }
+
+                              return filteredTracks[index];
+                            },
                             prototypeItem: const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
                                 child: TrackTilePlaceholder()),

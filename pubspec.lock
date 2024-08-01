@@ -985,10 +985,10 @@ packages:
     dependency: "direct main"
     description:
       name: scrollbar_ultima
-      sha256: "06550be76752230c63e1698b21454449774f5af3ef297b205b34a6afbd46f661"
+      sha256: ad3a3c000504f5dc73e0be2ef280d03e22d9eac398ee5333c9f1c132080b83a3
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.3"
   shelf:
     dependency: transitive
     description:

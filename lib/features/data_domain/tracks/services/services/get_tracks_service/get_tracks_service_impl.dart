@@ -13,6 +13,7 @@ import 'package:spotify_downloader/features/data_domain/tracks/services/services
 import 'package:spotify_downloader/features/data_domain/tracks/services/services/tools/save_path_generator.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/services/tools/tracks_collection_type_to_local_tracks_collection_type_converter.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/entities.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/liked_track.dart';
 
 class GetTracksServiceImpl implements GetTracksService {
   GetTracksServiceImpl(
@@ -110,7 +111,19 @@ class GetTracksServiceImpl implements GetTracksService {
 
       if (localTrack != null) {
         if (await _checkLocalTrackToExistence(localTrack)) {
-          track = Track(
+          if (track is LikedTrack) {
+             track = LikedTrack(
+              spotifyId: track.spotifyId,
+              parentCollection: track.parentCollection,
+              name: track.name,
+              album: track.album,
+              artists: track.artists,
+              duration: track.duration,
+              isLoaded: true,
+              addedAt: track.addedAt,
+              localYoutubeUrl: localTrack.youtubeUrl);
+          } else {
+             track = Track(
               spotifyId: track.spotifyId,
               parentCollection: track.parentCollection,
               name: track.name,
@@ -119,6 +132,7 @@ class GetTracksServiceImpl implements GetTracksService {
               duration: track.duration,
               isLoaded: true,
               localYoutubeUrl: localTrack.youtubeUrl);
+          }
         }
       }
 

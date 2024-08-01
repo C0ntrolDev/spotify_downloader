@@ -53,10 +53,12 @@ class TracksCollectionTypeDependScrollbar extends StatelessWidget {
               final trackWithLoadingObserver = getTrackWithLoadingObserverByIndex.call(precalculatedIndex);
 
               if (trackWithLoadingObserver != null) {
-                final addedAt = (trackWithLoadingObserver.track as LikedTrack).addedAt;
+                if (trackWithLoadingObserver.track is LikedTrack) {
+                  final addedAt = (trackWithLoadingObserver.track as LikedTrack).addedAt;
 
-                if (addedAt != null) {
-                  labelText = DateFormat("MMM yyyy").format(addedAt).toUpperCase();
+                  if (addedAt != null) {
+                    labelText = DateFormat("MMM yyyy").format(addedAt).toUpperCase();
+                  }
                 }
               }
             }
