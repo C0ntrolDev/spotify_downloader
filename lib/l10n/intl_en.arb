@@ -57,5 +57,12 @@
   "language": "Language",
   "youCanCloseTheAppAndTheDownloadWillContinue": "You can close the app and the download will continue!",
   "youCanDeleteThisMessage": "(you can delete this message)",
-  "errorCopied": "Error copied!"
+  "errorCopied": "Error copied!",
+  "packagesLicenses": "Licenses of Packages",
+  "appInfo": "App Info",
+  "appName": "Name: {appName}",
+  "packageName": "Package: {packageName}",
+  "appVersion": "Version: {appVersion}",
+  "buildNumber": "BuildNumber: {buildNumber}",
+  "developedByC0ntrolDev": "Developed by C0ntroldev"
 }

@@ -103,7 +103,7 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
                   },
                 ),
                 const SliverToBoxAdapter(
-                  child: CustomBottomNavigationBarListViewExpander(),
+                  child: OrientatedNavigationBarListViewExpander(),
                 )
               ]),
             ),

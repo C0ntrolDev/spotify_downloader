@@ -46,9 +46,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ],
               ),
             ),
-          )
+          ),
+          SizedBox(
+              height: 40,
+              child: InkWell(
+                splashFactory: NoSplash.splashFactory,
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: () {
+                  AutoRouter.of(context).push(const PackagesInfoRoute());
+                },
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(S.of(context).packagesLicenses),
+                    ),
+                    const Icon(
+                      Icons.favorite_outline_sharp,
+                      color: onBackgroundSecondaryColor,
+                      size: 30,
+                    ),
+                  ],
+                ),
+              ))
         ]),
-        const CustomBottomNavigationBarListViewExpander()
+        const OrientatedNavigationBarListViewExpander()
       ]),
     );
   }

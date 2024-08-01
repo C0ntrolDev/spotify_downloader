@@ -171,7 +171,7 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                         });
                       }
                     }),
-                const CustomBottomNavigationBarListViewExpander()
+                const OrientatedNavigationBarListViewExpander()
               ])),
         ),
         const Positioned.fill(

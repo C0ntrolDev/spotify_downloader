@@ -129,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           ),
                         ),
-                        const SliverToBoxAdapter(child: CustomBottomNavigationBarListViewExpander())
+                        const SliverToBoxAdapter(child: OrientatedNavigationBarListViewExpander())
                       ],
                     ),
                   ),

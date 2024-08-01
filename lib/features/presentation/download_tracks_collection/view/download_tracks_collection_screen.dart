@@ -318,7 +318,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                     },
                                   ),
                                 ),
-                                const SliverToBoxAdapter(child: CustomBottomNavigationBarListViewExpander())
+                                const SliverToBoxAdapter(child: OrientatedNavigationBarListViewExpander())
                               ],
                             )));
                   },

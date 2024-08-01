@@ -9,6 +9,7 @@ import 'package:spotify_downloader/features/presentation/history/view/history_sc
 import 'package:spotify_downloader/features/presentation/home/view/home_screen.dart';
 import 'package:spotify_downloader/features/presentation/main/view/main_screen.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/view/download_tracks_collection_screen.dart';
+import 'package:spotify_downloader/features/presentation/packages/view/packages_info_screen.dart';
 import 'package:spotify_downloader/features/presentation/settings/view/settings_screen.dart';
 
 part 'router.gr.dart';
@@ -23,7 +24,10 @@ class AppRouter extends _$AppRouter {
               page: HomeRoute.page,
               path: 'home',
               transitionsBuilder: TransitionsBuildersExtension.fadeInWithBackground),
-          CustomRoute(page: HistoryRoute.page, path: 'history', transitionsBuilder: TransitionsBuildersExtension.fadeInWithBackground),
+          CustomRoute(
+              page: HistoryRoute.page,
+              path: 'history',
+              transitionsBuilder: TransitionsBuildersExtension.fadeInWithBackground),
           CustomRoute(
               page: DownloadTracksCollectionRouteWithHistoryTracksCollection.page,
               path: 'downloadTracksCollectionFromHistory',
@@ -36,8 +40,18 @@ class AppRouter extends _$AppRouter {
               page: ChangeSourceVideoRoute.page,
               path: 'changeSourceVideo',
               transitionsBuilder: TransitionsBuildersExtension.fadeInWithBackground),
-          CustomRoute(page: SettingsRoute.page, path: 'settings', transitionsBuilder: TransitionsBuildersExtension.fadeInWithBackground),
-          CustomRoute(page: AboutAppRoute.page, path: 'about', transitionsBuilder: TransitionsBuildersExtension.fadeInWithBackground)
+          CustomRoute(
+              page: SettingsRoute.page,
+              path: 'settings',
+              transitionsBuilder: TransitionsBuildersExtension.fadeInWithBackground),
+          CustomRoute(
+              page: AboutAppRoute.page,
+              path: 'about',
+              transitionsBuilder: TransitionsBuildersExtension.fadeInWithBackground),
+          CustomRoute(
+              page: PackagesInfoRoute.page,
+              path: 'packages_info',
+              transitionsBuilder: TransitionsBuildersExtension.fadeInWithBackground)
         ]),
       ];
 }

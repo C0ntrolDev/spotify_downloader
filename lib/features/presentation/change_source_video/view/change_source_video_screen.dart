@@ -117,7 +117,7 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
                                         )),
                                   );
                                 }),
-                            const SliverToBoxAdapter(child: CustomBottomNavigationBarListViewExpander())
+                            const SliverToBoxAdapter(child: OrientatedNavigationBarListViewExpander())
                           ],
                         );
                       }

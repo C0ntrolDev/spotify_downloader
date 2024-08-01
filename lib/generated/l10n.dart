@@ -640,6 +640,76 @@ class S {
       args: [],
     );
   }
+
+  /// `Licenses of Packages`
+  String get packagesLicenses {
+    return Intl.message(
+      'Licenses of Packages',
+      name: 'packagesLicenses',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App Info`
+  String get appInfo {
+    return Intl.message(
+      'App Info',
+      name: 'appInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name: {appName}`
+  String appName(Object appName) {
+    return Intl.message(
+      'Name: $appName',
+      name: 'appName',
+      desc: '',
+      args: [appName],
+    );
+  }
+
+  /// `Package: {packageName}`
+  String packageName(Object packageName) {
+    return Intl.message(
+      'Package: $packageName',
+      name: 'packageName',
+      desc: '',
+      args: [packageName],
+    );
+  }
+
+  /// `Version: {appVersion}`
+  String appVersion(Object appVersion) {
+    return Intl.message(
+      'Version: $appVersion',
+      name: 'appVersion',
+      desc: '',
+      args: [appVersion],
+    );
+  }
+
+  /// `BuildNumber: {buildNumber}`
+  String buildNumber(Object buildNumber) {
+    return Intl.message(
+      'BuildNumber: $buildNumber',
+      name: 'buildNumber',
+      desc: '',
+      args: [buildNumber],
+    );
+  }
+
+  /// `Developed by C0ntroldev`
+  String get developedByC0ntrolDev {
+    return Intl.message(
+      'Developed by C0ntroldev',
+      name: 'developedByC0ntrolDev',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -23,19 +23,27 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(loaded, failured) =>
       "Loaded: ${loaded} | Errors: ${failured}";
 
-  static String m1(message) => "Download error: ${message}";
+  static String m1(appName) => "Name: ${appName}";
 
-  static String m2(failure) => "Error loading active downloads: ${failure}";
+  static String m2(appVersion) => "Version: ${appVersion}";
 
-  static String m3(value) => "${value}M";
+  static String m3(buildNumber) => "BuildNumber: ${buildNumber}";
 
-  static String m4(value) => "${value}K";
+  static String m4(message) => "Download error: ${message}";
 
-  static String m5(views) => "${views} views";
+  static String m5(failure) => "Error loading active downloads: ${failure}";
 
-  static String m6(percent) => "Track loading: ${percent}%";
+  static String m6(value) => "${value}M";
 
-  static String m7(total, loaded, failure, percent) =>
+  static String m7(value) => "${value}K";
+
+  static String m8(views) => "${views} views";
+
+  static String m9(packageName) => "Package: ${packageName}";
+
+  static String m10(percent) => "Track loading: ${percent}%";
+
+  static String m11(total, loaded, failure, percent) =>
       "Total: ${total} | Loaded: ${loaded} | Errors: ${failure} | ${percent}%";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -48,6 +56,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "allTracksAreLoaded":
             MessageLookupByLibrary.simpleMessage("All tracks loaded"),
         "allTracksAreLoadedBody": m0,
+        "appInfo": MessageLookupByLibrary.simpleMessage("App Info"),
+        "appName": m1,
+        "appVersion": m2,
+        "buildNumber": m3,
         "changeTheDownloadSource":
             MessageLookupByLibrary.simpleMessage("Change Download Source"),
         "changeTheSource":
@@ -57,9 +69,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "couldntLogInToYourAccount": MessageLookupByLibrary.simpleMessage(
             "Couldn\'t log in to your account"),
         "developed": MessageLookupByLibrary.simpleMessage("Developed"),
+        "developedByC0ntrolDev":
+            MessageLookupByLibrary.simpleMessage("Developed by C0ntroldev"),
         "download": MessageLookupByLibrary.simpleMessage("Download"),
         "downloadAll": MessageLookupByLibrary.simpleMessage("Download All"),
-        "downloadError": m1,
+        "downloadError": m4,
         "downloadFromLink":
             MessageLookupByLibrary.simpleMessage("Download from Link"),
         "downloadFromLinkTextFieldHintText":
@@ -67,7 +81,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "downloadLikedTracks":
             MessageLookupByLibrary.simpleMessage("Download Liked Tracks"),
         "errorCopied": MessageLookupByLibrary.simpleMessage("Error copied!"),
-        "errorOccurredWhileLoadingActiveDownloads": m2,
+        "errorOccurredWhileLoadingActiveDownloads": m5,
         "grant": MessageLookupByLibrary.simpleMessage("Grant"),
         "grantPermissions":
             MessageLookupByLibrary.simpleMessage("Grant Permissions"),
@@ -80,15 +94,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "logIn": MessageLookupByLibrary.simpleMessage("Log In"),
         "logOut": MessageLookupByLibrary.simpleMessage("Log Out"),
         "main": MessageLookupByLibrary.simpleMessage("Home"),
-        "nMillions": m3,
-        "nThousands": m4,
-        "nView": m5,
+        "nMillions": m6,
+        "nThousands": m7,
+        "nView": m8,
         "noConnection": MessageLookupByLibrary.simpleMessage("No connection"),
         "nothingWasFoundAtThisUrl": MessageLookupByLibrary.simpleMessage(
             "No results found for this URL"),
         "notificationsPermissionText": MessageLookupByLibrary.simpleMessage(
             "The app needs notification access to notify you of downloads"),
         "other": MessageLookupByLibrary.simpleMessage("Other"),
+        "packageName": m9,
+        "packagesLicenses":
+            MessageLookupByLibrary.simpleMessage("Licenses of Packages"),
         "refuse": MessageLookupByLibrary.simpleMessage("Refuse"),
         "saveAllInOneFolder":
             MessageLookupByLibrary.simpleMessage("Save All in One Folder"),
@@ -103,7 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "The app needs permission to access storage to save music anywhere on your phone"),
         "theTrackIsLoaded":
             MessageLookupByLibrary.simpleMessage("Track loaded"),
-        "theTrackIsLoading": m6,
+        "theTrackIsLoading": m10,
         "theTrackIsNotLoaded":
             MessageLookupByLibrary.simpleMessage("Track not loaded"),
         "theresSomethingWrongWithConnection":
@@ -112,7 +129,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "You need to log in to access"),
         "tracksAreBeingLoaded":
             MessageLookupByLibrary.simpleMessage("Tracks are being loaded"),
-        "tracksAreBeingLoadedBody": m7,
+        "tracksAreBeingLoadedBody": m11,
         "tracksDontLoad":
             MessageLookupByLibrary.simpleMessage("Nothing is loading ^_^"),
         "tryAgain": MessageLookupByLibrary.simpleMessage("Try Again"),
