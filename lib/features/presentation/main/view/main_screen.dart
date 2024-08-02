@@ -6,8 +6,8 @@ import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
-import 'package:spotify_downloader/core/permissions/permissions_manager.dart';
-import 'package:spotify_downloader/core/permissions/requiring_permission_services_initializer.dart';
+import 'package:spotify_downloader/core/permissions/permission_services_initializer/permission_services_initializer_class.dart';
+import 'package:spotify_downloader/core/permissions/permissions_manager/permissions_manager_class.dart';
 import 'package:spotify_downloader/features/presentation/main/tools/bottom_navigation_bar_observer.dart';
 import 'package:spotify_downloader/features/presentation/main/widgets/orientated_navigation_bar/orientated_navigation_bar.dart';
 import 'package:spotify_downloader/features/presentation/permissions_dialog/view/permissions_dialog.dart';
@@ -23,8 +23,8 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final PermissionsManager _permissionsManager = injector.get<PermissionsManager>();
-  final RequiringPermissionServicesInitializer _requiringPermissionServicesInitializer =
-      injector.get<RequiringPermissionServicesInitializer>();
+  final PermissionServicesInitializer _permissionServicesInitializer =
+      injector.get<PermissionServicesInitializer>();
 
   final List<PageRouteInfo> _bottomNavigationBarRoutes = [const HomeRoute(), const HistoryRoute()];
 
@@ -47,11 +47,11 @@ class _MainScreenState extends State<MainScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future(() async {
         if (!(await _permissionsManager.isPermissionsGranted()) && context.mounted) {
-          //idk i checked it in previous line
+          //check context.mounted in previous line
           // ignore: use_build_context_synchronously
           showPermissonsDialog(context, () async {
             final isPermissionsGranted = await _permissionsManager.requestPermissions();
-            await _requiringPermissionServicesInitializer.init();
+            await _permissionServicesInitializer.init();
             return isPermissionsGranted;
           });
         }
@@ -132,3 +132,4 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+

@@ -1,8 +1,9 @@
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spotify_downloader/core/db/local_db.dart';
 import 'package:spotify_downloader/core/db/local_db_impl.dart';
-import 'package:spotify_downloader/core/permissions/permissions_manager.dart';
-import 'package:spotify_downloader/core/permissions/requiring_permission_services_initializer.dart';
+import 'package:spotify_downloader/core/permissions/permissions.dart';
+
 import 'package:spotify_downloader/features/data_domain/auth/local_auth/local_auth.dart';
 import 'package:spotify_downloader/features/data_domain/auth/network_auth/network_auth.dart';
 import 'package:spotify_downloader/features/data_domain/auth/service/service.dart';
@@ -30,28 +31,32 @@ import 'package:spotify_downloader/features/presentation/settings/widgets/auth_s
 import 'package:spotify_downloader/features/presentation/settings/widgets/download_tracks_settings/bloc/download_tracks_settings_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/language_setting/bloc/language_setting_bloc.dart';
 import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notifications/bloc/tracks_collections_loading_notifications_bloc.dart';
+import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notifications/view/tracks_collections_loading_notifications_sender.dart';
 
 final injector = GetIt.instance;
 
-Future<void> initInjector() async {
-  await _initCore();
+Future<void> initInjector(TargetPlatform platform) async {
+  await _initCore(platform);
   await _provideDataSources();
   _provideRepositories();
   _provideUseCases();
   _provideBlocs();
+  _providePresentation();
   await _initLateCore();
 }
 
 Future<void> _initLateCore() async {
-  await injector.get<RequiringPermissionServicesInitializer>().init();
+  await injector.get<PermissionServicesInitializer>().init();
 }
 
-Future<void> _initCore() async {
+Future<void> _initCore(TargetPlatform platform) async {
   injector.registerSingleton<LocalDb>(LocalDbImpl());
   await injector.get<LocalDb>().initDb();
-  injector.registerSingleton<PermissionsManager>(PermissionsManager());
-  injector.registerSingleton<RequiringPermissionServicesInitializer>(
-      RequiringPermissionServicesInitializer(permissionsManager: injector.get<PermissionsManager>()));
+
+  injector.registerSingleton<PermissionsAbstractFactory>(PermissionsAbstractFactory.create(platform));
+  injector.registerSingleton<PermissionsManager>(injector.get<PermissionsAbstractFactory>().getPermissionsManager());
+  injector.registerSingleton<PermissionServicesInitializer>(
+      injector.get<PermissionsAbstractFactory>().getPermissionServicesInitializer());
 }
 
 Future<void> _provideDataSources() async {
@@ -232,4 +237,9 @@ void _provideBlocs() {
       getLanguage: injector.get<GetLanguage>(),
       saveLanguage: injector.get<SaveLanguage>(),
       getAvailableLanguages: injector.get<GetAvailableLanguages>()));
+}
+
+void _providePresentation() {
+  injector
+      .registerSingleton<TracksCollectionsLoadingNotificationsSender>(TracksCollectionsLoadingNotificationsSender());
 }

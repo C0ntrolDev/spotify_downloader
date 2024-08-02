@@ -19,10 +19,4 @@ Future<void> initAwesomeNotifications() async {
         NotificationChannelGroup(channelGroupKey: mainChannelGroupKey, channelGroupName: 'Main Notifications Group')
       ],
       debug: true);
-
-  AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-    if (!isAllowed) {
-      AwesomeNotifications().requestPermissionToSendNotifications();
-    }
-  });
 }

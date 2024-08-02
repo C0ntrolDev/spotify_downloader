@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -8,7 +9,7 @@ import 'core/app/spotify_downloader_app.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MetadataGod.initialize();
-  await initInjector();  
+  await initInjector(defaultTargetPlatform);  
 
   final locale = await injector.get<GetLanguage>().call(null);
   final packageInfo = await PackageInfo.fromPlatform();

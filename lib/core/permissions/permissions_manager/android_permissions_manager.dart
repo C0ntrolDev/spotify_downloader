@@ -1,7 +1,9 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:spotify_downloader/core/permissions/permissions_manager/permissions_manager_class.dart';
 
-class PermissionsManager {
+class AndroidPermissionsManager extends PermissionsManager {
+  @override
   Future<bool> requestPermissions() async {
     final androidVersion = await _getAndroidVersion();
     late final List<Permission> permissions;
@@ -22,6 +24,7 @@ class PermissionsManager {
     return Permission.notification.isGranted;
   }
 
+  @override
   Future<bool> isPermissionsGranted() async {
     final androidVersion = await _getAndroidVersion();
     late final List<Permission> permissions;
