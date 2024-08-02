@@ -9,7 +9,7 @@ import 'package:spotify_downloader/features/presentation/history/view/history_sc
 import 'package:spotify_downloader/features/presentation/home/view/home_screen.dart';
 import 'package:spotify_downloader/features/presentation/main/view/main_screen.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/view/download_tracks_collection_screen.dart';
-import 'package:spotify_downloader/features/presentation/packages/view/packages_info_screen.dart';
+import 'package:spotify_downloader/features/presentation/packages_info/view/packages_info_screen.dart';
 import 'package:spotify_downloader/features/presentation/settings/view/settings_screen.dart';
 
 part 'router.gr.dart';

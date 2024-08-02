@@ -88,7 +88,7 @@ class DownloadTracksCubit extends Cubit<DownloadTracksState> {
 
   Future<void> cancelTrackLoading(TrackWithLoadingObserver trackWithLoadingObserver) async {
     final canceltrackLoading = await _cancelTrackLoading.call(trackWithLoadingObserver);
-    if (!canceltrackLoading.isSuccessful) {
+    if (!canceltrackLoading.isSuccessful && canceltrackLoading.failure is! NotFoundFailure) {
       emit(DownloadTracksFailure(
           failure: canceltrackLoading.failure, preselectedTracksYouTubeUrls: _preselectedTracksYouTubeUrls));
       return;

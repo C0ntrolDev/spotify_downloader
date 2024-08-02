@@ -237,7 +237,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                               return filteredTracks[index];
                             },
                             prototypeItem: const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+                                padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 7.5),
                                 child: TrackTilePlaceholder()),
                             scrollbarPadding: EdgeInsets.only(
                                 top: appBarHeightWithViewPadding + 10,

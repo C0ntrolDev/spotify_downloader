@@ -22,7 +22,6 @@ dependencies:
   flutter_svg: ^2.0.9
   auto_route: ^7.8.4
   palette_generator: ^0.3.3+3
-  quiver: ^3.2.1
   ffmpeg_kit_flutter_full: ^6.0.3
   youtube_explode_dart: ^2.0.4
   metadata_god: ^0.5.2
