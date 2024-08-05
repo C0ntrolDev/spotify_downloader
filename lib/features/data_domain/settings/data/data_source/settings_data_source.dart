@@ -45,7 +45,7 @@ class SettingsDataSource {
     try {
       String? defaultSavePath;
       if (defaultTargetPlatform == TargetPlatform.android) {
-        const downloadsDirectoryPath = "/storage/emulated/0/Download/";
+        const downloadsDirectoryPath = "/storage/emulated/0/Download";
         if (await Directory.fromUri(Uri.parse(downloadsDirectoryPath)).exists()) {
           defaultSavePath = "$downloadsDirectoryPath/SpotifyDownloader";
         }
