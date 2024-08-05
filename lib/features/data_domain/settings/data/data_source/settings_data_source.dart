@@ -12,7 +12,7 @@ import 'package:spotify_downloader/generated/l10n.dart';
 class SettingsDataSource {
   Future<Result<Failure, void>> saveSettings(AppSettings appSettings) async {
     try {
-      final localDirectoryPath = (await getApplicationDocumentsDirectory()).path;
+      final localDirectoryPath = (await getApplicationSupportDirectory()).path;
       final absoluteAuthFilePath = '$localDirectoryPath$settingsPath';
 
       final authFile = File(absoluteAuthFilePath);

@@ -59,7 +59,7 @@
         <true />
         <key>LSSupportsOpeningDocumentsInPlace</key>
         <true />
-        <key>NSUserNotificationUsageDescription</key>
-        <string>For downloaded tracks saving</string>
+        <key>PermissionGroupNotification</key>
+        <string>For tracks loading notificatins</string>
     </dict>
 </plist>
