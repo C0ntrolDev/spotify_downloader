@@ -4,8 +4,8 @@ import 'package:spotify_downloader/core/app/colors/colors.dart';
 const String mainChannelKey = 'main_channel';
 const String mainChannelGroupKey = 'main_channel_group';
 
-Future<void> initAwesomeNotifications() async {
-  await AwesomeNotifications().initialize(
+Future<bool> initAwesomeNotifications() async {
+  return await AwesomeNotifications().initialize(
       'resource://drawable/notifications_icon',
       [
         NotificationChannel(

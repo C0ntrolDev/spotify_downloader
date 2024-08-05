@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/features/presentation/permissions_dialog/widgets/permission_tile.dart';
@@ -49,16 +48,6 @@ showPermissonsDialog(BuildContext context, FutureOr<bool> Function() onRequestBu
                       },
                       child: Text(
                         S.of(context).grant,
-                        style: theme.textTheme.bodySmall?.copyWith(color: onPrimaryColor),
-                      )),
-                  ElevatedButton(
-                      style: theme.elevatedButtonTheme.style
-                          ?.copyWith(backgroundColor: const WidgetStatePropertyAll(Colors.yellow)),
-                      onPressed: () async {
-                        await AwesomeNotifications().requestPermissionToSendNotifications();
-                      },
-                      child: Text(
-                        'GRAND 2',
                         style: theme.textTheme.bodySmall?.copyWith(color: onPrimaryColor),
                       )),
                   ElevatedButton(
