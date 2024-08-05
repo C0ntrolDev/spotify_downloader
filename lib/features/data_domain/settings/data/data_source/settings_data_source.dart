@@ -50,7 +50,7 @@ class SettingsDataSource {
           defaultSavePath = "$downloadsDirectoryPath/SpotifyDownloader";
         }
       }
-      
+
       defaultSavePath ??= "${(await getApplicationDocumentsDirectory()).path}/SpotifyDownloader";
 
       const defaultSaveMode = 0;
@@ -68,7 +68,7 @@ class SettingsDataSource {
   }
 
   List<String> getAvailableLanguages() {
-    return S.delegate.supportedLocales.where((l) => l.countryCode != null).map((l) => l.countryCode!).toList();
+    return S.delegate.supportedLocales.map((l) => l.languageCode).toList();
   }
 
   String _appSettingsToJson(AppSettings appSettings) {
