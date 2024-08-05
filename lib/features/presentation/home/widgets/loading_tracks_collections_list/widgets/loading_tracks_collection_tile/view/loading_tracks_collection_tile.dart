@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
-import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
-import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/entities/history_tracks_collection.dart';
-import 'package:spotify_downloader/features/presentation/home/view/home_screen.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/observe_tracks_loading/domain/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
+import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/domain/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/widgets/loading_tracks_collection_tile/cubit/loading_tracks_collection_tile_cubit.dart';
+import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
 
 class LoadingTracksCollectionTile extends StatefulWidget {
   const LoadingTracksCollectionTile({super.key, required this.loadingTracksCollection});
@@ -59,9 +59,9 @@ class _LoadingTracksCollectionTileState extends State<LoadingTracksCollectionTil
           loadedProgressIndicatorValue = loadedTracks / totalTracks;
         }
 
-        return InkWell(
-          splashColor: onSurfaceSplashColor,
-          highlightColor: onSurfaceHighlightColor,
+        return TapAnimatedContainer(
+          tappingMaskColor: backgroundColor.withOpacity(0.4),
+          tappingScale: 0.99,
           onTap: () {
             if (state.loadingTrackInfo.tracksCollection == null) return;
 
@@ -72,7 +72,7 @@ class _LoadingTracksCollectionTileState extends State<LoadingTracksCollectionTil
                     name: state.loadingTrackInfo.tracksCollection!.name)));
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: homePageHorizontalPadding, vertical: 5),
+            padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
               children: [
                 CachedNetworkImage(

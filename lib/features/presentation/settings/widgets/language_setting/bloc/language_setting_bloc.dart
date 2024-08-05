@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/features/domain/settings/use_cases/get_available_languages.dart';
-import 'package:spotify_downloader/features/domain/settings/use_cases/get_language.dart';
-import 'package:spotify_downloader/features/domain/settings/use_cases/save_language.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/features/data_domain/settings/domain/use_cases/use_cases.dart';
 
 part 'language_setting_event.dart';
 part 'language_setting_state.dart';

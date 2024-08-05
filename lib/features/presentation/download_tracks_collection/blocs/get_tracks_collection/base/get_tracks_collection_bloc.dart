@@ -1,10 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/failures/failures.dart';
-import 'package:spotify_downloader/core/util/result/result.dart';
-import 'package:spotify_downloader/features/domain/tracks/shared/entities/tracks_collection.dart';
-import 'package:spotify_downloader/features/domain/tracks_collections/history_tracks_collectons/use_cases/add_tracks_collection_to_history.dart';
+import 'package:spotify_downloader/core/utils/utils.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/domain/use_cases/add_tracks_collection_to_history.dart';
 
 part 'get_tracks_collection_event.dart';
 part 'get_tracks_collection_state.dart';
@@ -40,7 +38,7 @@ abstract class GetTracksCollectionBloc extends Bloc<GetTracksCollectionEvent, Ge
       if (loadTracksCollectionResult.failure is NetworkFailure) {
         emit(GetTracksCollectionNetworkFailure());
       } else {
-        emit(GetTracksCollectionFailure(failure: loadTracksCollectionResult.failure));
+        emit(GetTracksCollectionFatalFailure(failure: loadTracksCollectionResult.failure));
       }
     }
     _isTracksCollectionLoading = false;

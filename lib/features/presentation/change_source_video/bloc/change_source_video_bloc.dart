@@ -1,11 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/core/util/failures/failures.dart';
-import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/entities/video.dart';
-import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/use_cases/find_10_videos_by_track.dart';
-import 'package:spotify_downloader/features/domain/tracks/search_videos_by_track/use_cases/get_video_by_url.dart';
-import 'package:spotify_downloader/features/domain/tracks/shared/entities/track.dart';
+import 'package:spotify_downloader/core/utils/utils.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/search_videos_by_track/domain/domain.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/domain.dart';
 
 part 'change_source_video_event.dart';
 part 'change_source_video_state.dart';
@@ -42,7 +39,7 @@ class ChangeSourceVideoBloc extends Bloc<ChangeSourceVideoEvent, ChangeSourceVid
             emitBasedOnFailure(getSelectedVideoResult.failure, emit);
           }
         }
-        emit(ChangeSourceVideoLoaded(videos: _videos, selectedVideo: _selectedVideo));
+        emit(ChangeSourceVideoLoaded(videos: _videos, selectedVideo: _selectedVideo, isVideoSelectedByUser: false));
       } else {
         emitBasedOnFailure(findVideosResult.failure, emit);
       }
@@ -50,7 +47,7 @@ class ChangeSourceVideoBloc extends Bloc<ChangeSourceVideoEvent, ChangeSourceVid
 
     on<ChangeSourceVideoChangeSelectedVideo>((event, emit) {
       _selectedVideo = event.selectedVideo;
-      emit(ChangeSourceVideoLoaded(videos: _videos, selectedVideo: _selectedVideo));
+      emit(ChangeSourceVideoLoaded(videos: _videos, selectedVideo: _selectedVideo, isVideoSelectedByUser: true));
     });
   }
 

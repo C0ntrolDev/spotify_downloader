@@ -18,8 +18,8 @@ final class GetTracksCollectionLoaded extends GetTracksCollectionState {
   List<Object?> get props => [tracksCollection];
 }
 
-final class GetTracksCollectionFailure extends GetTracksCollectionState {
-  const GetTracksCollectionFailure({required this.failure});
+final class GetTracksCollectionFatalFailure extends GetTracksCollectionState {
+  const GetTracksCollectionFatalFailure({required this.failure});
 
   final Failure? failure;
 

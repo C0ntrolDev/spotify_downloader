@@ -2,7 +2,7 @@ name: spotify_downloader
 description: A new Flutter project.
 publish_to: 'none'
 
-version: 1.0.3+1
+version: 1.1.0+1
 
 environment:
   sdk: '>=3.1.4 <4.0.0'
@@ -22,25 +22,29 @@ dependencies:
   flutter_svg: ^2.0.9
   auto_route: ^7.8.4
   palette_generator: ^0.3.3+3
-  quiver: ^3.2.1
   ffmpeg_kit_flutter_full: ^6.0.3
   youtube_explode_dart: ^2.0.4
   metadata_god: ^0.5.2
   cached_network_image: ^3.3.0
   path: ^1.8.3
   connectivity_plus: ^5.0.2
-  draggable_scrollbar: ^0.1.0
-  modal_bottom_sheet: 3.0.0-pre
+  modal_bottom_sheet: ^3.0.0
   awesome_notifications_core: ^0.8.1
   awesome_notifications: ^0.8.2
   file_picker: ^6.1.1
-  device_info_plus: ^9.1.1
+  device_info_plus: ^10.1.1
   permission_handler: ^11.1.0
-  intl: ^0.18.1
+  intl: ^0.19.0
   flutter_localizations:
         sdk: flutter
   dropdown_button2: ^2.3.9
   flutter_background: ^1.2.0
+  async: ^2.11.0
+  sliver_tools: ^0.2.12
+  scrollbar_ultima: ^1.0.3
+  package_info_plus: ^8.0.1
+  url_launcher: ^6.3.0
+  flutter_oss_licenses: ^3.0.2
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +74,10 @@ flutter:
     - resources/images/svg/search_icon.svg
     - resources/images/svg/back_icon.svg
     - resources/images/another/loading_track_collection_image.png
+    - resources/images/another/bestIcon3.png
+    - resources/images/another/thanks.png
+
+
 
   fonts:
     - family: OpenSans

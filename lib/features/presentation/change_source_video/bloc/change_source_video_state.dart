@@ -10,9 +10,10 @@ sealed class ChangeSourceVideoState extends Equatable {
 final class ChangeSourceVideoLoading extends ChangeSourceVideoState {}
 
 final class ChangeSourceVideoLoaded extends ChangeSourceVideoState {
-  const ChangeSourceVideoLoaded({required this.videos, required this.selectedVideo});
+  const ChangeSourceVideoLoaded({required this.videos, required this.selectedVideo, required this.isVideoSelectedByUser});
 
   final List<Video> videos;
+  final bool isVideoSelectedByUser;
   final Video? selectedVideo;
 
   @override

@@ -1,23 +1,23 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_downloader/features/domain/tracks/services/entities/track_with_loading_observer.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/services/entities/track_with_loading_observer.dart';
 
 part 'filter_tracks_event.dart';
 part 'filter_tracks_state.dart';
 
-class FilterTracksBloc extends Bloc<FilterTracksEvent, FilterTracksState> {
+class FilterTracksBloc extends Bloc<FilterTracksEvent, FilterTracksDeffault> {
   String? _filterQuery;
   List<TrackWithLoadingObserver>? _tracksSource;
 
-  FilterTracksBloc() : super(FilterTracksChanged(filteredTracks: List.empty(), isFilterQueryEmpty: true)) {
+  FilterTracksBloc() : super(FilterTracksDeffault(filteredTracks: List.empty(), isFilterQueryEmpty: true)) {
     on<FilterTracksChangeSource>((event, emit) {
       _tracksSource = event.newSource;
-      emit(FilterTracksChanged(filteredTracks: getFilteredTracks(), isFilterQueryEmpty: _filterQuery?.isEmpty ?? true));
+      emit(FilterTracksDeffault(filteredTracks: getFilteredTracks(), isFilterQueryEmpty: _filterQuery?.isEmpty ?? true));
     });
 
     on<FilterTracksChangeFilterQuery>((event, emit) {
       _filterQuery = event.newQuery;
-      emit(FilterTracksChanged(filteredTracks: getFilteredTracks(), isFilterQueryEmpty: _filterQuery?.isEmpty ?? true));
+      emit(FilterTracksDeffault(filteredTracks: getFilteredTracks(), isFilterQueryEmpty: _filterQuery?.isEmpty ?? true));
     });
   }
 

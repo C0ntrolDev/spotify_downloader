@@ -23,19 +23,27 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(loaded, failured) =>
       "Загружено: ${loaded} | Ошибка: ${failured}";
 
-  static String m1(message) => "Ошибка загрузки: ${message}";
+  static String m1(appName) => "Название: ${appName}";
 
-  static String m2(failure) => "Ошибка загрузки активных треков: ${failure}";
+  static String m2(appVersion) => "Версия: ${appVersion}";
 
-  static String m3(value) => "${value} млн";
+  static String m3(buildNumber) => "Номер сборки: ${buildNumber}";
 
-  static String m4(value) => "${value} тыс";
+  static String m4(message) => "Ошибка загрузки: ${message}";
 
-  static String m5(views) => "${views} просмотров";
+  static String m5(failure) => "Ошибка загрузки активных треков: ${failure}";
 
-  static String m6(percent) => "Трек загружается: ${percent}%";
+  static String m6(value) => "${value} млн";
 
-  static String m7(total, loaded, failure, percent) =>
+  static String m7(value) => "${value} тыс";
+
+  static String m8(views) => "${views} просмотров";
+
+  static String m9(packageName) => "Пакет: ${packageName}";
+
+  static String m10(percent) => "Трек загружается: ${percent}%";
+
+  static String m11(total, loaded, failure, percent) =>
       "Всего: ${total} | Загружено: ${loaded} | Ошибка: ${failure} | ${percent}%";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -48,6 +56,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "allTracksAreLoaded":
             MessageLookupByLibrary.simpleMessage("Все треки загружены"),
         "allTracksAreLoadedBody": m0,
+        "appInfo":
+            MessageLookupByLibrary.simpleMessage("Информация о приложении"),
+        "appName": m1,
+        "appVersion": m2,
+        "buildNumber": m3,
         "changeTheDownloadSource":
             MessageLookupByLibrary.simpleMessage("Изменить источник загрузки"),
         "changeTheSource":
@@ -57,9 +70,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "couldntLogInToYourAccount":
             MessageLookupByLibrary.simpleMessage("Не удалось войти в аккаунт"),
         "developed": MessageLookupByLibrary.simpleMessage("Разработано"),
+        "developedByC0ntrolDev":
+            MessageLookupByLibrary.simpleMessage("Разработано C0ntroldev"),
         "download": MessageLookupByLibrary.simpleMessage("Загрузка"),
         "downloadAll": MessageLookupByLibrary.simpleMessage("Скачать все"),
-        "downloadError": m1,
+        "downloadError": m4,
         "downloadFromLink":
             MessageLookupByLibrary.simpleMessage("Скачать по ссылке"),
         "downloadFromLinkTextFieldHintText":
@@ -67,7 +82,9 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Ссылка на трек, плейлист или альбом"),
         "downloadLikedTracks":
             MessageLookupByLibrary.simpleMessage("Скачать любимые треки"),
-        "errorOccurredWhileLoadingActiveDownloads": m2,
+        "errorCopied":
+            MessageLookupByLibrary.simpleMessage("Ошибка скопирована!"),
+        "errorOccurredWhileLoadingActiveDownloads": m5,
         "grant": MessageLookupByLibrary.simpleMessage("Предоставить доступ"),
         "grantPermissions":
             MessageLookupByLibrary.simpleMessage("Предоставьте разрешения"),
@@ -82,9 +99,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "logIn": MessageLookupByLibrary.simpleMessage("Войти"),
         "logOut": MessageLookupByLibrary.simpleMessage("Выйти"),
         "main": MessageLookupByLibrary.simpleMessage("Главная"),
-        "nMillions": m3,
-        "nThousands": m4,
-        "nView": m5,
+        "nMillions": m6,
+        "nThousands": m7,
+        "nView": m8,
         "noConnection":
             MessageLookupByLibrary.simpleMessage("отсутствует соединение"),
         "nothingWasFoundAtThisUrl": MessageLookupByLibrary.simpleMessage(
@@ -92,6 +109,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "notificationsPermissionText": MessageLookupByLibrary.simpleMessage(
             "Для уведомления вас о загрузки, приложению нужен доступ к отправке уведомлений"),
         "other": MessageLookupByLibrary.simpleMessage("Иное"),
+        "packageName": m9,
+        "packagesLicenses":
+            MessageLookupByLibrary.simpleMessage("Лицензии пакетов"),
         "refuse": MessageLookupByLibrary.simpleMessage("Отказать"),
         "saveAllInOneFolder":
             MessageLookupByLibrary.simpleMessage("Сохранять все в одной папке"),
@@ -107,7 +127,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Для сохранения музыки в любое место на вашем телефоне, приложению нужно разрешение на работу с хранилищем"),
         "theTrackIsLoaded":
             MessageLookupByLibrary.simpleMessage("Трек загружен"),
-        "theTrackIsLoading": m6,
+        "theTrackIsLoading": m10,
         "theTrackIsNotLoaded":
             MessageLookupByLibrary.simpleMessage("Трек не загружен"),
         "theresSomethingWrongWithConnection":
@@ -116,7 +136,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Для доступа необходимо авторизоваться"),
         "tracksAreBeingLoaded":
             MessageLookupByLibrary.simpleMessage("Идет загрузка треков"),
-        "tracksAreBeingLoadedBody": m7,
+        "tracksAreBeingLoadedBody": m11,
         "tracksDontLoad":
             MessageLookupByLibrary.simpleMessage("Ничего не загружается   ^_^"),
         "tryAgain": MessageLookupByLibrary.simpleMessage("Попробовать снова"),

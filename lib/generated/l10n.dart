@@ -50,130 +50,130 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  /// `Download from link`
+  /// `Download from Link`
   String get downloadFromLink {
     return Intl.message(
-      'Download from link',
+      'Download from Link',
       name: 'downloadFromLink',
       desc: '',
       args: [],
     );
   }
 
-  /// `Link to a track, playlist, or album`
+  /// `What you want to download?`
   String get downloadFromLinkTextFieldHintText {
     return Intl.message(
-      'Link to a track, playlist, or album',
+      'What you want to download?',
       name: 'downloadFromLinkTextFieldHintText',
       desc: '',
       args: [],
     );
   }
 
-  /// `Incorrect link`
+  /// `Invalid Link`
   String get incorrectLink {
     return Intl.message(
-      'Incorrect link',
+      'Invalid Link',
       name: 'incorrectLink',
       desc: '',
       args: [],
     );
   }
 
-  /// `Download liked tracks`
+  /// `Download Liked Tracks`
   String get downloadLikedTracks {
     return Intl.message(
-      'Download liked tracks',
+      'Download Liked Tracks',
       name: 'downloadLikedTracks',
       desc: '',
       args: [],
     );
   }
 
-  /// `Liked tracks`
+  /// `Liked Tracks`
   String get likedTracksTitle {
     return Intl.message(
-      'Liked tracks',
+      'Liked Tracks',
       name: 'likedTracksTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Active downloads`
+  /// `Active Downloads`
   String get activeDownloads {
     return Intl.message(
-      'Active downloads',
+      'Active Downloads',
       name: 'activeDownloads',
       desc: '',
       args: [],
     );
   }
 
-  /// `Error occurred while loading active downloads: {failure}`
+  /// `Error loading active downloads: {failure}`
   String errorOccurredWhileLoadingActiveDownloads(Object failure) {
     return Intl.message(
-      'Error occurred while loading active downloads: $failure',
+      'Error loading active downloads: $failure',
       name: 'errorOccurredWhileLoadingActiveDownloads',
       desc: '',
       args: [failure],
     );
   }
 
-  /// `Tracks don't load   ^_^`
+  /// `Nothing is loading ^_^`
   String get tracksDontLoad {
     return Intl.message(
-      'Tracks don\'t load   ^_^',
+      'Nothing is loading ^_^',
       name: 'tracksDontLoad',
       desc: '',
       args: [],
     );
   }
 
-  /// `About app`
+  /// `About the App`
   String get aboutApp {
     return Intl.message(
-      'About app',
+      'About the App',
       name: 'aboutApp',
       desc: '',
       args: [],
     );
   }
 
-  /// `Special thanks`
+  /// `Special Thanks`
   String get specialThanks {
     return Intl.message(
-      'Special thanks',
+      'Special Thanks',
       name: 'specialThanks',
       desc: '',
       args: [],
     );
   }
 
-  /// `Change the download source`
+  /// `Change Download Source`
   String get changeTheDownloadSource {
     return Intl.message(
-      'Change the download source',
+      'Change Download Source',
       name: 'changeTheDownloadSource',
       desc: '',
       args: [],
     );
   }
 
-  /// `There's something wrong with connection`
+  /// `Connection Issue`
   String get theresSomethingWrongWithConnection {
     return Intl.message(
-      'There\'s something wrong with connection',
+      'Connection Issue',
       name: 'theresSomethingWrongWithConnection',
       desc: '',
       args: [],
     );
   }
 
-  /// `Try again`
+  /// `Try Again`
   String get tryAgain {
     return Intl.message(
-      'Try again',
+      'Try Again',
       name: 'tryAgain',
       desc: '',
       args: [],
@@ -210,90 +210,90 @@ class S {
     );
   }
 
-  /// `Nothing was found at this url`
+  /// `No results found for this URL`
   String get nothingWasFoundAtThisUrl {
     return Intl.message(
-      'Nothing was found at this url',
+      'No results found for this URL',
       name: 'nothingWasFoundAtThisUrl',
       desc: '',
       args: [],
     );
   }
 
-  /// `To access you need to Log In`
+  /// `You need to log in to access`
   String get toAccessYouNeedToLogIn {
     return Intl.message(
-      'To access you need to Log In',
+      'You need to log in to access',
       name: 'toAccessYouNeedToLogIn',
       desc: '',
       args: [],
     );
   }
 
-  /// `Url copied!`
+  /// `URL copied!`
   String get urlCopied {
     return Intl.message(
-      'Url copied!',
+      'URL copied!',
       name: 'urlCopied',
       desc: '',
       args: [],
     );
   }
 
-  /// `Link to the source`
+  /// `Source Link`
   String get linkToTheSource {
     return Intl.message(
-      'Link to the source',
+      'Source Link',
       name: 'linkToTheSource',
       desc: '',
       args: [],
     );
   }
 
-  /// `Url not selected`
+  /// `URL not selected`
   String get urlNotSelected {
     return Intl.message(
-      'Url not selected',
+      'URL not selected',
       name: 'urlNotSelected',
       desc: '',
       args: [],
     );
   }
 
-  /// `Change the source`
+  /// `Change Source`
   String get changeTheSource {
     return Intl.message(
-      'Change the source',
+      'Change Source',
       name: 'changeTheSource',
       desc: '',
       args: [],
     );
   }
 
-  /// `Track isn't loaded`
+  /// `Track not loaded`
   String get theTrackIsNotLoaded {
     return Intl.message(
-      'Track isn\'t loaded',
+      'Track not loaded',
       name: 'theTrackIsNotLoaded',
       desc: '',
       args: [],
     );
   }
 
-  /// `Track is loading: {percent}%`
+  /// `Track loading: {percent}%`
   String theTrackIsLoading(Object percent) {
     return Intl.message(
-      'Track is loading: $percent%',
+      'Track loading: $percent%',
       name: 'theTrackIsLoading',
       desc: '',
       args: [percent],
     );
   }
 
-  /// `Track is loaded`
+  /// `Track loaded`
   String get theTrackIsLoaded {
     return Intl.message(
-      'Track is loaded',
+      'Track loaded',
       name: 'theTrackIsLoaded',
       desc: '',
       args: [],
@@ -310,40 +310,40 @@ class S {
     );
   }
 
-  /// `no connection`
+  /// `No connection`
   String get noConnection {
     return Intl.message(
-      'no connection',
+      'No connection',
       name: 'noConnection',
       desc: '',
       args: [],
     );
   }
 
-  /// `Search by name`
+  /// `Search by Name`
   String get searchByName {
     return Intl.message(
-      'Search by name',
+      'Search by Name',
       name: 'searchByName',
       desc: '',
       args: [],
     );
   }
 
-  /// `Download all`
+  /// `Download All`
   String get downloadAll {
     return Intl.message(
-      'Download all',
+      'Download All',
       name: 'downloadAll',
       desc: '',
       args: [],
     );
   }
 
-  /// `Search history`
+  /// `Search History`
   String get searchHistory {
     return Intl.message(
-      'Search history',
+      'Search History',
       name: 'searchHistory',
       desc: '',
       args: [],
@@ -370,30 +370,30 @@ class S {
     );
   }
 
-  /// `Grant permissions`
+  /// `Grant Permissions`
   String get grantPermissions {
     return Intl.message(
-      'Grant permissions',
+      'Grant Permissions',
       name: 'grantPermissions',
       desc: '',
       args: [],
     );
   }
 
-  /// `To save music to any location on your phone, the app needs permission to work with the storage`
+  /// `The app needs permission to access storage to save music anywhere on your phone`
   String get storagePermissionText {
     return Intl.message(
-      'To save music to any location on your phone, the app needs permission to work with the storage',
+      'The app needs permission to access storage to save music anywhere on your phone',
       name: 'storagePermissionText',
       desc: '',
       args: [],
     );
   }
 
-  /// `To notify you of the download, the app needs access to send notifications`
+  /// `The app needs notification access to notify you of downloads`
   String get notificationsPermissionText {
     return Intl.message(
-      'To notify you of the download, the app needs access to send notifications',
+      'The app needs notification access to notify you of downloads',
       name: 'notificationsPermissionText',
       desc: '',
       args: [],
@@ -420,20 +420,20 @@ class S {
     );
   }
 
-  /// `SpotifySDK and Account`
+  /// `Spotify SDK and Account`
   String get spotifySDKAndAccount {
     return Intl.message(
-      'SpotifySDK and Account',
+      'Spotify SDK and Account',
       name: 'spotifySDKAndAccount',
       desc: '',
       args: [],
     );
   }
 
-  /// `Account information is being loaded`
+  /// `Loading account information`
   String get accountInformationIsBeingLoaded {
     return Intl.message(
-      'Account information is being loaded',
+      'Loading account information',
       name: 'accountInformationIsBeingLoaded',
       desc: '',
       args: [],
@@ -450,20 +450,20 @@ class S {
     );
   }
 
-  /// `Unknown error`
+  /// `Unknown Error`
   String get unknownError {
     return Intl.message(
-      'Unknown error',
+      'Unknown Error',
       name: 'unknownError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Connection error`
+  /// `Connection Error`
   String get connectionError {
     return Intl.message(
-      'Connection error',
+      'Connection Error',
       name: 'connectionError',
       desc: '',
       args: [],
@@ -480,20 +480,20 @@ class S {
     );
   }
 
-  /// `Log in`
+  /// `Log In`
   String get logIn {
     return Intl.message(
-      'Log in',
+      'Log In',
       name: 'logIn',
       desc: '',
       args: [],
     );
   }
 
-  /// `Log out`
+  /// `Log Out`
   String get logOut {
     return Intl.message(
-      'Log out',
+      'Log Out',
       name: 'logOut',
       desc: '',
       args: [],
@@ -510,20 +510,20 @@ class S {
     );
   }
 
-  /// `Storage path`
+  /// `Storage Path`
   String get storagePath {
     return Intl.message(
-      'Storage path',
+      'Storage Path',
       name: 'storagePath',
       desc: '',
       args: [],
     );
   }
 
-  /// `Save all in one folder`
+  /// `Save All in One Folder`
   String get saveAllInOneFolder {
     return Intl.message(
-      'Save all in one folder',
+      'Save All in One Folder',
       name: 'saveAllInOneFolder',
       desc: '',
       args: [],
@@ -560,31 +560,31 @@ class S {
     );
   }
 
-  /// `All tracks are loaded`
+  /// `All tracks loaded`
   String get allTracksAreLoaded {
     return Intl.message(
-      'All tracks are loaded',
+      'All tracks loaded',
       name: 'allTracksAreLoaded',
       desc: '',
       args: [],
     );
   }
 
-  /// `Total: {total} | Loaded: {loaded} | Failured: {failure} | {percent}%`
+  /// `Total: {total} | Loaded: {loaded} | Errors: {failure} | {percent}%`
   String tracksAreBeingLoadedBody(
       Object total, Object loaded, Object failure, Object percent) {
     return Intl.message(
-      'Total: $total | Loaded: $loaded | Failured: $failure | $percent%',
+      'Total: $total | Loaded: $loaded | Errors: $failure | $percent%',
       name: 'tracksAreBeingLoadedBody',
       desc: '',
       args: [total, loaded, failure, percent],
     );
   }
 
-  /// `Loaded: {loaded} | Failured: {failured}`
+  /// `Loaded: {loaded} | Errors: {failured}`
   String allTracksAreLoadedBody(Object loaded, Object failured) {
     return Intl.message(
-      'Loaded: $loaded | Failured: $failured',
+      'Loaded: $loaded | Errors: $failured',
       name: 'allTracksAreLoadedBody',
       desc: '',
       args: [loaded, failured],
@@ -611,10 +611,10 @@ class S {
     );
   }
 
-  /// `You can close the app and the download will continue !`
+  /// `You can close the app and the download will continue!`
   String get youCanCloseTheAppAndTheDownloadWillContinue {
     return Intl.message(
-      'You can close the app and the download will continue !',
+      'You can close the app and the download will continue!',
       name: 'youCanCloseTheAppAndTheDownloadWillContinue',
       desc: '',
       args: [],
@@ -626,6 +626,86 @@ class S {
     return Intl.message(
       '(you can delete this message)',
       name: 'youCanDeleteThisMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error copied!`
+  String get errorCopied {
+    return Intl.message(
+      'Error copied!',
+      name: 'errorCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Licenses of Packages`
+  String get packagesLicenses {
+    return Intl.message(
+      'Licenses of Packages',
+      name: 'packagesLicenses',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App Info`
+  String get appInfo {
+    return Intl.message(
+      'App Info',
+      name: 'appInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name: {appName}`
+  String appName(Object appName) {
+    return Intl.message(
+      'Name: $appName',
+      name: 'appName',
+      desc: '',
+      args: [appName],
+    );
+  }
+
+  /// `Package: {packageName}`
+  String packageName(Object packageName) {
+    return Intl.message(
+      'Package: $packageName',
+      name: 'packageName',
+      desc: '',
+      args: [packageName],
+    );
+  }
+
+  /// `Version: {appVersion}`
+  String appVersion(Object appVersion) {
+    return Intl.message(
+      'Version: $appVersion',
+      name: 'appVersion',
+      desc: '',
+      args: [appVersion],
+    );
+  }
+
+  /// `BuildNumber: {buildNumber}`
+  String buildNumber(Object buildNumber) {
+    return Intl.message(
+      'BuildNumber: $buildNumber',
+      name: 'buildNumber',
+      desc: '',
+      args: [buildNumber],
+    );
+  }
+
+  /// `Developed by C0ntroldev`
+  String get developedByC0ntrolDev {
+    return Intl.message(
+      'Developed by C0ntroldev',
+      name: 'developedByC0ntrolDev',
       desc: '',
       args: [],
     );

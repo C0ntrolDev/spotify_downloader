@@ -28,6 +28,7 @@ abstract class _$AppRouter extends RootStackRouter {
         child: ChangeSourceVideoScreen(
           key: args.key,
           track: args.track,
+          oldYoutubeUrl: args.oldYoutubeUrl,
         ),
       );
     },
@@ -70,6 +71,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const MainScreen(),
       );
     },
+    PackagesInfoRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const PackagesInfoScreen(),
+      );
+    },
     SettingsRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -99,12 +106,14 @@ class ChangeSourceVideoRoute extends PageRouteInfo<ChangeSourceVideoRouteArgs> {
   ChangeSourceVideoRoute({
     Key? key,
     required Track track,
+    String? oldYoutubeUrl,
     List<PageRouteInfo>? children,
   }) : super(
           ChangeSourceVideoRoute.name,
           args: ChangeSourceVideoRouteArgs(
             key: key,
             track: track,
+            oldYoutubeUrl: oldYoutubeUrl,
           ),
           initialChildren: children,
         );
@@ -119,15 +128,18 @@ class ChangeSourceVideoRouteArgs {
   const ChangeSourceVideoRouteArgs({
     this.key,
     required this.track,
+    this.oldYoutubeUrl,
   });
 
   final Key? key;
 
   final Track track;
 
+  final String? oldYoutubeUrl;
+
   @override
   String toString() {
-    return 'ChangeSourceVideoRouteArgs{key: $key, track: $track}';
+    return 'ChangeSourceVideoRouteArgs{key: $key, track: $track, oldYoutubeUrl: $oldYoutubeUrl}';
   }
 }
 
@@ -251,6 +263,20 @@ class MainRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'MainRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [PackagesInfoScreen]
+class PackagesInfoRoute extends PageRouteInfo<void> {
+  const PackagesInfoRoute({List<PageRouteInfo>? children})
+      : super(
+          PackagesInfoRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'PackagesInfoRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

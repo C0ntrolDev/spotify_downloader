@@ -21,113 +21,127 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
   static String m0(loaded, failured) =>
-      "Loaded: ${loaded} | Failured: ${failured}";
+      "Loaded: ${loaded} | Errors: ${failured}";
 
-  static String m1(message) => "Download error: ${message}";
+  static String m1(appName) => "Name: ${appName}";
 
-  static String m2(failure) =>
-      "Error occurred while loading active downloads: ${failure}";
+  static String m2(appVersion) => "Version: ${appVersion}";
 
-  static String m3(value) => "${value}M";
+  static String m3(buildNumber) => "BuildNumber: ${buildNumber}";
 
-  static String m4(value) => "${value}K";
+  static String m4(message) => "Download error: ${message}";
 
-  static String m5(views) => "${views} views";
+  static String m5(failure) => "Error loading active downloads: ${failure}";
 
-  static String m6(percent) => "Track is loading: ${percent}%";
+  static String m6(value) => "${value}M";
 
-  static String m7(total, loaded, failure, percent) =>
-      "Total: ${total} | Loaded: ${loaded} | Failured: ${failure} | ${percent}%";
+  static String m7(value) => "${value}K";
+
+  static String m8(views) => "${views} views";
+
+  static String m9(packageName) => "Package: ${packageName}";
+
+  static String m10(percent) => "Track loading: ${percent}%";
+
+  static String m11(total, loaded, failure, percent) =>
+      "Total: ${total} | Loaded: ${loaded} | Errors: ${failure} | ${percent}%";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "aboutApp": MessageLookupByLibrary.simpleMessage("About app"),
-        "accountInformationIsBeingLoaded": MessageLookupByLibrary.simpleMessage(
-            "Account information is being loaded"),
+        "aboutApp": MessageLookupByLibrary.simpleMessage("About the App"),
+        "accountInformationIsBeingLoaded":
+            MessageLookupByLibrary.simpleMessage("Loading account information"),
         "activeDownloads":
-            MessageLookupByLibrary.simpleMessage("Active downloads"),
+            MessageLookupByLibrary.simpleMessage("Active Downloads"),
         "allTracksAreLoaded":
-            MessageLookupByLibrary.simpleMessage("All tracks are loaded"),
+            MessageLookupByLibrary.simpleMessage("All tracks loaded"),
         "allTracksAreLoadedBody": m0,
+        "appInfo": MessageLookupByLibrary.simpleMessage("App Info"),
+        "appName": m1,
+        "appVersion": m2,
+        "buildNumber": m3,
         "changeTheDownloadSource":
-            MessageLookupByLibrary.simpleMessage("Change the download source"),
+            MessageLookupByLibrary.simpleMessage("Change Download Source"),
         "changeTheSource":
-            MessageLookupByLibrary.simpleMessage("Change the source"),
+            MessageLookupByLibrary.simpleMessage("Change Source"),
         "connectionError":
-            MessageLookupByLibrary.simpleMessage("Connection error"),
+            MessageLookupByLibrary.simpleMessage("Connection Error"),
         "couldntLogInToYourAccount": MessageLookupByLibrary.simpleMessage(
             "Couldn\'t log in to your account"),
         "developed": MessageLookupByLibrary.simpleMessage("Developed"),
+        "developedByC0ntrolDev":
+            MessageLookupByLibrary.simpleMessage("Developed by C0ntroldev"),
         "download": MessageLookupByLibrary.simpleMessage("Download"),
-        "downloadAll": MessageLookupByLibrary.simpleMessage("Download all"),
-        "downloadError": m1,
+        "downloadAll": MessageLookupByLibrary.simpleMessage("Download All"),
+        "downloadError": m4,
         "downloadFromLink":
-            MessageLookupByLibrary.simpleMessage("Download from link"),
+            MessageLookupByLibrary.simpleMessage("Download from Link"),
         "downloadFromLinkTextFieldHintText":
-            MessageLookupByLibrary.simpleMessage(
-                "Link to a track, playlist, or album"),
+            MessageLookupByLibrary.simpleMessage("What you want to download?"),
         "downloadLikedTracks":
-            MessageLookupByLibrary.simpleMessage("Download liked tracks"),
-        "errorOccurredWhileLoadingActiveDownloads": m2,
+            MessageLookupByLibrary.simpleMessage("Download Liked Tracks"),
+        "errorCopied": MessageLookupByLibrary.simpleMessage("Error copied!"),
+        "errorOccurredWhileLoadingActiveDownloads": m5,
         "grant": MessageLookupByLibrary.simpleMessage("Grant"),
         "grantPermissions":
-            MessageLookupByLibrary.simpleMessage("Grant permissions"),
+            MessageLookupByLibrary.simpleMessage("Grant Permissions"),
         "history": MessageLookupByLibrary.simpleMessage("History"),
-        "incorrectLink": MessageLookupByLibrary.simpleMessage("Incorrect link"),
+        "incorrectLink": MessageLookupByLibrary.simpleMessage("Invalid Link"),
         "language": MessageLookupByLibrary.simpleMessage("Language"),
         "likedTracksTitle":
-            MessageLookupByLibrary.simpleMessage("Liked tracks"),
-        "linkToTheSource":
-            MessageLookupByLibrary.simpleMessage("Link to the source"),
-        "logIn": MessageLookupByLibrary.simpleMessage("Log in"),
-        "logOut": MessageLookupByLibrary.simpleMessage("Log out"),
+            MessageLookupByLibrary.simpleMessage("Liked Tracks"),
+        "linkToTheSource": MessageLookupByLibrary.simpleMessage("Source Link"),
+        "logIn": MessageLookupByLibrary.simpleMessage("Log In"),
+        "logOut": MessageLookupByLibrary.simpleMessage("Log Out"),
         "main": MessageLookupByLibrary.simpleMessage("Home"),
-        "nMillions": m3,
-        "nThousands": m4,
-        "nView": m5,
-        "noConnection": MessageLookupByLibrary.simpleMessage("no connection"),
+        "nMillions": m6,
+        "nThousands": m7,
+        "nView": m8,
+        "noConnection": MessageLookupByLibrary.simpleMessage("No connection"),
         "nothingWasFoundAtThisUrl": MessageLookupByLibrary.simpleMessage(
-            "Nothing was found at this url"),
+            "No results found for this URL"),
         "notificationsPermissionText": MessageLookupByLibrary.simpleMessage(
-            "To notify you of the download, the app needs access to send notifications"),
+            "The app needs notification access to notify you of downloads"),
         "other": MessageLookupByLibrary.simpleMessage("Other"),
+        "packageName": m9,
+        "packagesLicenses":
+            MessageLookupByLibrary.simpleMessage("Licenses of Packages"),
         "refuse": MessageLookupByLibrary.simpleMessage("Refuse"),
         "saveAllInOneFolder":
-            MessageLookupByLibrary.simpleMessage("Save all in one folder"),
-        "searchByName": MessageLookupByLibrary.simpleMessage("Search by name"),
-        "searchHistory": MessageLookupByLibrary.simpleMessage("Search history"),
+            MessageLookupByLibrary.simpleMessage("Save All in One Folder"),
+        "searchByName": MessageLookupByLibrary.simpleMessage("Search by Name"),
+        "searchHistory": MessageLookupByLibrary.simpleMessage("Search History"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
-        "specialThanks": MessageLookupByLibrary.simpleMessage("Special thanks"),
+        "specialThanks": MessageLookupByLibrary.simpleMessage("Special Thanks"),
         "spotifySDKAndAccount":
-            MessageLookupByLibrary.simpleMessage("SpotifySDK and Account"),
-        "storagePath": MessageLookupByLibrary.simpleMessage("Storage path"),
+            MessageLookupByLibrary.simpleMessage("Spotify SDK and Account"),
+        "storagePath": MessageLookupByLibrary.simpleMessage("Storage Path"),
         "storagePermissionText": MessageLookupByLibrary.simpleMessage(
-            "To save music to any location on your phone, the app needs permission to work with the storage"),
+            "The app needs permission to access storage to save music anywhere on your phone"),
         "theTrackIsLoaded":
-            MessageLookupByLibrary.simpleMessage("Track is loaded"),
-        "theTrackIsLoading": m6,
+            MessageLookupByLibrary.simpleMessage("Track loaded"),
+        "theTrackIsLoading": m10,
         "theTrackIsNotLoaded":
-            MessageLookupByLibrary.simpleMessage("Track isn\'t loaded"),
+            MessageLookupByLibrary.simpleMessage("Track not loaded"),
         "theresSomethingWrongWithConnection":
-            MessageLookupByLibrary.simpleMessage(
-                "There\'s something wrong with connection"),
+            MessageLookupByLibrary.simpleMessage("Connection Issue"),
         "toAccessYouNeedToLogIn": MessageLookupByLibrary.simpleMessage(
-            "To access you need to Log In"),
+            "You need to log in to access"),
         "tracksAreBeingLoaded":
             MessageLookupByLibrary.simpleMessage("Tracks are being loaded"),
-        "tracksAreBeingLoadedBody": m7,
+        "tracksAreBeingLoadedBody": m11,
         "tracksDontLoad":
-            MessageLookupByLibrary.simpleMessage("Tracks don\'t load   ^_^"),
-        "tryAgain": MessageLookupByLibrary.simpleMessage("Try again"),
-        "unknownError": MessageLookupByLibrary.simpleMessage("Unknown error"),
-        "urlCopied": MessageLookupByLibrary.simpleMessage("Url copied!"),
+            MessageLookupByLibrary.simpleMessage("Nothing is loading ^_^"),
+        "tryAgain": MessageLookupByLibrary.simpleMessage("Try Again"),
+        "unknownError": MessageLookupByLibrary.simpleMessage("Unknown Error"),
+        "urlCopied": MessageLookupByLibrary.simpleMessage("URL copied!"),
         "urlNotSelected":
-            MessageLookupByLibrary.simpleMessage("Url not selected"),
+            MessageLookupByLibrary.simpleMessage("URL not selected"),
         "youAreNotLoggedInToYourAccount": MessageLookupByLibrary.simpleMessage(
             "You are not logged in to your account"),
         "youCanCloseTheAppAndTheDownloadWillContinue":
             MessageLookupByLibrary.simpleMessage(
-                "You can close the app and the download will continue !"),
+                "You can close the app and the download will continue!"),
         "youCanDeleteThisMessage": MessageLookupByLibrary.simpleMessage(
             "(you can delete this message)")
       };

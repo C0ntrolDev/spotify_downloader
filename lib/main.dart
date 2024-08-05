@@ -1,18 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:metadata_god/metadata_god.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
-import 'package:spotify_downloader/core/permissions/requiring_permission_services_initializer.dart';
-import 'package:spotify_downloader/features/domain/settings/use_cases/get_language.dart';
+import 'package:spotify_downloader/features/data_domain/settings/domain/use_cases/get_language.dart';
 import 'core/app/spotify_downloader_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MetadataGod.initialize();
-  await initInjector();  
-  await injector.get<RequiringPermissionServicesInitializer>().initialize();
+  await initInjector(defaultTargetPlatform);  
 
-  final getLanguageResult = await injector.get<GetLanguage>().call(null);
-  runApp(SpotifyDownloaderApp(
-    locale: getLanguageResult.result ?? 'en',
-  ));
+  final locale = await injector.get<GetLanguage>().call(null);
+  final packageInfo = await PackageInfo.fromPlatform();
+  runApp(SpotifyDownloaderApp(locale: locale.result, packageInfo: packageInfo));
 }

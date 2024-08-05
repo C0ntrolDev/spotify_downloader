@@ -2,11 +2,8 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
-import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/loading_tracks_collection/loading_tracks_collection_status.dart';
-import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/entities/repository/loading_tracks_collections_observer.dart';
-import 'package:spotify_downloader/features/domain/tracks/observe_tracks_loading/use_cases/get_loading_tracks_collections_observer.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/observe_tracks_loading/domain/domain.dart';
 import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notifications/bloc_entities/tracks_collections_loading_info.dart';
 
 part 'tracks_collections_loading_notifications_event.dart';
@@ -67,7 +64,8 @@ class TracksCollectionsLoadingNotificationsBloc
     }
   }
 
-  FutureOr<void> _onUpdate(event, emit) {
+  Future<void> _onUpdate(TracksCollectionsLoadingNotificationsUpdate event,
+      Emitter<TracksCollectionsLoadingNotificationsState> emit) async {
     List<String> loadingTracksCollectionsNames = List.empty(growable: true);
     int totalTracks = 0;
     int loadingTracks = 0;

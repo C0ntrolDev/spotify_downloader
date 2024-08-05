@@ -31,7 +31,9 @@
                 <data android:scheme="com.cdev.spotifydownloader" />
             </intent-filter>
         </activity>
-
+        
+        <meta-data android:name="io.flutter.embedding.android.EnableImpeller"
+                   android:value="true" />
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
@@ -42,5 +44,5 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 </manifest>

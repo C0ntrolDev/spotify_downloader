@@ -10,7 +10,7 @@ class LocalDbImpl extends LocalDb {
 
   @override
   Future<void> cleanDb() async {
-    final localDirectoryPath = (await getApplicationDocumentsDirectory()).path;
+    final localDirectoryPath = (await getApplicationSupportDirectory()).path;
     final absoluteDbPath = '$localDirectoryPath$dbPath';
 
     final dbFile = File(absoluteDbPath);
@@ -24,7 +24,7 @@ class LocalDbImpl extends LocalDb {
 
   @override
   Future<void> initDb() async {
-    final localDirectoryPath = (await getApplicationDocumentsDirectory()).path;
+    final localDirectoryPath = (await getApplicationSupportDirectory()).path;
     final absoluteDbPath = '$localDirectoryPath$dbPath';
 
     final dbFile = File(absoluteDbPath);

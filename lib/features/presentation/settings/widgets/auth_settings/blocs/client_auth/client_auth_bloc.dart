@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/features/domain/auth/local_auth/use_cases/get_client_credentials.dart';
-import 'package:spotify_downloader/features/domain/auth/local_auth/use_cases/save_client_credentials.dart';
-import 'package:spotify_downloader/features/domain/auth/shared/client_credentials.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/features/data_domain/auth/local_auth/domain/use_cases/use_cases.dart';
+import 'package:spotify_downloader/features/data_domain/auth/shared/client_credentials.dart';
 
 part 'client_auth_event.dart';
 part 'client_auth_state.dart';

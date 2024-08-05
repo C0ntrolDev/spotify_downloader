@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_downloader/core/util/failures/failure.dart';
-import 'package:spotify_downloader/features/domain/settings/enitities/download_tracks_settings.dart';
-import 'package:spotify_downloader/features/domain/settings/enitities/save_mode.dart';
-import 'package:spotify_downloader/features/domain/settings/use_cases/get_download_tracks_settings.dart';
-import 'package:spotify_downloader/features/domain/settings/use_cases/save_download_tracks_setting.dart';
+import 'package:spotify_downloader/core/utils/failures/failure.dart';
+import 'package:spotify_downloader/features/data_domain/settings/domain/enitities/enitities.dart';
+import 'package:spotify_downloader/features/data_domain/settings/domain/use_cases/use_cases.dart';
 
 part 'download_tracks_settings_event.dart';
 part 'download_tracks_settings_state.dart';
