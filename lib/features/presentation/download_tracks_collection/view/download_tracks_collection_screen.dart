@@ -279,6 +279,10 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                               final preselectedYoutubeUrl = donwloadTracksState
                                                   .preselectedTracksYouTubeUrls[trackWithLoadingObserver];
 
+                                              final currentYoutubeUrl = preselectedYoutubeUrl ??
+                                                  trackWithLoadingObserver.loadingObserver?.youtubeUrl ??
+                                                  trackWithLoadingObserver.track.localYoutubeUrl;
+
                                               return TracksCollectionTypeDependTrackTile(
                                                 type: getTracksCollectionState.tracksCollection.type,
                                                 isLoadedIfLoadingObserverIsNull: preselectedYoutubeUrl != null
@@ -290,16 +294,12 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                                 onCancelButtonClicked: () =>
                                                     _downloadTracksCubit.cancelTrackLoading(trackWithLoadingObserver),
                                                 onMoreInfoClicked: () => showDownloadTrackInfoBottomSheet(
-                                                    preselectedYoutubeUrl: preselectedYoutubeUrl,
+                                                    initialYoutubeUrl: currentYoutubeUrl,
                                                     context: context,
                                                     trackWithLoadingObserver: trackWithLoadingObserver,
                                                     onChangeYoutubeUrlClicked: () {
-                                                      final oldYoutubeUrl = preselectedYoutubeUrl ??
-                                                          trackWithLoadingObserver.loadingObserver?.youtubeUrl ??
-                                                          trackWithLoadingObserver.track.localYoutubeUrl;
-
                                                       return _onChangeYoutubeUrlClicked(
-                                                          filteredTracks[index], oldYoutubeUrl);
+                                                          filteredTracks[index], currentYoutubeUrl);
                                                     }),
                                               );
                                             }),

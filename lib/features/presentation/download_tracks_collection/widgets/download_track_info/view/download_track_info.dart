@@ -15,7 +15,7 @@ import 'package:spotify_downloader/generated/l10n.dart';
 void showDownloadTrackInfoBottomSheet(
     {required BuildContext context,
     required TrackWithLoadingObserver trackWithLoadingObserver,
-    required String? preselectedYoutubeUrl,
+    required String? initialYoutubeUrl,
     required Future<String?> Function() onChangeYoutubeUrlClicked}) {
   showMaterialModalBottomSheet(
       elevation: 0,
@@ -31,7 +31,7 @@ void showDownloadTrackInfoBottomSheet(
         return DownloadTrackInfo(
             trackWithLoadingObserver: trackWithLoadingObserver,
             onChangeYoutubeUrlClicked: onChangeYoutubeUrlClicked,
-            preselectedYoutubeUrl: preselectedYoutubeUrl);
+            initialYoutubeUrl: initialYoutubeUrl);
       });
 }
 
@@ -39,11 +39,11 @@ class DownloadTrackInfo extends StatefulWidget {
   const DownloadTrackInfo(
       {super.key,
       required this.trackWithLoadingObserver,
-      required this.preselectedYoutubeUrl,
+      required this.initialYoutubeUrl,
       required this.onChangeYoutubeUrlClicked});
 
   final TrackWithLoadingObserver trackWithLoadingObserver;
-  final String? preselectedYoutubeUrl;
+  final String? initialYoutubeUrl;
   final Future<String?> Function() onChangeYoutubeUrlClicked;
 
   @override
@@ -57,7 +57,7 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
   void initState() {
     super.initState();
 
-    selectedYoutubeUrl = widget.preselectedYoutubeUrl;
+    selectedYoutubeUrl = widget.initialYoutubeUrl;
   }
 
   @override

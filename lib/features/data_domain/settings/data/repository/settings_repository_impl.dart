@@ -57,30 +57,36 @@ class SettingsRepositoryImpl implements DownloadTracksSettingsRepository, Langua
   }
 
   Future<Result<Failure, AppSettings>> _getSettings() async {
-    if (_currentSettings == null) {
-      final getSettingsResult = await _settingsDataSource.getSettings();
-      if (getSettingsResult.isSuccessful) {
-        if (getSettingsResult.result != null) {
-          _currentSettings = getSettingsResult.result;
-        } else {
-          _currentSettings = AppSettings.deffault;
-        }
-      } else {
-        return Result.notSuccessful(getSettingsResult.failure);
-      }
+    if (_currentSettings != null) {
+      return Result.isSuccessful(_currentSettings);
     }
 
-    return Result.isSuccessful(_currentSettings);
+    final getSettingsResult = await _settingsDataSource.getSettings();
+    if (!getSettingsResult.isSuccessful) {
+      return Result.notSuccessful(getSettingsResult.failure);
+    }
+
+    if (getSettingsResult.result != null) {
+      _currentSettings = getSettingsResult.result;
+      return Result.isSuccessful(_currentSettings!);
+    }
+
+    final getDefaultSettingsResult = await _settingsDataSource.getDefaultAppSettings();
+    if (!getDefaultSettingsResult.isSuccessful) {
+      return Result.notSuccessful(getDefaultSettingsResult.failure);
+    }
+
+    _currentSettings = getDefaultSettingsResult.result!;
+    return Result.isSuccessful(getDefaultSettingsResult.result!);
   }
 
   Future<Result<Failure, void>> _saveSettings(AppSettings newSettings) async {
     _currentSettings = newSettings;
-    await _settingsDataSource.saveSettings(newSettings);
-    return const Result.isSuccessful(null);
+    return _settingsDataSource.saveSettings(newSettings);
   }
 
   @override
   Future<Result<Failure, List<String>>> getAvailableLanguage() async {
-    return const Result.isSuccessful(['en', 'ru']);
+    return Result.isSuccessful(_settingsDataSource.getAvailableLanguages());
   }
 }

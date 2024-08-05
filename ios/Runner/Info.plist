@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
     <dict>
+        <key>CADisableMinimumFrameDurationOnPhone</key>
+        <true />
         <key>CFBundleDevelopmentRegion</key>
         <string>$(DEVELOPMENT_LANGUAGE)</string>
         <key>CFBundleDisplayName</key>
@@ -28,6 +30,8 @@
         <string>LaunchScreen</string>
         <key>UIMainStoryboardFile</key>
         <string>Main</string>
+        <key>UIStatusBarHidden</key>
+        <false />
         <key>UISupportedInterfaceOrientations</key>
         <array>
             <string>UIInterfaceOrientationPortrait</string>
@@ -41,19 +45,19 @@
             <string>UIInterfaceOrientationLandscapeLeft</string>
             <string>UIInterfaceOrientationLandscapeRight</string>
         </array>
-        <key>CADisableMinimumFrameDurationOnPhone</key>
-        <true />
-        <key>UIApplicationSupportsIndirectInputEvents</key>
-        <true />
-        <key>UIStatusBarHidden</key>
-        <false />
-        <key>NSPhotoLibraryUsageDescription</key>
-        <string>For tracks saving</string>
-        <key>NSPhotoLibraryAddUsageDescription</key>
-        <string>For tracks saving</string>
+        <key>UIBackgroundModes</key>
+        <array>
+            <string>processing</string>
+            <string>fetch</string>
+            <string>remote-notification</string>
+        </array>
         <key>NSDocumentsFolderUsageDescription</key>
-        <string>For tracks saving</string>
-        <key>NSUserNotificationUsageDescription</key>
-        <string>For tracks downloading notifications</string>
+        <string>For downloaded tracks saving</string>
+        <key>UISupportsDocumentBrowser</key>
+        <true />
+        <key>UIFileSharingEnabled</key>
+        <true />
+        <key>LSSupportsOpeningDocumentsInPlace</key>
+        <true />
     </dict>
 </plist>
