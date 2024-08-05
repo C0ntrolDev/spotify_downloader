@@ -44,9 +44,9 @@ class SettingsDataSource {
   Future<Result<Failure, AppSettings>> getDefaultAppSettings() async {
     try {
       String? defaultSavePath;
-      if (defaultTargetPlatform != TargetPlatform.iOS) {
-        final downloadsDirectoryPath = (await getDownloadsDirectory())?.path;
-        if (downloadsDirectoryPath != null) {
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        const downloadsDirectoryPath = "/storage/emulated/0/Download/";
+        if (await Directory.fromUri(Uri.parse(downloadsDirectoryPath)).exists()) {
           defaultSavePath = "$downloadsDirectoryPath/SpotifyDownloader";
         }
       }
