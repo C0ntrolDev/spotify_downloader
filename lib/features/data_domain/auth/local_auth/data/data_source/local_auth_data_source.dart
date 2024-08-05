@@ -7,7 +7,7 @@ import 'package:spotify_downloader/features/data_domain/auth/local_auth/data/dat
 
 class LocalAuthDataSource {
   Future<LocalAuthCredentials?> getLocalAuthCredentials() async {
-    final localDirectoryPath = (await getApplicationDocumentsDirectory()).path;
+    final localDirectoryPath = (await getApplicationSupportDirectory()).path;
     final absoluteAuthFilePath = '$localDirectoryPath$authSettingPath';
 
     final authFile = File(absoluteAuthFilePath);
@@ -20,7 +20,7 @@ class LocalAuthDataSource {
   }
 
   Future<void> saveLocalAuthCredentials(LocalAuthCredentials localAuthCredentials) async {
-    final localDirectoryPath = (await getApplicationDocumentsDirectory()).path;
+    final localDirectoryPath = (await getApplicationSupportDirectory()).path;
     final absoluteAuthFilePath = '$localDirectoryPath$authSettingPath';
 
     final authFile = File(absoluteAuthFilePath);
