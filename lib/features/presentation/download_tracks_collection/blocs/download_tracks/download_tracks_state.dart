@@ -9,8 +9,8 @@ sealed class DownloadTracksState extends Equatable {
   List<Object?> get props => [];
 }
 
-final class DownloadTracksDeffault extends DownloadTracksState {
-  const DownloadTracksDeffault({required super.preselectedTracksYouTubeUrls});
+final class DownloadTracksDefault extends DownloadTracksState {
+  const DownloadTracksDefault({required super.preselectedTracksYouTubeUrls});
 
   @override
   List<Object?> get props => [];

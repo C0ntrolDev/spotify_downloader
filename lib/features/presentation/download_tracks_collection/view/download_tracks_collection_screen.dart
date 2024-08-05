@@ -369,7 +369,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
       _filterTracksBloc.add(FilterTracksChangeFilterQuery(newQuery: newQuery));
 
   void _onDownloadAllButtonClicked(
-      {required FilterTracksDeffault filterTracksState, required GetTracksState getTracksState}) {
+      {required FilterTracksDefault filterTracksState, required GetTracksState getTracksState}) {
     if (!filterTracksState.isFilterQueryEmpty) {
       _downloadTracksCubit.downloadTracksRange(filterTracksState.filteredTracks);
     } else {

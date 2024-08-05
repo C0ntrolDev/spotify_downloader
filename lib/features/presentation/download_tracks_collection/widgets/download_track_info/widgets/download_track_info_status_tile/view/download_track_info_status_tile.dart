@@ -50,7 +50,7 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
     return BlocBuilder<TrackLoadingObservingCubit, TrackLoadingObservingState>(
       bloc: _trackLoadingObservingCubit,
       builder: (context, state) {
-        if (state is TrackLoadingObservingDeffault) {
+        if (state is TrackLoadingObservingDefault) {
           return DownloadTrackInfoTile(
               title: S.of(context).theTrackIsNotLoaded,
               iconWidget:

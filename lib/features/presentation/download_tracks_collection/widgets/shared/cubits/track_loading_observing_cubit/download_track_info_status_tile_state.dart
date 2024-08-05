@@ -7,8 +7,8 @@ sealed class TrackLoadingObservingState extends Equatable {
   List<Object?> get props => [];
 }
 
-final class TrackLoadingObservingDeffault extends TrackLoadingObservingState {
-  const TrackLoadingObservingDeffault();
+final class TrackLoadingObservingDefault extends TrackLoadingObservingState {
+  const TrackLoadingObservingDefault();
 }
 
 final class TrackLoadingObservingLoading extends TrackLoadingObservingState {

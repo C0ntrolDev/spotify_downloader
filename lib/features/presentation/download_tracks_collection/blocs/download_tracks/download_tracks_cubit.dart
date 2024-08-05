@@ -27,7 +27,7 @@ class DownloadTracksCubit extends Cubit<DownloadTracksState> {
         _downloadTracksFromGettingObserver = downloadTracksFromGettingObserver,
         _downloadTrack = downloadTrack,
         _cancelTrackLoading = cancelTrackLoading,
-        super(const DownloadTracksDeffault(preselectedTracksYouTubeUrls: {}));
+        super(const DownloadTracksDefault(preselectedTracksYouTubeUrls: {}));
 
   Future<void> downloadAllTracks() async {
     if (_trackList != null && _trackList!.isNotEmpty) {
@@ -102,7 +102,7 @@ class DownloadTracksCubit extends Cubit<DownloadTracksState> {
     _preselectedTracksYouTubeUrls[trackWithLoadingObserver] = newYoutubeUrl;
 
     cancelTrackLoading(trackWithLoadingObserver);
-    emit(DownloadTracksDeffault(preselectedTracksYouTubeUrls: _preselectedTracksYouTubeUrls));
+    emit(DownloadTracksDefault(preselectedTracksYouTubeUrls: _preselectedTracksYouTubeUrls));
   }
 
   void setGettingObserver(TracksWithLoadingObserverGettingObserver? gettingObserver) {
