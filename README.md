@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/dev-1.1/github_images/app_icon.png" width="100"/>
+<img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/main/github_images/app_icon.png" width="100"/>
 </div>
 <h1 align="center">
 Spotify Downloader
@@ -10,7 +10,7 @@ App that allows you to download your favorite playlists at the touch of just one
 
 ## Screenshots
 
-<img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/dev-1.1/github_images/main_screen.png" width="200" /> <img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/dev-1.1/github_images/download_screen.png" width="200" /> <img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/dev-1.1/github_images/change_source_screen.png" width="200" />
+<img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/main/github_images/main_screen.png" width="200" /> <img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/main/github_images/download_screen.png" width="200" /> <img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/main/github_images/change_source_screen.png" width="200" />
 
 ## About App
 
