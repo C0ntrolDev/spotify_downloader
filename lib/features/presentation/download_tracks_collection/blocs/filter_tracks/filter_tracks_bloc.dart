@@ -5,19 +5,19 @@ import 'package:spotify_downloader/features/data_domain/tracks/services/entities
 part 'filter_tracks_event.dart';
 part 'filter_tracks_state.dart';
 
-class FilterTracksBloc extends Bloc<FilterTracksEvent, FilterTracksDeffault> {
+class FilterTracksBloc extends Bloc<FilterTracksEvent, FilterTracksDefault> {
   String? _filterQuery;
   List<TrackWithLoadingObserver>? _tracksSource;
 
-  FilterTracksBloc() : super(FilterTracksDeffault(filteredTracks: List.empty(), isFilterQueryEmpty: true)) {
+  FilterTracksBloc() : super(FilterTracksDefault(filteredTracks: List.empty(), isFilterQueryEmpty: true)) {
     on<FilterTracksChangeSource>((event, emit) {
       _tracksSource = event.newSource;
-      emit(FilterTracksDeffault(filteredTracks: getFilteredTracks(), isFilterQueryEmpty: _filterQuery?.isEmpty ?? true));
+      emit(FilterTracksDefault(filteredTracks: getFilteredTracks(), isFilterQueryEmpty: _filterQuery?.isEmpty ?? true));
     });
 
     on<FilterTracksChangeFilterQuery>((event, emit) {
       _filterQuery = event.newQuery;
-      emit(FilterTracksDeffault(filteredTracks: getFilteredTracks(), isFilterQueryEmpty: _filterQuery?.isEmpty ?? true));
+      emit(FilterTracksDefault(filteredTracks: getFilteredTracks(), isFilterQueryEmpty: _filterQuery?.isEmpty ?? true));
     });
   }
 

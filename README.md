@@ -1,32 +1,57 @@
-# spotify_downloader
-
-Spotify Downloader is an application that allows you to download your favorite playlists at the touch of just one button!
+<div align="center">
+<img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/main/github_images/app_icon.png" width="100"/>
+</div>
+<h1 align="center">
+Spotify Downloader
+</h1>
+<div align="center">
+App that allows you to download your favorite playlists at the touch of just one button!
+</div>
 
 ## Screenshots
 
-<img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/main_screen.jpg" width="200" /> <img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/playlist_screen.jpg" width="200" /> <img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/change_source_screen.jpg" width="200" />
+<img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/main/github_images/main_screen.png" width="200" /> <img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/main/github_images/download_screen.png" width="200" /> <img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/main/github_images/change_source_screen.png" width="200" />
 
+## About App
+
+- 📱 🍎 Supported platforms: Android, IOS
+- 🇺🇸 🇷🇺 Languages: English, Russian
+- 🎥 Download audio from YouTube using SpotifyAPI
+
+## Features 
+
+- 📥 Download the entire playlist with one click
+- ❤️ Download favorite tracks
+- 🔄 Change the download source if you didn't like the automatic choice
+- 🔔 Track downloads in notifications or on the main page
+- 💤 Background download (Android only)
 
 ## How to download
 
+### Android
+
 You can download this apk if you don't know what kind of architecture you have.
-- [spotify_downloader.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.0.3/spotify_downloader.apk)
+- [spotify_downloader.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.0/spotify_downloader.apk)
 
 If you know what architecture you have, then download one of the apk listed below.
-- [spotify_downloader_armeabi-v7a.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.0.3/spotify_downloader_armeabi-v7a.apk)
-- [spotify_downloader_arm64-v8a.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.0.3/spotify_downloader_arm64-v8a.apk)
-- [spotify_downloader_x86_64.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.0.3/spotify_downloader_x86_64.apk)
+- [spotify_downloader_armeabi-v7a.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.0/spotify_downloader_armeabi-v7a.apk)
+- [spotify_downloader_arm64-v8a.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.0/spotify_downloader_arm64-v8a.apk)
+- [spotify_downloader_x86_64.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.0/spotify_downloader_x86_64.apk)
+
+### IOS
+
+You can download ipa there.
+- [spotify_downloader.ipa](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.0/spotify_downloader.ipa)
 
 ## How to use
 
 After you have downloaded the application, you must grant it the permissions it will ask for.   
 Then you can use the app. Just paste the link to the playlist and click the search button.
 
-But in this case, your favorite tracks will not be available for download, as well as playlists that are created "only for you" may not match those that you expect
+If you want to download your favorite tracks, and also download playlists "only for you", you must create Spotify Service App
 
-## How to download liked tracks
+## How create Spotify Service App and use it
 
-To do this, you will need to create your own spotify app.
 1. Follow this link and login - https://developer.spotify.com/
 2. Follow this link and create your own app - https://developer.spotify.com/dashboard/create  
    - __App name__ - whatever you want
@@ -39,10 +64,15 @@ To do this, you will need to create your own spotify app.
 
 __After logging in, you can download your favorite tracks, as well as playlists "only for you"__
 
-## About app
-- Supported platforms: Android
-- Background download: supported
+
+
+## Additional information
+- ⭐ I would appreciate it if you **star this repository!**
 
 ## For developers
 1. Developed on Flutter
 2. When developing the application, I used a "Clean Architecture". I don't think this application is an ideal representative of this approach. But if you want, you can use it as an example project.
+
+<h3 align="center">
+^_^
+</h3>

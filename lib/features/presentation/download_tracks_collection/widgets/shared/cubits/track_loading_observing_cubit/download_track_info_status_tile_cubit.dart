@@ -16,7 +16,7 @@ class TrackLoadingObservingCubit extends Cubit<TrackLoadingObservingState> {
   StreamSubscription? _loadingObserverChangedSubscription;
   bool _isLoadedIfLoadingObserverIsNull = false;
 
-  TrackLoadingObservingCubit() : super(const TrackLoadingObservingDeffault());
+  TrackLoadingObservingCubit() : super(const TrackLoadingObservingDefault());
 
   Future<void> changeTrackWithLoadingObserver(TrackWithLoadingObserver trackWithLoadingObserver) async {
     _trackWithLoadingObserver = trackWithLoadingObserver;
@@ -28,8 +28,8 @@ class TrackLoadingObservingCubit extends Cubit<TrackLoadingObservingState> {
     _onLoadingObserverChanged(trackWithLoadingObserver.loadingObserver);
   }
 
-  void changeIsLoadedIfLoadingObserverIsNull(bool isLoadedByDeffault) {
-    _isLoadedIfLoadingObserverIsNull = isLoadedByDeffault;
+  void changeIsLoadedIfLoadingObserverIsNull(bool isLoadedByDefault) {
+    _isLoadedIfLoadingObserverIsNull = isLoadedByDefault;
     _onLoadingTrackStatusChanged();
   }
 
@@ -58,7 +58,7 @@ class TrackLoadingObservingCubit extends Cubit<TrackLoadingObservingState> {
       if (_isLoadedIfLoadingObserverIsNull) {
         emit(const TrackLoadingObservingLoaded());
       } else {
-        emit(const TrackLoadingObservingDeffault());
+        emit(const TrackLoadingObservingDefault());
       }
 
       return;
@@ -75,7 +75,7 @@ class TrackLoadingObservingCubit extends Cubit<TrackLoadingObservingState> {
     }
 
     if (status == LoadingTrackStatus.loadingCancelled) {
-      emit(const TrackLoadingObservingDeffault());
+      emit(const TrackLoadingObservingDefault());
       return;
     }
 

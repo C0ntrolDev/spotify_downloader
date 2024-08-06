@@ -15,8 +15,9 @@ import 'package:spotify_downloader/generated/l10n.dart';
 void showDownloadTrackInfoBottomSheet(
     {required BuildContext context,
     required TrackWithLoadingObserver trackWithLoadingObserver,
-    required String? initialYoutubeUrl,
-    required Future<String?> Function() onChangeYoutubeUrlClicked}) {
+    required Future<bool> Function() onChangeYoutubeUrlClicked,
+    required String? Function() getCurrentYoutubeUrl,
+    required bool Function() getIsTrackLoadedIfLoadingObserverIsNull}) {
   showMaterialModalBottomSheet(
       elevation: 0,
       backgroundColor: surfaceColor,
@@ -29,9 +30,11 @@ void showDownloadTrackInfoBottomSheet(
       bounce: true,
       builder: (buildContext) {
         return DownloadTrackInfo(
-            trackWithLoadingObserver: trackWithLoadingObserver,
-            onChangeYoutubeUrlClicked: onChangeYoutubeUrlClicked,
-            initialYoutubeUrl: initialYoutubeUrl);
+          trackWithLoadingObserver: trackWithLoadingObserver,
+          onChangeYoutubeUrlClicked: onChangeYoutubeUrlClicked,
+          getCurrentYoutubeUrl: getCurrentYoutubeUrl,
+          getIsTrackLoadedIfLoadingObserverIsNull: getIsTrackLoadedIfLoadingObserverIsNull,
+        );
       });
 }
 
@@ -39,25 +42,23 @@ class DownloadTrackInfo extends StatefulWidget {
   const DownloadTrackInfo(
       {super.key,
       required this.trackWithLoadingObserver,
-      required this.initialYoutubeUrl,
-      required this.onChangeYoutubeUrlClicked});
+      required this.onChangeYoutubeUrlClicked,
+      required this.getCurrentYoutubeUrl,
+      required this.getIsTrackLoadedIfLoadingObserverIsNull});
 
   final TrackWithLoadingObserver trackWithLoadingObserver;
-  final String? initialYoutubeUrl;
-  final Future<String?> Function() onChangeYoutubeUrlClicked;
+  final Future<bool> Function() onChangeYoutubeUrlClicked;
+  final String? Function() getCurrentYoutubeUrl;
+  final bool Function() getIsTrackLoadedIfLoadingObserverIsNull;
 
   @override
   State<DownloadTrackInfo> createState() => _DownloadTrackInfoState();
 }
 
 class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
-  late String? selectedYoutubeUrl;
-
   @override
   void initState() {
     super.initState();
-
-    selectedYoutubeUrl = widget.initialYoutubeUrl;
   }
 
   @override
@@ -140,9 +141,9 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                     )),
                 const Divider(color: onSurfaceSecondaryColor, height: 20, thickness: 0.3),
                 DownloadTrackInfoStatusTile(
-                    trackWithLoadingObserver: widget.trackWithLoadingObserver,
-                    isLoadedIfLoadingObserverIsNull:
-                        selectedYoutubeUrl != null ? false : widget.trackWithLoadingObserver.track.isLoaded),
+                  isLoadedIfLoadingObserverIsNull: widget.getIsTrackLoadedIfLoadingObserverIsNull(),
+                  trackWithLoadingObserver: widget.trackWithLoadingObserver,
+                ),
                 DownloadTrackInfoTile(
                     title: S.of(context).linkToTheSource,
                     iconWidget: SvgPicture.asset('resources/images/svg/download_track_info/reference_icon.svg',
@@ -150,9 +151,10 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                         width: 23,
                         colorFilter: const ColorFilter.mode(onSurfaceSecondaryColor, BlendMode.srcIn)),
                     onTap: () async {
-                      if (selectedYoutubeUrl != null) {
+                      final currentYoutubeUrl = widget.getCurrentYoutubeUrl();
+                      if (currentYoutubeUrl != null) {
                         showSnackBar(S.of(context).urlCopied, context);
-                        await Clipboard.setData(ClipboardData(text: selectedYoutubeUrl!));
+                        await Clipboard.setData(ClipboardData(text: currentYoutubeUrl));
                       } else {
                         showSnackBar(S.of(context).urlNotSelected, context);
                       }
@@ -164,11 +166,9 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                         width: 23,
                         colorFilter: const ColorFilter.mode(onSurfaceSecondaryColor, BlendMode.srcIn)),
                     onTap: () async {
-                      final changedYoutubeUrl = await widget.onChangeYoutubeUrlClicked.call();
-                      if (changedYoutubeUrl != null) {
-                        setState(() {
-                          selectedYoutubeUrl = changedYoutubeUrl;
-                        });
+                      final isYoutubeUrlChanged = await widget.onChangeYoutubeUrlClicked.call();
+                      if (isYoutubeUrlChanged) {
+                        setState(() {});
                       }
                     }),
                 const OrientatedNavigationBarListViewExpander()

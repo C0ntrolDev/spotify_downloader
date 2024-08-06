@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/services.dart';
@@ -27,7 +26,7 @@ class DownloadTracksCubit extends Cubit<DownloadTracksState> {
         _downloadTracksFromGettingObserver = downloadTracksFromGettingObserver,
         _downloadTrack = downloadTrack,
         _cancelTrackLoading = cancelTrackLoading,
-        super(const DownloadTracksDeffault(preselectedTracksYouTubeUrls: {}));
+        super(const DownloadTracksDefault(preselectedTracksYouTubeUrls: {}));
 
   Future<void> downloadAllTracks() async {
     if (_trackList != null && _trackList!.isNotEmpty) {
@@ -102,7 +101,7 @@ class DownloadTracksCubit extends Cubit<DownloadTracksState> {
     _preselectedTracksYouTubeUrls[trackWithLoadingObserver] = newYoutubeUrl;
 
     cancelTrackLoading(trackWithLoadingObserver);
-    emit(DownloadTracksDeffault(preselectedTracksYouTubeUrls: _preselectedTracksYouTubeUrls));
+    emit(DownloadTracksDefault(preselectedTracksYouTubeUrls: _preselectedTracksYouTubeUrls));
   }
 
   void setGettingObserver(TracksWithLoadingObserverGettingObserver? gettingObserver) {

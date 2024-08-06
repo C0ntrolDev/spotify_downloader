@@ -72,8 +72,8 @@ class LocalAuthRepositoryImpl implements LocalFullAuthRepository, LocalClientAut
       return Result.isSuccessful(authCredentials);
     } else {
       return Result.isSuccessful(FullCredentials(
-          clientId: deffaultClientId,
-          clientSecret: deffaultClientSecret,
+          clientId: defaultClientId,
+          clientSecret: defaultClientSecret,
           refreshToken: null,
           accessToken: null,
           expiration: null));

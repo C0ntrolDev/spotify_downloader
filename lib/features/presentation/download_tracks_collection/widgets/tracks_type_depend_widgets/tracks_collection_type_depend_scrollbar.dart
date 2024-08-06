@@ -90,11 +90,11 @@ class TracksCollectionTypeDependScrollbar extends StatelessWidget {
         dynamicThumbLength: false,
         alwaysShowThumb: false,
         isFixedScroll: true,
-        thumbBuilder: _buildDeffaultThumb,
+        thumbBuilder: _buildDefaultThumb,
         child: child);
   }
 
-  Widget _buildDeffaultThumb(BuildContext context, Animation<double> animation, Set<WidgetState> widgetStates) {
+  Widget _buildDefaultThumb(BuildContext context, Animation<double> animation, Set<WidgetState> widgetStates) {
     final animatedPosition = Tween<Offset>(begin: const Offset(1, 0), end: const Offset(0, 0)).animate(animation);
     return SlideTransition(
         position: animatedPosition,

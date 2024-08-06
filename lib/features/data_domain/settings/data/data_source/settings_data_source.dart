@@ -44,13 +44,13 @@ class SettingsDataSource {
   Future<Result<Failure, AppSettings>> getDefaultAppSettings() async {
     try {
       String? defaultSavePath;
-      if (defaultTargetPlatform != TargetPlatform.iOS) {
-        final downloadsDirectoryPath = (await getDownloadsDirectory())?.path;
-        if (downloadsDirectoryPath != null) {
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        const downloadsDirectoryPath = "/storage/emulated/0/Download";
+        if (await Directory.fromUri(Uri.parse(downloadsDirectoryPath)).exists()) {
           defaultSavePath = "$downloadsDirectoryPath/SpotifyDownloader";
         }
       }
-      
+
       defaultSavePath ??= "${(await getApplicationDocumentsDirectory()).path}/SpotifyDownloader";
 
       const defaultSaveMode = 0;
@@ -68,7 +68,7 @@ class SettingsDataSource {
   }
 
   List<String> getAvailableLanguages() {
-    return S.delegate.supportedLocales.where((l) => l.countryCode != null).map((l) => l.countryCode!).toList();
+    return S.delegate.supportedLocales.map((l) => l.languageCode).toList();
   }
 
   String _appSettingsToJson(AppSettings appSettings) {

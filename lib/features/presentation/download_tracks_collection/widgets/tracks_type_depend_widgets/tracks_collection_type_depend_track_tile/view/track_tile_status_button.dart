@@ -93,7 +93,7 @@ class _TrackTileStatusButtonState extends State<TrackTileStatusButton> {
                 child: BlocBuilder<TrackLoadingObservingCubit, TrackLoadingObservingState>(
                   bloc: _trackLoadingObservingCubit,
                   builder: (context, state) {
-                    if (state is TrackLoadingObservingDeffault) {
+                    if (state is TrackLoadingObservingDefault) {
                       return GestureDetector(
                           onTap: () {
                             widget.onDownloadButtonClicked?.call();
