@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/dev-1.1/github_images/app_icon.png" width="100" style="border-radius: 50%;"/>
+<img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/dev-1.1/github_images/app_icon.png" width="100"/>
 </div>
 <h1 id="header" align="center">
 Spotify Downloader
