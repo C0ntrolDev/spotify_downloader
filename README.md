@@ -1,11 +1,18 @@
-# spotify_downloader
-
-Spotify Downloader is an application that allows you to download your favorite playlists at the touch of just one button!
+<div align="center">
+<img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/dev-1.1/github_images/app_icon.png" width="200" style="border-radius: 50%;"/>
+</div>
+<h1 id="header" align="center">
+Spotify Downloader
+</h1>
+<div id="header" align="center">
+App that allows you to download your favorite playlists at the touch of just one button!
+</div>
 
 ## Screenshots
 
-<img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/main_screen.jpg" width="200" /> <img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/download_screen.jpg" width="200" /> <img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/change_source_screen.jpg" width="200" />
+<img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/dev-1.1/github_images/main_screen.png" width="200" /> <img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/dev-1.1/github_images/download_screen.png" width="200" /> <img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/dev-1.1/github_images/change_source_screen.png" width="200" />
 
+## About App
 
 ## How to download
 
@@ -40,7 +47,7 @@ To do this, you will need to create your own spotify app.
 __After logging in, you can download your favorite tracks, as well as playlists "only for you"__
 
 ## About app
-- Supported platforms: Android
+- Supported platforms: Android, IOS
 - Background download: supported
 
 ## For developers
