@@ -4,7 +4,7 @@ Spotify Downloader is an application that allows you to download your favorite p
 
 ## Screenshots
 
-<img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/main_screen.jpg" width="200" /> <img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/playlist_screen.jpg" width="200" /> <img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/change_source_screen.jpg" width="200" />
+<img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/main_screen.jpg" width="200" /> <img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/download_screen.jpg" width="200" /> <img src="https://github.com/C0ntrolDev/spotify_downloader/blob/main/github_images/change_source_screen.jpg" width="200" />
 
 
 ## How to download
