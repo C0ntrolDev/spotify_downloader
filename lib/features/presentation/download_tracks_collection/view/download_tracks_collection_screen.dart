@@ -191,7 +191,8 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                     final getTracksCollectionState = context.watch<GetTracksCollectionBloc>().state;
                     final getTracksState = context.watch<GetTracksBloc>().state;
                     final filteredTracksState = context.watch<FilterTracksBloc>().state;
-                    final donwloadTracksState = context.watch<DownloadTracksCubit>().state;
+                    
+                    context.watch<DownloadTracksCubit>().state;
 
                     if (getTracksCollectionState is GetTracksCollectionNetworkFailure) {
                       return NetworkFailureSplash(
@@ -276,31 +277,18 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                               }
 
                                               final trackWithLoadingObserver = filteredTracks[index];
-                                              final preselectedYoutubeUrl = donwloadTracksState
-                                                  .preselectedTracksYouTubeUrls[trackWithLoadingObserver];
-
-                                              final currentYoutubeUrl = preselectedYoutubeUrl ??
-                                                  trackWithLoadingObserver.loadingObserver?.youtubeUrl ??
-                                                  trackWithLoadingObserver.track.localYoutubeUrl;
 
                                               return TracksCollectionTypeDependTrackTile(
                                                 type: getTracksCollectionState.tracksCollection.type,
-                                                isLoadedIfLoadingObserverIsNull: preselectedYoutubeUrl != null
-                                                    ? false
-                                                    : trackWithLoadingObserver.track.isLoaded,
                                                 trackWithLoadingObserver: trackWithLoadingObserver,
+                                                isLoadedIfLoadingObserverIsNull:
+                                                    _getIsTrackLoadedIfLoadingObserverIsNull(trackWithLoadingObserver),
                                                 onDownloadButtonClicked: () =>
                                                     _downloadTracksCubit.downloadTrack(trackWithLoadingObserver),
                                                 onCancelButtonClicked: () =>
                                                     _downloadTracksCubit.cancelTrackLoading(trackWithLoadingObserver),
-                                                onMoreInfoClicked: () => showDownloadTrackInfoBottomSheet(
-                                                    initialYoutubeUrl: currentYoutubeUrl,
-                                                    context: context,
-                                                    trackWithLoadingObserver: trackWithLoadingObserver,
-                                                    onChangeYoutubeUrlClicked: () {
-                                                      return _onChangeYoutubeUrlClicked(
-                                                          filteredTracks[index], currentYoutubeUrl);
-                                                    }),
+                                                onMoreInfoClicked: () =>
+                                                    _onMoreInfoButtonClicked(context, trackWithLoadingObserver),
                                               );
                                             }),
                                           ),
@@ -354,6 +342,29 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
     );
   }
 
+  void _onMoreInfoButtonClicked(BuildContext context, TrackWithLoadingObserver trackWithLoadingObserver) {
+    return showDownloadTrackInfoBottomSheet(
+        getCurrentYoutubeUrl: () => _getCurrentUrlOfTrack(trackWithLoadingObserver),
+        getIsTrackLoadedIfLoadingObserverIsNull: () =>
+            _getIsTrackLoadedIfLoadingObserverIsNull(trackWithLoadingObserver),
+        context: context,
+        trackWithLoadingObserver: trackWithLoadingObserver,
+        onChangeYoutubeUrlClicked: () =>
+            _onChangeYoutubeUrlClicked(trackWithLoadingObserver, _getCurrentUrlOfTrack(trackWithLoadingObserver)));
+  }
+
+  String? _getCurrentUrlOfTrack(TrackWithLoadingObserver trackWithLoadingObserver) {
+    final preselectedYoutubeUrl = _downloadTracksCubit.state.preselectedTracksYouTubeUrls[trackWithLoadingObserver];
+    return preselectedYoutubeUrl ??
+        trackWithLoadingObserver.loadingObserver?.youtubeUrl ??
+        trackWithLoadingObserver.track.localYoutubeUrl;
+  }
+
+  bool _getIsTrackLoadedIfLoadingObserverIsNull(TrackWithLoadingObserver trackWithLoadingObserver) {
+    final preselectedYoutubeUrl = _downloadTracksCubit.state.preselectedTracksYouTubeUrls[trackWithLoadingObserver];
+    return preselectedYoutubeUrl != null ? false : trackWithLoadingObserver.track.isLoaded;
+  }
+
   void _scheduleHeaderHeightUpdate() {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       var newHeaderHeight = (_headerKey.currentContext!.findRenderObject() as RenderSliver).geometry?.scrollExtent;
@@ -377,15 +388,16 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
     }
   }
 
-  Future<String?> _onChangeYoutubeUrlClicked(
+  Future<bool> _onChangeYoutubeUrlClicked(
       TrackWithLoadingObserver trackWithLoadingObserver, String? oldYoutubeUrl) async {
     final changedUrl = await AutoRouter.of(context)
         .push<String?>(ChangeSourceVideoRoute(track: trackWithLoadingObserver.track, oldYoutubeUrl: oldYoutubeUrl));
     if (changedUrl != null) {
       _downloadTracksCubit.changeTrackYoutubeUrl(trackWithLoadingObserver, changedUrl);
+      return true;
     }
 
-    return changedUrl;
+    return false;
   }
 
   Future<void> _generateBackgroundGradientColor(String? imageUrl) async {

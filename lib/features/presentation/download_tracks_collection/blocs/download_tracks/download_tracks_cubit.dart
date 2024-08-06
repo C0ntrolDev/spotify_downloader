@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/services.dart';
