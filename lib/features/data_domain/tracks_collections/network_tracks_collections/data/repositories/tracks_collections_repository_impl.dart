@@ -67,8 +67,8 @@ class NetworkTracksCollectionsRepositoryImpl implements NetworkTracksCollections
     try {
       return getTracksCollectionByTypeAndSpotifyId(
           spotifyRepositoryRequest, _getTracksCollectionTypeFromUrl(url), _getSpotifyIdFromUrl(url));
-    } catch (e) {
-      return const Result.notSuccessful(NotFoundFailure());
+    } catch (e, s) {
+      return Result.notSuccessful(NotFoundFailure(stackTrace: s));
     }
   }
 

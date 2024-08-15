@@ -19,8 +19,8 @@ class SettingsDataSource {
       await authFile.writeAsString(_appSettingsToJson(appSettings));
 
       return const Result.isSuccessful(null);
-    } catch (e) {
-      return Result.notSuccessful(Failure(message: e));
+    } catch (e, s) {
+      return Result.notSuccessful(Failure(message: e, stackTrace: s));
     }
   }
 
@@ -36,8 +36,8 @@ class SettingsDataSource {
       }
 
       return const Result.isSuccessful(null);
-    } catch (e) {
-      return Result.notSuccessful(Failure(message: e));
+    } catch (e, s) {
+      return Result.notSuccessful(Failure(message: e, stackTrace: s));
     }
   }
 
@@ -62,8 +62,8 @@ class SettingsDataSource {
 
       return Result.isSuccessful(
           AppSettings(savePath: defaultSavePath, language: defaultLanguage, saveMode: defaultSaveMode));
-    } catch (e) {
-      return Result.notSuccessful(Failure(message: e));
+    } catch (e, s) {
+      return Result.notSuccessful(Failure(message: e, stackTrace: s));
     }
   }
 
@@ -81,8 +81,8 @@ class SettingsDataSource {
     try {
       return Result.isSuccessful(AppSettings(
           saveMode: decodedData['saveMode'], savePath: decodedData['savePath'], language: decodedData['language']));
-    } catch (e) {
-      return Result.notSuccessful(Failure(message: e));
+    } catch (e, s) {
+      return Result.notSuccessful(Failure(message: e, stackTrace: s));
     }
   }
 }

@@ -29,8 +29,8 @@ class NetworkAuthDataSource {
           accessToken: accessTokenResponse.accessToken!,
           refreshToken: accessTokenResponse.refreshToken!,
           expiration: accessTokenResponse.expirationDate!));
-    } on SocketException catch (e) {
-      return Result.notSuccessful(NetworkFailure(message: e));
+    } on SocketException catch (e, s) {
+      return Result.notSuccessful(NetworkFailure(message: e, stackTrace: s));
     }
   }
 }

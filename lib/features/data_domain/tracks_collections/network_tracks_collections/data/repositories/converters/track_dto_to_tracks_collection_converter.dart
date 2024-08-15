@@ -16,8 +16,8 @@ class TrackDtoToTracksCollectionConverter implements ResultValueConverter<Tracks
         artists: track.artists?.map((a) => a.name ?? '').where((an) => an.isNotEmpty).toList(),
         smallImageUrl: track.album?.images?.last.url,
         bigImageUrl: track.album?.images?.first.url));
-    } catch (e) {
-      return const Result.notSuccessful(ConverterFailure());
+    } catch (e, s) {
+      return Result.notSuccessful(ConverterFailure(stackTrace: s));
     }
   }
 

@@ -87,12 +87,12 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
         if (state is TrackLoadingObservingFailure) {
           return DownloadTrackInfoTile(
               title: S.of(context).downloadError(
-                  state.failure is NetworkFailure ? S.of(context).noConnection : state.failure?.message ?? '...'),
+                  state.failure is NetworkFailure ? S.of(context).noConnection : state.failure ?? '...'),
               iconWidget: SvgPicture.asset('resources/images/svg/track_tile/error_icon.svg', height: 23, width: 23),
               onTap: () async {
                 if (state.failure != null) {
                   showSnackBar(S.of(context).errorCopied, context);
-                  await Clipboard.setData(ClipboardData(text: state.failure!.message.toString()));
+                  await Clipboard.setData(ClipboardData(text: state.failure!.toString()));
                 }
               });
         }

@@ -1,8 +1,9 @@
-name: spotify_downloader
-description: A new Flutter project.
+name: 'spotify_downloader'
+description: App with which you can download tracks from Spotify using YouTube
 publish_to: 'none'
+repository: 'https://github.com/C0ntrolDev/spotify_downloader'
 
-version: 1.1.0+1
+version: 1.1.1+1
 
 environment:
   sdk: '>=3.1.4 <4.0.0'

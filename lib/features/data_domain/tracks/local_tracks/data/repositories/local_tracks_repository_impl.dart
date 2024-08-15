@@ -20,8 +20,8 @@ class LocalTracksRepositoryImpl implements LocalTracksRepository {
         return const Result.isSuccessful(null);
       }
       return Result.isSuccessful(_localTrackConverter.convert(localDtoTrack));
-    } catch (e) {
-      return Result.notSuccessful(Failure(message: e));
+    } catch (e, s) {
+      return Result.notSuccessful(Failure(message: e, stackTrace: s));
     }
   }
 
@@ -30,8 +30,8 @@ class LocalTracksRepositoryImpl implements LocalTracksRepository {
     try {
       await _dataSource.saveLocalTrackInStorage(_localTrackConverter.convertBack(localTrack));
       return const Result.isSuccessful(null);
-    } catch (e) {
-      return Result.notSuccessful(Failure(message: e));
+    } catch (e, s) {
+      return Result.notSuccessful(Failure(message: e, stackTrace: s));
     }
   }
 
@@ -40,8 +40,8 @@ class LocalTracksRepositoryImpl implements LocalTracksRepository {
     try {
       await _dataSource.removeLocalTrackFromStorage(_localTrackConverter.convertBack(localTrack));
       return const Result.isSuccessful(null);
-    } catch (e) {
-      return Result.notSuccessful(Failure(message: e));
+    } catch (e, s) {
+      return Result.notSuccessful(Failure(message: e, stackTrace: s));
     }
   }
 }

@@ -19,27 +19,27 @@ Future<Result<Failure, T>> handleSpotifyClientExceptions<T>(Future<Result<Failur
   try {
     final result = await function.call();
     return result;
-  } on SpotifyException catch (e) {
+  } on SpotifyException catch (e, s) {
     if (e.status == 404) {
-      return Result.notSuccessful(NotFoundFailure(message: e));
+      return Result.notSuccessful(NotFoundFailure(message: e, stackTrace: s));
     }
     if (e.status == 401) {
-      return Result.notSuccessful(NotAuthorizedFailure(message: e));
+      return Result.notSuccessful(NotAuthorizedFailure(message: e, stackTrace: s));
     }
 
     if (e.status == 403) {
-      return Result.notSuccessful(ForbiddenFailure(message: e));
+      return Result.notSuccessful(ForbiddenFailure(message: e, stackTrace: s));
     }
 
-    return Result.notSuccessful(Failure(message: e));
-  } on ClientException catch (e) {
-    return Result.notSuccessful(NetworkFailure(message: e));
-  } on AuthorizationException catch (e) {
-    return Result.notSuccessful(InvalidClientCredentialsFailure(message: e));
-  } on SocketException catch (e) {
-    return Result.notSuccessful(NetworkFailure(message: e));
-  } catch (e) {
-    return Result.notSuccessful(Failure(message: e));
+    return Result.notSuccessful(Failure(message: e, stackTrace: s));
+  } on ClientException catch (e, s) {
+    return Result.notSuccessful(NetworkFailure(message: e, stackTrace: s));
+  } on AuthorizationException catch (e, s) {
+    return Result.notSuccessful(InvalidClientCredentialsFailure(message: e, stackTrace: s));
+  } on SocketException catch (e, s) {
+    return Result.notSuccessful(NetworkFailure(message: e, stackTrace: s));
+  } catch (e, s) {
+    return Result.notSuccessful(Failure(message: e, stackTrace: s));
   }
 }
 

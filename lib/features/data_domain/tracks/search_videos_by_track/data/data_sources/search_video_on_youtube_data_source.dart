@@ -21,12 +21,12 @@ class SearchVideoOnYoutubeDataSource {
 
         final maxCount = videos.length;
         return Result.isSuccessful(videos.getRange(0, min(maxCount, count)).toList());
-      } catch (e) {
+      } catch (e, s) {
         yt.close();
         if (e is ClientException || e is SocketException) {
-          return const Result.notSuccessful(NetworkFailure());
+          return Result.notSuccessful(NetworkFailure(stackTrace: s));
         }
-        return Result.notSuccessful(Failure(message: e));
+        return Result.notSuccessful(Failure(message: e, stackTrace: s));
       }
     }, searchQuery);
 
@@ -46,18 +46,18 @@ class SearchVideoOnYoutubeDataSource {
         final video = await yt.videos.get(VideoId.parseVideoId(url));
         yt.close();
         return Result.isSuccessful(video);
-      } catch (e) {
+      } catch (e, s) {
         yt.close();
 
         if (e is ArgumentError) {
-          return Result.notSuccessful(NotFoundFailure(message: 'video with this url not found: $url'));
+          return Result.notSuccessful(NotFoundFailure(message: 'video with this url not found: $url', stackTrace: s));
         }
 
         if (e is ClientException || e is SocketException) {
-          return const Result.notSuccessful(NetworkFailure());
+          return Result.notSuccessful(NetworkFailure(stackTrace: s));
         }
 
-        return Result.notSuccessful(Failure(message: e));
+        return Result.notSuccessful(Failure(message: e, stackTrace: s));
       }
     }, url);
 
