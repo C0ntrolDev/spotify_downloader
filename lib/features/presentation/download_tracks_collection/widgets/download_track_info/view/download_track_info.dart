@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:spotify_downloader/features/presentation/main/widgets/ftoasts/ftoasts.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
-import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_status_tile/view/download_track_info_status_tile.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_tile.dart';
@@ -186,7 +186,10 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
   }
 
   void showSnackBar(String message, BuildContext context) async {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    showBigTextSnackBar(message, context);
+    final ftoast = FtoastAccessor.of(context).fToast;
+    ftoast.removeCustomToast();
+    ftoast.removeQueuedCustomToasts();
+
+    showBigTextSnackBar(context, message);
   }
 }

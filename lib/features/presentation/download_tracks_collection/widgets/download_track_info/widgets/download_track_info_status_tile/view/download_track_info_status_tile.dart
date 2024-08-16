@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:spotify_downloader/core/app/themes/themes.dart';
+import 'package:spotify_downloader/features/presentation/main/widgets/ftoasts/ftoasts.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/utils/failures/failures.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
@@ -91,7 +91,7 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
               iconWidget: SvgPicture.asset('resources/images/svg/track_tile/error_icon.svg', height: 23, width: 23),
               onTap: () async {
                 if (state.failure != null) {
-                  showSnackBar(S.of(context).errorCopied, context);
+                  showSnackBar(S.of(context).failureCopied, context);
                   await Clipboard.setData(ClipboardData(text: state.failure!.toString()));
                 }
               });
@@ -119,7 +119,10 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
   }
 
   void showSnackBar(String message, BuildContext context) async {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    showBigTextSnackBar(message, context);
+    final ftoast = FtoastAccessor.of(context).fToast;
+    ftoast.removeCustomToast();
+    ftoast.removeQueuedCustomToasts();
+
+    showBigTextSnackBar(context, message);
   }
 }

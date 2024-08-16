@@ -87,37 +87,6 @@ void initTheme() {
       systemNavigationBarColor: Colors.transparent,
     ),
   );
-} 
-
-void showBigTextSnackBar(String message, BuildContext context, [Duration duration = const Duration(seconds: 2)]) {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    content: Column(
-      children: [
-        Text(
-          message,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(overflow: TextOverflow.visible),
-        ),
-      ],
-    ),
-    duration: duration,
-  ));
-}
-
-void showSmallTextSnackBar(String message, BuildContext context, [Duration duration = const Duration(seconds: 2)]) {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-    content: Column(
-      children: [
-        Text(
-          message,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(overflow: TextOverflow.visible),
-        ),
-      ],
-    ),
-    duration: duration,
-  ));
 }
 
 class TransitionsBuildersExtension {

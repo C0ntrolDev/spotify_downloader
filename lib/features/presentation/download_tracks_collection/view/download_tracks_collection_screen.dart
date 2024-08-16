@@ -6,10 +6,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:spotify_downloader/features/presentation/main/widgets/ftoasts/ftoasts.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
-import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/entities/track_with_loading_observer.dart';
@@ -19,6 +19,7 @@ import 'package:spotify_downloader/features/presentation/download_tracks_collect
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/tracks_type_depend_widgets/tracks_collection_type_depend_scrollbar.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/widgets.dart';
 import 'package:spotify_downloader/features/presentation/main/widgets/orientated_navigation_bar/orientated_navigation_bar_acessor.dart';
+import 'package:spotify_downloader/features/presentation/shared/other/show_failure_snackbar.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
 
 import 'package:spotify_downloader/generated/l10n.dart';
@@ -175,7 +176,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
           ),
           BlocListener<DownloadTracksCubit, DownloadTracksState>(listener: (context, state) {
             if (state is DownloadTracksFailure) {
-              showSmallTextSnackBar(state.failure.toString(), context);
+              showFailureSnackBar(context, state.failure.toString());
             }
           })
         ],
@@ -191,7 +192,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                     final getTracksCollectionState = context.watch<GetTracksCollectionBloc>().state;
                     final getTracksState = context.watch<GetTracksBloc>().state;
                     final filteredTracksState = context.watch<FilterTracksBloc>().state;
-                    
+
                     context.watch<DownloadTracksCubit>().state;
 
                     if (getTracksCollectionState is GetTracksCollectionNetworkFailure) {
@@ -422,11 +423,11 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
 
   void _onFatalFailure(Failure? failure) {
     if (failure is NotFoundFailure) {
-      showBigTextSnackBar(S.of(context).nothingWasFoundAtThisUrl, context, const Duration(seconds: 3));
+      showBigTextSnackBar(context, S.of(context).nothingWasFoundAtThisUrl);
     } else if (failure is NotAuthorizedFailure) {
-      showBigTextSnackBar(S.of(context).toAccessYouNeedToLogIn, context, const Duration(seconds: 3));
+      showBigTextSnackBar(context, S.of(context).toAccessYouNeedToLogIn);
     } else {
-      showSmallTextSnackBar(failure.toString(), context, const Duration(seconds: 3));
+      showFailureSnackBar(context, failure.toString());
     }
 
     AutoRouter.of(context).pop();

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
-import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/track.dart';
 import 'package:spotify_downloader/features/presentation/change_source_video/bloc/change_source_video_bloc.dart';
+import 'package:spotify_downloader/features/presentation/shared/other/show_failure_snackbar.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
@@ -55,7 +55,7 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
                     bloc: _changeSourceVideoBloc,
                     listener: (context, state) {
                       if (state is ChangeSourceVideoFailure) {
-                        showSmallTextSnackBar(state.failure?.message.toString() ?? '', context);
+                        showFailureSnackBar(context, state.failure?.toString() ?? '');
                       }
                     },
                     builder: (context, state) {
@@ -150,7 +150,7 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
       Navigator.of(context).pop(blocState.selectedVideo?.url);
       return;
     }
-    
+
     Navigator.of(context).pop(null);
   }
 

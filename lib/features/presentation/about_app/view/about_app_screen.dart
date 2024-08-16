@@ -4,11 +4,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
-import 'package:spotify_downloader/core/app/themes/themes.dart';
-import 'package:spotify_downloader/core/package_info/package_info_accessor.dart';
+import 'package:spotify_downloader/core/accessors/package_info/package_info_accessor.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 
 @RoutePage()
 class AboutAppScreen extends StatelessWidget {
@@ -52,7 +52,11 @@ class AboutAppScreen extends StatelessWidget {
                                         blurRadius: 13,
                                       )
                                     ]),
-                                    child: ClipOval(child: Image.asset("resources/images/another/bestIcon3.png", fit: BoxFit.cover,))),
+                                    child: ClipOval(
+                                        child: Image.asset(
+                                      "resources/images/another/bestIcon3.png",
+                                      fit: BoxFit.cover,
+                                    ))),
                               )),
                             ),
                             Padding(
@@ -78,9 +82,10 @@ class AboutAppScreen extends StatelessWidget {
                               child: Row(
                                 children: [
                                   ClipOval(
-                                        child: SizedBox.fromSize(
-                                            size: const Size.fromRadius(13),
-                                            child: Image.asset("resources/images/another/thanks.png", fit: BoxFit.cover))),
+                                      child: SizedBox.fromSize(
+                                          size: const Size.fromRadius(13),
+                                          child:
+                                              Image.asset("resources/images/another/thanks.png", fit: BoxFit.cover))),
                                   const Padding(
                                     padding: EdgeInsets.only(left: 10),
                                     child: Text("wimo"),
@@ -105,7 +110,8 @@ class AboutAppScreen extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 15),
-                              child: Text(S.of(context).packageName(packageInfoAccessor?.packageInfo.packageName ?? "")),
+                              child:
+                                  Text(S.of(context).packageName(packageInfoAccessor?.packageInfo.packageName ?? "")),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 15),
@@ -113,7 +119,8 @@ class AboutAppScreen extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 15),
-                              child: Text(S.of(context).buildNumber(packageInfoAccessor?.packageInfo.buildNumber ?? "")),
+                              child:
+                                  Text(S.of(context).buildNumber(packageInfoAccessor?.packageInfo.buildNumber ?? "")),
                             ),
                           ],
                         ),
@@ -142,10 +149,6 @@ class AboutAppScreen extends StatelessWidget {
 
   Future<void> _onAvatarClicked(BuildContext context) async {
     final githubUrl = Uri.parse("https://github.com/C0ntrolDev");
-    if (!await launchUrl(githubUrl)) {
-      if (context.mounted) {
-        showSmallTextSnackBar("", context);
-      }
-    }
+    await launchUrl(githubUrl);
   }
 }

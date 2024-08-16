@@ -46,6 +46,7 @@ dependencies:
   package_info_plus: ^8.0.1
   url_launcher: ^6.3.0
   flutter_oss_licenses: ^3.0.2
+  fluttertoast: ^8.2.8
 
 dev_dependencies:
   flutter_test:
