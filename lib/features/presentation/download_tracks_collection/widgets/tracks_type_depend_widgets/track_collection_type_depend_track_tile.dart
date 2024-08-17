@@ -65,11 +65,16 @@ class _TracksCollectionTypeDependTrackTileState extends State<TracksCollectionTy
             return Container();
           }
 
-          return Image.asset(
-            "resources/images/another/thanks.png",
+          return CachedNetworkImage(
             width: 50,
             height: 50,
             fit: BoxFit.fitWidth,
+            memCacheHeight: (50 * MediaQuery.of(context).devicePixelRatio).round(),
+            imageUrl: widget.trackWithLoadingObserver.track.album?.imageUrl ?? '',
+            placeholder: (context, imageUrl) =>
+                Image.asset('resources/images/another/loading_track_collection_image.png'),
+            errorWidget: (context, imageUrl, _) =>
+                Image.asset('resources/images/another/loading_track_collection_image.png'),
           );
         }),
         Expanded(
