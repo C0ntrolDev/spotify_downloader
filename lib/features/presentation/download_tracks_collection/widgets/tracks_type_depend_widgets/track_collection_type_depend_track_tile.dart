@@ -64,17 +64,12 @@ class _TracksCollectionTypeDependTrackTileState extends State<TracksCollectionTy
           if (widget.type == TracksCollectionType.album || widget.type == TracksCollectionType.track) {
             return Container();
           }
-      
-          return CachedNetworkImage(
+
+          return Image.asset(
+            "resources/images/another/thanks.png",
             width: 50,
             height: 50,
             fit: BoxFit.fitWidth,
-            memCacheHeight: (50 * MediaQuery.of(context).devicePixelRatio).round(),
-            imageUrl: widget.trackWithLoadingObserver.track.album?.imageUrl ?? '',
-            placeholder: (context, imageUrl) =>
-                Image.asset('resources/images/another/loading_track_collection_image.png'),
-            errorWidget: (context, imageUrl, _) =>
-                Image.asset('resources/images/another/loading_track_collection_image.png'),
           );
         }),
         Expanded(
@@ -144,6 +139,8 @@ class _TracksCollectionTypeDependTrackTileState extends State<TracksCollectionTy
         widget.onDownloadButtonClicked?.call();
       case TrackLoadingObservingFailure():
         widget.onDownloadButtonClicked?.call();
+      case TrackLoadingObservingLoading():
+        widget.onCancelButtonClicked?.call();
       default:
         break;
     }
@@ -174,9 +171,11 @@ class TrackTileFailureCancelStatusButton extends StatelessWidget {
     }
 
     return GestureDetector(
+      onTap: () {},
       child: Container(
         color: Colors.transparent,
-        height: 32, width: 32,
+        height: 32,
+        width: 32,
       ),
     );
   }

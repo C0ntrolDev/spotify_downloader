@@ -39,7 +39,11 @@ class DownloadAudioFromYoutubeDataSource {
       try {
         final downloadVideoResult = await _getAndDownloadVideoFromYoutube(args, token, setLoadingPercent);
         if (!downloadVideoResult.isSuccessful) {
-          return CancellableResult.notSuccessful(downloadVideoResult.failure);
+          if (downloadVideoResult.isCancelled) {
+            return const CancellableResult.isCancelled();
+          } else {
+            return CancellableResult.notSuccessful(downloadVideoResult.failure);
+          }
         }
 
         final videoPath = downloadVideoResult.result!.$1;
@@ -202,7 +206,7 @@ class DownloadAudioFromYoutubeDataSource {
 
       if (e is ArgumentError) {
         return CancellableResult.notSuccessful(
-            NotFoundFailure(message: 'video with this url not found: ${args.youtubeUrl}' , stackTrace: s));
+            NotFoundFailure(message: 'video with this url not found: ${args.youtubeUrl}', stackTrace: s));
       }
 
       return CancellableResult.notSuccessful(Failure(message: e));
