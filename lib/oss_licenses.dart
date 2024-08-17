@@ -73,6 +73,7 @@ const allDependencies = <Package>[
   _flutter_svg,
   _flutter_web_auth_2,
   _flutter_web_auth_2_platform_interface,
+  _fluttertoast,
   _freezed_annotation,
   _frontend_server_client,
   _get_it,
@@ -196,6 +197,7 @@ const dependencies = <Package>[
   _flutter_bloc,
   _flutter_oss_licenses,
   _flutter_svg,
+  _fluttertoast,
   _get_it,
   _http,
   _intl,
@@ -3829,6 +3831,39 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('flutter'), PackageRef('plugin_platform_interface')]
+  );
+
+/// fluttertoast 8.2.8
+const _fluttertoast = Package(
+    name: 'fluttertoast',
+    description: 'Toast Library for Flutter, Easily create toast messages in single line of code',
+    homepage: 'https://github.com/PonnamKarthik/FlutterToast',
+    authors: [],
+    version: '8.2.8',
+    license: '''MIT License
+
+Copyright (c) 2020 Karthik Ponnam
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('web')]
   );
 
 /// freezed_annotation 2.4.1
