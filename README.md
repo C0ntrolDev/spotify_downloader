@@ -77,7 +77,7 @@ __After logging in, you can download your favorite tracks, as well as playlists 
 
 If you're interested in contributing to this project, there are some key tasks I'd like to get done:
 
-- [ ] Implement logging (probably using talker)
+- [ ] Implement logging (probably using [talker](https://github.com/Frezyx/talker))
 - [ ] Implement caching for the most recently loaded pages
 - [ ] Remake the system for getting tracks from SpotifyAPI (make it so that the collection is fetched in parts, prioritizing loading parts that are visible)
 - [ ] Implement various sources of tracks/audio
