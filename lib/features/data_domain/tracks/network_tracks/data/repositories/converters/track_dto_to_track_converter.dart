@@ -32,7 +32,15 @@ class TrackDtoToTrackConverter implements ConverterWithParameter<entity.Track?, 
           name: dtoTrack.name ?? 'no_name',
           parentCollection: parentCollection,
           artists: dtoTrack.artists?.map((a) => a.name!).toList(),
-          album: Album(name: dtoTrack.album?.name, imageUrl: albumImageUrl),
+          discNumber: dtoTrack.discNumber,
+          albumTrackNumber: dtoTrack.trackNumber,
+          album: Album(
+              name: dtoTrack.album?.name,
+              imageUrl: albumImageUrl,
+              totalTracksCount: dtoTrack.album?.tracks?.length,
+              releaseYear: dtoTrack.album?.releaseDate != null
+                  ? int.parse(dtoTrack.album!.releaseDate!.split("-").first)
+                  : null),
           addedAt: dtoTrack.addedAt);
     }
 
@@ -42,7 +50,15 @@ class TrackDtoToTrackConverter implements ConverterWithParameter<entity.Track?, 
         name: dtoTrack.name ?? 'no_name',
         parentCollection: parentCollection,
         artists: dtoTrack.artists?.map((a) => a.name!).toList(),
-        album: Album(name: dtoTrack.album?.name, imageUrl: albumImageUrl));
+        discNumber: dtoTrack.discNumber,
+        albumTrackNumber: dtoTrack.trackNumber,
+        album: Album(
+            name: dtoTrack.album?.name,
+            imageUrl: albumImageUrl,
+            totalTracksCount: dtoTrack.album?.tracks?.length,
+            releaseYear: dtoTrack.album?.releaseDate != null
+                ? int.parse(dtoTrack.album!.releaseDate!.split("-").first)
+                : null));
   }
 
   @override

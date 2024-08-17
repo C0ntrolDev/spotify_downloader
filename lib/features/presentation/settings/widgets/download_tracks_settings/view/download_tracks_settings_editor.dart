@@ -2,12 +2,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
-import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/data_domain/settings/domain/enitities/save_mode.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/download_tracks_settings/bloc/download_tracks_settings_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/setting_with_text_field.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/settings_group.dart';
+import 'package:spotify_downloader/features/presentation/shared/other/show_failure_snackbar.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
 class DownloadTracksSettingsEditor extends StatefulWidget {
@@ -34,7 +34,7 @@ class _DownloadTracksSettingsEditorState extends State<DownloadTracksSettingsEdi
       bloc: _bloc,
       listener: (context, state) {
         if (state is DownloadTracksSettingsFailure) {
-          showSmallTextSnackBar(state.failure.toString(), context);
+          showFailureSnackBar(context, state.failure.toString());
         }
       },
       buildWhen: (previous, current) => current is DownloadTracksSettingsChanged,

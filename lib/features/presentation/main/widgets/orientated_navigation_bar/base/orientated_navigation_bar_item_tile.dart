@@ -78,7 +78,7 @@ abstract class OrientatedNavigationBarItemTileState<T extends OrientatedNavigati
     if (beginSize != endSize || sizeAnimation == null) {
       _sizeAnimationController.reset();
       sizeAnimation = Tween<double>(begin: beginSize, end: endSize)
-          .animate(CurvedAnimation(parent: _colorAnimationController, curve: widget.animationCurve));
+          .animate(CurvedAnimation(parent: _sizeAnimationController, curve: widget.animationCurve));
       _sizeAnimationController.forward();
     }
   }

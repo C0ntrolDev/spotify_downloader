@@ -9,7 +9,8 @@ import 'package:spotify_downloader/features/data_domain/auth/network_auth/networ
 import 'package:spotify_downloader/features/data_domain/auth/service/service.dart';
 import 'package:spotify_downloader/features/data_domain/settings/settings.dart';
 import 'package:spotify_downloader/features/data_domain/spotify_profile/spotify_profile.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/data/data_sources/tools/audio_metadata_editor/audio_metadata_editor_impl.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/data/data_sources/tools/audio_metadata_editor/metadata_god_audio_metadata_editor_impl.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/data/data_sources/tools/bitrate_editor/low_level_bitrate_editor_impl.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/data/data_sources/tools/file_to_mp3_converter/ffmpeg_file_to_mp3_converter.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/download_tracks.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/local_tracks/local_tracks.dart';
@@ -64,7 +65,7 @@ Future<void> _provideDataSources() async {
       TracksCollectonsHistoryDataSource(localDb: injector.get<LocalDb>()));
   injector.registerSingleton<NetworkTracksCollectionsDataSource>(NetworkTracksCollectionsDataSource());
   injector.registerSingleton<DownloadAudioFromYoutubeDataSource>(DownloadAudioFromYoutubeDataSource(
-      audioMetadataEditor: AudioMetadataEditorImpl(), fileToMp3Converter: FFmpegFileToMp3Converter()));
+      audioMetadataEditor: MetadataGodAudioMetadataEditorImpl(), fileToMp3Converter: FFmpegFileToMp3Converter(), audioBitrateEditor: LowLevelMp3AudioBitrateEditorImpl()));
   await injector.get<DownloadAudioFromYoutubeDataSource>().init();
   injector.registerSingleton<NetworkTracksDataSource>(NetworkTracksDataSource());
   await injector.get<NetworkTracksDataSource>().init();

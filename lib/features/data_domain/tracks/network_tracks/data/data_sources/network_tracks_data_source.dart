@@ -81,10 +81,22 @@ class NetworkTracksDataSource {
 
   Track _trackSimpleToTrack(TrackSimple trackSimple, Album album) {
     final track = Track();
-    track.name = trackSimple.name;
     track.album = album;
     track.artists = trackSimple.artists;
+    track.availableMarkets = trackSimple.availableMarkets;
+    track.discNumber = trackSimple.discNumber;
+    track.durationMs = trackSimple.durationMs;
+    track.explicit = trackSimple.explicit;
+    track.externalUrls = trackSimple.externalUrls;
+    track.href = trackSimple.href;
     track.id = trackSimple.id;
+    track.isPlayable = trackSimple.isPlayable;
+    track.linkedFrom = trackSimple.linkedFrom;
+    track.name = trackSimple.name;
+    track.previewUrl = trackSimple.previewUrl;
+    track.trackNumber = trackSimple.trackNumber;
+    track.type = trackSimple.type;
+    track.uri = trackSimple.uri;
     return track;
   }
 

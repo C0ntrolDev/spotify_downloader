@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:spotify_downloader/features/presentation/main/widgets/ftoasts/ftoast_methods.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
-import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/domain/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/liked_tracks_tile.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/view/loading_tracks_collections_list.dart';
@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         searchTextFieldController.clear();
                                       } else if (value != '') {
                                         searchTextFieldController.clear();
-                                        showBigTextSnackBar(S.of(context).incorrectLink, context);
+                                        showBigTextSnackBar(context, S.of(context).incorrectLink);
                                       }
                                     },
                                   ),

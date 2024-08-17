@@ -8,17 +8,22 @@ import 'package:http/http.dart';
 import 'package:path/path.dart' as p;
 import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/data/data.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/data/data_sources/tools/bitrate_editor/audio_bitrate_editor.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/data/data_sources/tools/tools.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class DownloadAudioFromYoutubeDataSource {
   DownloadAudioFromYoutubeDataSource(
-      {required AudioMetadataEditor audioMetadataEditor, required FileToMp3Converter fileToMp3Converter})
+      {required AudioMetadataEditor audioMetadataEditor,
+      required FileToMp3Converter fileToMp3Converter,
+      required AudioBitrateEditor audioBitrateEditor})
       : _audioMetadataEditor = audioMetadataEditor,
-        _fileToMp3Converter = fileToMp3Converter;
+        _fileToMp3Converter = fileToMp3Converter,
+        _audioBitrateEditor = audioBitrateEditor;
 
   final AudioMetadataEditor _audioMetadataEditor;
   final FileToMp3Converter _fileToMp3Converter;
+  final AudioBitrateEditor _audioBitrateEditor;
 
   late final IsolatePool _isolatePool;
 
@@ -34,16 +39,37 @@ class DownloadAudioFromYoutubeDataSource {
       try {
         final downloadVideoResult = await _getAndDownloadVideoFromYoutube(args, token, setLoadingPercent);
         if (!downloadVideoResult.isSuccessful) {
-          return downloadVideoResult;
+          if (downloadVideoResult.isCancelled) {
+            return const CancellableResult.isCancelled();
+          } else {
+            return CancellableResult.notSuccessful(downloadVideoResult.failure);
+          }
         }
 
-        final videoPath = downloadVideoResult.result!;
-        final audioPath = p.join(args.saveDirectoryPath, '${args.audioMetadata.name}.mp3');
+        final videoPath = downloadVideoResult.result!.$1;
+        final bitrate = downloadVideoResult.result!.$2;
+        final audioPath = p.join(
+          args.saveDirectoryPath,
+          '${args.audioMetadata.name}.mp3',
+        );
 
         await _convertFileToMp3(videoPath, audioPath);
 
         setLoadingPercent.call(95);
         await File(videoPath).delete();
+
+        if (token.isCancelled) {
+          await File(audioPath).delete();
+          return const CancellableResult.isCancelled();
+        }
+
+        final changeBitrateResult = await _audioBitrateEditor.changeBitrate(audioPath, bitrate.floor());
+        if (!changeBitrateResult.isSuccessful) {
+          await File(audioPath).delete();
+          return CancellableResult.notSuccessful(changeBitrateResult.failure);
+        }
+
+        setLoadingPercent.call(97);
 
         if (token.isCancelled) {
           await File(audioPath).delete();
@@ -64,15 +90,15 @@ class DownloadAudioFromYoutubeDataSource {
 
         setLoadingPercent.call(100);
         return CancellableResult.isSuccessful(audioPath);
-      } catch (e) {
-        return CancellableResult.notSuccessful(Failure(message: e));
+      } catch (e, s) {
+        return CancellableResult.notSuccessful(Failure(message: e, stackTrace: s));
       }
     }, cancelFunction: () {
       cancellationTokenSource.cancel();
     });
   }
 
-  Future<CancellableResult<Failure, String>> _getAndDownloadVideoFromYoutube(
+  Future<CancellableResult<Failure, (String, double)>> _getAndDownloadVideoFromYoutube(
       DownloadAudioFromYoutubeArgs args, CancellationToken token, Function(double) setLoadingPercent) async {
     Completer noNetworkCompleter = Completer();
     final noNetworkSub = Connectivity().onConnectivityChanged.listen((connection) {
@@ -113,7 +139,6 @@ class DownloadAudioFromYoutubeDataSource {
       }
 
       final downloadStreamInfo = getDownloadStreamInfoResult.result! as AudioOnlyStreamInfo;
-
       //---------------------------------------------------------------------------------
 
       final videoPath =
@@ -151,7 +176,7 @@ class DownloadAudioFromYoutubeDataSource {
         tokenWhileDownloadVideoSub.cancel();
       }
 
-      return CancellableResult.isSuccessful(videoPath);
+      return CancellableResult.isSuccessful((videoPath, downloadStreamInfo.bitrate.kiloBitsPerSecond));
     } finally {
       noNetworkSub.cancel();
     }
@@ -174,14 +199,14 @@ class DownloadAudioFromYoutubeDataSource {
 
       downloadStreamInfo = manifest.audioOnly.withHighestBitrate();
       return CancellableResult.isSuccessful(downloadStreamInfo);
-    } catch (e) {
+    } catch (e, s) {
       if (e is ClientException || e is SocketException) {
-        return const CancellableResult.notSuccessful(NetworkFailure());
+        return CancellableResult.notSuccessful(NetworkFailure(stackTrace: s));
       }
 
       if (e is ArgumentError) {
         return CancellableResult.notSuccessful(
-            NotFoundFailure(message: 'video with this url not found: ${args.youtubeUrl}'));
+            NotFoundFailure(message: 'video with this url not found: ${args.youtubeUrl}', stackTrace: s));
       }
 
       return CancellableResult.notSuccessful(Failure(message: e));
@@ -229,9 +254,9 @@ class DownloadAudioFromYoutubeDataSource {
 
         try {
           videoFileStream!.add(chunk);
-        } catch (e) {
+        } catch (e, s) {
           if (!failureCompleter.isCompleted) {
-            failureCompleter.complete(Failure(message: e));
+            failureCompleter.complete(Failure(message: e, stackTrace: s));
           }
         }
 
@@ -266,8 +291,8 @@ class DownloadAudioFromYoutubeDataSource {
       }
 
       sendPort.send(const CancellableResult.isSuccessful(null));
-    } catch (e) {
-      sendPort.send(CancellableResult.notSuccessful(Failure(message: e)));
+    } catch (e, s) {
+      sendPort.send(CancellableResult.notSuccessful(Failure(message: e, stackTrace: s)));
     } finally {
       yt?.close();
       downloadStreamListener?.cancel();

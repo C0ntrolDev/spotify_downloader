@@ -82,9 +82,9 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Ссылка на трек, плейлист или альбом"),
         "downloadLikedTracks":
             MessageLookupByLibrary.simpleMessage("Скачать любимые треки"),
-        "errorCopied":
-            MessageLookupByLibrary.simpleMessage("Ошибка скопирована!"),
         "errorOccurredWhileLoadingActiveDownloads": m5,
+        "failureCopied":
+            MessageLookupByLibrary.simpleMessage("Ошибка скопирована!"),
         "grant": MessageLookupByLibrary.simpleMessage("Предоставить доступ"),
         "grantPermissions":
             MessageLookupByLibrary.simpleMessage("Предоставьте разрешения"),

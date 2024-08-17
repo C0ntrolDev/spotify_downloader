@@ -20,7 +20,7 @@ const errorPrimaryColor = Color.fromARGB(255, 255, 102, 91);
 const searchFieldColor = Color.fromARGB(255, 255, 255, 255);
 const searchFieldHintColor = Color.fromARGB(255, 59, 59, 59);
 
-const dialogColor = Color.fromARGB(255, 59, 59, 59);
+const dialogColor = Color.fromARGB(255, 30, 30, 30);
 
 const tilePlaceholderColor = Color.fromARGB(255, 59, 59, 59);
 

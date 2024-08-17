@@ -631,16 +631,6 @@ class S {
     );
   }
 
-  /// `Error copied!`
-  String get errorCopied {
-    return Intl.message(
-      'Error copied!',
-      name: 'errorCopied',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Licenses of Packages`
   String get packagesLicenses {
     return Intl.message(
@@ -706,6 +696,16 @@ class S {
     return Intl.message(
       'Developed by C0ntroldev',
       name: 'developedByC0ntrolDev',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failure copied!`
+  String get failureCopied {
+    return Intl.message(
+      'Failure copied!',
+      name: 'failureCopied',
       desc: '',
       args: [],
     );

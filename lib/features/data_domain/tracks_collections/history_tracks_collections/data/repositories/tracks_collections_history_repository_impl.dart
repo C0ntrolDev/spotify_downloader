@@ -18,8 +18,8 @@ class TracksCollectionsHistoryRepositoryImpl implements TracksCollectionsHistory
       await _dataSource.addHistoryTracksCollectionToHistory(
           _tracksCollectionToHistoryTracksCollectionDtoConverter.convert(tracksCollection));
       return const Result<Failure, void>.isSuccessful(null);
-    } catch (e) {
-      return Result.notSuccessful(Failure(message: e));
+    } catch (e, s) {
+      return Result.notSuccessful(Failure(message: e, stackTrace: s));
     }
   }
 
@@ -30,8 +30,8 @@ class TracksCollectionsHistoryRepositoryImpl implements TracksCollectionsHistory
       await _dataSource.deleteHistoryTracksCollectionFromHistory(
           _historyTracksCollectionsConverter.convert(historyTracksCollection));
       return const Result<Failure, void>.isSuccessful(null);
-    } catch (e) {
-      return Result.notSuccessful(Failure(message: e));
+    } catch (e, s) {
+      return Result.notSuccessful(Failure(message: e, stackTrace: s));
     }
   }
 
@@ -52,8 +52,8 @@ class TracksCollectionsHistoryRepositoryImpl implements TracksCollectionsHistory
       } else {
         return const Result.isSuccessful(null);
       }
-    } catch (e) {
-      return Result.notSuccessful(Failure(message: e));
+    } catch (e, s) {
+      return Result.notSuccessful(Failure(message: e, stackTrace: s));
     }
   }
 }

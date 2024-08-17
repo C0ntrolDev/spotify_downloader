@@ -7,7 +7,7 @@ import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/d
 import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/data/models/metadata/audio_metadata.dart';
 import 'package:http/http.dart' as http;
 
-class AudioMetadataEditorImpl implements AudioMetadataEditor {
+class MetadataGodAudioMetadataEditorImpl implements AudioMetadataEditor {
   @override
   Future<Result<Failure, void>> changeAudioMetadata(
       {required String audioPath, required AudioMetadata audioMetadata}) async {
@@ -23,23 +23,30 @@ class AudioMetadataEditorImpl implements AudioMetadataEditor {
         return const Result.notSuccessful(NetworkFailure());
       }
     }
-
-    await MetadataGod.writeMetadata(
-        file: audioPath,
-        metadata: Metadata(
-            title: audioMetadata.name,
-            artist: audioMetadata.artists?.join(', '),
-            durationMs: audioMetadata.durationMs,
-            album: audioMetadata.album?.name,
-            picture: (() {
-              if (imageData != null) {
-                const mimeType = 'image/jpg';
-                return Picture(mimeType: mimeType, data: imageData); 
-              }
-              return null;
-            }).call(),
-            albumArtist: audioMetadata.album?.artists?.join(', '),
-            year: audioMetadata.realiseYear));
+    
+    try {
+      await MetadataGod.writeMetadata(
+          file: audioPath,
+          metadata: Metadata(
+              title: audioMetadata.name,
+              artist: audioMetadata.artists?.join(', '),
+              durationMs: audioMetadata.durationMs,
+              year: audioMetadata.realiseYear,
+              album: audioMetadata.album?.name,
+              trackNumber: audioMetadata.trackNumber,
+              trackTotal: audioMetadata.album?.totalTracksCount,
+              discNumber: audioMetadata.discNumber,
+              picture: (() {
+                if (imageData != null) {
+                  const mimeType = 'image/jpg';
+                  return Picture(mimeType: mimeType, data: imageData);
+                }
+                return null;
+              }).call(),
+              albumArtist: audioMetadata.album?.artists?.join(', ')));
+    } catch (e, s) {
+      return Result.notSuccessful(Failure(message: e, stackTrace: s));
+    }
 
     return const Result.isSuccessful(null);
   }

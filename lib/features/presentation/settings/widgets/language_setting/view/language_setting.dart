@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/spotify_downloader_app.dart';
-import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/language_setting/bloc/language_setting_bloc.dart';
+import 'package:spotify_downloader/features/presentation/shared/other/show_failure_snackbar.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
 class LanguageSetting extends StatefulWidget {
@@ -32,7 +32,7 @@ class _LanguageSettingState extends State<LanguageSetting> {
         bloc: _bloc,
         listener: (previous, current) {
           if (current is LanguageSettingFailure) {
-            showSmallTextSnackBar(current.failure.toString(), context);
+            showFailureSnackBar(context, current.failure.toString());
           }
         },
         buildWhen: (previous, current) => current is LanguageSettingChanged,

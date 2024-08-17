@@ -9,6 +9,7 @@ import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/permissions/permission_services_initializer/permission_services_initializer_class.dart';
 import 'package:spotify_downloader/core/permissions/permissions_manager/permissions_manager_class.dart';
 import 'package:spotify_downloader/features/presentation/main/tools/bottom_navigation_bar_observer.dart';
+import 'package:spotify_downloader/features/presentation/main/widgets/ftoasts/ftoast_initializer.dart';
 import 'package:spotify_downloader/features/presentation/main/widgets/orientated_navigation_bar/orientated_navigation_bar.dart';
 import 'package:spotify_downloader/features/presentation/permissions_dialog/view/permissions_dialog.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
@@ -91,7 +92,7 @@ class _MainScreenState extends State<MainScreen> {
                   unselectedItemColor: onBackgroundSecondaryColor,
                   selectingItemColor: onBackgroundThirdRateColor,
                   selectingSize: 0.9,
-                  animationDuration: const Duration(milliseconds: 100),
+                  animationDuration: const Duration(milliseconds: 50),
                 ),
                 verticalNavigationBarTheme: VerticalNavigationBarTheme(
                   contentPadding: const EdgeInsets.only(left: 20, right: 20, top: 17, bottom: 7),
@@ -125,8 +126,10 @@ class _MainScreenState extends State<MainScreen> {
                       svgActiveIconPath: 'resources/images/svg/bottom_bar/history_icon_active.svg',
                       label: S.of(context).history)
                 ],
-                child: AutoRouter(
-                  navigatorObservers: () => [_routeObserver],
+                child: FtoastInitializer(
+                  child: AutoRouter(
+                    navigatorObservers: () => [_routeObserver],
+                  ),
                 ));
           }),
     );

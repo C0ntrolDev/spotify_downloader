@@ -57,12 +57,11 @@
   "language": "Язык",
   "youCanCloseTheAppAndTheDownloadWillContinue": "Вы можете закрыть приложение и загрузка продолжится !",
   "youCanDeleteThisMessage": "(вы можете удалить это сообщение)",
-  "errorCopied": "Ошибка скопирована!",
   "packagesLicenses": "Лицензии пакетов",
   "appInfo": "Информация о приложении",
   "appName": "Название: {appName}",
   "packageName": "Пакет: {packageName}",
   "appVersion": "Версия: {appVersion}",
   "buildNumber": "Номер сборки: {buildNumber}",
-  "developedByC0ntrolDev": "Разработано C0ntroldev"
-}
+  "developedByC0ntrolDev": "Разработано C0ntroldev",
+"failureCopied": "Ошибка скопирована!"}

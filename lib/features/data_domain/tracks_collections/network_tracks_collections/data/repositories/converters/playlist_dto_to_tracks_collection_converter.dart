@@ -15,8 +15,8 @@ class PlaylistDtoToTracksCollectionConverter implements ResultValueConverter<Tra
         name: playlist.name!,
         smallImageUrl: playlist.images?.last.url,
         bigImageUrl: playlist.images?.first.url));
-    } catch (e) {
-      return const Result.notSuccessful(ConverterFailure());
+    } catch (e, s) {
+      return Result.notSuccessful(ConverterFailure(stackTrace: s));
     }
   }
 

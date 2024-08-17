@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
-import 'package:spotify_downloader/core/app/themes/themes.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/utils/failures/failures.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/account_auth/account_auth_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/client_auth/client_auth_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/setting_with_text_field.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/settings_group.dart';
+import 'package:spotify_downloader/features/presentation/shared/other/show_failure_snackbar.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
 class AuthSettings extends StatefulWidget {
@@ -35,7 +35,7 @@ class _AuthSettingsState extends State<AuthSettings> {
       child: BlocListener<ClientAuthBloc, ClientAuthState>(
           listener: (context, state) {
             if (state is ClientAuthFailure) {
-              showSmallTextSnackBar(state.failure.toString(), context);
+              showFailureSnackBar(context, state.failure.toString());
             }
 
             if (state is ClientAuthChanged) {
@@ -78,12 +78,12 @@ class _AuthSettingsState extends State<AuthSettings> {
               listener: (context, state) {
                 if (state is AccountAuthFailure) {
                   if (state.failure is! AuthFailure) {
-                    showSmallTextSnackBar(state.failure.toString(), context);
+                    showFailureSnackBar(context, state.failure.toString());
                   }
                 }
 
                 if (state is AccountAuthInvalidCredentialsFailure) {
-                  showSmallTextSnackBar(state.failure.toString(), context);
+                  showFailureSnackBar(context, state.failure.toString());
                 }
               },
               bloc: _accountAuthBloc,
@@ -126,7 +126,7 @@ class _AuthSettingsState extends State<AuthSettings> {
                           }
                         }),
                       ),
-                       Builder(builder: (context) {
+                      Builder(builder: (context) {
                         if (state is AccountAuthLoading) {
                           return const Center(
                               child: SizedBox(

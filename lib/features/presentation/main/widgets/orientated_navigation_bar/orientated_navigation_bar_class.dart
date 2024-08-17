@@ -68,7 +68,11 @@ class _OrientatedNavigationBarState extends State<OrientatedNavigationBar> {
                 items: widget.items,
                 onTap: widget.onTap,
                 currentIndex: widget.currentIndex),
-            Expanded(child: child),
+            Expanded(child: LayoutBuilder(builder: (context, constrains) {
+              final mediaQuery = MediaQuery.of(context);
+              return MediaQuery(
+                  data: mediaQuery.copyWith(size: Size(constrains.maxWidth, mediaQuery.size.height)), child: child);
+            })),
           ],
         );
       },
