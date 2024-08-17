@@ -44,7 +44,7 @@ Future<Result<Failure, T>> handleSpotifyClientExceptions<T>(Future<Result<Failur
 }
 
 String? formatStringToFileFormat(String? string) {
-  final forbiddenChars = ['/', '\\', ':', '*', '?', '<', '>', '|'];
+  final forbiddenChars = ['/', '\\', ':', '*', '?', '<', '>', '|', '"', '\''];
 
   String? formattedString = string;
   for (var char in forbiddenChars) {

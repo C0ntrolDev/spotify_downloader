@@ -7,32 +7,34 @@ import 'package:spotify_downloader/features/presentation/main/widgets/orientated
 
 void showBigTextSnackBar(BuildContext innerContext, String message,
     {Duration duration = const Duration(seconds: 2), void Function()? onTap}) {
-  _showSnackBarWithTextStyle(innerContext, message, Theme.of(innerContext).textTheme.bodyMedium,
+  final fToast = FtoastAccessor.of(innerContext).fToast;
+  showSnackBarWithFToastAndTextStyle(fToast, message, Theme.of(innerContext).textTheme.bodyMedium,
       duration: duration, onTap: onTap);
 }
 
 void showSmallTextSnackBar(BuildContext innerContext, String message,
     {Duration duration = const Duration(seconds: 2), void Function()? onTap}) {
-  _showSnackBarWithTextStyle(innerContext, message, Theme.of(innerContext).textTheme.labelMedium,
+  final fToast = FtoastAccessor.of(innerContext).fToast;
+  showSnackBarWithFToastAndTextStyle(fToast, message, Theme.of(innerContext).textTheme.labelMedium,
       duration: duration, onTap: onTap);
 }
 
-void _showSnackBarWithTextStyle(BuildContext innerContext, String message, TextStyle? textStyle,
+void showSnackBarWithFToastAndTextStyle(FToast fToast, String message, TextStyle? textStyle,
     {Duration duration = const Duration(seconds: 2), void Function()? onTap}) {
-  final fToast = FtoastAccessor.of(innerContext).fToast;
-
   fToast.showToast(
+      fadeDuration: const Duration(milliseconds: 150),
       toastDuration: duration,
-      gravity: ToastGravity.SNACKBAR,
-      child: Builder(builder: (overlaycontext) {
-        final mediaQuery = MediaQuery.of(overlaycontext);
-
+      gravity: ToastGravity.BOTTOM,
+      positionedToastBuilder: (context, child) {
+        return Positioned(bottom: 0, left: 0, right: 0, child: child);
+      },
+      child: Builder(builder: (overlayContext) {
+        final mediaQuery = MediaQuery.of(overlayContext);
         return Container(
-          padding: mediaQuery.viewPadding.copyWith(left: 0, right: 0),
           constraints: BoxConstraints(maxHeight: mediaQuery.size.height),
           child: Padding(
             padding: EdgeInsets.only(
-                bottom: (OrientatedNavigationBarAcessor.maybeOf(innerContext)?.expandedHeight ?? 0) + 10,
+                bottom: (OrientatedNavigationBarAcessor.maybeOf(overlayContext)?.expandedHeight ?? 0) + 10,
                 top: 10,
                 left: horizontalPadding,
                 right: horizontalPadding),
@@ -40,13 +42,7 @@ void _showSnackBarWithTextStyle(BuildContext innerContext, String message, TextS
               constraints: BoxConstraints(
                 maxWidth: mediaQuery.size.width / 2,
               ),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: dialogColor, boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  spreadRadius: 3,
-                  blurRadius: 7,
-                )
-              ]),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: dialogColor),
               child: Padding(
                 padding: const EdgeInsets.all(15),
                 child: GestureDetector(

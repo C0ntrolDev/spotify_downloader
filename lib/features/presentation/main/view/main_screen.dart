@@ -92,7 +92,7 @@ class _MainScreenState extends State<MainScreen> {
                   unselectedItemColor: onBackgroundSecondaryColor,
                   selectingItemColor: onBackgroundThirdRateColor,
                   selectingSize: 0.9,
-                  animationDuration: const Duration(milliseconds: 100),
+                  animationDuration: const Duration(milliseconds: 50),
                 ),
                 verticalNavigationBarTheme: VerticalNavigationBarTheme(
                   contentPadding: const EdgeInsets.only(left: 20, right: 20, top: 17, bottom: 7),

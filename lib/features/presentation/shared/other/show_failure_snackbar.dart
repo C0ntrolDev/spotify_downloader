@@ -4,11 +4,14 @@ import 'package:spotify_downloader/features/presentation/main/widgets/ftoasts/ft
 import 'package:spotify_downloader/generated/l10n.dart';
 
 void showFailureSnackBar(BuildContext innerContext, String message, {Duration duration = const Duration(seconds: 2)}) {
+  final ftoast = FtoastAccessor.of(innerContext).fToast;
+  final copiedTextTheme = Theme.of(innerContext).textTheme.bodyMedium;
+  final failureCopiedMessage = S.of(innerContext).failureCopied;
+
   showSmallTextSnackBar(innerContext, message, duration: duration, onTap: () {
-    final ftoast = FtoastAccessor.of(innerContext).fToast;
     ftoast.removeCustomToast();
     Clipboard.setData(ClipboardData(text: message));
 
-    showBigTextSnackBar(innerContext, S.of(innerContext).failureCopied);
+    showSnackBarWithFToastAndTextStyle(ftoast, failureCopiedMessage, copiedTextTheme);
   });
 }

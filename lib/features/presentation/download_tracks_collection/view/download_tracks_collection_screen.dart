@@ -415,9 +415,11 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
     }
 
     if (_backgroundGradientColor != newBackgroundGradientColor) {
-      setState(() {
-        _backgroundGradientColor = newBackgroundGradientColor;
-      });
+      if (mounted) {
+        setState(() {
+          _backgroundGradientColor = newBackgroundGradientColor;
+        });
+      }
     }
   }
 

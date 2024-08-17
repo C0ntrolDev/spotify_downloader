@@ -3,11 +3,13 @@ import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 
 class TapAnimatedContainer extends StatefulWidget {
   final void Function()? onTap;
+  final void Function()? onLongTapStart;
   final Widget child;
   final Color tappingMaskColor;
   final double tappingScale;
   final Duration duration;
   final Curve curve;
+  final bool ignoreTapOnBackground;
 
   const TapAnimatedContainer(
       {super.key,
@@ -16,7 +18,9 @@ class TapAnimatedContainer extends StatefulWidget {
       required this.tappingScale,
       this.duration = tappingAnimationDuration,
       this.curve = Curves.easeIn,
-      this.onTap});
+      this.ignoreTapOnBackground = false,
+      this.onTap,
+      this.onLongTapStart});
 
   @override
   State<TapAnimatedContainer> createState() => _TapAnimatedContainerState();
@@ -46,20 +50,26 @@ class _TapAnimatedContainerState extends State<TapAnimatedContainer> {
           isTapping = false;
         });
       },
-      child: AnimatedScale(
-        duration: widget.duration,
-        curve: widget.curve,
-        scale: isTapping ? widget.tappingScale : 1,
-        child: Stack(
-          children: [
-            widget.child,
-            Positioned.fill(
-                child: AnimatedOpacity(
-              duration: widget.duration,
-              opacity: isTapping ? 1 : 0,
-              child: Container(color: widget.tappingMaskColor),
-            ))
-          ],
+      onLongPressStart: (details) {
+        widget.onLongTapStart?.call();
+      },
+      child: Container(
+        color: widget.ignoreTapOnBackground ? null : Colors.transparent,
+        child: AnimatedScale(
+          duration: widget.duration,
+          curve: widget.curve,
+          scale: isTapping ? widget.tappingScale : 1,
+          child: Stack(
+            children: [
+              widget.child,
+              Positioned.fill(
+                  child: AnimatedOpacity(
+                duration: widget.duration,
+                opacity: isTapping ? 1 : 0,
+                child: IgnorePointer(child: Container(color: widget.tappingMaskColor)),
+              ))
+            ],
+          ),
         ),
       ),
     );
