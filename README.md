@@ -31,17 +31,17 @@ App that allows you to download your favorite playlists at the touch of just one
 ### Android
 
 You can download this apk if you don't know what kind of architecture you have.
-- [spotify_downloader.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.1/spotify_downloader.apk)
+- [spotify_downloader.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.2/spotify_downloader.apk)
 
 If you know what architecture you have, then download one of the apk listed below.
-- [spotify_downloader_armeabi-v7a.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.1/spotify_downloader_armeabi-v7a.apk)
-- [spotify_downloader_arm64-v8a.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.1/spotify_downloader_arm64-v8a.apk)
-- [spotify_downloader_x86_64.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.1/spotify_downloader_x86_64.apk)
+- [spotify_downloader_armeabi-v7a.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.2/spotify_downloader_armeabi-v7a.apk)
+- [spotify_downloader_arm64-v8a.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.2/spotify_downloader_arm64-v8a.apk)
+- [spotify_downloader_x86_64.apk](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.2/spotify_downloader_x86_64.apk)
 
 ### IOS
 
 You can download ipa there.
-- [spotify_downloader.ipa](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.1/spotify_downloader.ipa)
+- [spotify_downloader.ipa](https://github.com/C0ntrolDev/spotify_downloader/releases/download/v1.1.2/spotify_downloader.ipa)
 
 ## How to use
 

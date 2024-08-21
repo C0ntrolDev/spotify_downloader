@@ -12,7 +12,7 @@ Future<bool> _tryInitBackground() {
   final androidConfig = FlutterBackgroundAndroidConfig(
     notificationTitle: S().youCanCloseTheAppAndTheDownloadWillContinue,
     notificationText: S().youCanDeleteThisMessage,
-    notificationImportance: AndroidNotificationImportance.Default,
+    notificationImportance: AndroidNotificationImportance.normal,
     notificationIcon: const AndroidResource(name: 'notifications_icon', defType: 'drawable'),
   );
 
