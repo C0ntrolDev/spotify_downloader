@@ -55,6 +55,9 @@ dev_dependencies:
   auto_route_generator: ^7.3.2
   build_runner: ^2.4.6
 
+dependency_overrides:
+  win32: ^5.5.4
+
 flutter:
 
   uses-material-design: true
