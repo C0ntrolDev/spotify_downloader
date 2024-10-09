@@ -45,6 +45,8 @@ You can download ipa there.
 
 ## How to use
 
+**Since this is a common problem, you don't need Login for normal use! Login is only needed to download your favorite tracks, and it requires changing client secret and client id to yours!**
+
 After you have downloaded the app, you must grant it the permissions it will ask for.   
 Then you can use the app. Just paste the link to the playlist and click the search button.
 
