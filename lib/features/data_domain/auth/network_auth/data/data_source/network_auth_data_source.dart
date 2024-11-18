@@ -19,6 +19,10 @@ class NetworkAuthDataSource {
             AuthFailure(message: '${accessTokenResponse.error} : ${accessTokenResponse.errorDescription}'));
       }
 
+      if(accessTokenResponse.httpStatusCode == 404) {
+        return Result.notSuccessful(AuthExitFailure());
+      }
+
       if (accessTokenResponse.accessToken == null ||
           accessTokenResponse.refreshToken == null ||
           accessTokenResponse.expirationDate == null) {

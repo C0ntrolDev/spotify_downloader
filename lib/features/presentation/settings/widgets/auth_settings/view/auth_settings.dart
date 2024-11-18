@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
-import 'package:spotify_downloader/core/utils/failures/failures.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/account_auth/account_auth_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/auth_settings/blocs/client_auth/client_auth_bloc.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/setting_with_text_field.dart';
@@ -77,20 +76,11 @@ class _AuthSettingsState extends State<AuthSettings> {
             BlocConsumer<AccountAuthBloc, AccountAuthState>(
               listener: (context, state) {
                 if (state is AccountAuthFailure) {
-                  if (state.failure is! AuthFailure) {
-                    showFailureSnackBar(context, state.failure.toString());
-                  }
-                }
-
-                if (state is AccountAuthInvalidCredentialsFailure) {
                   showFailureSnackBar(context, state.failure.toString());
                 }
               },
               bloc: _accountAuthBloc,
-              buildWhen: (previous, current) => current is! AccountAuthFailure,
               builder: (context, state) {
-                if (state is AccountAuthFailure) return Container();
-
                 return SizedBox(
                   height: 30,
                   child: Row(
@@ -117,12 +107,12 @@ class _AuthSettingsState extends State<AuthSettings> {
                               );
                             case AccountAuthNotAuthorized():
                               return Text(S.of(context).youAreNotLoggedInToYourAccount, maxLines: 2);
-                            case AccountAuthFailure():
-                              return Text(S.of(context).unknownError, maxLines: 2);
                             case AccountAuthNetworkFailure():
                               return Text(S.of(context).connectionError, maxLines: 2);
                             case AccountAuthInvalidCredentialsFailure():
                               return Text(S.of(context).couldntLogInToYourAccount, maxLines: 2);
+                            case AccountAuthFailure():
+                              return Text(S.of(context).unknownError, maxLines: 2);
                           }
                         }),
                       ),
@@ -141,7 +131,7 @@ class _AuthSettingsState extends State<AuthSettings> {
                         late final String buttonText;
                         late final void Function() onButtonClicked;
 
-                        if (state is AccountAuthAuthorized || state is AccountAuthNetworkFailure) {
+                        if (state is AccountAuthAuthorized) {
                           buttonText = S.of(context).logOut;
                           onButtonClicked = () => _accountAuthBloc.add(AccountAuthLogOut());
                         } else {

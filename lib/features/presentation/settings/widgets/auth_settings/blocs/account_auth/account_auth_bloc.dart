@@ -59,12 +59,14 @@ class AccountAuthBloc extends Bloc<AccountAuthEvent, AccountAuthState> {
   }
 
   AccountAuthState _getFailureState(Failure? failure) {
-    if (failure is NotAuthorizedFailure) {
+    if (failure is NotAuthorizedFailure || failure is AuthExitFailure) {
       return AccountAuthNotAuthorized();
     }
+
     if (failure is InvalidClientCredentialsFailure || failure is InvalidAccountCredentialsFailure) {
       return AccountAuthInvalidCredentialsFailure(failure: failure);
     }
+    
     if (failure is NetworkFailure) {
       return AccountAuthNetworkFailure();
     }

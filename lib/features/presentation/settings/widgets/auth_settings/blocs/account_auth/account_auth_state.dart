@@ -22,12 +22,6 @@ final class AccountAuthNotAuthorized extends AccountAuthState {}
 
 final class AccountAuthNetworkFailure extends AccountAuthState {}
 
-final class AccountAuthInvalidCredentialsFailure extends AccountAuthState {
-  final Failure? failure;
-
-  const AccountAuthInvalidCredentialsFailure({required this.failure});
-}
-
 final class AccountAuthFailure extends AccountAuthState {
   final Failure? failure;
 
@@ -35,4 +29,8 @@ final class AccountAuthFailure extends AccountAuthState {
 
   @override
   List<Object?> get props => [failure];
+}
+
+final class AccountAuthInvalidCredentialsFailure extends AccountAuthFailure {
+  const AccountAuthInvalidCredentialsFailure({required super.failure});
 }

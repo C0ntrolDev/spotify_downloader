@@ -26,6 +26,11 @@ final class AuthFailure extends NoDetailedFailure {
   AuthFailure({super.message = 'auth failure', super.stackTrace});
 }
 
+final class AuthExitFailure extends NoDetailedFailure {
+  AuthExitFailure({super.message = 'auth exit failure', super.stackTrace});
+}
+
+
 final class InvalidClientCredentialsFailure extends NoDetailedFailure {
   InvalidClientCredentialsFailure({super.message = 'invalid auth credentials failure', super.stackTrace});
 }
