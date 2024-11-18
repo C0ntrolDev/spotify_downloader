@@ -194,7 +194,7 @@ class DownloadAudioFromYoutubeDataSource {
       video = await yt.videos.get(VideoId.parseVideoId(args.youtubeUrl));
       if (token.isCancelled) return const CancellableResult.isCancelled();
 
-      final manifest = await yt.videos.streamsClient.getManifest(video.id);
+      final manifest = await yt.videos.streams.getManifest(video.id, ytClients: [YoutubeApiClient.android, YoutubeApiClient.ios]);
       if (token.isCancelled) return const CancellableResult.isCancelled();
 
       downloadStreamInfo = manifest.audioOnly.withHighestBitrate();
