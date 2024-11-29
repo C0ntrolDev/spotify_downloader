@@ -5,7 +5,7 @@
 Spotify Downloader
 </h1>
 <div align="center">
-App that allows you to download your favorite playlists at the touch of just one button!
+Download your favorite playlists in just one click!
 </div>
 
 ## Screenshots
