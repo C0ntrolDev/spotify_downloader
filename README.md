@@ -8,7 +8,9 @@ Spotify Downloader
 Download your favorite playlists from Spotify using YouTube in just one click!
 </div>
 
-<div align="center" style="margin-top:20px;">
+&nbsp;
+
+<div align="center">
 <img src="https://raw.githubusercontent.com/C0ntrolDev/spotify_downloader/main/github_images/preview.png"/>
 </div>
 
