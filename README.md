@@ -5,7 +5,7 @@
 Spotify Downloader
 </h1>
 <div align="center">
-Download your favorite playlists in just one click!
+Download your favorite playlists from Spotify using YouTube in just one click!
 </div>
 
 ## Screenshots
