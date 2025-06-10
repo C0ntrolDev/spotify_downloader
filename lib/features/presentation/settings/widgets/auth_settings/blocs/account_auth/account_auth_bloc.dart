@@ -28,7 +28,7 @@ class AccountAuthBloc extends Bloc<AccountAuthEvent, AccountAuthState> {
     on<AccountAuthUpdate>((_, emit)  async => await _onUpdate(emit));
   }
 
-  FutureOr<void> _onAuthorize(event, Emitter<AccountAuthState> emit) async {
+  FutureOr<void> _onAuthorize(AccountAuthEvent event, Emitter<AccountAuthState> emit) async {
     final authorizeUserResult = await _authorizeUser.call(null);
     if (!authorizeUserResult.isSuccessful) {
       emit(_getFailureState(authorizeUserResult.failure));
@@ -38,7 +38,7 @@ class AccountAuthBloc extends Bloc<AccountAuthEvent, AccountAuthState> {
     await _onUpdate(emit);
   }
 
-  FutureOr<void> _onLogOut(event, Emitter<AccountAuthState> emit) async {
+  FutureOr<void> _onLogOut(AccountAuthEvent event, Emitter<AccountAuthState> emit) async {
     final deleteUserCredentialsResult = await _deleteUserCredentials.call(null);
     if (!deleteUserCredentialsResult.isSuccessful) {
       emit(_getFailureState(deleteUserCredentialsResult.failure));

@@ -5,7 +5,7 @@ import 'package:spotify_downloader/core/app/colors/colors.dart';
 part 'text_themes.dart';
 
 final mainTheme = ThemeData(
-  cardTheme: const CardTheme(color: surfaceColor),
+  cardTheme: const CardThemeData(color: surfaceColor),
   scrollbarTheme: ScrollbarThemeData(
       interactive: true,
       thumbVisibility: const WidgetStatePropertyAll(true),
@@ -50,7 +50,9 @@ final mainTheme = ThemeData(
     TargetPlatform.linux: CupertinoPageTransitionsBuilder(),
     TargetPlatform.fuchsia: CupertinoPageTransitionsBuilder()
   }),
-  dialogBackgroundColor: dialogColor,
+  dialogTheme: DialogThemeData(
+    backgroundColor: dialogColor,
+  ),
   snackBarTheme: const SnackBarThemeData(
     elevation: 0,
     backgroundColor: dialogColor,

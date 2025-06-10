@@ -26,7 +26,7 @@ class ClientAuthBloc extends Bloc<ClientAuthEvent, ClientAuthState> {
     on<ClientAuthChangeClientSecret>(_onChangeClientSecret);
   }
 
-    FutureOr<void> _onLoad(event, emit) async {
+    FutureOr<void> _onLoad(ClientAuthEvent event, Emitter<ClientAuthState> emit) async {
     if (currentCredentials != null) {
       emit(ClientAuthChanged(clientCredentials: currentCredentials!));
       return;

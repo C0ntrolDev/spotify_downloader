@@ -30,7 +30,7 @@ class TracksCollectionsLoadingNotificationsBloc
     return super.close();
   }
 
-  FutureOr<void> _onLoad(event, emit) async {
+  FutureOr<void> _onLoad(TracksCollectionsLoadingNotificationsLoad event, Emitter<TracksCollectionsLoadingNotificationsState> emit) async {
     if (_loadingTracksCollectionsObserver != null) return;
 
     final result = await _getLoadingTracksCollectionsObserver.call(null);

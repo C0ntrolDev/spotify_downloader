@@ -53,7 +53,7 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
                           itemBuilder: (context, index) {
                             final historyTracksCollection = state.historyTracksCollections[index];
                             return TapAnimatedContainer(
-                              tappingMaskColor: backgroundColor.withOpacity(0.4),
+                              tappingMaskColor: backgroundColor.withValues(alpha: 0.4),
                               tappingScale: 0.99,
                               onTap: () async {
                                 AutoRouter.of(context)

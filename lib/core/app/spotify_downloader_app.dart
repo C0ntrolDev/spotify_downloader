@@ -58,7 +58,7 @@ class _SpotifyDownloaderAppState extends State<SpotifyDownloaderApp> {
         });
   }
 
-  changeLanguage(String language) {
+  void changeLanguage(String language) {
     setState(() {
       _language = language;
     });

@@ -41,7 +41,7 @@ class LanguageSettingBloc extends Bloc<LanguageSettingEvent, LanguageSettingStat
         availableLanguages: getAvailableLanguagesResult.result!, selectedLanguage: event.language));
   }
 
-  FutureOr<void> _onLoad(event, emit) async {
+  FutureOr<void> _onLoad(LanguageSettingLoad event, Emitter<LanguageSettingState> emit) async {
     final getLanguageResult = await _getLanguage.call(null);
     final getAvailableLanguagesResult = await _getAvailableLanguages.call(null);
 

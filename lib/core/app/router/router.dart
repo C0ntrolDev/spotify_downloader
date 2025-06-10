@@ -15,7 +15,7 @@ import 'package:spotify_downloader/features/presentation/settings/view/settings_
 part 'router.gr.dart';
 
 @AutoRouterConfig()
-class AppRouter extends _$AppRouter {
+class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
         AutoRoute(page: MainRoute.page, path: '/', children: [
