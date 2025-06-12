@@ -12,7 +12,7 @@ import 'package:spotify_downloader/features/data_domain/tracks/services/entities
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_tile.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/shared/cubits/track_loading_observing_cubit/download_track_info_status_tile_cubit.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/strange_optimized_circular_progress_indicator.dart';
-import 'package:spotify_downloader/generated/l10n.dart';
+import 'package:spotify_downloader/l10n/app_localizations.dart';
 
 class DownloadTrackInfoStatusTile extends StatefulWidget {
   const DownloadTrackInfoStatusTile(
@@ -52,14 +52,14 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
       builder: (context, state) {
         if (state is TrackLoadingObservingDefault) {
           return DownloadTrackInfoTile(
-              title: S.of(context).theTrackIsNotLoaded,
+              title: AppLocalizations.of(context)!.theTrackIsNotLoaded,
               iconWidget:
                   SvgPicture.asset('resources/images/svg/track_tile/download_icon.svg', height: 23, width: 23));
         }
 
         if (state is TrackLoadingObservingLoading) {
           return DownloadTrackInfoTile(
-            title: S.of(context).theTrackIsLoading(state.percent != null ? formatDouble(state.percent!) : '...'),
+            title: AppLocalizations.of(context)!.theTrackIsLoading(state.percent != null ? formatDouble(state.percent!) : '...'),
             iconWidget: Container(
               padding: const EdgeInsets.all(0),
               height: 23,
@@ -79,19 +79,19 @@ class _DownloadTrackInfoStatusTileState extends State<DownloadTrackInfoStatusTil
 
         if (state is TrackLoadingObservingLoaded) {
           return DownloadTrackInfoTile(
-              title: S.of(context).theTrackIsLoaded,
+              title: AppLocalizations.of(context)!.theTrackIsLoaded,
               iconWidget:
                   SvgPicture.asset('resources/images/svg/track_tile/downloaded_icon.svg', height: 23, width: 23));
         }
 
         if (state is TrackLoadingObservingFailure) {
           return DownloadTrackInfoTile(
-              title: S.of(context).downloadError(
-                  state.failure is NetworkFailure ? S.of(context).noConnection : state.failure ?? '...'),
+              title: AppLocalizations.of(context)!.downloadError(
+                  state.failure is NetworkFailure ? AppLocalizations.of(context)!.noConnection : state.failure ?? '...'),
               iconWidget: SvgPicture.asset('resources/images/svg/track_tile/error_icon.svg', height: 23, width: 23),
               onTap: () async {
                 if (state.failure != null) {
-                  showSnackBar(S.of(context).failureCopied, context);
+                  showSnackBar(AppLocalizations.of(context)!.failureCopied, context);
                   await Clipboard.setData(ClipboardData(text: state.failure!.toString()));
                 }
               });

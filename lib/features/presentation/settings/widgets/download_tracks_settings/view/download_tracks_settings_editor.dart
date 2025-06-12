@@ -8,7 +8,7 @@ import 'package:spotify_downloader/features/presentation/settings/widgets/downlo
 import 'package:spotify_downloader/features/presentation/settings/widgets/setting_with_text_field.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/settings_group.dart';
 import 'package:spotify_downloader/features/presentation/shared/other/show_failure_snackbar.dart';
-import 'package:spotify_downloader/generated/l10n.dart';
+import 'package:spotify_downloader/l10n/app_localizations.dart';
 
 class DownloadTracksSettingsEditor extends StatefulWidget {
   const DownloadTracksSettingsEditor({super.key});
@@ -41,14 +41,14 @@ class _DownloadTracksSettingsEditorState extends State<DownloadTracksSettingsEdi
       builder: (context, state) {
         if (state is! DownloadTracksSettingsChanged) return Container();
         return SettingsGroup(
-          header: S.of(context).download,
+          header: AppLocalizations.of(context)!.download,
           settings: [
             Row(
               children: [
                 Expanded(
                     child: SettingWithTextField(
                   key: ObjectKey(state.downloadTracksSettings.savePath),
-                  title: S.of(context).storagePath,
+                  title: AppLocalizations.of(context)!.storagePath,
                   value: state.downloadTracksSettings.savePath,
                   onChangedValueSubmitted: (newSavePath) {
                     _bloc.add(DownloadTracksSettingsChangeSavePath(savePath: newSavePath));
@@ -79,7 +79,7 @@ class _DownloadTracksSettingsEditorState extends State<DownloadTracksSettingsEdi
                         .add(const DownloadTracksSettingsChangeSaveMode(saveMode: SaveMode.folderForTracksCollection));
                   }
                 },
-                title: S.of(context).saveAllInOneFolder)
+                title: AppLocalizations.of(context)!.saveAllInOneFolder)
           ],
         );
       },

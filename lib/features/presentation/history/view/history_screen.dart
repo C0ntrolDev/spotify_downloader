@@ -8,7 +8,7 @@ import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/presentation/history/bloc/history_bloc.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
-import 'package:spotify_downloader/generated/l10n.dart';
+import 'package:spotify_downloader/l10n/app_localizations.dart';
 
 @RoutePage()
 class HistoryScreen extends StatefulWidget {
@@ -39,7 +39,7 @@ class _HistoryScreenState extends State<HistoryScreen> with AutoRouteAwareStateM
         child: Column(
           children: [
             CustomMainAppBar(
-              title: S.of(context).searchHistory,
+              title: AppLocalizations.of(context)!.searchHistory,
               contentPadding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
             ),
             Expanded(

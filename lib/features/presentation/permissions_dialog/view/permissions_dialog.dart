@@ -4,7 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/features/presentation/permissions_dialog/widgets/permission_tile.dart';
-import 'package:spotify_downloader/generated/l10n.dart';
+import 'package:spotify_downloader/l10n/app_localizations.dart';
 
 void showPermissonsDialog(BuildContext context, FutureOr<bool> Function() onRequestButtonClicked) {
   final theme = Theme.of(context);
@@ -16,7 +16,7 @@ void showPermissonsDialog(BuildContext context, FutureOr<bool> Function() onRequ
           shadowColor: Colors.transparent,
           elevation: 0,
           title: Text(
-            S.of(context).grantPermissions,
+            AppLocalizations.of(context)!.grantPermissions,
             style: theme.textTheme.titleMedium,
             maxLines: 2,
           ),
@@ -25,13 +25,13 @@ void showPermissonsDialog(BuildContext context, FutureOr<bool> Function() onRequ
           children: [
             PermissionTile(
               icon: Icons.folder,
-              text: S.of(context).storagePermissionText,
+              text: AppLocalizations.of(context)!.storagePermissionText,
             ),
             Padding(
               padding: const EdgeInsets.only(top: 15),
               child: PermissionTile(
                 icon: Icons.notifications,
-                text: S.of(context).notificationsPermissionText,
+                text: AppLocalizations.of(context)!.notificationsPermissionText,
               ),
             ),
             Padding(
@@ -47,7 +47,7 @@ void showPermissonsDialog(BuildContext context, FutureOr<bool> Function() onRequ
                         }
                       },
                       child: Text(
-                        S.of(context).grant,
+                        AppLocalizations.of(context)!.grant,
                         style: theme.textTheme.bodySmall?.copyWith(color: onPrimaryColor),
                       )),
                   ElevatedButton(
@@ -56,7 +56,7 @@ void showPermissonsDialog(BuildContext context, FutureOr<bool> Function() onRequ
                         AutoRouter.of(context).pop();
                       },
                       child: Text(
-                        S.of(context).refuse,
+                        AppLocalizations.of(context)!.refuse,
                         style: theme.textTheme.bodySmall?.copyWith(color: onPrimaryColor),
                       ))
                 ],

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/settings/settings.dart';
 
@@ -6,6 +8,9 @@ class SettingsRepositoryImpl implements DownloadTracksSettingsRepository, Langua
 
   final SettingsDataSource _settingsDataSource;
   AppSettings? _currentSettings;
+
+  final StreamController<String> _languageChangedStreamController = StreamController.broadcast();
+  Stream<String> get _languageChangedStream => _languageChangedStreamController.stream; 
 
   @override
   Future<Result<Failure, DownloadTracksSettings>> getDownloadTracksSettings() async {
@@ -82,7 +87,17 @@ class SettingsRepositoryImpl implements DownloadTracksSettingsRepository, Langua
 
   Future<Result<Failure, void>> _saveSettings(AppSettings newSettings) async {
     _currentSettings = newSettings;
+
+    if (_currentSettings?.language != newSettings.language) {
+      _languageChangedStreamController.add(newSettings.language);
+    }
+
     return _settingsDataSource.saveSettings(newSettings);
+  }
+
+  @override
+  Future<Result<Failure, Stream<String>>> getLanguageChangedStream() async {
+    return Result.isSuccessful(_languageChangedStream);
   }
 
   @override

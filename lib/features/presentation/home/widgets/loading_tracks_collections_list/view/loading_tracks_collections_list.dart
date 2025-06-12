@@ -6,7 +6,7 @@ import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/observe_tracks_loading/domain/entities/loading_tracks_collection/loading_tracks_collection_observer.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/cubit/loading_tracks_collections_list_cubit.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/widgets/loading_tracks_collection_tile/view/loading_tracks_collection_tile.dart';
-import 'package:spotify_downloader/generated/l10n.dart';
+import 'package:spotify_downloader/l10n/app_localizations.dart';
 
 class LoadingTracksCollectionsList extends StatefulWidget {
   const LoadingTracksCollectionsList({super.key});
@@ -47,7 +47,7 @@ class _LoadingTracksCollectionsListState extends State<LoadingTracksCollectionsL
           bloc: _cubit,
           builder: (context, state) {
             if (state is LoadingTracksCollectionsListLoaded && currentList.isEmpty) {
-              return Text(S.of(context).tracksDontLoad,
+              return Text(AppLocalizations.of(context)!.tracksDontLoad,
                   style: theme.textTheme.labelLarge?.copyWith(color: onBackgroundSecondaryColor));
             }
 
@@ -60,7 +60,7 @@ class _LoadingTracksCollectionsListState extends State<LoadingTracksCollectionsL
 
             if (state is LoadingTracksCollectionsListFailure) {
               return Text(
-                  S.of(context).errorOccurredWhileLoadingActiveDownloads(
+                  AppLocalizations.of(context)!.errorOccurredWhileLoadingActiveDownloads(
                       state.failure?.message.toString() ?? 'the message isn\'t specified'),
                   style: theme.textTheme.labelLarge?.copyWith(color: onBackgroundSecondaryColor));
             }

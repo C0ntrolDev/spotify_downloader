@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:spotify_downloader/core/consts/local_paths.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/settings/data/data.dart';
-import 'package:spotify_downloader/generated/l10n.dart';
+import 'package:spotify_downloader/l10n/app_localizations.dart';
 
 class SettingsDataSource {
   Future<Result<Failure, void>> saveSettings(AppSettings appSettings) async {
@@ -68,7 +68,7 @@ class SettingsDataSource {
   }
 
   List<String> getAvailableLanguages() {
-    return S.delegate.supportedLocales.map((l) => l.languageCode).toList();
+    return AppLocalizations.supportedLocales.map((l) => l.languageCode).toList();
   }
 
   String _appSettingsToJson(AppSettings appSettings) {

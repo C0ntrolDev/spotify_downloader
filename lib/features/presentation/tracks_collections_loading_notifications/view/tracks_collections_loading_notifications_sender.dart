@@ -4,11 +4,15 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/notifications/notifications.dart';
-import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notifications/bloc/tracks_collections_loading_notifications_bloc.dart';
-import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notifications/bloc_entities/tracks_collections_loading_info.dart';
-import 'package:spotify_downloader/generated/l10n.dart';
+import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notifications/blocs/localization_cubit/localization_cubit.dart';
+import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notifications/blocs/tracks_collections_loading_notifications_bloc/bloc/tracks_collections_loading_notifications_bloc.dart';
+import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notifications/blocs/tracks_collections_loading_notifications_bloc/bloc_entities/tracks_collections_loading_info.dart';
+import 'package:spotify_downloader/l10n/app_localizations.dart';
 
 class TracksCollectionsLoadingNotificationsSender {
+  final LocalizationCubit _localizationCubit = injector.get<LocalizationCubit>();
+  AppLocalizations? localization;
+
   final TracksCollectionsLoadingNotificationsBloc _bloc = injector.get<TracksCollectionsLoadingNotificationsBloc>();
   final int messageId = 10;
 
@@ -17,6 +21,17 @@ class TracksCollectionsLoadingNotificationsSender {
 
   TracksCollectionsLoadingNotificationsSender() {
     _bloc.add(TracksCollectionsLoadingNotificationsLoad());
+
+    _localizationCubit.loadLanguage();
+    subscribeToLocalizationUpdate();
+  }
+
+  void subscribeToLocalizationUpdate() {
+    _localizationCubit.stream.listen((state) {
+      if (state is LocalizationLoaded) {
+        localization = state.localization;
+      }
+    });
   }
 
   Future<void> startSendNotifications() async {
@@ -37,6 +52,10 @@ class TracksCollectionsLoadingNotificationsSender {
   }
 
   void _sendNotification(TracksCollectionsLoadingInfo info) {
+    if (localization == null) {
+      return;
+    }
+
     if (info.totalTracks == 0) {
       AwesomeNotifications().cancel(messageId);
       return;
@@ -48,9 +67,9 @@ class TracksCollectionsLoadingNotificationsSender {
               id: messageId,
               channelKey: mainChannelKey,
               actionType: ActionType.Default,
-              title: S.current.allTracksAreLoaded,
+              title: localization!.allTracksAreLoaded,
               backgroundColor: primaryColor,
-              body: S.current.allTracksAreLoadedBody(info.loadedTracks, info.failuredTracks),
+              body: localization!.allTracksAreLoadedBody(info.loadedTracks, info.failuredTracks),
               summary: '^_^',
               notificationLayout: NotificationLayout.Default,
               autoDismissible: false));
@@ -64,15 +83,14 @@ class TracksCollectionsLoadingNotificationsSender {
             id: messageId,
             channelKey: mainChannelKey,
             actionType: ActionType.Default,
-            title: S.current.tracksAreBeingLoaded,
+            title: localization!.tracksAreBeingLoaded,
             backgroundColor: primaryColor,
-            body:
-                S.current.tracksAreBeingLoadedBody(info.totalTracks, info.loadedTracks, info.failuredTracks, progress),
+            body: localization!
+                .tracksAreBeingLoadedBody(info.totalTracks, info.loadedTracks, info.failuredTracks, progress),
             summary: '^_^',
             autoDismissible: false,
             notificationLayout: NotificationLayout.ProgressBar,
             progress: progress == 0 ? null : progress));
-
   }
 
   void _startDelayedUpdate() {

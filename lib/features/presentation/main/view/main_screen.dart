@@ -12,7 +12,7 @@ import 'package:spotify_downloader/features/presentation/main/tools/bottom_navig
 import 'package:spotify_downloader/features/presentation/main/widgets/ftoasts/ftoast_initializer.dart';
 import 'package:spotify_downloader/features/presentation/main/widgets/orientated_navigation_bar/orientated_navigation_bar.dart';
 import 'package:spotify_downloader/features/presentation/permissions_dialog/view/permissions_dialog.dart';
-import 'package:spotify_downloader/generated/l10n.dart';
+import 'package:spotify_downloader/l10n/app_localizations.dart';
 
 @RoutePage()
 class MainScreen extends StatefulWidget {
@@ -120,11 +120,11 @@ class _MainScreenState extends State<MainScreen> {
                   OrientatedNavigationBarItem(
                       svgIconPath: 'resources/images/svg/bottom_bar/home_icon.svg',
                       svgActiveIconPath: 'resources/images/svg/bottom_bar/home_icon_active.svg',
-                      label: S.of(context).main),
+                      label: AppLocalizations.of(context)!.main),
                   OrientatedNavigationBarItem(
                       svgIconPath: 'resources/images/svg/bottom_bar/history_icon.svg',
                       svgActiveIconPath: 'resources/images/svg/bottom_bar/history_icon_active.svg',
-                      label: S.of(context).history)
+                      label: AppLocalizations.of(context)!.history)
                 ],
                 child: FtoastInitializer(
                   child: AutoRouter(
