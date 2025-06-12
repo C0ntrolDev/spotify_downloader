@@ -60,7 +60,7 @@ class _LoadingTracksCollectionTileState extends State<LoadingTracksCollectionTil
         }
 
         return TapAnimatedContainer(
-          tappingMaskColor: backgroundColor.withValues(alpha: 0.4),
+          tappingMaskColor: backgroundColor.withOpacity(0.4),
           tappingScale: 0.99,
           onTap: () {
             if (state.loadingTrackInfo.tracksCollection == null) return;

@@ -108,7 +108,7 @@ class GetTracksBloc extends Bloc<GetTracksEvent, GetTracksState> {
     connectivitySubscription?.cancel();
     connectivitySubscription = Connectivity()
         .onConnectivityChanged
-        .listen((connections) => add(_GetTracksConnectionChanged(connection: connections.last)));
+        .listen((connection) => add(_GetTracksConnectionChanged(connection: connection)));
   }
 
   Future<void> _onConnectionChanged(_GetTracksConnectionChanged event, Emitter<GetTracksState> emit) async {

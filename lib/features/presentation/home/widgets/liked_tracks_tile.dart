@@ -19,7 +19,7 @@ class LikedTracksTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TapAnimatedContainer(
-        tappingMaskColor: surfaceColor.withValues(alpha: 0.4),
+        tappingMaskColor: surfaceColor.withOpacity(0.4),
         tappingScale: 0.99,
         onTap: onTap,
         child: Container(

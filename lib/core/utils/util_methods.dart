@@ -8,11 +8,11 @@ import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
 
 Color getIntermediateColor(Color color1, Color color2, double ratio) {
-  return Color.from(
-      alpha: (color1.a - (color1.a - backgroundColor.a) * ratio),
-      red: (color1.r - (color1.r - color2.r) * ratio),
-      green: (color1.g - (color1.g - color2.g) * ratio),
-      blue: (color1.b - (color1.b - backgroundColor.b) * ratio));
+  return Color.fromARGB(
+      (color1.alpha - (color1.alpha - backgroundColor.alpha) * ratio).round(),
+      (color1.red - (color1.red - color2.red) * ratio).round(),
+      (color1.green - (color1.green - color2.green) * ratio).round(),
+      (color1.blue - (color1.blue - backgroundColor.blue) * ratio).round());
 }
 
 Future<Result<Failure, T>> handleSpotifyClientExceptions<T>(Future<Result<Failure, T>> Function() function) async {

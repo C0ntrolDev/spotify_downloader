@@ -39,7 +39,7 @@ class AboutAppScreen extends StatelessWidget {
                               padding: const EdgeInsets.only(top: 20),
                               child: Center(
                                   child: TapAnimatedContainer(
-                                tappingMaskColor: backgroundColor.withValues(alpha: 0.3),
+                                tappingMaskColor: backgroundColor.withOpacity(0.3),
                                 tappingScale: 0.95,
                                 onTap: () => _onAvatarClicked(context),
                                 child: Container(
@@ -47,7 +47,7 @@ class AboutAppScreen extends StatelessWidget {
                                     width: avatarSize,
                                     decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.3),
+                                        color: Colors.black.withOpacity(0.3),
                                         spreadRadius: 7,
                                         blurRadius: 13,
                                       )

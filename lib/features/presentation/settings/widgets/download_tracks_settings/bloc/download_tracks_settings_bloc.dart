@@ -25,7 +25,7 @@ class DownloadTracksSettingsBloc extends Bloc<DownloadTracksSettingsEvent, Downl
     on<DownloadTracksSettingsChangeSavePath>(_onChangeSavePath);
   }
 
-  FutureOr<void> _onLoad(DownloadTracksSettingsLoad event, Emitter<DownloadTracksSettingsState> emit) async {
+  FutureOr<void> _onLoad(event, Emitter<DownloadTracksSettingsState> emit) async {
     final getDownloadTracksSettingsResult = await _getDownloadTracksSettings.call(null);
     if (!getDownloadTracksSettingsResult.isSuccessful) {
       emit(DownloadTracksSettingsFailure(failure: getDownloadTracksSettingsResult.failure));

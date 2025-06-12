@@ -57,7 +57,7 @@ class TracksCollectionsLoadingNotificationsSender {
       return;
     }
 
-    double progress = min((info.totalTracks - info.loadingTracks) / info.totalTracks, 1);
+    int progress = min(((info.totalTracks - info.loadingTracks) / info.totalTracks * 100).floor(), 100);
 
     AwesomeNotifications().createNotification(
         content: NotificationContent(

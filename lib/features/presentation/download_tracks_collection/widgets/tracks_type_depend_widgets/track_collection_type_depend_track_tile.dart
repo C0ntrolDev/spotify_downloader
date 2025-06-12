@@ -56,7 +56,7 @@ class _TracksCollectionTypeDependTrackTileState extends State<TracksCollectionTy
 
     return TapAnimatedContainer(
       tappingScale: 0.99,
-      tappingMaskColor: backgroundColor.withValues(alpha: 0.4),
+      tappingMaskColor: backgroundColor.withOpacity(0.4),
       onTap: onTrackTileClicked,
       onLongTapStart: widget.onMoreInfoClicked,
       child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [

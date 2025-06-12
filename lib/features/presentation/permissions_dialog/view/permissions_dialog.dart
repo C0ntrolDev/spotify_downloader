@@ -6,7 +6,7 @@ import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/features/presentation/permissions_dialog/widgets/permission_tile.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
-void showPermissonsDialog(BuildContext context, FutureOr<bool> Function() onRequestButtonClicked) {
+showPermissonsDialog(BuildContext context, FutureOr<bool> Function() onRequestButtonClicked) {
   final theme = Theme.of(context);
   showDialog(
       context: context,

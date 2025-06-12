@@ -101,8 +101,8 @@ class DownloadAudioFromYoutubeDataSource {
   Future<CancellableResult<Failure, (String, double)>> _getAndDownloadVideoFromYoutube(
       DownloadAudioFromYoutubeArgs args, CancellationToken token, Function(double) setLoadingPercent) async {
     Completer noNetworkCompleter = Completer();
-    final noNetworkSub = Connectivity().onConnectivityChanged.listen((connections) {
-      if (connections.last == ConnectivityResult.none || connections.last == ConnectivityResult.other) {
+    final noNetworkSub = Connectivity().onConnectivityChanged.listen((connection) {
+      if (connection == ConnectivityResult.none || connection == ConnectivityResult.other) {
         noNetworkCompleter.complete();
       }
     });

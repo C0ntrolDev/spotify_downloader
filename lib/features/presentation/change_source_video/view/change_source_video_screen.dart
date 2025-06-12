@@ -10,7 +10,7 @@ import 'package:spotify_downloader/features/presentation/shared/other/show_failu
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
 import 'package:spotify_downloader/generated/l10n.dart';
 
-@RoutePage()
+@RoutePage<String?>()
 class ChangeSourceVideoScreen extends StatefulWidget {
   const ChangeSourceVideoScreen({super.key, required this.track, this.oldYoutubeUrl});
 
