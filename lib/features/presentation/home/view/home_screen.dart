@@ -11,7 +11,7 @@ import 'package:spotify_downloader/features/data_domain/tracks_collections/histo
 import 'package:spotify_downloader/features/presentation/home/widgets/liked_tracks_tile.dart';
 import 'package:spotify_downloader/features/presentation/home/widgets/loading_tracks_collections_list/view/loading_tracks_collections_list.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
-import 'package:spotify_downloader/l10n/app_localizations.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 @RoutePage()
 class HomeScreen extends StatefulWidget {
@@ -63,14 +63,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(AppLocalizations.of(context)!.downloadFromLink, style: theme.textTheme.titleMedium),
+                                Text(S.of(context).downloadFromLink, style: theme.textTheme.titleMedium),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 10),
                                   child: SearchTextField(
                                     theme: theme,
                                     height: 45,
                                     iconPadding: const EdgeInsets.all(10),
-                                    hintText: AppLocalizations.of(context)!.downloadFromLinkTextFieldHintText,
+                                    hintText: S.of(context).downloadFromLinkTextFieldHintText,
                                     controller: searchTextFieldController,
                                     onSubmitted: (value) async {
                                       if (isSearchRequestValid(value)) {
@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         searchTextFieldController.clear();
                                       } else if (value != '') {
                                         searchTextFieldController.clear();
-                                        showBigTextSnackBar(context, AppLocalizations.of(context)!.incorrectLink);
+                                        showBigTextSnackBar(context, S.of(context).incorrectLink);
                                       }
                                     },
                                   ),
@@ -96,12 +96,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(AppLocalizations.of(context)!.downloadLikedTracks, style: theme.textTheme.titleMedium),
+                                  Text(S.of(context).downloadLikedTracks, style: theme.textTheme.titleMedium),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 10),
                                     child: LikedTracksTile(
                                       theme: theme,
-                                      title: AppLocalizations.of(context)!.likedTracksTitle,
+                                      title: S.of(context).likedTracksTitle,
                                       onTap: () {
                                         AutoRouter.of(context).push(
                                             DownloadTracksCollectionRouteWithHistoryTracksCollection(
@@ -122,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           sliver: MultiSliver(
                             children: [
                               SliverToBoxAdapter(
-                                child: Text(AppLocalizations.of(context)!.activeDownloads, style: theme.textTheme.titleMedium),
+                                child: Text(S.of(context).activeDownloads, style: theme.textTheme.titleMedium),
                               ),
                               const SliverPadding(
                                   padding: EdgeInsets.only(top: 10), sliver: LoadingTracksCollectionsList())

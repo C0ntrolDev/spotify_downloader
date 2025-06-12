@@ -8,7 +8,7 @@ import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/ent
 import 'package:spotify_downloader/features/presentation/change_source_video/bloc/change_source_video_bloc.dart';
 import 'package:spotify_downloader/features/presentation/shared/other/show_failure_snackbar.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
-import 'package:spotify_downloader/l10n/app_localizations.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 @RoutePage()
 class ChangeSourceVideoScreen extends StatefulWidget {
@@ -48,7 +48,7 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
             body: Column(
               children: [
                 CustomAppBar(
-                  title: AppLocalizations.of(context)!.changeTheDownloadSource,
+                  title: S.of(context).changeTheDownloadSource,
                 ),
                 Expanded(
                   child: BlocConsumer(
@@ -97,7 +97,7 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
                                                       style: theme.textTheme.bodyMedium,
                                                     ),
                                                     Text(
-                                                      AppLocalizations.of(context)!.nView(formatViewsCount(video.viewsCount)),
+                                                      S.of(context).nView(formatViewsCount(video.viewsCount)),
                                                       style: theme.textTheme.labelMedium
                                                           ?.copyWith(color: onBackgroundSecondaryColor),
                                                     ),
@@ -160,9 +160,9 @@ class _ChangeSourceVideoScreenState extends State<ChangeSourceVideoScreen> {
     }
 
     if (likesCount < 1000000) {
-      return AppLocalizations.of(context)!.nThousands(likesCount ~/ 1000);
+      return S.of(context).nThousands(likesCount ~/ 1000);
     }
 
-    return AppLocalizations.of(context)!.nMillions(likesCount ~/ 1000000);
+    return S.of(context).nMillions(likesCount ~/ 1000000);
   }
 }

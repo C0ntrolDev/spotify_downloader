@@ -7,7 +7,7 @@ import 'package:spotify_downloader/features/presentation/settings/widgets/auth_s
 import 'package:spotify_downloader/features/presentation/settings/widgets/setting_with_text_field.dart';
 import 'package:spotify_downloader/features/presentation/settings/widgets/settings_group.dart';
 import 'package:spotify_downloader/features/presentation/shared/other/show_failure_snackbar.dart';
-import 'package:spotify_downloader/l10n/app_localizations.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 class AuthSettings extends StatefulWidget {
   const AuthSettings({super.key});
@@ -42,7 +42,7 @@ class _AuthSettingsState extends State<AuthSettings> {
             }
           },
           bloc: _clientAuthBloc,
-          child: SettingsGroup(header: AppLocalizations.of(context)!.spotifySDKAndAccount, settings: [
+          child: SettingsGroup(header: S.of(context).spotifySDKAndAccount, settings: [
             BlocBuilder<ClientAuthBloc, ClientAuthState>(
               bloc: _clientAuthBloc,
               buildWhen: (previous, current) => current is! ClientAuthFailure,
@@ -89,7 +89,7 @@ class _AuthSettingsState extends State<AuthSettings> {
                         child: Builder(builder: (context) {
                           switch (state) {
                             case AccountAuthLoading():
-                              return Text(AppLocalizations.of(context)!.accountInformationIsBeingLoaded, maxLines: 2);
+                              return Text(S.of(context).accountInformationIsBeingLoaded, maxLines: 2);
                             case AccountAuthAuthorized():
                               return Row(
                                 children: [
@@ -106,13 +106,13 @@ class _AuthSettingsState extends State<AuthSettings> {
                                 ],
                               );
                             case AccountAuthNotAuthorized():
-                              return Text(AppLocalizations.of(context)!.youAreNotLoggedInToYourAccount, maxLines: 2);
+                              return Text(S.of(context).youAreNotLoggedInToYourAccount, maxLines: 2);
                             case AccountAuthNetworkFailure():
-                              return Text(AppLocalizations.of(context)!.connectionError, maxLines: 2);
+                              return Text(S.of(context).connectionError, maxLines: 2);
                             case AccountAuthInvalidCredentialsFailure():
-                              return Text(AppLocalizations.of(context)!.couldntLogInToYourAccount, maxLines: 2);
+                              return Text(S.of(context).couldntLogInToYourAccount, maxLines: 2);
                             case AccountAuthFailure():
-                              return Text(AppLocalizations.of(context)!.unknownError, maxLines: 2);
+                              return Text(S.of(context).unknownError, maxLines: 2);
                           }
                         }),
                       ),
@@ -132,10 +132,10 @@ class _AuthSettingsState extends State<AuthSettings> {
                         late final void Function() onButtonClicked;
 
                         if (state is AccountAuthAuthorized) {
-                          buttonText = AppLocalizations.of(context)!.logOut;
+                          buttonText = S.of(context).logOut;
                           onButtonClicked = () => _accountAuthBloc.add(AccountAuthLogOut());
                         } else {
-                          buttonText = AppLocalizations.of(context)!.logIn;
+                          buttonText = S.of(context).logIn;
                           onButtonClicked = () => _accountAuthBloc.add(AccountAuthAuthorize());
                         }
 

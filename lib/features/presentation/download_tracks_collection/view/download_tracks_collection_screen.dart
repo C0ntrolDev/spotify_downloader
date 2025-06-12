@@ -22,7 +22,7 @@ import 'package:spotify_downloader/features/presentation/main/widgets/orientated
 import 'package:spotify_downloader/features/presentation/shared/other/show_failure_snackbar.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
 
-import 'package:spotify_downloader/l10n/app_localizations.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 abstract class DownloadTracksCollectionScreen extends StatefulWidget {
   final String? url;
@@ -425,9 +425,9 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
 
   void _onFatalFailure(Failure? failure) {
     if (failure is NotFoundFailure) {
-      showBigTextSnackBar(context, AppLocalizations.of(context)!.nothingWasFoundAtThisUrl);
+      showBigTextSnackBar(context, S.of(context).nothingWasFoundAtThisUrl);
     } else if (failure is NotAuthorizedFailure) {
-      showBigTextSnackBar(context, AppLocalizations.of(context)!.toAccessYouNeedToLogIn);
+      showBigTextSnackBar(context, S.of(context).toAccessYouNeedToLogIn);
     } else {
       showFailureSnackBar(context, failure.toString());
     }

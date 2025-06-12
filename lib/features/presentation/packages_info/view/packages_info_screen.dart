@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
-import 'package:spotify_downloader/l10n/app_localizations.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 import 'package:spotify_downloader/oss_licenses.dart';
 
 @RoutePage()
@@ -19,7 +19,7 @@ class PackagesInfoScreen extends StatelessWidget {
         right: false,
         child: Column(
           children: [
-            CustomAppBar(title: AppLocalizations.of(context)!.packagesLicenses),
+            CustomAppBar(title: S.of(context).packagesLicenses),
             Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),

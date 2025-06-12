@@ -21,9 +21,9 @@ dependencies:
   flutter_bloc: ^9.1.1
   equatable: ^2.0.5
   flutter_svg: ^2.0.9
-  auto_route: ^10.1.0
+  auto_route: ^9.3.0
   palette_generator: ^0.3.3+3
-  ffmpeg_kit_flutter_new: ^1.6.1  
+  ffmpeg_kit_flutter_full: ^6.0.3
   youtube_explode_dart: ^2.3.6
   metadata_god: ^1.0.0
   cached_network_image: ^3.3.0
@@ -36,6 +36,7 @@ dependencies:
   device_info_plus: ^11.4.0
   permission_handler: ^12.0.0
   intl: ^0.20.2
+  intl_translation: ^0.20.1
   flutter_localizations:
         sdk: flutter
   dropdown_button2: ^2.3.9
@@ -52,11 +53,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  auto_route_generator: ^10.2.3
+  auto_route_generator: ^9.3.1
   build_runner: ^2.4.6
 
+dependency_overrides:
+  win32: ^5.5.4
+
 flutter:
-  generate: true
+
   uses-material-design: true
 
   assets:
@@ -91,3 +95,5 @@ flutter:
           weight: 700
         - asset: resources/fonts/OpenSans-ExtraBold.ttf
           weight: 800
+flutter_intl: 
+  enabled: true

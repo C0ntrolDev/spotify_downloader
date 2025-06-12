@@ -10,7 +10,7 @@ import 'package:spotify_downloader/features/data_domain/tracks/services/entities
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_status_tile/view/download_track_info_status_tile.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/widgets/download_track_info_tile.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
-import 'package:spotify_downloader/l10n/app_localizations.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 void showDownloadTrackInfoBottomSheet(
     {required BuildContext context,
@@ -143,7 +143,7 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
               trackWithLoadingObserver: widget.trackWithLoadingObserver,
             ),
             DownloadTrackInfoTile(
-                title: AppLocalizations.of(context)!.linkToTheSource,
+                title: S.of(context).linkToTheSource,
                 iconWidget: SvgPicture.asset('resources/images/svg/download_track_info/reference_icon.svg',
                     height: 23,
                     width: 23,
@@ -151,14 +151,14 @@ class _DownloadTrackInfoState extends State<DownloadTrackInfo> {
                 onTap: () async {
                   final currentYoutubeUrl = widget.getCurrentYoutubeUrl();
                   if (currentYoutubeUrl != null) {
-                    showSnackBar(AppLocalizations.of(context)!.urlCopied, context);
+                    showSnackBar(S.of(context).urlCopied, context);
                     await Clipboard.setData(ClipboardData(text: currentYoutubeUrl));
                   } else {
-                    showSnackBar(AppLocalizations.of(context)!.urlNotSelected, context);
+                    showSnackBar(S.of(context).urlNotSelected, context);
                   }
                 }),
             DownloadTrackInfoTile(
-                title: AppLocalizations.of(context)!.changeTheSource,
+                title: S.of(context).changeTheSource,
                 iconWidget: SvgPicture.asset('resources/images/svg/download_track_info/edit_icon.svg',
                     height: 23,
                     width: 23,

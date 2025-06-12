@@ -6,7 +6,7 @@ import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/accessors/package_info/package_info_accessor.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
-import 'package:spotify_downloader/l10n/app_localizations.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
@@ -26,7 +26,7 @@ class AboutAppScreen extends StatelessWidget {
         right: false,
         child: Column(
           children: [
-            CustomAppBar(title: AppLocalizations.of(context)!.aboutApp),
+            CustomAppBar(title: S.of(context).aboutApp),
             Expanded(
               child: Padding(
                   padding: screenWithCustomAppBarPadding,
@@ -62,7 +62,7 @@ class AboutAppScreen extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.only(top: 20, bottom: 15),
                               child: Center(
-                                child: Text(AppLocalizations.of(context)!.developedByC0ntrolDev,
+                                child: Text(S.of(context).developedByC0ntrolDev,
                                     style: theme.textTheme.titleMedium, maxLines: 2, textAlign: TextAlign.center),
                               ),
                             ),
@@ -75,7 +75,7 @@ class AboutAppScreen extends StatelessWidget {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(top: 20, bottom: 20),
-                              child: Text(AppLocalizations.of(context)!.specialThanks, style: theme.textTheme.bodyLarge),
+                              child: Text(S.of(context).specialThanks, style: theme.textTheme.bodyLarge),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 15),
@@ -102,25 +102,25 @@ class AboutAppScreen extends StatelessWidget {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(top: 20, bottom: 20),
-                              child: Text(AppLocalizations.of(context)!.appInfo, style: theme.textTheme.bodyLarge),
+                              child: Text(S.of(context).appInfo, style: theme.textTheme.bodyLarge),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 15),
-                              child: Text(AppLocalizations.of(context)!.appName(packageInfoAccessor?.packageInfo.appName ?? "")),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 15),
-                              child:
-                                  Text(AppLocalizations.of(context)!.packageName(packageInfoAccessor?.packageInfo.packageName ?? "")),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 15),
-                              child: Text(AppLocalizations.of(context)!.appVersion(packageInfoAccessor?.packageInfo.version ?? "")),
+                              child: Text(S.of(context).appName(packageInfoAccessor?.packageInfo.appName ?? "")),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 15),
                               child:
-                                  Text(AppLocalizations.of(context)!.buildNumber(packageInfoAccessor?.packageInfo.buildNumber ?? "")),
+                                  Text(S.of(context).packageName(packageInfoAccessor?.packageInfo.packageName ?? "")),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 15),
+                              child: Text(S.of(context).appVersion(packageInfoAccessor?.packageInfo.version ?? "")),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 15),
+                              child:
+                                  Text(S.of(context).buildNumber(packageInfoAccessor?.packageInfo.buildNumber ?? "")),
                             ),
                           ],
                         ),

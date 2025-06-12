@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/search_text_field.dart';
-import 'package:spotify_downloader/l10n/app_localizations.dart';
+import 'package:spotify_downloader/generated/l10n.dart';
 
 class DownloadTracksCollectionManageBar extends StatelessWidget {
   const DownloadTracksCollectionManageBar({
@@ -27,7 +27,7 @@ class DownloadTracksCollectionManageBar extends StatelessWidget {
               onChanged: onFilterQueryChanged,
               height: 35,
               cornerRadius: 5,
-              hintText: AppLocalizations.of(context)!.searchByName,
+              hintText: S.of(context).searchByName,
               textStyle: theme.textTheme.bodySmall?.copyWith(color: onPrimaryColor),
               hintStyle: theme.textTheme.bodySmall?.copyWith(color: searchFieldHintColor, fontWeight: FontWeight.w700),
             ),
@@ -40,7 +40,7 @@ class DownloadTracksCollectionManageBar extends StatelessWidget {
               style: ButtonStyle(
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))),
-              child: Text(AppLocalizations.of(context)!.downloadAll,
+              child: Text(S.of(context).downloadAll,
                   style: theme.textTheme.bodySmall!.copyWith(color: onPrimaryColor, fontWeight: FontWeight.w700)),
             ),
           )

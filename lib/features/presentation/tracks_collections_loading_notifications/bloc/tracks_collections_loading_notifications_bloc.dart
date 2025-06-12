@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/utils/failures/failure.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/observe_tracks_loading/domain/domain.dart';
-import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notifications/blocs/tracks_collections_loading_notifications_bloc/bloc_entities/tracks_collections_loading_info.dart';
+import 'package:spotify_downloader/features/presentation/tracks_collections_loading_notifications/bloc_entities/tracks_collections_loading_info.dart';
 
 part 'tracks_collections_loading_notifications_event.dart';
 part 'tracks_collections_loading_notifications_state.dart';
