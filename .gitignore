@@ -44,3 +44,6 @@ app.*.map.json
 /android/app/release
 
 consts/spotify_client
+
+# FVM Version Cache
+.fvm/
