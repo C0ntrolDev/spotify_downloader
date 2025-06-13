@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:spotify_downloader/core/app/cubit/language_cubit/language_cubit.dart';
 import 'package:spotify_downloader/core/db/local_db.dart';
 import 'package:spotify_downloader/core/db/local_db_impl.dart';
 import 'package:spotify_downloader/core/permissions/permissions.dart';
@@ -7,6 +8,7 @@ import 'package:spotify_downloader/core/permissions/permissions.dart';
 import 'package:spotify_downloader/features/data_domain/auth/local_auth/local_auth.dart';
 import 'package:spotify_downloader/features/data_domain/auth/network_auth/network_auth.dart';
 import 'package:spotify_downloader/features/data_domain/auth/service/service.dart';
+import 'package:spotify_downloader/features/data_domain/settings/domain/use_cases/get_language_changed_stream.dart';
 import 'package:spotify_downloader/features/data_domain/settings/settings.dart';
 import 'package:spotify_downloader/features/data_domain/spotify_profile/spotify_profile.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/data/data_sources/tools/audio_metadata_editor/metadata_god_audio_metadata_editor_impl.dart';
@@ -65,7 +67,9 @@ Future<void> _provideDataSources() async {
       TracksCollectonsHistoryDataSource(localDb: injector.get<LocalDb>()));
   injector.registerSingleton<NetworkTracksCollectionsDataSource>(NetworkTracksCollectionsDataSource());
   injector.registerSingleton<DownloadAudioFromYoutubeDataSource>(DownloadAudioFromYoutubeDataSource(
-      audioMetadataEditor: MetadataGodAudioMetadataEditorImpl(), fileToMp3Converter: FFmpegFileToMp3Converter(), audioBitrateEditor: LowLevelMp3AudioBitrateEditorImpl()));
+      audioMetadataEditor: MetadataGodAudioMetadataEditorImpl(),
+      fileToMp3Converter: FFmpegFileToMp3Converter(),
+      audioBitrateEditor: LowLevelMp3AudioBitrateEditorImpl()));
   await injector.get<DownloadAudioFromYoutubeDataSource>().init();
   injector.registerSingleton<NetworkTracksDataSource>(NetworkTracksDataSource());
   await injector.get<NetworkTracksDataSource>().init();
@@ -179,6 +183,8 @@ void _provideUseCases() {
 
   injector.registerFactory<GetLanguage>(
       () => GetLanguage(languageSettingsRepository: injector.get<LanguageSettingsRepository>()));
+  injector.registerFactory<GetLanguageChangedStream>(
+      () => GetLanguageChangedStream(languageSettingsRepository: injector.get<LanguageSettingsRepository>()));
   injector.registerFactory<GetAvailableLanguages>(
       () => GetAvailableLanguages(languageSettingsRepository: injector.get<LanguageSettingsRepository>()));
   injector.registerFactory<SaveLanguage>(
@@ -186,6 +192,9 @@ void _provideUseCases() {
 }
 
 void _provideBlocs() {
+  injector.registerSingleton<LanguageCubit>(LanguageCubit(
+      getLanguage: injector.get<GetLanguage>(), getLanguageChangedStream: injector.get<GetLanguageChangedStream>()));
+
   injector.registerFactory<LoadingTracksCollectionsListCubit>(
       () => LoadingTracksCollectionsListCubit(injector.get<GetLoadingTracksCollectionsObserver>()));
   injector.registerFactoryParam<LoadingTracksCollectionTileCubit, LoadingTracksCollectionObserver, void>(
