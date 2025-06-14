@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:listen_sharing_intent/listen_sharing_intent.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:spotify_downloader/core/app/cubit/language_cubit/language_cubit.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
@@ -25,10 +28,46 @@ class _SpotifyDownloaderAppState extends State<SpotifyDownloaderApp> {
   final navigatorKey = GlobalKey();
   final _appRouter = AppRouter();
 
+  StreamSubscription? _intentSub;
+
   @override
   void initState() {
     super.initState();
+    _initIntent();
+
     initTheme();
+  }
+
+  @override
+  void dispose() {
+    _intentSub?.cancel();
+    super.dispose();
+  }
+
+  void _initIntent() {
+    _intentSub = ReceiveSharingIntent.instance.getMediaStream().listen(_onMediaGot, onError: (err) {});
+
+    ReceiveSharingIntent.instance.getInitialMedia().then((value) {
+      _onMediaGot(value);
+      ReceiveSharingIntent.instance.reset();
+    });
+  }
+
+  void _onMediaGot(List<SharedMediaFile> value) {
+    if (value.isEmpty) {
+      return;
+    }
+
+    final media = value.last;
+    if (media.type.value != "url" && media.type.value != "text") {
+      return;
+    }
+
+    if(!media.path.startsWith("https://")) {
+      return;
+    }
+    
+    _appRouter.push(DownloadTracksCollectionRouteWithUrl(url: media.path));
   }
 
   @override
