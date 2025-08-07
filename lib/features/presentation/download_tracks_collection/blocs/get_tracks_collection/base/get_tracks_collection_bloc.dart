@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/data_domain/tracks_collections/network_tracks_collections/domain/enitites/tracks_collection.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/domain/use_cases/add_tracks_collection_to_history.dart';
 
 part 'get_tracks_collection_event.dart';

@@ -37,7 +37,7 @@ abstract class _$AppRouter extends RootStackRouter {
           DownloadTracksCollectionRouteWithHistoryTracksCollectionArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: DownloadTracksCollectionScreenWithHistoryTracksCollection(
+        child: DownloadTracksCollectionScreenWithId(
           key: args.key,
           historyTracksCollection: args.historyTracksCollection,
         ),
@@ -144,7 +144,7 @@ class ChangeSourceVideoRouteArgs {
 }
 
 /// generated route for
-/// [DownloadTracksCollectionScreenWithHistoryTracksCollection]
+/// [DownloadTracksCollectionScreenWithId]
 class DownloadTracksCollectionRouteWithHistoryTracksCollection
     extends PageRouteInfo<
         DownloadTracksCollectionRouteWithHistoryTracksCollectionArgs> {

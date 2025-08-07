@@ -145,12 +145,12 @@ void _provideUseCases() {
       () => GetOrderedHistory(historyPlaylistsRepository: injector.get<TracksCollectionsHistoryRepository>()));
   injector.registerFactory<GetTracksCollectionByUrl>(
       () => GetTracksCollectionByUrl(service: injector.get<NetworkTracksCollectionsService>()));
-  injector.registerFactory<GetTracksCollectionByTypeAndSpotifyId>(
-      () => GetTracksCollectionByTypeAndSpotifyId(service: injector.get<NetworkTracksCollectionsService>()));
-  injector.registerFactory<GetTracksWithLoadingObserverFromTracksCollection>(
-      () => GetTracksWithLoadingObserverFromTracksCollection(getTracksService: injector.get<GetTracksService>()));
-  injector.registerFactory<GetTracksWithLoadingObserverFromTracksCollectionWithOffset>(() =>
-      GetTracksWithLoadingObserverFromTracksCollectionWithOffset(getTracksService: injector.get<GetTracksService>()));
+  injector.registerFactory<GetTracksCollectionById>(
+      () => GetTracksCollectionById(service: injector.get<NetworkTracksCollectionsService>()));
+  injector.registerFactory<GetTracksFromTracksCollection>(
+      () => GetTracksFromTracksCollection(getTracksService: injector.get<GetTracksService>()));
+  injector.registerFactory<GetTracksFromTracksCollectionWithOffset>(() =>
+      GetTracksFromTracksCollectionWithOffset(getTracksService: injector.get<GetTracksService>()));
   injector.registerFactory<Find10VideosByTrack>(
       () => Find10VideosByTrack(searchVideosByTrackRepository: injector.get<SearchVideosByTrackRepository>()));
   injector.registerFactory<GetVideoByUrl>(
@@ -209,11 +209,11 @@ void _provideBlocs() {
   injector.registerFactoryParam<GetTracksCollectionByHistoryBloc, HistoryTracksCollection, void>(
       (historyCollection, _) => GetTracksCollectionByHistoryBloc(
           addTracksCollectionToHistory: injector.get<AddTracksCollectionToHistory>(),
-          getTracksCollection: injector.get<GetTracksCollectionByTypeAndSpotifyId>(),
+          getTracksCollection: injector.get<GetTracksCollectionById>(),
           historyTracksCollection: historyCollection));
   injector.registerFactory<GetTracksBloc>(() => GetTracksBloc(
-      getTracksFromTracksCollection: injector.get<GetTracksWithLoadingObserverFromTracksCollection>(),
-      getTracksWithOffset: injector.get<GetTracksWithLoadingObserverFromTracksCollectionWithOffset>()));
+      getTracksFromTracksCollection: injector.get<GetTracksFromTracksCollection>(),
+      getTracksWithOffset: injector.get<GetTracksFromTracksCollectionWithOffset>()));
 
   injector.registerFactory<DownloadTracksCubit>(() => DownloadTracksCubit(
       downloadTracksRange: injector.get<DownloadTracksRange>(),

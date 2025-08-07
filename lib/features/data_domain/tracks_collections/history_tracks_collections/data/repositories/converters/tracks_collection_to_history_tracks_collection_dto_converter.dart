@@ -1,23 +1,23 @@
 import 'package:spotify_downloader/core/utils/converters/simple_converters/value_converter.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/history_tracks_collections.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/data_domain/tracks_collections/shared/domain/entities/base_tracks_collection.dart';
 
-class TracksCollectionToHistoryTracksCollectionDtoConverter
-    implements ValueConverter<HistoryTracksCollectionDTO, TracksCollection> {
+class BaseTracksCollectionToHistoryTracksCollectionDtoConverter
+    implements ValueConverter<HistoryTracksCollectionDTO, BaseTracksCollection> {
   final TracksCollectionTypesConverter _tracksCollectionTypesConverter = TracksCollectionTypesConverter();
 
   @override
-  HistoryTracksCollectionDTO convert(TracksCollection tracksCollection) {
+  HistoryTracksCollectionDTO convert(BaseTracksCollection tracksCollection) {
     return HistoryTracksCollectionDTO(
-        spotifyId: tracksCollection.spotifyId,
+        spotifyId: tracksCollection.id.spotifyId,
         name: tracksCollection.name,
-        type: _tracksCollectionTypesConverter.convert(tracksCollection.type),
-        imageUrl: tracksCollection.bigImageUrl,
+        type: _tracksCollectionTypesConverter.convert(tracksCollection.id.type),
+        imageUrl: tracksCollection.imageUrl,
         openDate: DateTime.now());
   }
 
   @override
-  TracksCollection convertBack(HistoryTracksCollectionDTO value) {
+  BaseTracksCollection convertBack(HistoryTracksCollectionDTO value) {
     throw UnimplementedError();
   }
 }

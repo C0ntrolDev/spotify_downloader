@@ -5,11 +5,9 @@ import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/ent
 import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/liked_track.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/track.dart' as entity;
 
-class TrackDtoToTrackConverter implements ConverterWithParameter<entity.Track?, dto.Track, TracksCollection> {
+class TrackDtoToTrackConverter implements ValueConverter<entity.Track?, dto.Track> {
   @override
-  entity.Track? convert((dto.Track, TracksCollection) parameters) {
-    final dtoTrack = parameters.$1;
-    final parentCollection = parameters.$2;
+  entity.Track? convert(dto.Track dtoTrack) {
 
     if (dtoTrack.id == null) {
       return null;
@@ -30,7 +28,6 @@ class TrackDtoToTrackConverter implements ConverterWithParameter<entity.Track?, 
           spotifyId: dtoTrack.id!,
           duration: dtoTrack.duration,
           name: dtoTrack.name ?? 'no_name',
-          parentCollection: parentCollection,
           artists: dtoTrack.artists?.map((a) => a.name!).toList(),
           discNumber: dtoTrack.discNumber,
           albumTrackNumber: dtoTrack.trackNumber,
@@ -48,7 +45,6 @@ class TrackDtoToTrackConverter implements ConverterWithParameter<entity.Track?, 
         spotifyId: dtoTrack.id!,
         duration: dtoTrack.duration,
         name: dtoTrack.name ?? 'no_name',
-        parentCollection: parentCollection,
         artists: dtoTrack.artists?.map((a) => a.name!).toList(),
         discNumber: dtoTrack.discNumber,
         albumTrackNumber: dtoTrack.trackNumber,
@@ -62,7 +58,7 @@ class TrackDtoToTrackConverter implements ConverterWithParameter<entity.Track?, 
   }
 
   @override
-  dto.Track convertBack((entity.Track?, TracksCollection) value) {
+  dto.Track convertBack(entity.Track? value) {
     throw UnimplementedError();
   }
 }

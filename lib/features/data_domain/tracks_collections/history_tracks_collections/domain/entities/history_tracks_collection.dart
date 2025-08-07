@@ -1,24 +1,13 @@
-import 'package:equatable/equatable.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection_type.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/ids/ids.dart';
+import 'package:spotify_downloader/features/data_domain/tracks_collections/shared/domain/entities/base_tracks_collection.dart';
 
-class HistoryTracksCollection extends Equatable {
-  const HistoryTracksCollection({
-    required this.spotifyId,
-    required this.type,
-    required this.name,
-    this.openDate,
-    this.imageUrl,
-  });
+class HistoryTracksCollection extends BaseTracksCollection {
+  const HistoryTracksCollection({required super.id, required super.name, super.imageUrl, this.openDate});
 
-  final String spotifyId;
-  final TracksCollectionType type;
   final DateTime? openDate;
-  final String name;
-  final String? imageUrl;
+
+  static HistoryTracksCollection get likedTracks => HistoryTracksCollection(id: TracksCollectionId.likedTracksId, name: 'Liked Tracks');
 
   @override
-  List<Object?> get props => [spotifyId, name, type, imageUrl, openDate];
-
-  static HistoryTracksCollection get likedTracks => const HistoryTracksCollection(
-      spotifyId: 'liked_tracks', type: TracksCollectionType.likedTracks, name: 'Liked Tracks');
+  List<Object?> get props => super.props + [openDate];
 }

@@ -6,13 +6,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/ids/ids.dart';
 import 'package:spotify_downloader/features/presentation/main/widgets/ftoasts/ftoasts.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/router/router.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/services/entities/track_with_loading_observer.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/domain/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/blocs.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/download_track_info/view/download_track_info.dart';
@@ -26,10 +26,10 @@ import 'package:spotify_downloader/generated/l10n.dart';
 
 abstract class DownloadTracksCollectionScreen extends StatefulWidget {
   final String? url;
-  final HistoryTracksCollection? historyTracksCollection;
+  final TracksCollectionId? id;
 
-  const DownloadTracksCollectionScreen.withUrl({super.key, required this.url}) : historyTracksCollection = null;
-  const DownloadTracksCollectionScreen.withHistoryTracksCollection({super.key, required this.historyTracksCollection})
+  const DownloadTracksCollectionScreen.withUrl({super.key, required this.url}) : id = null;
+  const DownloadTracksCollectionScreen.withId({super.key, required this.id})
       : url = null;
 
   @override
@@ -42,10 +42,10 @@ class DownloadTracksCollectionScreenWithUrl extends DownloadTracksCollectionScre
 }
 
 @RoutePage()
-class DownloadTracksCollectionScreenWithHistoryTracksCollection extends DownloadTracksCollectionScreen {
-  const DownloadTracksCollectionScreenWithHistoryTracksCollection(
-      {super.key, required HistoryTracksCollection historyTracksCollection})
-      : super.withHistoryTracksCollection(historyTracksCollection: historyTracksCollection);
+class DownloadTracksCollectionScreenWithId extends DownloadTracksCollectionScreen {
+  const DownloadTracksCollectionScreenWithId(
+      {super.key, required TracksCollectionId historyTracksCollection})
+      : super.withId(id: historyTracksCollection);
 }
 
 class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectionScreen>
@@ -102,9 +102,9 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
   }
 
   void _initTracksCollectionBloc() {
-    if (widget.historyTracksCollection != null) {
+    if (widget.id != null) {
       _getTracksCollectionBloc =
-          injector.get<GetTracksCollectionByHistoryBloc>(param1: widget.historyTracksCollection);
+          injector.get<GetTracksCollectionByHistoryBloc>(param1: widget.id);
     } else if (widget.url != null) {
       _getTracksCollectionBloc = injector.get<GetTracksCollectionByUrlBloc>(param1: widget.url);
     }
@@ -150,7 +150,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
           BlocListener<GetTracksCollectionBloc, GetTracksCollectionState>(
             listener: (context, state) async {
               if (state is GetTracksCollectionLoaded) {
-                _generateBackgroundGradientColor(state.tracksCollection.bigImageUrl);
+                _generateBackgroundGradientColor(state.tracksCollection.imageUrl);
                 _getTracksBloc.add(GetTracksGetTracks(tracksCollection: state.tracksCollection));
               }
 
@@ -230,7 +230,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                         },
                         child: TracksCollectionTypeDependScrollbar(
                             controller: _scrollController,
-                            type: getTracksCollectionState.tracksCollection.type,
+                            type: getTracksCollectionState.tracksCollection.id.type,
                             getTrackWithLoadingObserverByIndex: (index) {
                               if (index < 0 || index >= filteredTracks.length) {
                                 return null;
@@ -252,7 +252,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                 DownloadTracksCollectionHeader(
                                   key: _headerKey,
                                   backgroundGradientColor: _backgroundGradientColor,
-                                  imageUrl: getTracksCollectionState.tracksCollection.bigImageUrl ?? '',
+                                  imageUrl: getTracksCollectionState.tracksCollection.imageUrl ?? '',
                                   title: getTracksCollectionState.tracksCollection.name,
                                   onFilterQueryChanged: _onFilterQueryChanged,
                                   onDownloadAllButtonClicked: () => _onDownloadAllButtonClicked(
@@ -280,7 +280,7 @@ class _DownloadTracksCollectionScreenState extends State<DownloadTracksCollectio
                                               final trackWithLoadingObserver = filteredTracks[index];
 
                                               return TracksCollectionTypeDependTrackTile(
-                                                type: getTracksCollectionState.tracksCollection.type,
+                                                type: getTracksCollectionState.tracksCollection.id.type,
                                                 trackWithLoadingObserver: trackWithLoadingObserver,
                                                 isLoadedIfLoadingObserverIsNull:
                                                     _getIsTrackLoadedIfLoadingObserverIsNull(trackWithLoadingObserver),

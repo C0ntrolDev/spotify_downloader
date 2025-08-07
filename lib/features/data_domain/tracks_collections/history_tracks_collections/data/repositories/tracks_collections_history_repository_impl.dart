@@ -1,6 +1,7 @@
 import 'package:spotify_downloader/core/utils/utils.dart';
+import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/data/repositories/converters/tracks_collection_to_history_tracks_collection_dto_converter.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/history_tracks_collections.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/data_domain/tracks_collections/shared/domain/entities/base_tracks_collection.dart';
 
 class TracksCollectionsHistoryRepositoryImpl implements TracksCollectionsHistoryRepository {
   TracksCollectionsHistoryRepositoryImpl({required TracksCollectonsHistoryDataSource dataSource})
@@ -9,14 +10,14 @@ class TracksCollectionsHistoryRepositoryImpl implements TracksCollectionsHistory
   final TracksCollectonsHistoryDataSource _dataSource;
 
   final HistoryTracksCollectionsConverter _historyTracksCollectionsConverter = HistoryTracksCollectionsConverter();
-  final TracksCollectionToHistoryTracksCollectionDtoConverter _tracksCollectionToHistoryTracksCollectionDtoConverter =
-      TracksCollectionToHistoryTracksCollectionDtoConverter();
+  final BaseTracksCollectionToHistoryTracksCollectionDtoConverter _baseTracksCollectionToHistoryTracksCollectionDtoConverter =
+      BaseTracksCollectionToHistoryTracksCollectionDtoConverter();
 
   @override
-  Future<Result<Failure, void>> addTracksCollectionToHistory(TracksCollection tracksCollection) async {
+  Future<Result<Failure, void>> addTracksCollectionToHistory(BaseTracksCollection tracksCollection) async {
     try {
       await _dataSource.addHistoryTracksCollectionToHistory(
-          _tracksCollectionToHistoryTracksCollectionDtoConverter.convert(tracksCollection));
+          _baseTracksCollectionToHistoryTracksCollectionDtoConverter.convert(tracksCollection));
       return const Result<Failure, void>.isSuccessful(null);
     } catch (e, s) {
       return Result.notSuccessful(Failure(message: e, stackTrace: s));
