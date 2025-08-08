@@ -6,14 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/network_tracks/domain/entities/entities.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/services.dart';
-import 'package:spotify_downloader/features/data_domain/tracks_collections/network_tracks_collections/domain/enitites/tracks_collection.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection.dart';
 
 part 'get_tracks_event.dart';
 part 'get_tracks_state.dart';
 
 class GetTracksBloc extends Bloc<GetTracksEvent, GetTracksState> {
-  final GetTracksFromTracksCollection _getTracksFromTracksCollection;
-  final GetTracksFromTracksCollectionWithOffset _getTracksWithOffset;
+  final GetTracksWithLoadingObserverFromTracksCollection _getTracksFromTracksCollection;
+  final GetTracksWithLoadingObserverFromTracksCollectionWithOffset _getTracksWithOffset;
 
   TracksCollection? _sourceTracksCollection;
 
@@ -27,8 +27,8 @@ class GetTracksBloc extends Bloc<GetTracksEvent, GetTracksState> {
   StreamSubscription? connectivitySubscription;
 
   GetTracksBloc(
-      {required GetTracksFromTracksCollection getTracksFromTracksCollection,
-      required GetTracksFromTracksCollectionWithOffset getTracksWithOffset})
+      {required GetTracksWithLoadingObserverFromTracksCollection getTracksFromTracksCollection,
+      required GetTracksWithLoadingObserverFromTracksCollectionWithOffset getTracksWithOffset})
       : _getTracksFromTracksCollection = getTracksFromTracksCollection,
         _getTracksWithOffset = getTracksWithOffset,
         super(GetTracksInitial()) {

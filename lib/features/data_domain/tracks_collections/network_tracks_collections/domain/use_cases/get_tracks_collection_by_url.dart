@@ -1,5 +1,5 @@
 import 'package:spotify_downloader/core/utils/utils.dart';
-import 'package:spotify_downloader/features/data_domain/tracks_collections/network_tracks_collections/domain/enitites/tracks_collection.dart';
+import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/domain.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/network_tracks_collections/domain/service/service.dart';
 
 class GetTracksCollectionByUrl implements UseCase<Failure, TracksCollection, String> {

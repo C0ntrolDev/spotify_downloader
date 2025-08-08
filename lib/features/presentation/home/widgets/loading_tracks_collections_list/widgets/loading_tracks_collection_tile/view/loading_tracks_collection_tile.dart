@@ -78,7 +78,7 @@ class _LoadingTracksCollectionTileState extends State<LoadingTracksCollectionTil
                 CachedNetworkImage(
                   width: 50,
                   height: 50,
-                  imageUrl: state.loadingTrackInfo.tracksCollection?.imageUrl ?? '',
+                  imageUrl: state.loadingTrackInfo.tracksCollection?.bigImageUrl ?? '',
                   placeholder: (context, imageUrl) =>
                       Image.asset('resources/images/another/loading_track_collection_image.png'),
                   errorWidget: (context, imageUrl, _) =>
