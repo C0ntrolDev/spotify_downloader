@@ -1,6 +1,6 @@
 import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/history_tracks_collections.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/tracks_collection.dart';
 
 class TracksCollectionsHistoryRepositoryImpl implements TracksCollectionsHistoryRepository {
   TracksCollectionsHistoryRepositoryImpl({required TracksCollectonsHistoryDataSource dataSource})

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/app/themes/theme_consts.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/track.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/track.dart';
 import 'package:spotify_downloader/features/presentation/change_source_video/bloc/change_source_video_bloc.dart';
 import 'package:spotify_downloader/features/presentation/shared/other/show_failure_snackbar.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection_type.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/tracks_collection_type.dart';
 
 class LoadingTrackId extends Equatable {
   const LoadingTrackId({required this.parentSpotifyId, required this.parentType, required this.spotifyId, required this.savePath});

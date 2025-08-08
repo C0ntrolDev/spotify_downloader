@@ -2,7 +2,7 @@ import 'package:spotify/spotify.dart' as dto;
 import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/shared/data/converters/spotify_requests_converter.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/network_tracks/network_tracks.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/entities.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/entities.dart';
 
 
 class NetworkTracksRepositoryImpl implements NetworkTracksRepository {

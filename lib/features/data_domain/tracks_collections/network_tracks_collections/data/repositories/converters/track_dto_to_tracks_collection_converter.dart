@@ -1,7 +1,7 @@
 import 'package:spotify/spotify.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection_type.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/tracks_collection_type.dart';
 
 
 class TrackDtoToTracksCollectionConverter implements ResultValueConverter<TracksCollection, Track> {

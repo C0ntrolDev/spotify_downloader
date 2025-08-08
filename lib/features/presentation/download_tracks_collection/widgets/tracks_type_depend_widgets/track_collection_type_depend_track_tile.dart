@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/core/di/injector.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/entities/track_with_loading_observer.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection_type.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/tracks_collection_type.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/widgets/shared/cubits/track_loading_observing_cubit/download_track_info_status_tile_cubit.dart';
 import 'package:spotify_downloader/features/presentation/shared/widgets/widgets.dart';
 

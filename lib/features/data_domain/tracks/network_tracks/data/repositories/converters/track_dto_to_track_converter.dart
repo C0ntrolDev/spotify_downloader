@@ -1,9 +1,9 @@
 import 'package:spotify/spotify.dart' as dto;
 import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/network_tracks/data/models/liked_track_dto.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/entities.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/liked_track.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/track.dart' as entity;
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/entities.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/liked_track.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/track.dart' as entity;
 
 class TrackDtoToTrackConverter implements ConverterWithParameter<entity.Track?, dto.Track, TracksCollection> {
   @override

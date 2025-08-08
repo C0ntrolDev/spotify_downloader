@@ -1,6 +1,6 @@
 import 'package:spotify/spotify.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/domain.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/domain.dart';
 
 
 class PlaylistDtoToTracksCollectionConverter implements ResultValueConverter<TracksCollection, Playlist> {

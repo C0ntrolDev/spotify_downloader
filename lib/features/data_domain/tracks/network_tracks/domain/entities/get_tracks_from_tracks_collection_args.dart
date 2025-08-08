@@ -1,5 +1,5 @@
-import 'package:spotify_downloader/features/data_domain/shared/domain/spotify_repository_request.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/spotify_repository_request.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/tracks_collection.dart';
 
 class GetTracksFromTracksCollectionArgs {
   GetTracksFromTracksCollectionArgs(

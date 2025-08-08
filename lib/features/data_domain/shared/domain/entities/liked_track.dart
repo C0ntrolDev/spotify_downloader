@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/entities.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/entities.dart';
 
 class LikedTrack extends Track {
   LikedTrack(
@@ -11,8 +11,6 @@ class LikedTrack extends Track {
       super.discNumber,
       super.artists,
       super.duration,
-      super.localYoutubeUrl,
-      super.isLoaded = false,
       required this.addedAt});
 
   final DateTime? addedAt;
@@ -39,8 +37,6 @@ class LikedTrack extends Track {
         discNumber: discNumber != null ? discNumber() : this.discNumber,
         artists: artists != null ? artists() : this.artists,
         duration: duration != null ? duration() : this.duration,
-        localYoutubeUrl: localYoutubeUrl != null ? localYoutubeUrl() : this.localYoutubeUrl,
-        isLoaded: isLoaded ?? this.isLoaded,
         addedAt: addedAt ?? this.addedAt);
   }
 }

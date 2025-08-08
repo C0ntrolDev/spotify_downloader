@@ -1,6 +1,6 @@
 import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/search_videos_by_track/search_videos_by_track.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/track.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/track.dart';
 
 class SearchVideosByTrackRepositoryImpl implements SearchVideosByTrackRepository {
   SearchVideosByTrackRepositoryImpl({required SearchVideoOnYoutubeDataSource searchVideoOnYoutubeDataSource})

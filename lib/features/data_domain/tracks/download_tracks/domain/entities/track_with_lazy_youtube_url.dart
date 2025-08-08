@@ -1,5 +1,5 @@
 import 'package:spotify_downloader/core/utils/utils.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/track.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/track.dart';
 
 class TrackWithLazyYoutubeUrl {
   TrackWithLazyYoutubeUrl({required this.track, required this.getYoutubeUrl});

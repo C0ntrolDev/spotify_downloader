@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify_downloader/core/app/themes/themes.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/track.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/track.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/domain/entities/history_tracks_collection.dart';
 import 'package:spotify_downloader/features/presentation/about_app/view/about_app_screen.dart';
 import 'package:spotify_downloader/features/presentation/change_source_video/view/change_source_video_screen.dart';

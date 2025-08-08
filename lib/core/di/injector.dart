@@ -20,7 +20,7 @@ import 'package:spotify_downloader/features/data_domain/tracks/network_tracks/ne
 import 'package:spotify_downloader/features/data_domain/tracks/observe_tracks_loading/domain/domain.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/search_videos_by_track/search_videos_by_track.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/services.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/track.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/track.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/history_tracks_collections.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/network_tracks_collections/network_tracks_collections.dart';
 import 'package:spotify_downloader/features/presentation/change_source_video/bloc/change_source_video_bloc.dart';
@@ -121,13 +121,6 @@ void _provideRepositories() {
       localTracksRepository: injector.get<LocalTracksRepository>(),
       downloadTracksSettingsRepository: injector.get<DownloadTracksSettingsRepository>()));
 
-  injector.registerSingleton<GetTracksService>(GetTracksServiceImpl(
-      networkTracksRepository: injector.get<NetworkTracksRepository>(),
-      downloadTracksRepository: injector.get<DownloadTracksRepository>(),
-      localTracksRepository: injector.get<LocalTracksRepository>(),
-      authRepository: injector.get<LocalFullAuthRepository>(),
-      downloadTracksSettingsRepository: injector.get<DownloadTracksSettingsRepository>()));
-
   injector.registerSingleton<SpotifyProfileService>(SpotifyProfileServiceImpl(
       localFullAuthRepository: injector.get<LocalFullAuthRepository>(),
       spotifyProfileRepository: injector.get<SpotifyProfileRepository>()));
@@ -147,10 +140,8 @@ void _provideUseCases() {
       () => GetTracksCollectionByUrl(service: injector.get<NetworkTracksCollectionsService>()));
   injector.registerFactory<GetTracksCollectionByTypeAndSpotifyId>(
       () => GetTracksCollectionByTypeAndSpotifyId(service: injector.get<NetworkTracksCollectionsService>()));
-  injector.registerFactory<GetTracksWithLoadingObserverFromTracksCollection>(
-      () => GetTracksWithLoadingObserverFromTracksCollection(getTracksService: injector.get<GetTracksService>()));
-  injector.registerFactory<GetTracksWithLoadingObserverFromTracksCollectionWithOffset>(() =>
-      GetTracksWithLoadingObserverFromTracksCollectionWithOffset(getTracksService: injector.get<GetTracksService>()));
+  injector.registerFactory<GetTracksFromTracksCollection>(() =>
+      GetTracksFromTracksCollection(networkTracksRepository: injector.get<NetworkTracksRepository>(), authRepository: injector.get<LocalFullAuthRepository>()));
   injector.registerFactory<Find10VideosByTrack>(
       () => Find10VideosByTrack(searchVideosByTrackRepository: injector.get<SearchVideosByTrackRepository>()));
   injector.registerFactory<GetVideoByUrl>(
@@ -212,8 +203,7 @@ void _provideBlocs() {
           getTracksCollection: injector.get<GetTracksCollectionByTypeAndSpotifyId>(),
           historyTracksCollection: historyCollection));
   injector.registerFactory<GetTracksBloc>(() => GetTracksBloc(
-      getTracksFromTracksCollection: injector.get<GetTracksWithLoadingObserverFromTracksCollection>(),
-      getTracksWithOffset: injector.get<GetTracksWithLoadingObserverFromTracksCollectionWithOffset>()));
+      getTracks: injector.get<GetTracksFromTracksCollection>()));
 
   injector.registerFactory<DownloadTracksCubit>(() => DownloadTracksCubit(
       downloadTracksRange: injector.get<DownloadTracksRange>(),

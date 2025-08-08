@@ -1,6 +1,6 @@
 import 'package:spotify_downloader/core/utils/util_methods.dart';
 import 'package:spotify_downloader/features/data_domain/settings/domain/enitities/enitities.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/track.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/track.dart';
 import 'package:path/path.dart' as p;
 
 class SavePathGenerator {

@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:scrollbar_ultima/scrollbar_ultima.dart';
 import 'package:spotify_downloader/core/app/colors/colors.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/entities/entities.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/domain.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/liked_track.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/domain.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/liked_track.dart';
 
 class TracksCollectionTypeDependScrollbar extends StatelessWidget {
   const TracksCollectionTypeDependScrollbar(

@@ -1,7 +1,7 @@
 import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/shared/data/converters/spotify_requests_converter.dart';
-import 'package:spotify_downloader/features/data_domain/shared/domain/spotify_repository_request.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/domain.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/spotify_repository_request.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/domain.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/network_tracks_collections/network_tracks_collections.dart';
 
 class NetworkTracksCollectionsRepositoryImpl implements NetworkTracksCollectionsRepository {

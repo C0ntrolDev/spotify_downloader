@@ -1,5 +1,5 @@
 import 'package:spotify_downloader/core/utils/utils.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/domain.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/domain.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/history_tracks_collections/domain/domain.dart';
 import 'package:spotify_downloader/features/data_domain/tracks_collections/network_tracks_collections/domain/domain.dart';
 import 'package:spotify_downloader/features/presentation/download_tracks_collection/blocs/get_tracks_collection/base/get_tracks_collection_bloc.dart';

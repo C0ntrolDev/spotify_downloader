@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/domain/entities/entities.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/observe_tracks_loading/domain/entities/loading_tracks_collection/loading_tracks_collection.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/entities.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/entities.dart';
 
 class LoadingTracksCollectionController {
   LoadingTracksCollectionController(this._sourceTracksCollection) {

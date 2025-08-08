@@ -4,33 +4,30 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_downloader/core/utils/utils.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/entities.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/network_tracks/domain/entities/entities.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/services/services.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/entities/tracks_collection.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/entities/tracks_collection.dart';
 
 part 'get_tracks_event.dart';
 part 'get_tracks_state.dart';
 
 class GetTracksBloc extends Bloc<GetTracksEvent, GetTracksState> {
-  final GetTracksWithLoadingObserverFromTracksCollection _getTracksFromTracksCollection;
-  final GetTracksWithLoadingObserverFromTracksCollectionWithOffset _getTracksWithOffset;
+  final GetTracksFromTracksCollection _getTracks;
 
   TracksCollection? _sourceTracksCollection;
 
-  TracksWithLoadingObserverGettingObserver? _gettingObserver;
+  TracksGettingObserver? _gettingObserver;
   StreamSubscription? _gettingObserverPartGotSubscription;
   StreamSubscription? _gettingObserverEndSubscription;
 
-  final List<TrackWithLoadingObserver> _tracksList = List.empty(growable: true);
+  final List<Track> _tracksList = List.empty(growable: true);
   bool isAllTracksGot = false;
 
   StreamSubscription? connectivitySubscription;
 
-  GetTracksBloc(
-      {required GetTracksWithLoadingObserverFromTracksCollection getTracksFromTracksCollection,
-      required GetTracksWithLoadingObserverFromTracksCollectionWithOffset getTracksWithOffset})
-      : _getTracksFromTracksCollection = getTracksFromTracksCollection,
-        _getTracksWithOffset = getTracksWithOffset,
+  GetTracksBloc({required GetTracksFromTracksCollection getTracks})
+      : _getTracks = getTracks,
         super(GetTracksInitial()) {
     on<GetTracksGetTracks>(_onGetTracks);
     on<_GetTracksContinueTracksGetting>(_onCountinueTracksGetting);
@@ -56,7 +53,7 @@ class GetTracksBloc extends Bloc<GetTracksEvent, GetTracksState> {
     _tracksList.clear();
     _unsubscribeFromGettingObserver();
 
-    var startGettingTracksResult = await _getTracksFromTracksCollection.call(event.tracksCollection);
+    var startGettingTracksResult = await _getTracks.call((event.tracksCollection, 0));
     if (!startGettingTracksResult.isSuccessful) {
       emit(_getStateBasedOnFailure(startGettingTracksResult.failure));
       return;
@@ -69,7 +66,7 @@ class GetTracksBloc extends Bloc<GetTracksEvent, GetTracksState> {
   Future<void> _onCountinueTracksGetting(_GetTracksContinueTracksGetting event, Emitter<GetTracksState> emit) async {
     if (_sourceTracksCollection == null || isAllTracksGot) return;
 
-    var continueGettingTracksResult = await _getTracksWithOffset.call((_sourceTracksCollection!, _tracksList.length));
+    var continueGettingTracksResult = await _getTracks.call((_sourceTracksCollection!, _tracksList.length));
     if (!continueGettingTracksResult.isSuccessful) {
       emit(_getStateBasedOnFailure(continueGettingTracksResult.failure));
       return;

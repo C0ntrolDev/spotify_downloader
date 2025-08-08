@@ -1,6 +1,6 @@
 import 'package:spotify_downloader/core/utils/utils.dart';
 import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/data/data.dart';
-import 'package:spotify_downloader/features/data_domain/tracks/shared/domain/domain.dart';
+import 'package:spotify_downloader/features/data_domain/shared/domain/domain.dart';
 
 class TrackToAudioMetadataConverter implements ValueConverter<AudioMetadata, Track> {
   @override
