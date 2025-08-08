@@ -26,8 +26,7 @@ dependencies:
   ffmpeg_kit_flutter_full_gpl:
     git: https://github.com/hellohejinyu/ffmpeg_kit_flutter_full_gpl.git
   youtube_explode_dart: ^2.3.6
-  metadata_god: 
-    git: https://github.com/C0ntrolDev/metadata_god.git
+  metadata_god: ^1.0.0
   cached_network_image: ^3.3.0
   path: ^1.8.3
   connectivity_plus: ^5.0.2
