@@ -1,9 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify_downloader/features/data_domain/shared/domain/entities/tracks_collection.dart';
 import 'package:spotify_downloader/features/data_domain/shared/domain/entities/album.dart';
 
-class Track {
-  Track(
+class Track extends Equatable {
+  const Track(
       {required this.spotifyId,
       required this.name,
       required this.parentCollection,
@@ -46,4 +47,7 @@ class Track {
         artists: artists != null ? artists() : this.artists,
         duration: duration != null ? duration() : this.duration);
   }
+
+  @override
+  List<Object> get props => parentCollection.props + [spotifyId];
 }

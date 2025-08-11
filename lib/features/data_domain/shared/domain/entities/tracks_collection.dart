@@ -20,9 +20,6 @@ class TracksCollection extends Equatable {
   final String? smallImageUrl;
   final String? bigImageUrl;
 
-  @override
-  List<Object?> get props => [spotifyId, type, name, artists, smallImageUrl, bigImageUrl];
-
   static TracksCollection likedTracks(int tracksCount) => TracksCollection(
       tracksCount: tracksCount,
       spotifyId: 'likedTracks',
@@ -31,4 +28,7 @@ class TracksCollection extends Equatable {
       artists: const ['^_^'],
       smallImageUrl: 'https://misc.scdn.co/liked-songs/liked-songs-300.png',
       bigImageUrl: 'https://misc.scdn.co/liked-songs/liked-songs-640.png');
+
+  @override
+  List<Object> get props => [spotifyId, type];
 }

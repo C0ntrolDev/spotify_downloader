@@ -5,25 +5,15 @@ import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/d
 import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/domain/entities/loading_track_status.dart';
 
 class TrackLoadingNotifier {
-  final StreamController<String> _startLoadingStreamController = StreamController<String>();
-  final StreamController<double?> _loadingPercentChangedStreamController = StreamController<double?>();
-  final StreamController<String> _loadedStreamController = StreamController<String>();
-  final StreamController<void> _loadingCancelledStreamController = StreamController<void>();
-  final StreamController<Failure?> _loadingFailureStreamController = StreamController<Failure?>();
   final StreamController<LoadingTrackStatus> _loadingTrackStatusStreamController =
       StreamController<LoadingTrackStatus>();
 
   LoadingTrackObserver? _loadingTrackObserver;
   LoadingTrackObserver get loadingTrackObserver => _loadingTrackObserver ??= LoadingTrackObserver(
-      startLoadingStream: _startLoadingStreamController.stream.asBroadcastStream(),
-      loadingPercentChangedStream: _loadingPercentChangedStreamController.stream.asBroadcastStream(),
-      loadedStream: _loadedStreamController.stream.asBroadcastStream(),
-      loadingCancelledStream: _loadingCancelledStreamController.stream.asBroadcastStream(),
-      loadingFailureStream: _loadingFailureStreamController.stream.asBroadcastStream(),
       loadingTrackStatusStream: _loadingTrackStatusStreamController.stream.asBroadcastStream(),
       getLoadingTrackStatus: () => _status);
 
-  LoadingTrackStatus _statusField = LoadingTrackStatus.waitInLoadingQueue;
+  LoadingTrackStatus _statusField = LoadingTrackStatusWaitInLoadingQueue();
   LoadingTrackStatus get _status => _statusField;
   set _status(LoadingTrackStatus newStatus) {
     _statusField = newStatus;
@@ -31,50 +21,41 @@ class TrackLoadingNotifier {
   }
 
   void startLoading(String youtubeUrl) {
-    if (_status == LoadingTrackStatus.waitInLoadingQueue) {
-      _status = LoadingTrackStatus.loading;
-      _startLoadingStreamController.add(youtubeUrl);
+    if (_status is LoadingTrackStatusWaitInLoadingQueue) {
+      _status = LoadingTrackStatusLoading(youTubeUrl: youtubeUrl);
     }
   }
 
   void loadingPercentChanged(double? percent) {
-    if (_status == LoadingTrackStatus.loading) {
-      _status = LoadingTrackStatus.loading;
-      _loadingPercentChangedStreamController.add(percent);
+    if (_status is LoadingTrackStatusLoading) {
+      _status = LoadingTrackStatusLoading(youTubeUrl: (_status as LoadingTrackStatusLoading).youTubeUrl, percent: percent);
     }
   }
 
   void loaded(String savePath) {
-    if (_status == LoadingTrackStatus.loading) {
-      _status = LoadingTrackStatus.loaded;
-      _loadedStreamController.add(savePath);
+    if (_status is LoadingTrackStatusLoading) {
+      _status = LoadingTrackStatusLoaded(savePath: savePath);
       _closeAllStreams();
     }
   }
 
   void loadingCancelled() {
-    if (_status == LoadingTrackStatus.loading || _status == LoadingTrackStatus.waitInLoadingQueue) {
-      _status = LoadingTrackStatus.loadingCancelled;
-      _loadingCancelledStreamController.add(null);
+    if (_status is LoadingTrackStatusLoading || _status is LoadingTrackStatusWaitInLoadingQueue) {
+      _status = LoadingTrackStatusCancelled();
       _closeAllStreams();
     }
   }
 
   void loadingFailure(Failure? failure) {
-    if (_status == LoadingTrackStatus.loading ||
-        _status == LoadingTrackStatus.waitInLoadingQueue ||
-        _status == LoadingTrackStatus.loadingCancelled) {
-      _status = LoadingTrackStatus.failure;
-      _loadingFailureStreamController.add(failure);
+    if (_status is LoadingTrackStatusLoading ||
+        _status is LoadingTrackStatusWaitInLoadingQueue ||
+        _status is LoadingTrackStatusCancelled) {
+      _status = LoadingTrackStatusFailure(failure: failure);
       _closeAllStreams();
     }
   }
 
   Future<void> _closeAllStreams() async {
-    await _startLoadingStreamController.close();
-    await _loadingPercentChangedStreamController.close();
-    await _loadedStreamController.close();
-    await _loadingCancelledStreamController.close();
-    await _loadingFailureStreamController.close();
+    await _loadingTrackStatusStreamController.close();
   }
 }

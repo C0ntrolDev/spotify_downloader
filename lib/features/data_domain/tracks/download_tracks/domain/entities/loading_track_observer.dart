@@ -5,25 +5,29 @@ import 'package:spotify_downloader/features/data_domain/tracks/download_tracks/d
 
 class LoadingTrackObserver {
   LoadingTrackObserver(
-      {required this.startLoadingStream,
-      required this.loadingPercentChangedStream,
-      required this.loadedStream,
-      required this.loadingCancelledStream,
-      required this.loadingFailureStream,
+      {
       required this.loadingTrackStatusStream,
       required LoadingTrackStatus Function() getLoadingTrackStatus})
       : _getLoadingTrackStatus = getLoadingTrackStatus {
-    startLoadingStream.listen((youtubeUrl) => _youtubeUrl = youtubeUrl);
-    loadingPercentChangedStream.listen((percent) => _loadingPercent = percent);
-    loadedStream.listen((savePath) => _resultSavePath = savePath);
-    loadingFailureStream.listen((failure) => _failure = failure);
-  }
+    
+    loadingTrackStatusStream.listen((status) {
+      if (status is LoadingTrackStatusLoading) {
+        _youtubeUrl = status.youTubeUrl;
+        _loadingPercent = status.percent;
+      }
+      if (status is LoadingTrackStatusLoaded) {
+        _resultSavePath = status.savePath;
+      }
 
-  final Stream<String> startLoadingStream;
-  final Stream<double?> loadingPercentChangedStream;
-  final Stream<String> loadedStream;
-  final Stream<void> loadingCancelledStream;
-  final Stream<Failure?> loadingFailureStream;
+      if (status is LoadingTrackStatusFailure) {
+        _failure = status.failure;
+      }
+
+      if (status is LoadingTrackStatusFailure || status is LoadingTrackStatusCancelled) {
+        _loadingPercent = null;
+      }
+    });
+  }
 
   final LoadingTrackStatus Function() _getLoadingTrackStatus;
   LoadingTrackStatus get status => _getLoadingTrackStatus.call();

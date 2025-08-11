@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:spotify_downloader/features/data_domain/shared/domain/entities/entities.dart';
 
 class LikedTrack extends Track {
-  LikedTrack(
+  const LikedTrack(
       {required super.spotifyId,
       required super.parentCollection,
       required super.name,

@@ -69,12 +69,12 @@ class DowloadTracksRepositoryImpl implements DownloadTracksRepository {
   }
 
   @override
-  Future<Result<Failure, LoadingTrackObserver?>> getLoadingTrackObserver(Track track, String savePat) async {
+  Future<Result<Failure, LoadingTrackObserver?>> getLoadingTrackObserver(Track track, String savePath) async {
     final loadingTrackId = LoadingTrackId(
         parentSpotifyId: track.parentCollection.spotifyId,
         parentType: track.parentCollection.type,
         spotifyId: track.spotifyId,
-        savePath: savePat);
+        savePath: savePath);
 
     final queueLoadingTrack = _loadingTracksQueue.where((e) => e.loadingTrackId == loadingTrackId).firstOrNull;
     if (queueLoadingTrack != null) {

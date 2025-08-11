@@ -116,7 +116,7 @@ void _provideRepositories() {
 
   injector.registerSingleton<DownloadTracksService>(DownloadTracksServiceImpl(
       observeTracksLoadingRepository: injector.get<ObserveTracksLoadingRepository>(),
-      dowloadTracksRepository: injector.get<DownloadTracksRepository>(),
+      downloadTracksRepository: injector.get<DownloadTracksRepository>(),
       searchVideosByTrackRepository: injector.get<SearchVideosByTrackRepository>(),
       localTracksRepository: injector.get<LocalTracksRepository>(),
       downloadTracksSettingsRepository: injector.get<DownloadTracksSettingsRepository>()));

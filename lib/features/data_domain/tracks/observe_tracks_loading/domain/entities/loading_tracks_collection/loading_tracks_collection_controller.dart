@@ -37,7 +37,7 @@ class LoadingTracksCollectionController {
   final StreamController<void> _loadingStatusChangedStreamController = StreamController();
 
   void observeLoadingTrack(LoadingTrackObserver loadingTrackObserver, Track track) {
-    if (loadingTrackObserver.status == LoadingTrackStatus.loadingCancelled) {
+    if (loadingTrackObserver.status is LoadingTrackStatusCancelled) {
       return;
     }
 
@@ -50,8 +50,8 @@ class LoadingTracksCollectionController {
       _loadingEndedTracks.remove(track.spotifyId);
     }
 
-    if (loadingTrackObserver.status == LoadingTrackStatus.waitInLoadingQueue ||
-        loadingTrackObserver.status == LoadingTrackStatus.loading) {
+    if (loadingTrackObserver.status is LoadingTrackStatusWaitInLoadingQueue ||
+        loadingTrackObserver.status is LoadingTrackStatusLoading) {
       _startLoadingTrackObserve(loadingTrackObserver, track);
     } else {
       _loadingEndedTracks[track.spotifyId] = loadingTrackObserver.status;
@@ -67,11 +67,13 @@ class LoadingTracksCollectionController {
       spotifyId: track.spotifyId, 
       loadingTrackObserverSubscribtions: subs);
 
-    var loadedSubscription = loadingTrackObserver.loadedStream.listen((event) => _onTrackLoadingEnded(loadingTrack));
-    var failureSubscription = loadingTrackObserver.loadingFailureStream.listen((event) => _onTrackLoadingEnded(loadingTrack));
-    var cancelSubscription = loadingTrackObserver.loadingCancelledStream.listen((event) => _onTrackLoadingEnded(loadingTrack));
+    var statusSub = loadingTrackObserver.loadingTrackStatusStream.listen((status) {
+      if (status is LoadingTrackStatusCancelled || status is LoadingTrackStatusFailure || status is LoadingTrackStatusLoaded) {
+        _onTrackLoadingEnded(loadingTrack);
+      }
+    });
 
-    subs.addAll([loadedSubscription, failureSubscription, cancelSubscription]);
+    subs.addAll([statusSub]);
 
     _loadingTracks.add(loadingTrack);
   }
@@ -79,7 +81,7 @@ class LoadingTracksCollectionController {
   Future _onTrackLoadingEnded(LoadingTrackObserverSubscriptionWithId loadingTrack) async {
     _endLoadingTrackObserve(loadingTrack);
 
-    if(loadingTrack.loadingTrackObserver.status != LoadingTrackStatus.loadingCancelled) {
+    if(loadingTrack.loadingTrackObserver.status is! LoadingTrackStatusCancelled) {
       _loadingEndedTracks[loadingTrack.spotifyId] = loadingTrack.loadingTrackObserver.status;
     }
 
@@ -115,12 +117,12 @@ class LoadingTracksCollectionController {
     int failuredTracks = 0;
 
     for (var loadingEndTrackStatus in _loadingEndedTracks.values) {
-      if (loadingEndTrackStatus == LoadingTrackStatus.failure) {
+      if (loadingEndTrackStatus is LoadingTrackStatusFailure) {
         failuredTracks++;
         continue;
       }
 
-      if (loadingEndTrackStatus == LoadingTrackStatus.loaded) {
+      if (loadingEndTrackStatus is LoadingTrackStatusLoaded) {
         loadedTracks++;
         continue;
       }
